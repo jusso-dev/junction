@@ -112,7 +112,8 @@ fn approval_requires_operator_terminal_and_never_bypasses_policy() {
     // Deny rules and read-only mode cannot be overridden by approval.
     for policy in [&deny, &read_only] {
         let text = run(policy, "graph.users.delete", "{}");
-        let denial: serde_json::Value = serde_json::from_str(&text).unwrap();
+        let denial: serde_json::Value =
+            serde_json::from_str(text.trim()).unwrap_or_else(|error| panic!("{error}: {text:?}"));
         assert_eq!(denial["status"], "policy_rejected");
     }
     // Approval is only meaningful for approval-required requests.

@@ -21,3 +21,13 @@ jobs:
         run: bash scripts/tests/verify-public-repository.sh
       - name: Verify automatic patch version allocation
         run: bash scripts/tests/next-patch-version.sh
+  native-tests:
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [macos-latest, windows-latest]
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - run: cargo test --workspace --locked
