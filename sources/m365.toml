@@ -1,0 +1,8 @@
+id = "m365"
+product = "m365"
+source_type = "open_api"
+upstream = "https://github.com/microsoftgraph/msgraph-metadata"
+paths = ["openapi/v1.0/openapi.yaml"]
+authority = "microsoft"
+clouds = ["public"]
+enabled = true

@@ -1,0 +1,19 @@
+[package]
+name = "junction-http"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+[dependencies]
+junction-core = { path = "../junction-core" }
+junction-auth = { path = "../junction-auth" }
+junction-policy = { path = "../junction-policy" }
+reqwest = { version = "0.12", default-features = false, features = ["rustls-tls", "json"] }
+serde_json.workspace = true
+serde.workspace = true
+getrandom = "0.4"
+anyhow.workspace = true
+url = "2"
+httpdate = "1"
+tokio = { version = "1", features = ["time"] }

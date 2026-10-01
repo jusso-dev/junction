@@ -1,0 +1,7 @@
+/target
+/.junction
+/dist
+/endpoint-catalogs.tar.gz
+/generated/registry/*.json
+/release-notes.md
+/resume.md

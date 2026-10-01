@@ -1,0 +1,8 @@
+id = "defender-for-cloud"
+product = "defender"
+source_type = "open_api"
+upstream = "https://github.com/Azure/azure-rest-api-specs"
+paths = ["specification/security/resource-manager/Microsoft.Security/Security", "specification/common-types/resource-management"]
+authority = "microsoft"
+clouds = ["public"]
+enabled = true

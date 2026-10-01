@@ -1,0 +1,4 @@
+microsoft.graph.emailAddress
+microsoft.graph.recipient
+microsoft.graph.phone
+microsoft.graph.dateTimeTimeZone

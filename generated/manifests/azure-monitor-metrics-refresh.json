@@ -1,0 +1,43 @@
+{
+  "bytes": 78004,
+  "dependencies": [
+    {
+      "receipt": {
+        "bytes": 23221,
+        "path": "specification/common-types/resource-management/v5/types.json",
+        "revision": "4be02d6096078342c20c60d094d4f4d1b936deba",
+        "sha256": "66767620b8edfbc04093c76b78d168cc59822cd9da1e726d35a9d45b73e642c1",
+        "source": "azure-monitor",
+        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/4be02d6096078342c20c60d094d4f4d1b936deba/specification/common-types/resource-management/v5/types.json"
+      },
+      "status": "dependency"
+    }
+  ],
+  "documents": [
+    {
+      "receipt": {
+        "bytes": 54783,
+        "path": "specification/monitor/resource-manager/Microsoft.Insights/Insights/stable/2024-02-01/metrics.json",
+        "revision": "4be02d6096078342c20c60d094d4f4d1b936deba",
+        "sha256": "2e8856aa2ae186b94ae5faa65226510b4bde2c5b55cf0d6b1526a106cb02e7be",
+        "source": "azure-monitor",
+        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/4be02d6096078342c20c60d094d4f4d1b936deba/specification/monitor/resource-manager/Microsoft.Insights/Insights/stable/2024-02-01/metrics.json"
+      },
+      "status": "imported"
+    }
+  ],
+  "imported": 1,
+  "inventory": {
+    "documents": [
+      {
+        "blob_sha": "e87a9521dccd219d7e0a804504f6de80729c0b94",
+        "bytes": 54783,
+        "path": "specification/monitor/resource-manager/Microsoft.Insights/Insights/stable/2024-02-01/metrics.json",
+        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/4be02d6096078342c20c60d094d4f4d1b936deba/specification/monitor/resource-manager/Microsoft.Insights/Insights/stable/2024-02-01/metrics.json"
+      }
+    ],
+    "revision": "4be02d6096078342c20c60d094d4f4d1b936deba",
+    "source": "azure-monitor",
+    "tree_sha": "4be02d6096078342c20c60d094d4f4d1b936deba"
+  }
+}

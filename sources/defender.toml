@@ -1,0 +1,8 @@
+id = "defender"
+product = "defender"
+source_type = "documentation"
+upstream = "https://learn.microsoft.com/en-us/defender-xdr/api-overview"
+paths = []
+authority = "microsoft"
+clouds = ["public"]
+enabled = false

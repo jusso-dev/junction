@@ -1,0 +1,9 @@
+{
+  "cloud": "public",
+  "tenant": "replace-with-tenant-id",
+  "service": "arm",
+  "credential_profile": "certificate",
+  "flow": "certificate",
+  "scopes": [],
+  "subscription": "replace-with-subscription-id"
+}

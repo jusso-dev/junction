@@ -1,0 +1,54 @@
+{
+  "bytes": 61156,
+  "dependencies": [
+    {
+      "receipt": {
+        "bytes": 34144,
+        "path": "specification/security/resource-manager/Microsoft.Security/Security/stable/2021-06-01/assessmentMetadata.json",
+        "revision": "4be02d6096078342c20c60d094d4f4d1b936deba",
+        "sha256": "1ac19fffb633469c5a5781d022cdd3315482bfab01dc03f3ba7c6cb71f600f27",
+        "source": "defender-for-cloud",
+        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/4be02d6096078342c20c60d094d4f4d1b936deba/specification/security/resource-manager/Microsoft.Security/Security/stable/2021-06-01/assessmentMetadata.json"
+      },
+      "status": "dependency"
+    },
+    {
+      "receipt": {
+        "bytes": 13420,
+        "path": "specification/security/resource-manager/Microsoft.Security/Security/stable/2021-06-01/common/v1/types.json",
+        "revision": "4be02d6096078342c20c60d094d4f4d1b936deba",
+        "sha256": "7b83ec839ce5982de97a5317efdfe4f4c0437f64a988c1fb24bc6cb057a03498",
+        "source": "defender-for-cloud",
+        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/4be02d6096078342c20c60d094d4f4d1b936deba/specification/security/resource-manager/Microsoft.Security/Security/stable/2021-06-01/common/v1/types.json"
+      },
+      "status": "dependency"
+    }
+  ],
+  "documents": [
+    {
+      "receipt": {
+        "bytes": 13592,
+        "path": "specification/security/resource-manager/Microsoft.Security/Security/stable/2021-06-01/assessments.json",
+        "revision": "4be02d6096078342c20c60d094d4f4d1b936deba",
+        "sha256": "dad6ee388d944a4178b87832272198e83d806aa2a4272dafaa50ccc12cd9e5ce",
+        "source": "defender-for-cloud",
+        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/4be02d6096078342c20c60d094d4f4d1b936deba/specification/security/resource-manager/Microsoft.Security/Security/stable/2021-06-01/assessments.json"
+      },
+      "status": "imported"
+    }
+  ],
+  "imported": 1,
+  "inventory": {
+    "documents": [
+      {
+        "blob_sha": "8ed23163dce54a672225c5e0cd30119b66adc5cd",
+        "bytes": 13592,
+        "path": "specification/security/resource-manager/Microsoft.Security/Security/stable/2021-06-01/assessments.json",
+        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/4be02d6096078342c20c60d094d4f4d1b936deba/specification/security/resource-manager/Microsoft.Security/Security/stable/2021-06-01/assessments.json"
+      }
+    ],
+    "revision": "4be02d6096078342c20c60d094d4f4d1b936deba",
+    "source": "defender-for-cloud",
+    "tree_sha": "4be02d6096078342c20c60d094d4f4d1b936deba"
+  }
+}

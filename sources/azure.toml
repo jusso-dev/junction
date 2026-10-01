@@ -1,0 +1,8 @@
+id = "azure"
+product = "azure"
+source_type = "open_api"
+upstream = "https://github.com/Azure/azure-rest-api-specs"
+paths = ["specification"]
+authority = "microsoft"
+clouds = ["public"]
+enabled = true

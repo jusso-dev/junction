@@ -1,0 +1,23 @@
+[package]
+name = "junction-discovery"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+[dependencies]
+junction-core = { path = "../junction-core" }
+serde_json.workspace = true
+anyhow.workspace = true
+junction-schema = { path = "../junction-schema" }
+serde.workspace = true
+toml = "0.8"
+url = "2"
+serde-saphyr = "1"
+reqwest = { version = "0.12", default-features = false, features = ["rustls-tls"] }
+sha2 = "0.10"
+quick-xml = "0.42"
+tokio = { version = "1", features = ["rt", "time"] }
+[dev-dependencies]
+tokio = { version = "1", features = ["macros", "rt", "net", "io-util"] }
+junction-registry = { path = "../junction-registry" }

@@ -1,0 +1,18 @@
+{
+  "dynamic": [
+    "Schema790cc9116bd7ad93b2fb4fdf8bf5b098a8faa4620fc89411baebd58370646dc0Additional",
+    "Schema790cc9116bd7ad93b2fb4fdf8bf5b098a8faa4620fc89411baebd58370646dc0Field4",
+    "Schema8ed364b1765bee1818b7dc061d49646a29b3665da9b063939d61a883c31c124dAdditional",
+    "Schema8ed364b1765bee1818b7dc061d49646a29b3665da9b063939d61a883c31c124dField1",
+    "Schema91d89ad5961113ec52b8e47069686f4c33d912b8d46b98cf98702d578475f93bAdditional",
+    "Schemadaffe952d8bf7c17dfee6583686a17e3eda02f8f5e9e3b5b76c5d20c8501d1bfAdditional"
+  ],
+  "status": "generated",
+  "types": {
+    "#/components/schemas/1c4e5f33dfc1dc17e2e8ca8e15734433ebf4f65362d988ba66a461e9a9d1e1e4.microsoft.graph.dateTimeTimeZone": "Schemadaffe952d8bf7c17dfee6583686a17e3eda02f8f5e9e3b5b76c5d20c8501d1bf",
+    "#/components/schemas/1c4e5f33dfc1dc17e2e8ca8e15734433ebf4f65362d988ba66a461e9a9d1e1e4.microsoft.graph.emailAddress": "Schema91d89ad5961113ec52b8e47069686f4c33d912b8d46b98cf98702d578475f93b",
+    "#/components/schemas/1c4e5f33dfc1dc17e2e8ca8e15734433ebf4f65362d988ba66a461e9a9d1e1e4.microsoft.graph.phone": "Schema790cc9116bd7ad93b2fb4fdf8bf5b098a8faa4620fc89411baebd58370646dc0",
+    "#/components/schemas/1c4e5f33dfc1dc17e2e8ca8e15734433ebf4f65362d988ba66a461e9a9d1e1e4.microsoft.graph.phoneType": "Schemaae322aed26beaa40cad0f6b87ef91f0a3bb39c3cb4754811d14afc745ab7d206",
+    "#/components/schemas/1c4e5f33dfc1dc17e2e8ca8e15734433ebf4f65362d988ba66a461e9a9d1e1e4.microsoft.graph.recipient": "Schema8ed364b1765bee1818b7dc061d49646a29b3665da9b063939d61a883c31c124d"
+  }
+}

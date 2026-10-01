@@ -1,0 +1,8 @@
+id = "azure-log-analytics"
+product = "azure"
+source_type = "open_api"
+upstream = "https://github.com/Azure/azure-rest-api-specs"
+paths = ["specification/operationalinsights/resource-manager/Microsoft.OperationalInsights/OperationalInsights", "specification/common-types/resource-management"]
+authority = "microsoft"
+clouds = ["public"]
+enabled = true

@@ -1,0 +1,8 @@
+id = "azure-arc"
+product = "azure"
+source_type = "open_api"
+upstream = "https://github.com/Azure/azure-rest-api-specs"
+paths = ["specification/hybridcompute/resource-manager/Microsoft.HybridCompute/HybridCompute", "specification/common-types/resource-management"]
+authority = "microsoft"
+clouds = ["public"]
+enabled = true

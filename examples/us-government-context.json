@@ -1,0 +1,6 @@
+{
+  "cloud": "us_government",
+  "tenant": "replace-with-tenant-id",
+  "service": "graph",
+  "credential_profile": "environment"
+}

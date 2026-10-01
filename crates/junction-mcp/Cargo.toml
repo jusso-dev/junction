@@ -1,0 +1,16 @@
+[package]
+name = "junction-mcp"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+serde_json.workspace = true
+anyhow.workspace = true
+junction-schema = { path = "../junction-schema" }
+tokio = { version = "1", features = ["macros", "sync"] }
+
+[dev-dependencies]
+tokio = { version = "1", features = ["macros", "rt", "time"] }

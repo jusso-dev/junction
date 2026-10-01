@@ -1,0 +1,1 @@
+Public test-only RSA key and self-signed certificate. These fixtures are deliberately committed for deterministic local signature tests. Never use this key or certificate for authentication outside tests. Generated with OpenSSL, RSA 2048, unencrypted PKCS#8 DER and PKCS#1 public-key DER.

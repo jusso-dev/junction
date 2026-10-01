@@ -1,0 +1,207 @@
+name: Daily endpoint update and binaries
+
+on:
+  schedule:
+    - cron: '17 2 * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: daily-release
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  prepare:
+    if: github.repository == 'jusso-dev/junction'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    permissions:
+      contents: write
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      commit: ${{ steps.commit.outputs.commit }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+          fetch-depth: 0
+      - name: Verify public personal repository
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh api repos/jusso-dev/junction > "$RUNNER_TEMP/junction-repository.json"
+          bash scripts/verify-public-repository.sh "$RUNNER_TEMP/junction-repository.json"
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+      - name: Check source
+        run: |
+          cargo fmt --all -- --check
+          cargo clippy --workspace --all-targets --locked -- -D warnings
+          cargo test --workspace --locked
+          bash scripts/tests/update-catalogs.sh
+          bash scripts/tests/verify-release-assets.sh
+          bash scripts/tests/verify-public-repository.sh
+          bash scripts/tests/next-patch-version.sh
+      - name: Build updater
+        run: cargo build --release --locked -p junction
+      - name: Refresh official endpoint catalogs
+        env:
+          # Read-only GitHub API metadata requests only; raw documents stay anonymous.
+          GITHUB_TOKEN: ${{ github.token }}
+        run: bash scripts/update-catalogs.sh
+      - name: Allocate next patch version
+        id: version
+        shell: bash
+        run: |
+          set -euo pipefail
+          version="$(cargo metadata --no-deps --format-version 1 --locked | jq -er '.packages[] | select(.name == "junction") | .version')"
+          next="$(bash scripts/next-patch-version.sh "$version")"
+          if git rev-parse "v${next}" >/dev/null 2>&1; then
+            echo 'Next release tag already exists; refusing to overwrite it.' >&2
+            exit 1
+          fi
+          sed -i "s/^version = \"$version\"$/version = \"$next\"/" Cargo.toml
+          cargo check --workspace
+          echo "version=$next" >> "$GITHUB_OUTPUT"
+      - name: Export versioned local API contract
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          cargo build --release --locked -p junction
+          target/release/junction openapi --output generated/manifests/junction-openapi.json
+          jq -e --arg version "$VERSION" '.info.version == $version' generated/manifests/junction-openapi.json
+      - name: Commit version and source receipts
+        id: commit
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add Cargo.toml Cargo.lock generated/manifests
+          git commit -m "Release v${VERSION}: refresh endpoint catalog receipts"
+          git push origin "HEAD:${DEFAULT_BRANCH}"
+          echo "commit=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+      - name: Stage catalog bundle
+        run: tar -czf endpoint-catalogs.tar.gz generated
+      - uses: actions/upload-artifact@v4
+        with:
+          name: endpoint-catalogs
+          path: endpoint-catalogs.tar.gz
+          retention-days: 30
+          if-no-files-found: error
+
+  build:
+    needs: prepare
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: ubuntu-latest
+            platform: linux
+          - runner: macos-latest
+            platform: macos
+          - runner: windows-latest
+            platform: windows
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.prepare.outputs.commit }}
+          persist-credentials: false
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: actions/download-artifact@v4
+        with:
+          name: endpoint-catalogs
+      - name: Restore endpoint catalogs
+        shell: bash
+        run: tar -xzf endpoint-catalogs.tar.gz
+      - name: Build and test native Rust binary
+        shell: bash
+        run: |
+          cargo test --workspace --locked
+          cargo build --release --locked -p junction
+      - name: Package binary and versioned catalog
+        id: package
+        shell: bash
+        env:
+          VERSION: ${{ needs.prepare.outputs.version }}
+          PLATFORM: ${{ matrix.platform }}
+        run: |
+          set -euo pipefail
+          host="$(rustc -vV | sed -n 's/^host: //p')"
+          echo "host=$host" >> "$GITHUB_OUTPUT"
+          bash scripts/package-release.sh "$VERSION" "$host" "$PLATFORM"
+      - name: Package Windows ZIP
+        if: matrix.platform == 'windows'
+        shell: pwsh
+        env:
+          VERSION: ${{ needs.prepare.outputs.version }}
+          HOST: ${{ steps.package.outputs.host }}
+        run: |
+          $name = "junction-v$env:VERSION-$env:HOST"
+          Compress-Archive -Path "dist/$name/*" -DestinationPath "dist/$name.zip"
+          $digest = (Get-FileHash "dist/$name.zip" -Algorithm SHA256).Hash.ToLowerInvariant()
+          "$digest  $name.zip" | Set-Content -Encoding ascii "dist/$name.zip.sha256"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: junction-${{ matrix.platform }}
+          path: |
+            dist/*.tar.gz
+            dist/*.zip
+            dist/*.sha256
+          retention-days: 30
+          if-no-files-found: error
+
+  publish:
+    needs: [prepare, build]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.prepare.outputs.commit }}
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: junction-*
+          path: dist
+          merge-multiple: true
+      - name: Tag and publish automated release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ needs.prepare.outputs.version }}
+          COMMIT: ${{ needs.prepare.outputs.commit }}
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          bash scripts/verify-release-assets.sh "$VERSION" dist
+          gh api repos/jusso-dev/junction > "$RUNNER_TEMP/junction-repository.json"
+          bash scripts/verify-public-repository.sh "$RUNNER_TEMP/junction-repository.json"
+          tag="v${VERSION}"
+          existing="$(git ls-remote --tags origin "refs/tags/${tag}" "refs/tags/${tag}^{}")"
+          if [[ -n "$existing" ]]; then
+            git fetch origin "refs/tags/${tag}:refs/tags/${tag}"
+            if [[ "$(git rev-parse "${tag}^{commit}")" != "$COMMIT" ]]; then
+              echo 'Release tag points to a different commit; refusing to publish.' >&2
+              exit 1
+            fi
+          else
+            git tag -a "$tag" "$COMMIT" -m "Junction v${VERSION} automated build"
+            git push origin "refs/tags/${tag}"
+          fi
+          cat > release-notes.md <<'NOTES'
+          Daily Rust binaries and official Microsoft endpoint catalogs: Graph v1.0 (beta opt-in), Azure DevOps Core, Azure Resources, Compute, Monitor, Resource Graph, Cost Management, Log Analytics, Arc, Lighthouse, Sentinel, Purview, Defender for Cloud and Fabric.
+          Includes generated common Graph Rust types, source revision receipts and SHA-256 archive checksums.
+          These are prerelease builds: the full Junction specification remains in development.
+          Extract the archive and run Junction from its root to load the bundled default registry.
+          Graph beta is a separate registry and still requires --allow-preview.
+          NOTES
+          gh release create "v${VERSION}" dist/* --verify-tag --prerelease \
+            --title "Junction v${VERSION} automated build" --notes-file release-notes.md

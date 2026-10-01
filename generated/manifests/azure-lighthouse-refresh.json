@@ -1,0 +1,43 @@
+{
+  "bytes": 64981,
+  "dependencies": [
+    {
+      "receipt": {
+        "bytes": 21347,
+        "path": "specification/common-types/resource-management/v3/types.json",
+        "revision": "4be02d6096078342c20c60d094d4f4d1b936deba",
+        "sha256": "8f69ddbcdd8f3df61a156a129e70db08b3a03f2ec710de07f30273ec27492de3",
+        "source": "azure-lighthouse",
+        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/4be02d6096078342c20c60d094d4f4d1b936deba/specification/common-types/resource-management/v3/types.json"
+      },
+      "status": "dependency"
+    }
+  ],
+  "documents": [
+    {
+      "receipt": {
+        "bytes": 43634,
+        "path": "specification/managedservices/resource-manager/Microsoft.ManagedServices/ManagedServices/stable/2022-10-01/managedservices.json",
+        "revision": "4be02d6096078342c20c60d094d4f4d1b936deba",
+        "sha256": "d59a7f8afee78071e15cb0914c1002a60374db7912b8c53dd971c00b8e414b3c",
+        "source": "azure-lighthouse",
+        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/4be02d6096078342c20c60d094d4f4d1b936deba/specification/managedservices/resource-manager/Microsoft.ManagedServices/ManagedServices/stable/2022-10-01/managedservices.json"
+      },
+      "status": "imported"
+    }
+  ],
+  "imported": 1,
+  "inventory": {
+    "documents": [
+      {
+        "blob_sha": "15e21bb00823234c9acb85ee1a73030f58314dce",
+        "bytes": 43634,
+        "path": "specification/managedservices/resource-manager/Microsoft.ManagedServices/ManagedServices/stable/2022-10-01/managedservices.json",
+        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/4be02d6096078342c20c60d094d4f4d1b936deba/specification/managedservices/resource-manager/Microsoft.ManagedServices/ManagedServices/stable/2022-10-01/managedservices.json"
+      }
+    ],
+    "revision": "4be02d6096078342c20c60d094d4f4d1b936deba",
+    "source": "azure-lighthouse",
+    "tree_sha": "4be02d6096078342c20c60d094d4f4d1b936deba"
+  }
+}

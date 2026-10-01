@@ -1,0 +1,10 @@
+{
+  "cloud": "public",
+  "tenant": "replace-with-tenant-id",
+  "service": "arm",
+  "credential_profile": "azure-vm",
+  "flow": "managed_identity",
+  "scopes": [],
+  "subscription": "replace-with-subscription-id",
+  "default_resource_group": "example-resource-group"
+}

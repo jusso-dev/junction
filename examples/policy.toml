@@ -1,0 +1,16 @@
+[agent]
+mode = "safe-write"
+
+[deny]
+operations = ["*.delete", "graph.identity.conditional_access.*"]
+
+# Empty tenants permits any tenant. Set exact IDs to restrict execution.
+[allow]
+tenants = []
+
+[limits]
+max_requests_per_minute = 100
+max_pages = 20
+max_parallel_requests = 10
+max_batch_operations = 100
+max_items = 10000

@@ -1,0 +1,8 @@
+id = "azure-compute"
+product = "azure"
+source_type = "open_api"
+upstream = "https://github.com/Azure/azure-rest-api-specs"
+paths = ["specification/compute/resource-manager/Microsoft.Compute/Compute", "specification/common-types/resource-management"]
+authority = "microsoft"
+clouds = ["public"]
+enabled = true

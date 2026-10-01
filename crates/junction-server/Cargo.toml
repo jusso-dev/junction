@@ -1,0 +1,23 @@
+[package]
+name = "junction-server"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+[dependencies]
+serde_json.workspace = true
+junction-mcp = { path = "../junction-mcp" }
+junction-schema = { path = "../junction-schema" }
+percent-encoding = "2"
+junction-registry = { path = "../junction-registry" }
+junction-auth = { path = "../junction-auth" }
+anyhow.workspace = true
+axum = { version = "0.7.9", default-features = false, features = ["http1", "tokio"] }
+tokio = { version = "1", features = ["net", "time", "sync", "signal"] }
+subtle = "2"
+[dev-dependencies]
+junction-discovery = { path = "../junction-discovery" }
+tokio = { version = "1", features = ["macros", "rt", "test-util"] }
+tower = { version = "0.5", features = ["util"] }
+futures-util = "0.3"

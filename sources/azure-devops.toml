@@ -1,0 +1,8 @@
+id = "azure-devops"
+product = "azure-devops"
+source_type = "open_api"
+upstream = "https://github.com/MicrosoftDocs/vsts-rest-api-specs"
+paths = ["specification"]
+authority = "microsoft"
+clouds = ["public"]
+enabled = true

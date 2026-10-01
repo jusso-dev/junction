@@ -1,0 +1,8 @@
+id = "azure-cost-management"
+product = "azure"
+source_type = "open_api"
+upstream = "https://github.com/Azure/azure-rest-api-specs"
+paths = ["specification/cost-management/resource-manager/Microsoft.CostManagement/CostManagement", "specification/common-types/resource-management"]
+authority = "microsoft"
+clouds = ["public"]
+enabled = true

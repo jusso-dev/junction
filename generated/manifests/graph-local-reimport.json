@@ -1,0 +1,15 @@
+{
+  "source_receipt": {
+    "source": "graph",
+    "upstream": "https://raw.githubusercontent.com/microsoftgraph/msgraph-metadata/7b2914c8ad1340129f52aa785f13c074cb46fd7c/openapi/v1.0/openapi.yaml",
+    "revision": "7b2914c8ad1340129f52aa785f13c074cb46fd7c",
+    "path": "openapi/v1.0/openapi.yaml",
+    "sha256": "77c1a39c94ab0a72c0a2e07ff74f221903141e8913e748fddcc189b98da42feb",
+    "bytes": 44334960
+  },
+  "operations": 17870,
+  "risk_updates": 85,
+  "pageable_updates": 2774,
+  "parameter_updates": 6,
+  "live_refresh": false
+}

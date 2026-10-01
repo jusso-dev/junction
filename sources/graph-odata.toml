@@ -1,0 +1,8 @@
+id = "graph-odata"
+product = "graph"
+source_type = "odata"
+upstream = "https://github.com/microsoftgraph/msgraph-metadata"
+paths = ["schemas/v1.0-USNat.csdl"]
+authority = "microsoft"
+clouds = ["public"]
+enabled = true

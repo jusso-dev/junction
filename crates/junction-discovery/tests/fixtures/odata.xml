@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+  <edmx:Reference Uri="https://example.invalid/vocabularies">
+    <edmx:Include Namespace="Org.OData.Capabilities.V1" Alias="Caps" />
+  </edmx:Reference>
+  <edmx:DataServices>
+    <Schema Namespace="Demo" Alias="self" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+      <EnumType Name="State"><Member Name="healthy"/><Member Name="degraded"/></EnumType>
+      <TypeDefinition Name="Amount" UnderlyingType="Edm.Decimal"/>
+      <ComplexType Name="Address">
+        <Property Name="city" Type="Edm.String" Nullable="false" MaxLength="30"/>
+      </ComplexType>
+      <EntityType Name="Base">
+        <Key><PropertyRef Name="id"/></Key>
+        <Property Name="id" Type="Edm.Guid" Nullable="false"/>
+      </EntityType>
+      <EntityType Name="User" BaseType="self.Base">
+        <Annotation Term="Org.OData.Core.V1.Description"><String>User &amp; account</String></Annotation>
+        <Property Name="name" Type="Edm.String" MaxLength="10"/>
+        <Property Name="state" Type="self.State" Nullable="false"/>
+        <Property Name="addresses" Type="Collection(self.Address)" Nullable="false"/>
+        <Property Name="tags" Type="Collection(Edm.String)" Nullable="true" MaxLength="5"/>
+        <NavigationProperty Name="manager" Type="self.User"/>
+        <NavigationProperty Name="reports" Type="Collection(self.User)"/>
+      </EntityType>
+      <Action Name="Reset">
+        <Parameter Name="name" Type="Edm.String" Nullable="false" MaxLength="10"/>
+        <Parameter Name="targets" Type="Collection(self.User)" Nullable="false"/>
+        <ReturnType Type="Edm.Boolean" Nullable="false"/>
+      </Action>
+      <EntityContainer Name="Service">
+        <EntitySet Name="users" EntityType="self.User"/>
+        <Singleton Name="me" Type="self.User"/>
+        <EntitySet Name="hidden" EntityType="self.User">
+          <Annotation Term="Caps.ReadRestrictions"><Record><PropertyValue Property="Readable" Bool="false"/></Record></Annotation>
+        </EntitySet>
+        <EntitySet Name="externalHidden" EntityType="self.User"/>
+        <ActionImport Name="reset" Action="self.Reset"/>
+      </EntityContainer>
+      <Annotations Target="self.Service/externalHidden">
+        <Annotation Term="Caps.ReadRestrictions"><Record><PropertyValue Property="Readable"><Bool>false</Bool></PropertyValue></Record></Annotation>
+      </Annotations>
+    </Schema>
+  </edmx:DataServices>
+</edmx:Edmx>

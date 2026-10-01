@@ -1,0 +1,31 @@
+[package]
+name = "junction"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+[dependencies]
+junction-tui = { path = "../junction-tui" }
+junction-generator = { path = "../junction-generator" }
+junction-core = { path = "../junction-core" }
+junction-registry = { path = "../junction-registry" }
+junction-discovery = { path = "../junction-discovery" }
+serde_json.workspace = true
+anyhow.workspace = true
+clap.workspace = true
+junction-policy = { path = "../junction-policy" }
+junction-schema = { path = "../junction-schema" }
+junction-auth = { path = "../junction-auth" }
+junction-runtime = { path = "../junction-runtime" }
+junction-mcp = { path = "../junction-mcp" }
+junction-server = { path = "../junction-server" }
+serde.workspace = true
+tokio = { version = "1", features = ["macros", "rt-multi-thread", "time", "signal"] }
+url = "2"
+tempfile = "3"
+serde-saphyr = "1"
+getrandom = "0.4"
+zeroize = "1"
+[target.'cfg(unix)'.dependencies]
+libc = "0.2"

@@ -1,0 +1,25 @@
+[package]
+name = "junction-runtime"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+[dependencies]
+junction-core = { path = "../junction-core" }
+junction-policy = { path = "../junction-policy" }
+serde_json.workspace = true
+serde.workspace = true
+anyhow.workspace = true
+url = "2"
+percent-encoding = "2"
+junction-auth = { path = "../junction-auth" }
+junction-http = { path = "../junction-http" }
+junction-registry = { path = "../junction-registry" }
+junction-schema = { path = "../junction-schema" }
+futures-util = "0.3"
+tokio = { version = "1", features = ["time"] }
+[dev-dependencies]
+tokio = { version = "1", features = ["macros", "rt"] }
+junction-discovery = { path = "../junction-discovery" }
+tempfile = "3"

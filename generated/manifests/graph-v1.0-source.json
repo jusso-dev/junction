@@ -1,0 +1,8 @@
+{
+  "bytes": 44334960,
+  "path": "openapi/v1.0/openapi.yaml",
+  "revision": "7b2914c8ad1340129f52aa785f13c074cb46fd7c",
+  "sha256": "77c1a39c94ab0a72c0a2e07ff74f221903141e8913e748fddcc189b98da42feb",
+  "source": "graph",
+  "upstream": "https://raw.githubusercontent.com/microsoftgraph/msgraph-metadata/7b2914c8ad1340129f52aa785f13c074cb46fd7c/openapi/v1.0/openapi.yaml"
+}

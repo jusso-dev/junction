@@ -1,0 +1,8 @@
+{
+  "cloud": "public",
+  "tenant": "replace-with-concrete-tenant-id",
+  "service": "graph",
+  "credential_profile": "interactive-operator",
+  "flow": "device_code",
+  "scopes": ["https://graph.microsoft.com/User.Read", "offline_access"]
+}

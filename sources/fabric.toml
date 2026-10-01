@@ -1,0 +1,8 @@
+id = "fabric"
+product = "fabric"
+source_type = "open_api"
+upstream = "https://github.com/microsoft/fabric-rest-api-specs"
+paths = ["platform", "admin", "lakehouse", "notebook", "common"]
+authority = "microsoft"
+clouds = ["public"]
+enabled = true

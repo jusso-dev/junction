@@ -1,0 +1,43 @@
+{
+  "bytes": 139979,
+  "dependencies": [
+    {
+      "receipt": {
+        "bytes": 21347,
+        "path": "specification/common-types/resource-management/v3/types.json",
+        "revision": "4be02d6096078342c20c60d094d4f4d1b936deba",
+        "sha256": "8f69ddbcdd8f3df61a156a129e70db08b3a03f2ec710de07f30273ec27492de3",
+        "source": "azure-resources",
+        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/4be02d6096078342c20c60d094d4f4d1b936deba/specification/common-types/resource-management/v3/types.json"
+      },
+      "status": "dependency"
+    }
+  ],
+  "documents": [
+    {
+      "receipt": {
+        "bytes": 118632,
+        "path": "specification/resources/resource-manager/Microsoft.Resources/resources/stable/2025-04-01/resources.json",
+        "revision": "4be02d6096078342c20c60d094d4f4d1b936deba",
+        "sha256": "399d827f9a8e5f82b89922f2155c2f8c34017a5764c3e2c492f743ee9a23fe62",
+        "source": "azure-resources",
+        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/4be02d6096078342c20c60d094d4f4d1b936deba/specification/resources/resource-manager/Microsoft.Resources/resources/stable/2025-04-01/resources.json"
+      },
+      "status": "imported"
+    }
+  ],
+  "imported": 1,
+  "inventory": {
+    "documents": [
+      {
+        "blob_sha": "7d73f55b59a00a6848844b137735ab8ad77a80d5",
+        "bytes": 118632,
+        "path": "specification/resources/resource-manager/Microsoft.Resources/resources/stable/2025-04-01/resources.json",
+        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/4be02d6096078342c20c60d094d4f4d1b936deba/specification/resources/resource-manager/Microsoft.Resources/resources/stable/2025-04-01/resources.json"
+      }
+    ],
+    "revision": "4be02d6096078342c20c60d094d4f4d1b936deba",
+    "source": "azure-resources",
+    "tree_sha": "4be02d6096078342c20c60d094d4f4d1b936deba"
+  }
+}

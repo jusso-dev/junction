@@ -1,0 +1,11 @@
+{
+  "endpoint": "https://graph.microsoft.com/v1.0",
+  "token_request": {
+    "tenant": "replace-with-tenant-id",
+    "authority": "https://login.microsoftonline.com",
+    "audience": "https://graph.microsoft.com",
+    "scopes": [],
+    "credential_profile": "environment",
+    "flow": "client_credentials"
+  }
+}

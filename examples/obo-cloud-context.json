@@ -1,0 +1,8 @@
+{
+  "cloud": "public",
+  "tenant": "your-tenant-id",
+  "service": "graph",
+  "credential_profile": "environment-obo",
+  "flow": "on_behalf_of",
+  "scopes": ["https://graph.microsoft.com/User.Read.All"]
+}

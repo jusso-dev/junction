@@ -1,0 +1,9 @@
+id = "sentinel"
+product = "sentinel"
+source_type = "open_api"
+upstream = "https://github.com/Azure/azure-rest-api-specs"
+# Generated Sentinel Swagger references the shared ARM parameter/resource types.
+paths = ["specification/securityinsights", "specification/common-types/resource-management"]
+authority = "microsoft"
+clouds = ["public"]
+enabled = true

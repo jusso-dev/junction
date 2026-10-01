@@ -1,0 +1,8 @@
+{
+  "cloud": "public",
+  "tenant": "replace-with-tenant-id",
+  "service": "azure_devops",
+  "credential_profile": "devops-automation",
+  "flow": "client_credentials",
+  "scopes": ["499b84ac-1321-427f-aa17-267ca6975798/.default"]
+}

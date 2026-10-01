@@ -1,0 +1,8 @@
+{
+  "cloud": "public",
+  "tenant": "replace-with-tenant-id",
+  "service": "fabric",
+  "credential_profile": "fabric-automation",
+  "flow": "client_credentials",
+  "scopes": ["https://api.fabric.microsoft.com/.default"]
+}
