@@ -266,7 +266,7 @@ MOCK
 chmod +x "$test_directory/mock-junction"
 export JUNCTION_BINARY="$test_directory/mock-junction"
 bash "$test_directory/scripts/update-catalogs.sh"
-[[ "$(wc -l < "$test_directory/calls.txt" | tr -d ' ')" == '82' ]]
+[[ "$(wc -l < "$test_directory/calls.txt" | tr -d ' ')" == '70' ]]
 jq -e '.operations | length == 25' "$test_directory/generated/registry/operations.json" >/dev/null
 jq -e '[.operations[].id] | sort == ["azure.arc.machines.list", "azure.compute.virtual_machines.list", "azure.cost_management.query.usage", "azure.lighthouse.registration_definitions.list", "azure.log_analytics.workspaces.list", "azure.monitor.activity_log_alerts.list", "azure.monitor.activity_logs.list", "azure.monitor.metric_alerts.list", "azure.monitor.metrics.list", "azure.monitor.scheduled_query_rules.list", "azure.resource_graph.graph_queries.list", "azure.resource_graph.resources.query", "azure.resources.resource_groups.list", "azure_devops.core.projects.list", "defender.cloud.alerts.list", "defender.cloud.assessments.list", "defender.cloud.pricings.list", "defender.cloud.securescore.list", "fabric.admin.tenants.list", "fabric.lakehouse.items.list", "fabric.notebook.items.list", "fabric.platform.workspaces.list", "graph.users.list", "purview.accounts.accounts.list", "sentinel.securityinsights.incidents.list"]' "$test_directory/generated/registry/operations.json" >/dev/null
 [[ -s "$test_directory/generated/manifests/azure-devops-core-refresh.json" ]]
