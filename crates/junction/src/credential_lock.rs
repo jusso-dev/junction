@@ -145,8 +145,10 @@ mod tests {
         let _other = CredentialLock::in_directory(&directory, &other).unwrap();
         drop(first);
         let _released = released_lock(&directory, &request);
+        // Windows byte-range locks are mandatory, so inspect length instead of
+        // reading files that are still locked.
         for entry in std::fs::read_dir(&directory).unwrap() {
-            assert_eq!(std::fs::read(entry.unwrap().path()).unwrap(), b"");
+            assert_eq!(entry.unwrap().metadata().unwrap().len(), 0);
         }
     }
     #[test]
