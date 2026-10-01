@@ -1451,7 +1451,9 @@ impl Drop for Diagnostics {
 }
 #[tokio::main]
 async fn main() {
-    if let Err(error) = run().await {
+    // The command future is large; keep it on the heap so the 1 MiB Windows
+    // main-thread stack is not exhausted.
+    if let Err(error) = Box::pin(run()).await {
         // Only explicitly safe structured errors are exposed; parser errors may contain secrets.
         if let Some(busy) = error.downcast_ref::<credential_lock::CredentialBusy>() {
             eprintln!("{}", busy.response());
