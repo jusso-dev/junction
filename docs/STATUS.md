@@ -69,9 +69,9 @@ is still unverified.
 | Requirement | Current evidence | Remaining work |
 | --- | --- | --- |
 | Open source | MIT license, contribution guide, public repository `jusso-dev/junction` | Keep repository settings verified by the release workflow. |
-| Daily endpoint updates | `.github/workflows/daily-release.yml` and `scripts/update-catalogs.sh` | Run successfully on GitHub. Daily refresh is configured for Graph stable/beta, Azure DevOps Core, Azure Resources, Azure Compute VM, Sentinel SecurityInsights, Purview Accounts, Cost Management, Azure Resource Graph resource/saved queries, Monitor Metrics, Activity Logs, Activity Log Alerts, Metric Alerts and Scheduled Query Rules and Fabric Platform, Admin, Lakehouse and Notebook. It still needs broader product coverage and live verification. |
-| Automatic versioning | Release workflow updates Cargo versions and lockfile; decimal patch increment validates Rust semver u64 bounds | Verify a hosted daily run, resulting commit and release tag. |
-| Native artifacts | Workflow builds Linux, macOS and Windows packages with checksums; local macOS ARM64 package exists | Verify all hosted platform builds and published release assets. |
+| Daily endpoint updates | Hosted run [36870780761](https://github.com/jusso-dev/junction/actions/runs/36870780761) refreshed all configured catalogs live (18,815 default operations) | Broader product coverage (Defender XDR, Power Platform, Log Analytics data plane and more). |
+| Automatic versioning | Hosted runs committed patch bumps to `main` and tagged `v0.1.3` | Earlier failed runs consumed 0.1.1 and 0.1.2 without tags; harmless. |
+| Native artifacts | Prerelease `v0.1.3` publishes Linux x86_64, macOS ARM64 and Windows x86_64 archives with SHA-256 files; macOS asset downloaded, checksum-verified and run | Linux/Windows assets were built and tested on hosted runners but not run outside CI. |
 
 ## Product implementation
 
