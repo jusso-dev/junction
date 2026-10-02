@@ -414,6 +414,39 @@ pub struct Executor {
     transport: junction_http::HttpTransport,
 }
 impl Executor {
+    /// The declared next-page operation, if one exists. Microsoft Graph declares
+    /// `operationName: "listMore"` on every collection without defining such an
+    /// operation; a GET whose named operation is absent follows the next link
+    /// with the same operation, as standard OpenAPI pagination does.
+    fn named_next(
+        &self,
+        operation: &JunctionOperation,
+        allow_preview: bool,
+    ) -> Result<Option<&JunctionOperation>> {
+        let Some(name) = operation
+            .pageable
+            .as_ref()
+            .and_then(|pageable| pageable.operation_name.as_deref())
+        else {
+            return Ok(None);
+        };
+        match self
+            .registry
+            .resolve_related(operation, name, allow_preview)
+        {
+            Ok(next) => Ok(Some(next)),
+            Err(_)
+                if operation.method == "GET"
+                    && !self.registry.all().any(|candidate| {
+                        candidate.source.operation_id == name
+                            && candidate.source.id == operation.source.id
+                    }) =>
+            {
+                Ok(None)
+            }
+            Err(error) => Err(error),
+        }
+    }
     /// Issue a grant only after registry selection and complete request validation.
     /// Hosts must keep this method inside their trusted operator boundary.
     pub fn issue_approval(
@@ -537,10 +570,7 @@ impl Executor {
         }
         if let Some(pageable) = &operation.pageable {
             pageable.validate()?;
-            if let Some(name) = &pageable.operation_name {
-                let next = self
-                    .registry
-                    .resolve_related(operation, name, options.allow_preview)?;
+            if let Some(next) = self.named_next(operation, options.allow_preview)? {
                 enforce(self.policy.authorize_operation(next, tenant))?;
                 if !matches!(next.method.as_str(), "GET" | "POST")
                     || (next.method == "GET" && next.request_body.is_some())
@@ -610,15 +640,7 @@ impl Executor {
         if let Some(pageable) = &mut page_operation.pageable {
             pageable.operation_name = None;
         }
-        let next_operation = operation
-            .pageable
-            .as_ref()
-            .and_then(|pageable| pageable.operation_name.as_deref())
-            .map(|name| {
-                self.registry
-                    .resolve_related(operation, name, options.allow_preview)
-            })
-            .transpose()?;
+        let next_operation = self.named_next(operation, options.allow_preview)?;
         let request = prepare_with_schemas(
             operation,
             &input,
@@ -1390,6 +1412,56 @@ mod executor_tests {
             )
             .unwrap_err();
         assert_eq!(error.to_string(), "policy_rejected");
+    }
+    #[test]
+    fn graph_list_more_placeholder_falls_back_to_next_link_paging() {
+        let mut operation = super::tests::operation();
+        operation.parameters.clear();
+        operation.path = "/users".into();
+        operation.pageable = Some(junction_core::Pageable {
+            item_name: "value".into(),
+            next_link_name: Some("@odata.nextLink".into()),
+            operation_name: Some("listMore".into()),
+        });
+        let executor = |operations: Vec<JunctionOperation>| {
+            Executor::new(
+                junction_registry::Registry::load(junction_core::RegistryManifest {
+                    format_version: 1,
+                    operations,
+                    schemas: json!({}),
+                })
+                .unwrap(),
+                Policy::default(),
+            )
+            .unwrap()
+        };
+        let options = PageOptions::default();
+        executor(vec![operation.clone()])
+            .preflight_pages(
+                &operation.id,
+                &json!({}),
+                "a",
+                "https://graph.microsoft.com/v1.0",
+                &options,
+            )
+            .unwrap();
+        // A named operation that exists in the source but cannot be selected
+        // (for example only as preview) still fails closed.
+        let mut hidden = operation.clone();
+        hidden.id = "graph.users.list_more".into();
+        hidden.source.operation_id = "listMore".into();
+        hidden.preview = true;
+        assert!(
+            executor(vec![operation.clone(), hidden])
+                .preflight_pages(
+                    &operation.id,
+                    &json!({}),
+                    "a",
+                    "https://graph.microsoft.com/v1.0",
+                    &options
+                )
+                .is_err()
+        );
     }
     #[tokio::test]
     async fn buffered_resume_rejects_changed_initial_or_named_operation_metadata() {

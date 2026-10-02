@@ -458,6 +458,7 @@ impl ExecutionConfig {
                 | junction_auth::AuthFlow::ExternalBearer
                 | junction_auth::AuthFlow::OnBehalfOf
                 | junction_auth::AuthFlow::ApiKey
+                | junction_auth::AuthFlow::AzureCli
         ) {
             anyhow::bail!("unsupported CLI authentication flow");
         }
@@ -509,6 +510,7 @@ impl CloudExecutionConfig {
                 | junction_auth::AuthFlow::ExternalBearer
                 | junction_auth::AuthFlow::OnBehalfOf
                 | junction_auth::AuthFlow::ApiKey
+                | junction_auth::AuthFlow::AzureCli
         ) {
             anyhow::bail!("unsupported CLI authentication flow");
         }

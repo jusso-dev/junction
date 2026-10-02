@@ -6,7 +6,7 @@ rust-version.workspace = true
 license.workspace = true
 repository.workspace = true
 [dependencies]
-tokio = { version = "1", features = ["time", "sync"] }
+tokio = { version = "1", features = ["time", "sync", "rt"] }
 serde.workspace = true
 anyhow.workspace = true
 url = "2"

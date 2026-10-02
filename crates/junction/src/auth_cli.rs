@@ -29,6 +29,9 @@ async fn acquire_with(request: &TokenRequest, interactive: bool) -> Result<Acces
     if request.flow == AuthFlow::ApiKey {
         return crate::api_key::acquire(request, interactive);
     }
+    if request.flow == AuthFlow::AzureCli {
+        return junction_auth::azure_cli::acquire(request).await;
+    }
     if request.flow == AuthFlow::DeviceCode {
         if !OsCredentialStore::available() {
             bail!("OS credential storage is unavailable on this platform");

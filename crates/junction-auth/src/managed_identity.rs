@@ -54,11 +54,133 @@ pub struct ManagedIdentityProvider {
     client: reqwest::Client,
     request: TokenRequest,
     endpoint: Url,
+    source: Source,
     cached: tokio::sync::Mutex<Option<AccessToken>>,
+}
+/// Managed identity endpoints, detected from the variables each Azure host sets.
+enum Source {
+    /// Azure VMs and scale sets (IMDS).
+    Imds,
+    /// App Service and Functions: IDENTITY_ENDPOINT plus the IDENTITY_HEADER secret.
+    AppService(Secret),
+    /// Azure Arc-enabled servers: IDENTITY_ENDPOINT and IMDS_ENDPOINT, with a
+    /// challenge key file written by the local agent.
+    Arc,
+    /// Azure Cloud Shell: MSI_ENDPOINT.
+    CloudShell,
+}
+/// Local managed identity endpoints must be loopback HTTP; credentials never
+/// leave the host.
+fn loopback_endpoint(value: &str) -> Result<Url> {
+    let url =
+        Url::parse(value).map_err(|_| anyhow::anyhow!("invalid managed identity endpoint"))?;
+    let loopback = matches!(url.host_str(), Some("localhost" | "127.0.0.1" | "[::1]"));
+    if !loopback
+        || !matches!(url.scheme(), "http" | "https")
+        || !url.username().is_empty()
+        || url.password().is_some()
+        || url.fragment().is_some()
+    {
+        bail!("managed identity endpoint must be a local loopback address");
+    }
+    Ok(url)
+}
+fn detect(
+    lookup: impl Fn(&str) -> Option<String>,
+    request: &TokenRequest,
+    client_id: Option<&str>,
+) -> Result<(Url, Source)> {
+    let resource = |mut url: Url, version: &str| {
+        url.set_query(None);
+        url.query_pairs_mut()
+            .append_pair("api-version", version)
+            .append_pair("resource", &request.audience);
+        url
+    };
+    match (
+        lookup("IDENTITY_ENDPOINT"),
+        lookup("IDENTITY_HEADER"),
+        lookup("IMDS_ENDPOINT"),
+        lookup("MSI_ENDPOINT"),
+    ) {
+        (Some(endpoint), Some(header), _, _) => {
+            let mut url = resource(loopback_endpoint(&endpoint)?, "2019-08-01");
+            if let Some(id) = client_id {
+                url.query_pairs_mut().append_pair("client_id", id);
+            }
+            Ok((url, Source::AppService(Secret::new(header)?)))
+        }
+        (Some(endpoint), None, Some(_), _) => {
+            if client_id.is_some() {
+                bail!("Azure Arc supports only the system-assigned identity");
+            }
+            Ok((
+                resource(loopback_endpoint(&endpoint)?, "2020-06-01"),
+                Source::Arc,
+            ))
+        }
+        (None, None, None, Some(endpoint)) => {
+            if client_id.is_some() {
+                bail!("Cloud Shell supports only the signed-in user's identity");
+            }
+            Ok((loopback_endpoint(&endpoint)?, Source::CloudShell))
+        }
+        _ => Ok((endpoint(request, client_id)?, Source::Imds)),
+    }
+}
+/// Arc returns `WWW-Authenticate: Basic realm=<key file>`; only files inside
+/// the agent's token directory with a `.key` extension are read.
+fn arc_challenge(headers: &reqwest::header::HeaderMap) -> Result<Zeroizing<String>> {
+    let value = headers
+        .get(reqwest::header::WWW_AUTHENTICATE)
+        .and_then(|value| value.to_str().ok())
+        .ok_or_else(|| anyhow::anyhow!("Azure Arc challenge missing"))?;
+    let path = value
+        .strip_prefix("Basic realm=")
+        .ok_or_else(|| anyhow::anyhow!("invalid Azure Arc challenge"))?;
+    let path = std::path::Path::new(path);
+    #[cfg(windows)]
+    let allowed = std::env::var_os("ProgramData")
+        .map(|root| {
+            std::path::Path::new(&root)
+                .join("AzureConnectedMachineAgent")
+                .join("Tokens")
+        })
+        .ok_or_else(|| anyhow::anyhow!("Azure Arc token directory unavailable"))?;
+    #[cfg(not(windows))]
+    let allowed = std::path::PathBuf::from("/var/opt/azcmagent/tokens");
+    let canonical = path
+        .canonicalize()
+        .map_err(|_| anyhow::anyhow!("Azure Arc challenge file unavailable"))?;
+    if canonical.parent() != Some(allowed.as_path())
+        || canonical.extension().and_then(|e| e.to_str()) != Some("key")
+    {
+        bail!("Azure Arc challenge file outside the agent token directory");
+    }
+    let metadata = std::fs::metadata(&canonical)
+        .map_err(|_| anyhow::anyhow!("Azure Arc challenge file unavailable"))?;
+    if !metadata.is_file() || metadata.len() == 0 || metadata.len() > 4096 {
+        bail!("invalid Azure Arc challenge file");
+    }
+    let secret = Zeroizing::new(
+        std::fs::read_to_string(&canonical)
+            .map_err(|_| anyhow::anyhow!("Azure Arc challenge file unavailable"))?,
+    );
+    Ok(Zeroizing::new(format!("Basic {}", secret.trim())))
 }
 impl ManagedIdentityProvider {
     pub fn new(request: TokenRequest, client_id: Option<&str>) -> Result<Self> {
-        let endpoint = endpoint(&request, client_id)?;
+        request.validate()?;
+        if request.flow != AuthFlow::ManagedIdentity {
+            bail!("managed identity flow required");
+        }
+        validate_client_id(client_id)?;
+        if !request.scopes.is_empty()
+            && request.scopes != [format!("{}/.default", request.audience)]
+        {
+            bail!("managed identity requires the audience default scope");
+        }
+        let (endpoint, source) = detect(|name| std::env::var(name).ok(), &request, client_id)?;
         let client = reqwest::Client::builder()
             .no_proxy()
             .redirect(reqwest::redirect::Policy::none())
@@ -69,6 +191,7 @@ impl ManagedIdentityProvider {
             client,
             request,
             endpoint,
+            source,
             cached: tokio::sync::Mutex::new(None),
         })
     }
@@ -95,16 +218,49 @@ impl ManagedIdentityProvider {
     }
     async fn acquire_with_retries(&self) -> Result<AccessToken> {
         let mut attempt = 0;
+        let mut challenge: Option<Zeroizing<String>> = None;
         let mut response = loop {
-            let response = self
-                .client
-                .get(self.endpoint.clone())
-                .header("Metadata", "true")
+            let builder = match &self.source {
+                Source::Imds | Source::Arc => self
+                    .client
+                    .get(self.endpoint.clone())
+                    .header("Metadata", "true"),
+                Source::AppService(secret) => {
+                    let mut header = reqwest::header::HeaderValue::from_str(secret.expose())
+                        .map_err(|_| anyhow::anyhow!("invalid managed identity header"))?;
+                    header.set_sensitive(true);
+                    self.client
+                        .get(self.endpoint.clone())
+                        .header("X-IDENTITY-HEADER", header)
+                }
+                Source::CloudShell => self
+                    .client
+                    .post(self.endpoint.clone())
+                    .header("Metadata", "true")
+                    .form(&[("resource", self.request.audience.as_str())]),
+            };
+            let builder = match &challenge {
+                Some(value) => {
+                    let mut header = reqwest::header::HeaderValue::from_str(value)
+                        .map_err(|_| anyhow::anyhow!("invalid Azure Arc challenge"))?;
+                    header.set_sensitive(true);
+                    builder.header(reqwest::header::AUTHORIZATION, header)
+                }
+                None => builder,
+            };
+            let response = builder
                 .send()
                 .await
                 .map_err(|_| anyhow::anyhow!("managed identity request failed"))?;
             if response.status().is_success() {
                 break response;
+            }
+            if matches!(self.source, Source::Arc)
+                && challenge.is_none()
+                && response.status() == reqwest::StatusCode::UNAUTHORIZED
+            {
+                challenge = Some(arc_challenge(response.headers())?);
+                continue;
             }
             let delay = retry_delay(response.status(), response.headers(), attempt);
             // Drop the response without reading or retaining an error body.
@@ -255,6 +411,121 @@ fn parse_response(bytes: &[u8], request: &TokenRequest, now: SystemTime) -> Resu
             account: None,
         },
     ))
+}
+#[cfg(test)]
+mod source_tests {
+    use super::*;
+    fn request() -> TokenRequest {
+        TokenRequest {
+            tenant: "tenant-a".into(),
+            authority: "https://login.microsoftonline.com".into(),
+            audience: "https://management.azure.com".into(),
+            scopes: vec![],
+            credential_profile: "managed".into(),
+            flow: AuthFlow::ManagedIdentity,
+            api_key: None,
+        }
+    }
+    fn env<'a>(pairs: &'a [(&'a str, &'a str)]) -> impl Fn(&str) -> Option<String> + 'a {
+        move |name| {
+            pairs
+                .iter()
+                .find(|(key, _)| *key == name)
+                .map(|(_, value)| value.to_string())
+        }
+    }
+    #[test]
+    fn hosts_are_detected_from_their_documented_variables() {
+        let request = request();
+        let id = "11111111-2222-3333-4444-555555555555";
+        let (url, source) = detect(
+            env(&[
+                ("IDENTITY_ENDPOINT", "http://localhost:41234/msi/token"),
+                ("IDENTITY_HEADER", "private-header"),
+            ]),
+            &request,
+            Some(id),
+        )
+        .unwrap();
+        assert!(matches!(source, Source::AppService(_)));
+        assert_eq!(url.path(), "/msi/token");
+        let query: Vec<_> = url.query_pairs().collect();
+        assert!(
+            query
+                .iter()
+                .any(|(k, v)| k == "api-version" && v == "2019-08-01")
+        );
+        assert!(query.iter().any(|(k, v)| k == "client_id" && v == id));
+        let (url, source) = detect(
+            env(&[
+                (
+                    "IDENTITY_ENDPOINT",
+                    "http://localhost:40342/metadata/identity/oauth2/token",
+                ),
+                ("IMDS_ENDPOINT", "http://localhost:40342"),
+            ]),
+            &request,
+            None,
+        )
+        .unwrap();
+        assert!(matches!(source, Source::Arc));
+        assert!(
+            url.query_pairs()
+                .any(|(k, v)| k == "api-version" && v == "2020-06-01")
+        );
+        assert!(
+            detect(
+                env(&[
+                    ("IDENTITY_ENDPOINT", "http://localhost:40342/x"),
+                    ("IMDS_ENDPOINT", "http://localhost:40342")
+                ]),
+                &request,
+                Some(id)
+            )
+            .is_err()
+        );
+        let (_, source) = detect(
+            env(&[("MSI_ENDPOINT", "http://localhost:50342/oauth2/token")]),
+            &request,
+            None,
+        )
+        .unwrap();
+        assert!(matches!(source, Source::CloudShell));
+        let (url, source) = detect(env(&[]), &request, None).unwrap();
+        assert!(matches!(source, Source::Imds));
+        assert_eq!(url.host_str(), Some("169.254.169.254"));
+        // Credentials never leave the host.
+        for remote in [
+            "https://attacker.example/msi",
+            "http://10.0.0.5/token",
+            "http://user:pw@localhost/x",
+        ] {
+            assert!(
+                detect(
+                    env(&[("IDENTITY_ENDPOINT", remote), ("IDENTITY_HEADER", "h")]),
+                    &request,
+                    None
+                )
+                .is_err()
+            );
+            assert!(detect(env(&[("MSI_ENDPOINT", remote)]), &request, None).is_err());
+        }
+    }
+    #[test]
+    fn arc_challenges_only_read_agent_key_files() {
+        let mut headers = reqwest::header::HeaderMap::new();
+        headers.insert(
+            reqwest::header::WWW_AUTHENTICATE,
+            "Basic realm=/etc/passwd".parse().unwrap(),
+        );
+        assert!(arc_challenge(&headers).is_err());
+        headers.insert(
+            reqwest::header::WWW_AUTHENTICATE,
+            "Bearer x".parse().unwrap(),
+        );
+        assert!(arc_challenge(&headers).is_err());
+        assert!(arc_challenge(&reqwest::header::HeaderMap::new()).is_err());
+    }
 }
 #[cfg(test)]
 mod tests {

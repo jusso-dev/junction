@@ -42,6 +42,8 @@ pub enum AuthFlow {
     ExternalBearer,
     /// Out-of-band service credential (API token/key) supplied by the operator.
     ApiKey,
+    /// Optional convenience: reuse an existing Azure CLI sign-in.
+    AzureCli,
 }
 /// Where an out-of-band API key is sent. Only credential headers that declared
 /// operation parameters can never set are permitted.
@@ -371,5 +373,6 @@ pub mod pkce;
 pub mod refresh;
 pub mod storage;
 
+pub mod azure_cli;
 pub mod certificate;
 pub mod managed_identity;
