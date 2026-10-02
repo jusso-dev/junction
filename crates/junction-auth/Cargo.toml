@@ -17,6 +17,10 @@ sha2 = "0.10"
 base64 = "0.22"
 getrandom = "0.4"
 ring = "0.17.14"
+[target.'cfg(windows)'.dependencies]
+keyring = { version = "3", default-features = false, features = ["windows-native"] }
+[target.'cfg(target_os = "linux")'.dependencies]
+keyring = { version = "3", default-features = false, features = ["sync-secret-service", "crypto-rust", "vendored"] }
 [target.'cfg(target_os = "macos")'.dependencies]
 security-framework = { version = "3.7", default-features = false }
 [dev-dependencies]

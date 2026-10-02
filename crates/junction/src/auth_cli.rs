@@ -32,7 +32,7 @@ async fn acquire_with(request: &TokenRequest, interactive: bool) -> Result<Acces
     if request.flow == AuthFlow::AzureCli {
         return junction_auth::azure_cli::acquire(request).await;
     }
-    if request.flow == AuthFlow::DeviceCode {
+    if matches!(request.flow, AuthFlow::DeviceCode | AuthFlow::Pkce) {
         if !OsCredentialStore::available() {
             bail!("OS credential storage is unavailable on this platform");
         }
@@ -97,7 +97,7 @@ fn saved_status<S: junction_auth::storage::CredentialStore>(
             "environment_variable": crate::api_key::environment_variable(request),
         }));
     }
-    let interactive = request.flow == AuthFlow::DeviceCode;
+    let interactive = matches!(request.flow, AuthFlow::DeviceCode | AuthFlow::Pkce);
     let token = if interactive {
         tokens.load(request)?
     } else {
@@ -120,7 +120,10 @@ pub async fn run(cli: &Cli, command: &AuthCommand, output: &OutputOptions) -> Re
             for name in context_store::list(&cli.contexts_directory)? {
                 let request =
                     context_token_request(&context_store::read(&cli.contexts_directory, &name)?)?;
-                if matches!(request.flow, AuthFlow::DeviceCode | AuthFlow::ApiKey) {
+                if matches!(
+                    request.flow,
+                    AuthFlow::DeviceCode | AuthFlow::Pkce | AuthFlow::ApiKey
+                ) {
                     let mut account = status(&request)?;
                     account["context"] = json!(name);
                     accounts.push(account);
@@ -146,6 +149,7 @@ pub async fn run(cli: &Cli, command: &AuthCommand, output: &OutputOptions) -> Re
             context_file,
             client_id,
             timeout_seconds,
+            no_browser,
         } => {
             let request = request(cli, context_file)?;
             if request.flow == AuthFlow::ApiKey {
@@ -154,14 +158,31 @@ pub async fn run(cli: &Cli, command: &AuthCommand, output: &OutputOptions) -> Re
                 crate::api_key::save(&request, &token)?;
                 return output.emit(&json!({"status": "api_key_saved", "tenant": request.tenant, "credential_profile": request.credential_profile}));
             }
-            if request.flow != AuthFlow::DeviceCode {
-                bail!("CLI interactive login requires a device_code or api_key context");
+            if !matches!(request.flow, AuthFlow::DeviceCode | AuthFlow::Pkce) {
+                bail!("CLI interactive login requires a device_code, pkce or api_key context");
             }
             let client_id = client_id
                 .as_ref()
-                .ok_or_else(|| anyhow::anyhow!("device code login requires --client-id"))?;
+                .ok_or_else(|| anyhow::anyhow!("interactive login requires --client-id"))?;
             if !OsCredentialStore::available() {
                 bail!("OS credential storage is unavailable on this platform");
+            }
+            if request.flow == AuthFlow::Pkce {
+                let _lock = crate::credential_lock::CredentialLock::acquire(&request)?;
+                let (token, refresh) = crate::browser_login::login(
+                    &request,
+                    client_id,
+                    Duration::from_secs(*timeout_seconds),
+                    !no_browser,
+                )
+                .await?;
+                StoredTokens::new(OsCredentialStore).save_with_refresh(
+                    &request,
+                    &token,
+                    refresh.as_ref(),
+                )?;
+                return output
+                    .emit(&json!({"status": "authenticated", "metadata": token.metadata()}));
             }
             let provider = DeviceCodeProvider::new(client_id.clone())?;
             let _lock = crate::credential_lock::CredentialLock::acquire(&request)?;

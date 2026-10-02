@@ -18,11 +18,107 @@ pub trait CredentialStore {
     fn delete(&self, account: &str) -> Result<()>;
 }
 
-/// Native macOS Keychain adapter. Other platforms currently fail closed.
+/// Native OS credential store: macOS Keychain, Windows Credential Manager or
+/// the Linux Secret Service (GNOME Keyring, KWallet). No file fallback exists.
 pub struct OsCredentialStore;
 impl OsCredentialStore {
     pub fn available() -> bool {
-        cfg!(target_os = "macos")
+        if cfg!(any(target_os = "macos", windows)) {
+            true
+        } else if cfg!(target_os = "linux") {
+            // Secret Service needs a desktop/session D-Bus; headless hosts use
+            // environment, managed or workload credentials instead.
+            std::env::var_os("DBUS_SESSION_BUS_ADDRESS").is_some()
+        } else {
+            false
+        }
+    }
+}
+#[cfg(any(windows, target_os = "linux"))]
+mod keyring_store {
+    use super::*;
+    const SERVICE: &str = "dev.jusso.junction.tokens.v1";
+    /// Windows limits a credential blob to 2,560 bytes; store base64 chunks
+    /// under `<account>.<n>` with a count record under `<account>`.
+    const CHUNK: usize = 1800;
+    fn entry(name: &str) -> Result<keyring::Entry> {
+        keyring::Entry::new(SERVICE, name)
+            .map_err(|_| anyhow::anyhow!("OS credential store unavailable"))
+    }
+    fn get(name: &str) -> Result<Option<Zeroizing<Vec<u8>>>> {
+        match entry(name)?.get_secret() {
+            Ok(bytes) => Ok(Some(Zeroizing::new(bytes))),
+            Err(keyring::Error::NoEntry) => Ok(None),
+            Err(_) => bail!("OS credential store read failed"),
+        }
+    }
+    fn set(name: &str, bytes: &[u8]) -> Result<()> {
+        entry(name)?
+            .set_secret(bytes)
+            .map_err(|_| anyhow::anyhow!("OS credential store write failed"))
+    }
+    fn remove(name: &str) -> Result<()> {
+        match entry(name)?.delete_credential() {
+            Ok(()) | Err(keyring::Error::NoEntry) => Ok(()),
+            Err(_) => bail!("OS credential store delete failed"),
+        }
+    }
+    fn count(account: &str) -> Result<Option<usize>> {
+        let Some(bytes) = get(account)? else {
+            return Ok(None);
+        };
+        let text = std::str::from_utf8(&bytes)
+            .map_err(|_| anyhow::anyhow!("invalid stored credential"))?;
+        let count: usize = text
+            .strip_prefix("chunks:")
+            .and_then(|value| value.parse().ok())
+            .filter(|count| (1..=64).contains(count))
+            .ok_or_else(|| anyhow::anyhow!("invalid stored credential"))?;
+        Ok(Some(count))
+    }
+    pub fn read(account: &str) -> Result<Option<Zeroizing<Vec<u8>>>> {
+        let Some(count) = count(account)? else {
+            return Ok(None);
+        };
+        let mut encoded = Zeroizing::new(Vec::new());
+        for index in 0..count {
+            let chunk = get(&format!("{account}.{index}"))?
+                .ok_or_else(|| anyhow::anyhow!("stored credential is incomplete"))?;
+            encoded.extend_from_slice(&chunk);
+        }
+        use base64::Engine;
+        let bytes = base64::engine::general_purpose::STANDARD
+            .decode(encoded.as_slice())
+            .map_err(|_| anyhow::anyhow!("invalid stored credential"))?;
+        if bytes.len() > LIMIT {
+            bail!("stored credential exceeds size limit");
+        }
+        Ok(Some(Zeroizing::new(bytes)))
+    }
+    pub fn write(account: &str, bytes: &[u8]) -> Result<()> {
+        use base64::Engine;
+        let encoded = Zeroizing::new(base64::engine::general_purpose::STANDARD.encode(bytes));
+        let chunks: Vec<&[u8]> = encoded.as_bytes().chunks(CHUNK).collect();
+        if chunks.is_empty() || chunks.len() > 64 {
+            bail!("invalid stored credential size");
+        }
+        let previous = count(account).ok().flatten().unwrap_or(0);
+        for (index, chunk) in chunks.iter().enumerate() {
+            set(&format!("{account}.{index}"), chunk)?;
+        }
+        set(account, format!("chunks:{}", chunks.len()).as_bytes())?;
+        for index in chunks.len()..previous {
+            remove(&format!("{account}.{index}"))?;
+        }
+        Ok(())
+    }
+    pub fn delete(account: &str) -> Result<()> {
+        let count = count(account).ok().flatten().unwrap_or(64);
+        remove(account)?;
+        for index in 0..count {
+            remove(&format!("{account}.{index}"))?;
+        }
+        Ok(())
     }
 }
 impl CredentialStore for OsCredentialStore {
@@ -43,7 +139,11 @@ impl CredentialStore for OsCredentialStore {
                 Err(_) => bail!("OS credential store read failed"),
             }
         }
-        #[cfg(not(target_os = "macos"))]
+        #[cfg(any(windows, target_os = "linux"))]
+        {
+            keyring_store::read(account)
+        }
+        #[cfg(not(any(target_os = "macos", windows, target_os = "linux")))]
         bail!("OS credential storage is unavailable on this platform");
     }
     fn write(&self, account: &str, bytes: &[u8]) -> Result<()> {
@@ -56,7 +156,11 @@ impl CredentialStore for OsCredentialStore {
             security_framework::passwords::set_generic_password(SERVICE, account, bytes)
                 .map_err(|_| anyhow::anyhow!("OS credential store write failed"))
         }
-        #[cfg(not(target_os = "macos"))]
+        #[cfg(any(windows, target_os = "linux"))]
+        {
+            keyring_store::write(account, bytes)
+        }
+        #[cfg(not(any(target_os = "macos", windows, target_os = "linux")))]
         bail!("OS credential storage is unavailable on this platform");
     }
     fn delete(&self, account: &str) -> Result<()> {
@@ -69,7 +173,11 @@ impl CredentialStore for OsCredentialStore {
                 Err(_) => bail!("OS credential store delete failed"),
             }
         }
-        #[cfg(not(target_os = "macos"))]
+        #[cfg(any(windows, target_os = "linux"))]
+        {
+            keyring_store::delete(account)
+        }
+        #[cfg(not(any(target_os = "macos", windows, target_os = "linux")))]
         bail!("OS credential storage is unavailable on this platform");
     }
 }

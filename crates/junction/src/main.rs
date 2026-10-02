@@ -1,6 +1,7 @@
 mod api_key;
 mod approval_cli;
 mod auth_cli;
+mod browser_login;
 mod context_store;
 mod credential_lock;
 mod input;
@@ -324,9 +325,12 @@ enum AuthCommand {
         #[arg(long)]
         context_file: Option<PathBuf>,
         /// Client ID of an operator-owned Entra public-client application
-        /// (device code). API key contexts prompt for the key instead.
+        /// (device code or browser/PKCE). API key contexts prompt instead.
         #[arg(long)]
         client_id: Option<String>,
+        /// Print the browser sign-in address instead of opening a browser.
+        #[arg(long)]
+        no_browser: bool,
         #[arg(long, default_value_t = 600, value_parser = clap::value_parser!(u64).range(1..=3600))]
         timeout_seconds: u64,
     },
@@ -459,6 +463,7 @@ impl ExecutionConfig {
                 | junction_auth::AuthFlow::OnBehalfOf
                 | junction_auth::AuthFlow::ApiKey
                 | junction_auth::AuthFlow::AzureCli
+                | junction_auth::AuthFlow::Pkce
         ) {
             anyhow::bail!("unsupported CLI authentication flow");
         }
@@ -511,6 +516,7 @@ impl CloudExecutionConfig {
                 | junction_auth::AuthFlow::OnBehalfOf
                 | junction_auth::AuthFlow::ApiKey
                 | junction_auth::AuthFlow::AzureCli
+                | junction_auth::AuthFlow::Pkce
         ) {
             anyhow::bail!("unsupported CLI authentication flow");
         }
