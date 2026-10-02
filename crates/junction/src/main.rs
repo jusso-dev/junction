@@ -234,6 +234,10 @@ enum Command {
         context_file: Option<PathBuf>,
         #[arg(long)]
         policy: Option<PathBuf>,
+        /// Review and approve each destructive or privileged item on the
+        /// controlling terminal. Approved items cannot use result references.
+        #[arg(long)]
+        approve: bool,
     },
     /// Inspect and validate official source configuration without fetching.
     Sources {
@@ -1016,6 +1020,7 @@ async fn run() -> Result<()> {
             input_file,
             context_file,
             policy,
+            approve,
         } => {
             let value = parse_input(&input::load(input.as_deref(), input_file.as_deref())?)?;
             let request: junction_runtime::batch::BatchRequest = serde_json::from_value(value)
@@ -1059,11 +1064,110 @@ async fn run() -> Result<()> {
                 )?;
             }
             let plan = junction_runtime::batch::BatchPlan::build(plan.request, &policy.limits)?;
+            // Items needing approval, with a reviewable copy of their metadata.
+            let mut pending = Vec::new();
+            if approve {
+                for item in &plan.request.operations {
+                    let selected = registry.resolve(
+                        &item.operation,
+                        item.api_version.as_deref(),
+                        item.allow_preview,
+                    )?;
+                    if let junction_policy::Decision::ApprovalRequired { reason, .. } =
+                        policy.authorize_operation(selected, &context.token_request.tenant)
+                    {
+                        pending.push((item, selected.clone(), reason));
+                    }
+                }
+            }
             let executor = junction_runtime::Executor::new(registry, policy)?;
-            executor.preflight_batch(&plan, &context.token_request.tenant, &context.endpoint)?;
+            if approve && pending.is_empty() {
+                // Policy rejections keep their structured error.
+                executor.preflight_batch(
+                    &plan,
+                    &context.token_request.tenant,
+                    &context.endpoint,
+                )?;
+                return Err(approval_cli::failure("approval_not_required"));
+            }
+            if pending.is_empty() {
+                executor.preflight_batch(
+                    &plan,
+                    &context.token_request.tenant,
+                    &context.endpoint,
+                )?;
+                let token = auth_cli::acquire_interactive(&context.token_request).await?;
+                let result = executor
+                    .execute_batch(
+                        plan.request,
+                        junction_runtime::ExecutionContext {
+                            tenant: &context.token_request.tenant,
+                            audience: &context.token_request.audience,
+                            endpoint: &context.endpoint,
+                            token: &token,
+                        },
+                    )
+                    .await?;
+                output_options.emit(&serde_json::to_value(result)?)?;
+                return Ok(());
+            }
+            let cloud = context
+                .cloud
+                .unwrap_or(junction_core::cloud::MicrosoftCloud::Custom);
+            let approval_context = junction_policy::approval::ApprovalContext::new(
+                cloud,
+                &context.endpoint,
+                &context.token_request.audience,
+                &context.token_request.credential_profile,
+            )?;
+            fn approval_options(
+                item: &junction_runtime::batch::BatchOperation,
+            ) -> junction_runtime::ApprovalOptions<'_> {
+                junction_runtime::ApprovalOptions {
+                    api_version: item.api_version.as_deref(),
+                    allow_preview: item.allow_preview,
+                    lifetime: std::time::Duration::from_secs(300),
+                }
+            }
+            // Validate everything first, then confirm each item, then issue
+            // every grant together so none expires during review.
+            for (item, _, _) in &pending {
+                drop(executor.issue_approval(
+                    &item.operation,
+                    &item.input,
+                    &context.token_request.tenant,
+                    &approval_context,
+                    approval_options(item),
+                )?);
+            }
+            for (item, operation, reason) in &pending {
+                approval_cli::confirm(&approval_cli::Summary {
+                    operation,
+                    reason,
+                    tenant: &context.token_request.tenant,
+                    cloud: &cloud,
+                    endpoint: approval_context.endpoint(),
+                    audience: approval_context.audience(),
+                    credential_profile: &context.token_request.credential_profile,
+                    input: &item.input,
+                })?;
+            }
+            let mut grants = std::collections::BTreeMap::new();
+            for (item, _, _) in &pending {
+                grants.insert(
+                    item.id.clone(),
+                    executor.issue_approval(
+                        &item.operation,
+                        &item.input,
+                        &context.token_request.tenant,
+                        &approval_context,
+                        approval_options(item),
+                    )?,
+                );
+            }
             let token = auth_cli::acquire_interactive(&context.token_request).await?;
             let result = executor
-                .execute_batch(
+                .execute_batch_with_approvals(
                     plan.request,
                     junction_runtime::ExecutionContext {
                         tenant: &context.token_request.tenant,
@@ -1071,6 +1175,8 @@ async fn run() -> Result<()> {
                         endpoint: &context.endpoint,
                         token: &token,
                     },
+                    &approval_context,
+                    grants,
                 )
                 .await?;
             serde_json::to_value(result)?

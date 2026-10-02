@@ -124,4 +124,44 @@ fn approval_requires_operator_terminal_and_never_bypasses_policy() {
         .output()
         .unwrap();
     assert!(!output.status.success());
+
+    // Batches: approval prompts need a terminal; policy still rejects denies.
+    let batch = |policy: &std::path::Path, operations: serde_json::Value| {
+        let mut command = Command::new(env!("CARGO_BIN_EXE_junction"));
+        command
+            .env_remove("AZURE_TENANT_ID")
+            .env_remove("AZURE_CLIENT_ID")
+            .env_remove("AZURE_CLIENT_SECRET")
+            .stdin(std::process::Stdio::null())
+            .arg("--registry")
+            .arg(&manifest)
+            .args(["batch", "--approve", "--context-file"])
+            .arg(&context)
+            .arg("--policy")
+            .arg(policy)
+            .arg("--input")
+            .arg(json!({"operations": operations}).to_string());
+        #[cfg(unix)]
+        unsafe {
+            use std::os::unix::process::CommandExt;
+            command.pre_exec(|| {
+                libc::setsid();
+                Ok(())
+            });
+        }
+        let output = command.output().unwrap();
+        assert!(!output.status.success());
+        String::from_utf8(output.stderr).unwrap()
+    };
+    let delete = json!([{"id":"d","operation":"graph.users.delete","input":{}}]);
+    #[cfg(unix)]
+    assert!(batch(&full, delete.clone()).contains("operator_terminal_unavailable"));
+    assert!(batch(&deny, delete).contains("policy_rejected"));
+    assert!(
+        batch(
+            &full,
+            json!([{"id":"l","operation":"graph.users.list","input":{}}])
+        )
+        .contains("approval_not_required")
+    );
 }

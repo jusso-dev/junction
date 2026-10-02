@@ -416,8 +416,8 @@ pub struct Executor {
 impl Executor {
     /// The declared next-page operation, if one exists. Microsoft Graph declares
     /// `operationName: "listMore"` on every collection without defining such an
-    /// operation; a GET whose named operation is absent follows the next link
-    /// with the same operation, as standard OpenAPI pagination does.
+    /// operation; those GETs follow the next link with the same operation, as
+    /// standard OpenAPI pagination does.
     fn named_next(
         &self,
         operation: &JunctionOperation,
@@ -435,8 +435,12 @@ impl Executor {
             .resolve_related(operation, name, allow_preview)
         {
             Ok(next) => Ok(Some(next)),
+            // Only Graph's documented placeholder falls back; any other
+            // missing named operation fails closed.
             Err(_)
                 if operation.method == "GET"
+                    && name == "listMore"
+                    && junction_core::canonical_component(&operation.product) == "graph"
                     && !self.registry.all().any(|candidate| {
                         candidate.source.operation_id == name
                             && candidate.source.id == operation.source.id
@@ -758,6 +762,97 @@ impl Executor {
                 )
                 .await?;
             Ok(serde_json::json!({"status":response.status,"body":response.body,"correlation":response.correlation}))
+        })
+        .await)
+    }
+    /// Execute a batch where approval-required items carry single-use grants.
+    /// Each grant binds the item's exact input, so approved items cannot use
+    /// references to earlier results. Every other rule of `execute_batch`
+    /// (policy, schemas, limits, dependencies) still applies.
+    pub async fn execute_batch_with_approvals(
+        &self,
+        request: batch::BatchRequest,
+        context: ExecutionContext<'_>,
+        approval_context: &junction_policy::approval::ApprovalContext,
+        grants: std::collections::BTreeMap<String, junction_policy::approval::ApprovalGrant>,
+    ) -> Result<batch::BatchResult> {
+        let plan = batch::BatchPlan::build(request, &self.policy.limits)?;
+        for (index, item) in plan.request.operations.iter().enumerate() {
+            let operation = self.registry.resolve(
+                &item.operation,
+                item.api_version.as_deref(),
+                item.allow_preview,
+            )?;
+            match self.policy.authorize_operation(operation, context.tenant) {
+                Decision::ApprovalRequired { .. } => {
+                    if !grants.contains_key(&item.id) {
+                        enforce(self.policy.authorize_operation(operation, context.tenant))?;
+                    }
+                    if plan.has_references(index) {
+                        bail!("approved batch items cannot reference earlier results");
+                    }
+                }
+                decision => {
+                    if grants.contains_key(&item.id) {
+                        bail!("approval supplied for an item that does not require it");
+                    }
+                    enforce(decision)?;
+                    if !plan.has_references(index) {
+                        self.preflight(
+                            &item.operation,
+                            &item.input,
+                            context.tenant,
+                            context.endpoint,
+                            item.api_version.as_deref(),
+                            item.allow_preview,
+                        )?;
+                    }
+                }
+            }
+        }
+        if grants
+            .keys()
+            .any(|id| !plan.request.operations.iter().any(|item| &item.id == id))
+        {
+            bail!("approval supplied for an unknown batch item");
+        }
+        validate_credential(context)?;
+        let grants = std::sync::Mutex::new(grants);
+        Ok(batch::run(&plan, |operation, input| {
+            let grant = grants
+                .lock()
+                .map(|mut grants| grants.remove(&operation.id))
+                .ok()
+                .flatten();
+            async move {
+                let response = match grant {
+                    Some(grant) => {
+                        self.execute_with_approval(
+                            &operation.operation,
+                            input,
+                            context,
+                            operation.api_version.as_deref(),
+                            operation.allow_preview,
+                            ApprovedExecution {
+                                context: approval_context,
+                                grant,
+                            },
+                        )
+                        .await?
+                    }
+                    None => {
+                        self.execute(
+                            &operation.operation,
+                            input,
+                            context,
+                            operation.api_version.as_deref(),
+                            operation.allow_preview,
+                        )
+                        .await?
+                    }
+                };
+                Ok(serde_json::json!({"status":response.status,"body":response.body,"correlation":response.correlation}))
+            }
         })
         .await)
     }

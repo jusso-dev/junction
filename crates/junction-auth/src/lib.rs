@@ -63,7 +63,15 @@ impl ApiKeyPlacement {
         "ocp-apim-subscription-key",
         "x-functions-key",
     ];
+    /// Pseudo-header: append a shared access signature (SAS) query string.
+    pub const SAS_QUERY: &'static str = "sas-query";
     pub fn validate(&self) -> Result<()> {
+        if self.header == Self::SAS_QUERY {
+            if self.prefix.is_some() {
+                bail!("SAS query placement forbids a prefix");
+            }
+            return Ok(());
+        }
         if !Self::HEADERS.contains(&self.header.as_str()) {
             bail!("unsupported API key header");
         }

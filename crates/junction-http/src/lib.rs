@@ -126,6 +126,34 @@ fn retry_delay(
     // Honor upstream delay exactly, or return the failure when it exceeds our budget.
     (elapsed.saturating_add(delay) < Duration::from_secs(10)).then_some(delay)
 }
+/// Append a SAS token (`sv=...&sig=...`) to the request URL. The token must
+/// contain a signature and must not override parameters already present.
+fn append_sas(url: &mut Url, secret: &junction_auth::Secret) -> Result<()> {
+    let token = secret.expose().trim_start_matches('?');
+    let pairs: Vec<(String, String)> = url::form_urlencoded::parse(token.as_bytes())
+        .map(|(name, value)| (name.into_owned(), value.into_owned()))
+        .collect();
+    let existing: Vec<String> = url
+        .query_pairs()
+        .map(|(name, _)| name.into_owned())
+        .collect();
+    if pairs.is_empty()
+        || pairs.len() > 32
+        || !pairs.iter().any(|(name, _)| name == "sig")
+        || pairs.iter().any(|(name, value)| {
+            name.is_empty()
+                || !name
+                    .bytes()
+                    .all(|b| b.is_ascii_alphanumeric() || b == b'-' || b == b'_')
+                || value.chars().any(char::is_control)
+                || existing.contains(name)
+        })
+    {
+        bail!("invalid shared access signature");
+    }
+    url.query_pairs_mut().extend_pairs(pairs);
+    Ok(())
+}
 /// Build the sensitive request header that presents a credential.
 fn credential_header(
     credential: &junction_auth::Credential<'_>,
@@ -262,6 +290,16 @@ impl HttpTransport {
             .governor
             .admit()
             .map_err(|_| anyhow::anyhow!("request admission rejected"))?;
+        let mut url = url;
+        let credential = match bearer {
+            Some(junction_auth::Credential::Header { placement, secret })
+                if placement.header == junction_auth::ApiKeyPlacement::SAS_QUERY =>
+            {
+                append_sas(&mut url, secret)?;
+                None
+            }
+            other => other,
+        };
         let client_request_id = correlation::new_id()?;
         let mut builder = self
             .client
@@ -270,7 +308,7 @@ impl HttpTransport {
             .header("client-request-id", &client_request_id)
             .header("x-ms-client-request-id", &client_request_id)
             .header("return-client-request-id", "true");
-        if let Some(credential) = bearer {
+        if let Some(credential) = credential {
             let (name, header) = credential_header(credential)?;
             builder = builder.header(name, header);
         }
@@ -357,6 +395,35 @@ fn continuation_token(headers: &reqwest::header::HeaderMap) -> Result<Option<Sec
 }
 #[cfg(test)]
 mod credential_tests {
+    #[test]
+    fn sas_tokens_are_appended_once_and_validated() {
+        let secret =
+            junction_auth::Secret::new("?sv=2024-11-04&ss=b&sig=abc%2B123".into()).unwrap();
+        let mut url =
+            url::Url::parse("https://acct.blob.core.windows.net/c?restype=container").unwrap();
+        super::append_sas(&mut url, &secret).unwrap();
+        assert_eq!(
+            url.query_pairs().find(|(k, _)| k == "sig").unwrap().1,
+            "abc+123"
+        );
+        assert!(url.query().unwrap().starts_with("restype=container&"));
+        for bad in ["sv=1", "sig=a&restype=x", "si g=a&sig=b"] {
+            let mut url =
+                url::Url::parse("https://acct.blob.core.windows.net/c?restype=container").unwrap();
+            let secret = junction_auth::Secret::new(bad.into()).unwrap();
+            assert!(super::append_sas(&mut url, &secret).is_err(), "{bad}");
+        }
+        let placement = junction_auth::ApiKeyPlacement {
+            header: "sas-query".into(),
+            prefix: None,
+        };
+        placement.validate().unwrap();
+        let bad = junction_auth::ApiKeyPlacement {
+            header: "sas-query".into(),
+            prefix: Some("Token".into()),
+        };
+        assert!(bad.validate().is_err());
+    }
     #[test]
     fn api_keys_use_their_validated_header_and_scheme() {
         let secret = junction_auth::Secret::new("key-123".into()).unwrap();
