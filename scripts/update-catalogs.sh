@@ -21,7 +21,7 @@ validate_catalog() {
         .receipt.revision == $revision and .receipt.source == $source and
         (.receipt.path | type == "string" and
           (if $scope != "" then
-            (startswith($scope + "/") or startswith("specification/common-types/resource-management/") or ($source == "azure-log-analytics-query" and startswith("specification/common-types/data-plane/")))
+            (startswith($scope + "/") or startswith("specification/common-types/resource-management/") or (($source == "azure-log-analytics-query" or $source == "azure-key-vault-data") and startswith("specification/common-types/data-plane/")))
           elif $source == "fabric" then
             (startswith("platform/") or startswith("admin/") or startswith("common/") or startswith("lakehouse/") or startswith("notebook/"))
           elif $source == "azure-cost-management" then
@@ -203,10 +203,17 @@ arm_workloads=(
   "azure-arc|arc|specification/hybridcompute/resource-manager/Microsoft.HybridCompute/HybridCompute|openapi"
   "azure-lighthouse|lighthouse|specification/managedservices/resource-manager/Microsoft.ManagedServices/ManagedServices|managedservices"
   "defender-for-cloud|cloud|specification/security/resource-manager/Microsoft.Security/Security|alerts assessments pricings secureScore"
+  "azure-storage|storage|specification/storage/resource-manager/Microsoft.Storage|openapi"
+  "azure-key-vault|key_vault|specification/keyvault/resource-manager/Microsoft.KeyVault/KeyVault|openapi"
+  "azure-network|network|specification/network/resource-manager/Microsoft.Network/Network|virtualNetwork loadBalancer firewall applicationGateway networkWatcher"
+  "azure-application-insights|application_insights|specification/applicationinsights/resource-manager/Microsoft.Insights/ApplicationInsights|components_API workbooks_API"
+  "azure-key-vault-data|key_vault_keys|specification/keyvault/data-plane/Keys|keys|azure-key-vault-keys"
+  "azure-key-vault-data|key_vault_secrets|specification/keyvault/data-plane/Secrets|secrets|azure-key-vault-secrets"
+  "azure-key-vault-data|key_vault_certificates|specification/keyvault/data-plane/Certificates|certificates|azure-key-vault-certificates"
 )
 arm_registries=()
 for workload in "${arm_workloads[@]}"; do
-  IFS='|' read -r arm_source arm_service arm_scope arm_documents <<< "$workload"
+  IFS='|' read -r arm_source arm_service arm_scope arm_documents arm_label <<< "$workload"
   "$binary" discover "$arm_source" --revision "$azure_revision" --output "$staging/${arm_source}-inventory.json"
   if [[ "$(jq -er '.revision' "$staging/${arm_source}-inventory.json")" != "$azure_revision" ]]; then
     echo "${arm_source} inventory revision does not match the pinned Azure commit." >&2
@@ -219,8 +226,8 @@ for workload in "${arm_workloads[@]}"; do
        | {path: ., version: capture("/stable/(?<version>[0-9]{4}-[0-9]{2}-[0-9]{2})/").version}]
       | sort_by(.version, .path) | last | .path | strings
     ' "$staging/${arm_source}-inventory.json")"
-    arm_name="${arm_source}"
-    [[ "$arm_documents" == "$arm_document" ]] || arm_name="${arm_source}-${arm_document}"
+    arm_name="${arm_label:-$arm_source}"
+    [[ "$arm_documents" == "$arm_document" ]] || arm_name="${arm_name}-${arm_document}"
     arm_registry="$staging/registry/${arm_name}.json"
     "$binary" refresh "$arm_source" --revision "$azure_revision" --path "$arm_path" \
       --service "$arm_service" --max-documents 256 --output "$arm_registry"

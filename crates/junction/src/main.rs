@@ -1685,10 +1685,27 @@ impl Drop for Diagnostics {
         }
     }
 }
-#[tokio::main]
-async fn main() {
-    // The command future is large; keep it on the heap so the 1 MiB Windows
-    // main-thread stack is not exhausted.
+/// Run on a thread with an explicit stack: command futures are large, and the
+/// Windows main thread only has 1 MiB.
+fn main() {
+    let worker = std::thread::Builder::new()
+        .name("junction".into())
+        .stack_size(16 * 1024 * 1024)
+        .spawn(|| {
+            let runtime = tokio::runtime::Builder::new_multi_thread()
+                .enable_all()
+                .thread_stack_size(8 * 1024 * 1024)
+                .build()
+                .expect("tokio runtime starts");
+            runtime.block_on(async_main());
+        })
+        .expect("command thread starts");
+    if worker.join().is_err() {
+        std::process::exit(101);
+    }
+}
+
+async fn async_main() {
     if let Err(error) = Box::pin(run()).await {
         // Only explicitly safe structured errors are exposed; parser errors may contain secrets.
         if let Some(busy) = error.downcast_ref::<credential_lock::CredentialBusy>() {

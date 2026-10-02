@@ -1,0 +1,8 @@
+id = "azure-key-vault"
+product = "azure"
+source_type = "open_api"
+upstream = "https://github.com/Azure/azure-rest-api-specs"
+paths = ["specification/keyvault/resource-manager/Microsoft.KeyVault/KeyVault", "specification/common-types/resource-management"]
+authority = "microsoft"
+clouds = ["public"]
+enabled = true

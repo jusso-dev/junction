@@ -1069,3 +1069,38 @@ fn graph_dotted_actions_preserve_destructive_risk_after_naming() {
         OperationRisk::ReadOnly
     );
 }
+
+#[test]
+fn posture_changing_and_privilege_actions_require_approval_risk() {
+    let spec = json!({"openapi":"3.0.0","servers":[{"url":"https://api.security.microsoft.com"}],"paths":{
+        "/api/machines/{id}/isolate":{"post":{"operationId":"Machines_Isolate","parameters":[{"name":"id","in":"path","required":true,"schema":{"type":"string"}}]}},
+        "/api/machines/{id}/offboard":{"post":{"operationId":"Machines_Offboard","parameters":[{"name":"id","in":"path","required":true,"schema":{"type":"string"}}]}},
+        "/api/machines/{id}/runAntiVirusScan":{"post":{"operationId":"Machines_RunAntiVirusScan","parameters":[{"name":"id","in":"path","required":true,"schema":{"type":"string"}}]}},
+        "/providers/Microsoft.Authorization/roleAssignments/{id}":{
+            "put":{"operationId":"RoleAssignments_Create","parameters":[{"name":"id","in":"path","required":true,"schema":{"type":"string"}}]},
+            "get":{"operationId":"RoleAssignments_Get","parameters":[{"name":"id","in":"path","required":true,"schema":{"type":"string"}}]}}
+    }});
+    let manifest = ingest(&spec, "defender", "endpoint", "official").unwrap();
+    let risk = |id: &str| {
+        serde_json::to_value(
+            &manifest
+                .operations
+                .iter()
+                .find(|op| op.id == id)
+                .unwrap()
+                .risk,
+        )
+        .unwrap()
+    };
+    assert_eq!(risk("defender.endpoint.machines.isolate"), "privileged");
+    assert_eq!(risk("defender.endpoint.machines.offboard"), "destructive");
+    assert_eq!(
+        risk("defender.endpoint.machines.run_anti_virus_scan"),
+        "write"
+    );
+    assert_eq!(
+        risk("defender.endpoint.role_assignments.create"),
+        "privileged"
+    );
+    assert_eq!(risk("defender.endpoint.role_assignments.get"), "read_only");
+}

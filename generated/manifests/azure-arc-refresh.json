@@ -5,10 +5,10 @@
       "receipt": {
         "bytes": 23221,
         "path": "specification/common-types/resource-management/v5/types.json",
-        "revision": "b7bfb61c524e3498b97622af39884fa1323eb7d4",
+        "revision": "33cc5cb4363a72ebc01187aa0c100e6e7c77eeb3",
         "sha256": "66767620b8edfbc04093c76b78d168cc59822cd9da1e726d35a9d45b73e642c1",
         "source": "azure-arc",
-        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/b7bfb61c524e3498b97622af39884fa1323eb7d4/specification/common-types/resource-management/v5/types.json"
+        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/33cc5cb4363a72ebc01187aa0c100e6e7c77eeb3/specification/common-types/resource-management/v5/types.json"
       },
       "status": "dependency"
     },
@@ -16,10 +16,10 @@
       "receipt": {
         "bytes": 3719,
         "path": "specification/common-types/resource-management/v6/managedidentity.json",
-        "revision": "b7bfb61c524e3498b97622af39884fa1323eb7d4",
+        "revision": "33cc5cb4363a72ebc01187aa0c100e6e7c77eeb3",
         "sha256": "5b98c33dab47192fab730ba33bf975111909c3c424ed970d5c81de74c17ece05",
         "source": "azure-arc",
-        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/b7bfb61c524e3498b97622af39884fa1323eb7d4/specification/common-types/resource-management/v6/managedidentity.json"
+        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/33cc5cb4363a72ebc01187aa0c100e6e7c77eeb3/specification/common-types/resource-management/v6/managedidentity.json"
       },
       "status": "dependency"
     },
@@ -27,10 +27,10 @@
       "receipt": {
         "bytes": 22240,
         "path": "specification/common-types/resource-management/v6/types.json",
-        "revision": "b7bfb61c524e3498b97622af39884fa1323eb7d4",
+        "revision": "33cc5cb4363a72ebc01187aa0c100e6e7c77eeb3",
         "sha256": "5bdcf9b5ed1ea563367452e265e7ad60b411b1fbbbc20b8ba3ab7854d1ca624f",
         "source": "azure-arc",
-        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/b7bfb61c524e3498b97622af39884fa1323eb7d4/specification/common-types/resource-management/v6/types.json"
+        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/33cc5cb4363a72ebc01187aa0c100e6e7c77eeb3/specification/common-types/resource-management/v6/types.json"
       },
       "status": "dependency"
     }
@@ -40,10 +40,10 @@
       "receipt": {
         "bytes": 289701,
         "path": "specification/hybridcompute/resource-manager/Microsoft.HybridCompute/HybridCompute/stable/2026-07-15/openapi.json",
-        "revision": "b7bfb61c524e3498b97622af39884fa1323eb7d4",
+        "revision": "33cc5cb4363a72ebc01187aa0c100e6e7c77eeb3",
         "sha256": "6f7fd81f3a3d2cfaea706a2f160d523cb42e8b11856583c57a00b9004bbfebcc",
         "source": "azure-arc",
-        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/b7bfb61c524e3498b97622af39884fa1323eb7d4/specification/hybridcompute/resource-manager/Microsoft.HybridCompute/HybridCompute/stable/2026-07-15/openapi.json"
+        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/33cc5cb4363a72ebc01187aa0c100e6e7c77eeb3/specification/hybridcompute/resource-manager/Microsoft.HybridCompute/HybridCompute/stable/2026-07-15/openapi.json"
       },
       "status": "imported"
     }
@@ -55,11 +55,11 @@
         "blob_sha": "e01711afd35c27bb35f7300f1dd2a6a352e5a574",
         "bytes": 289701,
         "path": "specification/hybridcompute/resource-manager/Microsoft.HybridCompute/HybridCompute/stable/2026-07-15/openapi.json",
-        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/b7bfb61c524e3498b97622af39884fa1323eb7d4/specification/hybridcompute/resource-manager/Microsoft.HybridCompute/HybridCompute/stable/2026-07-15/openapi.json"
+        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/33cc5cb4363a72ebc01187aa0c100e6e7c77eeb3/specification/hybridcompute/resource-manager/Microsoft.HybridCompute/HybridCompute/stable/2026-07-15/openapi.json"
       }
     ],
-    "revision": "b7bfb61c524e3498b97622af39884fa1323eb7d4",
+    "revision": "33cc5cb4363a72ebc01187aa0c100e6e7c77eeb3",
     "source": "azure-arc",
-    "tree_sha": "b7bfb61c524e3498b97622af39884fa1323eb7d4"
+    "tree_sha": "33cc5cb4363a72ebc01187aa0c100e6e7c77eeb3"
   }
 }

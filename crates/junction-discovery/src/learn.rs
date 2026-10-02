@@ -96,6 +96,14 @@ struct BodyField {
     name: String,
     schema: Value,
     required: bool,
+    /// Documented type text, resolved against page definitions later.
+    kind: String,
+}
+/// A documented definition: object properties (name, type text) or enum values.
+#[derive(Debug, Clone)]
+enum Definition {
+    Object(Vec<(String, String)>),
+    Enum(Vec<String>),
 }
 
 #[derive(Debug, Clone)]
@@ -115,6 +123,8 @@ struct DocOperation {
     pageable: bool,
     named: Option<(String, String)>,
     page: String,
+    responses: Vec<(String, Option<String>)>,
+    definitions: BTreeMap<String, Definition>,
 }
 
 struct Section {
@@ -465,6 +475,97 @@ fn path_parameters(path: &str) -> Vec<String> {
     names
 }
 
+/// Resolve documented type text: definition names become component
+/// references, `X[]` becomes an array, anything else a primitive.
+fn schema_for(kind: &str, definitions: &BTreeSet<String>) -> Value {
+    let trimmed = kind.trim();
+    if let Some(item) = trimmed.strip_suffix("[]") {
+        return json!({"type":"array","items": schema_for(item, definitions)});
+    }
+    let name = trimmed.split_once(' ').map_or(trimmed, |(name, _)| name);
+    if definitions.contains(name) {
+        return json!({"$ref": format!("#/components/schemas/{name}")});
+    }
+    primitive_schema(trimmed)
+}
+
+/// `## Definitions` subsections on REST reference pages.
+fn definitions(sections: &[Section]) -> BTreeMap<String, Definition> {
+    let mut out = BTreeMap::new();
+    let mut inside = false;
+    for section in sections {
+        if section.level <= 2 {
+            inside = section.level == 2 && section.heading.eq_ignore_ascii_case("definitions");
+            continue;
+        }
+        if !inside || section.level != 3 {
+            continue;
+        }
+        let name = section.heading.trim().to_owned();
+        if !is_identifier(&name) || name.contains('.') {
+            continue;
+        }
+        for (header, rows) in tables(&section.lines) {
+            let first = header.first().map(|cell| cell.to_ascii_lowercase());
+            if first.as_deref() == Some("value") {
+                let values = rows
+                    .iter()
+                    .filter_map(|row| row.first().cloned())
+                    .filter(|value| !value.is_empty() && value.len() <= 256)
+                    .collect();
+                out.insert(name.clone(), Definition::Enum(values));
+                break;
+            }
+            let lower: Vec<String> = header
+                .iter()
+                .map(|cell| cell.to_ascii_lowercase())
+                .collect();
+            let (Some(name_column), Some(type_column)) = (
+                lower.iter().position(|cell| cell == "name"),
+                lower.iter().position(|cell| cell == "type"),
+            ) else {
+                continue;
+            };
+            let properties = rows
+                .iter()
+                .filter_map(|row| {
+                    Some((row.get(name_column)?.clone(), row.get(type_column)?.clone()))
+                })
+                .filter(|(property, _)| is_identifier(property) || property.starts_with('@'))
+                .collect();
+            out.insert(name.clone(), Definition::Object(properties));
+            break;
+        }
+    }
+    out
+}
+
+/// `## Responses` rows: ("200", Some("TypeName")).
+fn response_rows(sections: &[Section]) -> Vec<(String, Option<String>)> {
+    sections
+        .iter()
+        .filter(|section| section.level == 2 && section.heading.eq_ignore_ascii_case("responses"))
+        .flat_map(|section| tables(&section.lines))
+        .flat_map(|(_, rows)| rows)
+        .filter_map(|row| {
+            let code = row.first()?.split_whitespace().next()?.to_owned();
+            if !(code.len() == 3 && code.bytes().all(|b| b.is_ascii_digit())) && code != "Other" {
+                return None;
+            }
+            let code = if code == "Other" {
+                "default".to_owned()
+            } else {
+                code
+            };
+            let kind = row
+                .get(1)
+                .map(|kind| kind.trim().to_owned())
+                .filter(|kind| !kind.is_empty());
+            Some((code, kind))
+        })
+        .collect()
+}
+
 fn primitive_schema(kind: &str) -> Value {
     let kind = kind.trim().to_ascii_lowercase();
     let (kind, format) = match kind.split_once('(') {
@@ -534,11 +635,16 @@ fn body_fields(lines: &[String]) -> Vec<BodyField> {
                 .and_then(|index| row.get(index))
                 .map(|kind| primitive_schema(kind))
                 .unwrap_or_else(|| json!({}));
+            let kind = type_column
+                .and_then(|index| row.get(index))
+                .cloned()
+                .unwrap_or_default();
             if !fields.iter().any(|field: &BodyField| field.name == name) {
                 fields.push(BodyField {
                     name,
                     schema,
                     required,
+                    kind,
                 });
             }
         }
@@ -675,6 +781,8 @@ fn parse_page(page: &LearnPage) -> Vec<DocOperation> {
         .filter_map(|row| row.first().cloned())
         .filter(|scope| !scope.is_empty() && scope.len() <= 256 && !scope.contains(' '))
         .collect();
+    let page_definitions = definitions(&sections);
+    let page_responses = response_rows(&sections);
     let uri_parameters: Vec<(String, String, bool, String)> = sections
         .iter()
         .filter(|section| heading_kind(&section.heading) == "parameters")
@@ -765,6 +873,8 @@ fn parse_page(page: &LearnPage) -> Vec<DocOperation> {
                     pageable,
                     named: reference_name.clone(),
                     page: page.url.clone(),
+                    responses: page_responses.clone(),
+                    definitions: page_definitions.clone(),
                 });
             }
         }
@@ -966,7 +1076,11 @@ fn operation_name(operation: &DocOperation) -> (String, String) {
     (resource, action)
 }
 
-fn openapi_operation(operation: &DocOperation, operation_id: &str) -> Value {
+fn openapi_operation(
+    operation: &DocOperation,
+    operation_id: &str,
+    known: &BTreeSet<String>,
+) -> Value {
     let mut parameters = Vec::new();
     for name in path_parameters(&operation.path) {
         parameters
@@ -997,13 +1111,18 @@ fn openapi_operation(operation: &DocOperation, operation_id: &str) -> Value {
         "description": operation.summary,
         "externalDocs": {"url": operation.page},
         "parameters": parameters,
-        "responses": {"200": {"description": "Success", "content": {"application/json": {"schema": {}}}}},
+        "responses": responses(operation, known),
     });
     if let Some(fields) = &operation.body {
         let mut properties = Map::new();
         let mut required = Vec::new();
         for field in fields {
-            properties.insert(field.name.clone(), field.schema.clone());
+            let schema = if field.kind.is_empty() {
+                field.schema.clone()
+            } else {
+                schema_for(&field.kind, known)
+            };
+            properties.insert(field.name.clone(), schema);
             if field.required {
                 required.push(json!(field.name));
             }
@@ -1039,6 +1158,41 @@ fn openapi_operation(operation: &DocOperation, operation_id: &str) -> Value {
         value["x-ms-pageable"] = json!({"nextLinkName":"@odata.nextLink"});
     }
     value
+}
+
+fn responses(operation: &DocOperation, known: &BTreeSet<String>) -> Value {
+    if operation.responses.is_empty() {
+        return json!({"200": {"description": "Success", "content": {"application/json": {"schema": {}}}}});
+    }
+    let mut out = Map::new();
+    for (code, kind) in &operation.responses {
+        let mut response = json!({"description": "Documented response"});
+        if let Some(kind) = kind {
+            response["content"] = json!({"application/json": {"schema": schema_for(kind, known)}});
+        }
+        out.entry(code.clone()).or_insert(response);
+    }
+    Value::Object(out)
+}
+
+fn component_schemas(definitions: &BTreeMap<String, Definition>) -> Map<String, Value> {
+    let known: BTreeSet<String> = definitions.keys().cloned().collect();
+    definitions
+        .iter()
+        .map(|(name, definition)| {
+            let schema = match definition {
+                Definition::Enum(values) => json!({"type":"string","enum":values}),
+                Definition::Object(properties) => {
+                    let properties: Map<String, Value> = properties
+                        .iter()
+                        .map(|(property, kind)| (property.clone(), schema_for(kind, &known)))
+                        .collect();
+                    json!({"type":"object","properties":properties})
+                }
+            };
+            (name.clone(), schema)
+        })
+        .collect()
 }
 
 /// Synthesize one OpenAPI 3 document per (service, base, API version).
@@ -1129,6 +1283,15 @@ pub fn synthesize(source: &ApiSource, pages: &[LearnPage]) -> Result<Vec<(String
         operations.sort_by(|a, b| (&a.path, &a.method).cmp(&(&b.path, &b.method)));
         let mut paths = Map::new();
         let mut used = BTreeSet::new();
+        let mut definitions = BTreeMap::new();
+        for operation in &operations {
+            for (name, definition) in &operation.definitions {
+                definitions
+                    .entry(name.clone())
+                    .or_insert_with(|| definition.clone());
+            }
+        }
+        let known: BTreeSet<String> = definitions.keys().cloned().collect();
         for operation in &operations {
             let (resource, action) = operation_name(operation);
             let mut operation_id = format!("{resource}_{action}");
@@ -1142,7 +1305,7 @@ pub fn synthesize(source: &ApiSource, pages: &[LearnPage]) -> Result<Vec<(String
                 .or_insert_with(|| json!({}));
             let method = operation.method.to_ascii_lowercase();
             if entry.get(&method).is_none() {
-                entry[&method] = openapi_operation(operation, &operation_id);
+                entry[&method] = openapi_operation(operation, &operation_id, &known);
             }
         }
         if paths.is_empty() {
@@ -1164,7 +1327,7 @@ pub fn synthesize(source: &ApiSource, pages: &[LearnPage]) -> Result<Vec<(String
                 "info": {"title": source.id, "version": version},
                 "servers": [server],
                 "paths": paths,
-                "components": {"securitySchemes": {
+                "components": {"schemas": component_schemas(&definitions), "securitySchemes": {
                     "application": {"type":"oauth2","flows":{"clientCredentials":{"tokenUrl":"https://login.microsoftonline.com/common/oauth2/v2.0/token","scopes":{}}}},
                     "delegated": {"type":"oauth2","flows":{"authorizationCode":{"authorizationUrl":"https://login.microsoftonline.com/common/oauth2/v2.0/authorize","tokenUrl":"https://login.microsoftonline.com/common/oauth2/v2.0/token","scopes":{}}}},
                 }},
@@ -1418,7 +1581,7 @@ mod tests {
     }
     const DEFENDER: &str = "---\ntitle: List alerts API - Microsoft Defender for Endpoint | Microsoft Learn\ndescription: Retrieve alerts.\n---\n# List alerts API - Microsoft Defender for Endpoint | Microsoft Learn\n\nSupports OData V4 queries.\n\n## Permissions\n\n| Permission type | Permission | Permission display name |\n| --- | --- | --- |\n| Application | Alert.Read.All | `Read all alerts` |\n| Delegated (work or school account) | Alert.Read | `Read alerts` |\n\n## HTTP request\n\n```http\nGET /api/alerts\n```\n\n## Example\n\n### Request\n\n```http\nGET https://api.security.microsoft.com/api/alerts?$top=10\n```\n\nResponse has @odata.nextLink.\n";
     const ISOLATE: &str = "# Isolate machine API - Microsoft Defender for Endpoint | Microsoft Learn\n\n## Permissions\n\n| Permission type | Permission | Permission display name |\n| --- | --- | --- |\n| Application | Machine.Isolate | `Isolate` |\n\n## HTTP request\n\n```http\nPOST [https://api.security.microsoft.com/api/machines/{id}/isolate](https://api.security.microsoft.com/api/machines/%7Bid%7D/isolate)\n```\n\n## Request body\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| Comment | String | Comment to associate with the action. **Required**. |\n| IsolationType | String | Type of the isolation. |\n";
-    const REFERENCE: &str = "# Environment Groups - List Environment Groups\n\n```http\nGET https://api.powerplatform.com/environmentmanagement/environmentGroups?api-version=2024-10-01\n```\n\n## URI Parameters\n\n| Name | In | Required | Type | Description |\n| --- | --- | --- | --- | --- |\n| api-version | query | True | string | The API version. |\n| $top | query | False | integer | Limit. |\n\n## Responses\n\n| Name | Type | Description |\n| --- | --- | --- |\n| 200 OK | X | Success |\n\n## Security\n\n### oauth2\n\n#### Scopes\n\n| Name | Description |\n| --- | --- |\n| .default | .default |\n";
+    const REFERENCE: &str = "# Environment Groups - List Environment Groups\n\n```http\nGET https://api.powerplatform.com/environmentmanagement/environmentGroups?api-version=2024-10-01\n```\n\n## URI Parameters\n\n| Name | In | Required | Type | Description |\n| --- | --- | --- | --- | --- |\n| api-version | query | True | string | The API version. |\n| $top | query | False | integer | Limit. |\n\n## Responses\n\n| Name | Type | Description |\n| --- | --- | --- |\n| 200 OK | GroupList | Success |\n\n## Security\n\n### oauth2\n\n#### Scopes\n\n| Name | Description |\n| --- | --- |\n| .default | .default |\n\n## Definitions\n\n| Name | Description |\n| --- | --- |\n| GroupList | |\n\n### GroupList\n\nObject\n\n| Name | Type | Description |\n| --- | --- | --- |\n| value | Group[] | |\n| @odata.nextLink | string | |\n\n### Group\n\nObject\n\n| Name | Type | Description |\n| --- | --- | --- |\n| id | string (uuid) | |\n| kind | GroupKind | |\n\n### GroupKind\n\n| Value | Description |\n| --- | --- |\n| Standard | |\n| Developer | |\n";
     const ROOTED: &str = "# Office 365 Management Activity API reference | Microsoft Learn\n\n## Activity API operations\n\n```http\nhttps://manage.office.com/api/v1.0/{tenant_id}/activity/feed/{operation}\n```\n\n## Start a subscription\n\n#### Sample request\n\n```json\nPOST {root}/subscriptions/start?contentType=Audit.SharePoint&PublisherIdentifier=46b4\nContent-Type: application/json; utf-8\n```\n\n## Webhook validation\n\n### Sample request\n\n```json\nPOST {webhook address}\n```\n";
     #[test]
     fn defender_pages_become_named_permissioned_operations() {
@@ -1493,6 +1656,13 @@ mod tests {
         );
         assert_eq!(operation.api_version.as_deref(), Some("2024-10-01"));
         assert!(operation.parameters.iter().any(|p| p.name == "$top"));
+        let reference = operation.responses["200"]
+            .pointer("/content/application~1json/schema/$ref")
+            .and_then(Value::as_str)
+            .unwrap();
+        assert!(reference.ends_with("GroupList"), "{reference}");
+        let canonical = manifest.schemas["canonical"].as_object().unwrap();
+        assert!(canonical.keys().any(|name| name.ends_with("GroupKind")));
         let office = source(
             "office-365-management",
             "m365",

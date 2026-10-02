@@ -1,0 +1,43 @@
+{
+  "bytes": 54710,
+  "dependencies": [
+    {
+      "receipt": {
+        "bytes": 23221,
+        "path": "specification/common-types/resource-management/v5/types.json",
+        "revision": "33cc5cb4363a72ebc01187aa0c100e6e7c77eeb3",
+        "sha256": "66767620b8edfbc04093c76b78d168cc59822cd9da1e726d35a9d45b73e642c1",
+        "source": "azure-application-insights",
+        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/33cc5cb4363a72ebc01187aa0c100e6e7c77eeb3/specification/common-types/resource-management/v5/types.json"
+      },
+      "status": "dependency"
+    }
+  ],
+  "documents": [
+    {
+      "receipt": {
+        "bytes": 31489,
+        "path": "specification/applicationinsights/resource-manager/Microsoft.Insights/ApplicationInsights/stable/2020-02-02/components_API.json",
+        "revision": "33cc5cb4363a72ebc01187aa0c100e6e7c77eeb3",
+        "sha256": "2eee98c98f6f31615568e516d0d2c70b7843b86a48d704a50947a3569b63dc83",
+        "source": "azure-application-insights",
+        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/33cc5cb4363a72ebc01187aa0c100e6e7c77eeb3/specification/applicationinsights/resource-manager/Microsoft.Insights/ApplicationInsights/stable/2020-02-02/components_API.json"
+      },
+      "status": "imported"
+    }
+  ],
+  "imported": 1,
+  "inventory": {
+    "documents": [
+      {
+        "blob_sha": "7cff8bbba8ea428b06e32b2a39e114eb60c9e2bd",
+        "bytes": 31489,
+        "path": "specification/applicationinsights/resource-manager/Microsoft.Insights/ApplicationInsights/stable/2020-02-02/components_API.json",
+        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/33cc5cb4363a72ebc01187aa0c100e6e7c77eeb3/specification/applicationinsights/resource-manager/Microsoft.Insights/ApplicationInsights/stable/2020-02-02/components_API.json"
+      }
+    ],
+    "revision": "33cc5cb4363a72ebc01187aa0c100e6e7c77eeb3",
+    "source": "azure-application-insights",
+    "tree_sha": "33cc5cb4363a72ebc01187aa0c100e6e7c77eeb3"
+  }
+}

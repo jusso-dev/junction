@@ -332,7 +332,10 @@ pub fn ingest(
                     .or(spec.get("security"))
                     .cloned()
                     .unwrap_or(json!([])),
-                risk: if path.to_lowercase().contains("conditionalaccess") {
+                risk: if path.to_lowercase().contains("conditionalaccess")
+                    || (!matches!(method, "get" | "head" | "options")
+                        && privileged_action(&canonical_action, &path))
+                {
                     OperationRisk::Privileged
                 } else {
                     match method {
@@ -726,6 +729,34 @@ pub fn parse_document(bytes: &[u8]) -> Result<Value> {
 
 pub mod fetch;
 
+/// Mutations that change security posture, run code on managed devices or
+/// grant privileges. They require approval like destructive operations.
+pub(crate) fn privileged_action(action: &str, path: &str) -> bool {
+    let canonical = canonical_component(action);
+    let canonical = canonical.strip_prefix("invoke_").unwrap_or(&canonical);
+    let path = path.to_ascii_lowercase();
+    [
+        "isolate",
+        "unisolate",
+        "restrict_code_execution",
+        "unrestrict_code_execution",
+        "run_live_response",
+        "runliveresponse",
+        "stop_and_quarantine_file",
+        "collect_investigation_package",
+    ]
+    .iter()
+    .any(|verb| canonical == *verb || canonical.starts_with(&format!("{verb}_")))
+        || [
+            "roleassignment",
+            "rolemanagement",
+            "privilegedaccess",
+            "roleeligibility",
+        ]
+        .iter()
+        .any(|segment| path.contains(segment))
+}
+
 pub(crate) fn destructive_action(action: &str) -> bool {
     let canonical = canonical_component(action);
     let canonical = canonical.strip_prefix("invoke_").unwrap_or(&canonical);
@@ -738,6 +769,6 @@ pub(crate) fn destructive_action(action: &str) -> bool {
     };
     matches!(
         verb,
-        "delete" | "remove" | "purge" | "erase" | "drop" | "truncate"
+        "delete" | "remove" | "purge" | "erase" | "drop" | "truncate" | "offboard"
     )
 }

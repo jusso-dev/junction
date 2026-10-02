@@ -1,0 +1,8 @@
+id = "azure-key-vault-data"
+product = "azure"
+source_type = "open_api"
+upstream = "https://github.com/Azure/azure-rest-api-specs"
+paths = ["specification/keyvault/data-plane", "specification/common-types/data-plane"]
+authority = "microsoft"
+clouds = ["public"]
+enabled = true

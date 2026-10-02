@@ -3,7 +3,7 @@ product = "m365"
 source_type = "documentation"
 # Microsoft Learn reference pages (Markdown via Accept: text/markdown) listed in toc.json.
 upstream = "https://learn.microsoft.com/en-us/office/office-365-management-api/"
-paths = ["office-365-management-activity-api-reference", "office-365-service-communications-api-reference"]
+paths = ["office-365-management-activity-api-reference"]
 authority = "microsoft"
 clouds = ["public"]
 enabled = true

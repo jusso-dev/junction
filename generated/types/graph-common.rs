@@ -3,44 +3,20 @@
 #[serde(untagged)]
 pub enum Nullable<T> { Null(()), Value(T) }
 fn present<'de, D, T>(deserializer: D) -> Result<Option<T>, D::Error> where D: serde::Deserializer<'de>, T: serde::Deserialize<'de> { T::deserialize(deserializer).map(Some) }
-pub const SCHEMAS_JSON: &str = "{\"#/components/schemas/1c4e5f33dfc1dc17e2e8ca8e15734433ebf4f65362d988ba66a461e9a9d1e1e4.microsoft.graph.dateTimeTimeZone\":{\"schema_type\":{\"kind\":\"object\",\"properties\":{\"@odata.type\":{\"required\":true,\"schema\":{\"kind\":\"string\",\"format\":null}},\"dateTime\":{\"required\":false,\"schema\":{\"kind\":\"string\",\"format\":null}},\"timeZone\":{\"required\":false,\"schema\":{\"kind\":\"nullable\",\"value\":{\"kind\":\"string\",\"format\":null}}}},\"additional\":{\"kind\":\"any\"}},\"original\":{\"properties\":{\"@odata.type\":{\"type\":\"string\"},\"dateTime\":{\"description\":\"A single point of time in a combined date and time representation ({date}T{time}; for example, 2017-08-29T04:00:00.0000000).\",\"type\":\"string\"},\"timeZone\":{\"description\":\"Represents a time zone, for example, 'Pacific Standard Time'. See below for more possible values.\",\"nullable\":true,\"type\":\"string\"}},\"required\":[\"@odata.type\"],\"title\":\"dateTimeTimeZone\",\"type\":\"object\"}},\"#/components/schemas/1c4e5f33dfc1dc17e2e8ca8e15734433ebf4f65362d988ba66a461e9a9d1e1e4.microsoft.graph.emailAddress\":{\"schema_type\":{\"kind\":\"object\",\"properties\":{\"@odata.type\":{\"required\":true,\"schema\":{\"kind\":\"string\",\"format\":null}},\"address\":{\"required\":false,\"schema\":{\"kind\":\"nullable\",\"value\":{\"kind\":\"string\",\"format\":null}}},\"name\":{\"required\":false,\"schema\":{\"kind\":\"nullable\",\"value\":{\"kind\":\"string\",\"format\":null}}}},\"additional\":{\"kind\":\"any\"}},\"original\":{\"properties\":{\"@odata.type\":{\"type\":\"string\"},\"address\":{\"description\":\"The email address of the person or entity.\",\"nullable\":true,\"type\":\"string\"},\"name\":{\"description\":\"The display name of the person or entity.\",\"nullable\":true,\"type\":\"string\"}},\"required\":[\"@odata.type\"],\"title\":\"emailAddress\",\"type\":\"object\"}},\"#/components/schemas/1c4e5f33dfc1dc17e2e8ca8e15734433ebf4f65362d988ba66a461e9a9d1e1e4.microsoft.graph.phone\":{\"schema_type\":{\"kind\":\"object\",\"properties\":{\"@odata.type\":{\"required\":true,\"schema\":{\"kind\":\"string\",\"format\":null}},\"language\":{\"required\":false,\"schema\":{\"kind\":\"nullable\",\"value\":{\"kind\":\"string\",\"format\":null}}},\"number\":{\"required\":false,\"schema\":{\"kind\":\"nullable\",\"value\":{\"kind\":\"string\",\"format\":null}}},\"region\":{\"required\":false,\"schema\":{\"kind\":\"nullable\",\"value\":{\"kind\":\"string\",\"format\":null}}},\"type\":{\"required\":false,\"schema\":{\"kind\":\"union\",\"variants\":[{\"kind\":\"reference\",\"target\":\"#/components/schemas/1c4e5f33dfc1dc17e2e8ca8e15734433ebf4f65362d988ba66a461e9a9d1e1e4.microsoft.graph.phoneType\"},{\"kind\":\"nullable\",\"value\":{\"kind\":\"object\",\"properties\":{},\"additional\":{\"kind\":\"any\"}}}],\"exclusive\":false,\"discriminator\":null}}},\"additional\":{\"kind\":\"any\"}},\"original\":{\"properties\":{\"@odata.type\":{\"type\":\"string\"},\"language\":{\"nullable\":true,\"type\":\"string\"},\"number\":{\"description\":\"The phone number.\",\"nullable\":true,\"type\":\"string\"},\"region\":{\"nullable\":true,\"type\":\"string\"},\"type\":{\"anyOf\":[{\"$ref\":\"#/components/schemas/1c4e5f33dfc1dc17e2e8ca8e15734433ebf4f65362d988ba66a461e9a9d1e1e4.microsoft.graph.phoneType\"},{\"nullable\":true,\"type\":\"object\"}],\"description\":\"The type of phone number. The possible values are: home, business, mobile, other, assistant, homeFax, businessFax, otherFax, pager, radio.\"}},\"required\":[\"@odata.type\"],\"title\":\"phone\",\"type\":\"object\"}},\"#/components/schemas/1c4e5f33dfc1dc17e2e8ca8e15734433ebf4f65362d988ba66a461e9a9d1e1e4.microsoft.graph.phoneType\":{\"schema_type\":{\"kind\":\"enum\",\"values\":[\"home\",\"business\",\"mobile\",\"other\",\"assistant\",\"homeFax\",\"businessFax\",\"otherFax\",\"pager\",\"radio\"],\"underlying\":{\"kind\":\"string\",\"format\":null}},\"original\":{\"enum\":[\"home\",\"business\",\"mobile\",\"other\",\"assistant\",\"homeFax\",\"businessFax\",\"otherFax\",\"pager\",\"radio\"],\"title\":\"phoneType\",\"type\":\"string\"}},\"#/components/schemas/1c4e5f33dfc1dc17e2e8ca8e15734433ebf4f65362d988ba66a461e9a9d1e1e4.microsoft.graph.recipient\":{\"schema_type\":{\"kind\":\"object\",\"properties\":{\"@odata.type\":{\"required\":true,\"schema\":{\"kind\":\"string\",\"format\":null}},\"emailAddress\":{\"required\":false,\"schema\":{\"kind\":\"union\",\"variants\":[{\"kind\":\"reference\",\"target\":\"#/components/schemas/1c4e5f33dfc1dc17e2e8ca8e15734433ebf4f65362d988ba66a461e9a9d1e1e4.microsoft.graph.emailAddress\"},{\"kind\":\"nullable\",\"value\":{\"kind\":\"object\",\"properties\":{},\"additional\":{\"kind\":\"any\"}}}],\"exclusive\":false,\"discriminator\":null}}},\"additional\":{\"kind\":\"any\"}},\"original\":{\"discriminator\":{\"mapping\":{\"#microsoft.graph.attendee\":\"#/components/schemas/1c4e5f33dfc1dc17e2e8ca8e15734433ebf4f65362d988ba66a461e9a9d1e1e4.microsoft.graph.attendee\",\"#microsoft.graph.attendeeBase\":\"#/components/schemas/1c4e5f33dfc1dc17e2e8ca8e15734433ebf4f65362d988ba66a461e9a9d1e1e4.microsoft.graph.attendeeBase\"},\"propertyName\":\"@odata.type\"},\"properties\":{\"@odata.type\":{\"type\":\"string\"},\"emailAddress\":{\"anyOf\":[{\"$ref\":\"#/components/schemas/1c4e5f33dfc1dc17e2e8ca8e15734433ebf4f65362d988ba66a461e9a9d1e1e4.microsoft.graph.emailAddress\"},{\"nullable\":true,\"type\":\"object\"}],\"description\":\"The recipient's email address.\"}},\"required\":[\"@odata.type\"],\"title\":\"recipient\",\"type\":\"object\"}}}";
+pub const SCHEMAS_JSON: &str = "{\"#/components/schemas/c4014178345004bea7f74bb2539233e0cca67b990018c1fde91cb8572f6b4ecd.microsoft.graph.dateTimeTimeZone\":{\"schema_type\":{\"kind\":\"object\",\"properties\":{\"@odata.type\":{\"required\":true,\"schema\":{\"kind\":\"string\",\"format\":null}},\"dateTime\":{\"required\":false,\"schema\":{\"kind\":\"string\",\"format\":null}},\"timeZone\":{\"required\":false,\"schema\":{\"kind\":\"nullable\",\"value\":{\"kind\":\"string\",\"format\":null}}}},\"additional\":{\"kind\":\"any\"}},\"original\":{\"properties\":{\"@odata.type\":{\"type\":\"string\"},\"dateTime\":{\"description\":\"A single point of time in a combined date and time representation ({date}T{time}; for example, 2017-08-29T04:00:00.0000000).\",\"type\":\"string\"},\"timeZone\":{\"description\":\"Represents a time zone, for example, 'Pacific Standard Time'. See below for more possible values.\",\"nullable\":true,\"type\":\"string\"}},\"required\":[\"@odata.type\"],\"title\":\"dateTimeTimeZone\",\"type\":\"object\"}},\"#/components/schemas/c4014178345004bea7f74bb2539233e0cca67b990018c1fde91cb8572f6b4ecd.microsoft.graph.emailAddress\":{\"schema_type\":{\"kind\":\"object\",\"properties\":{\"@odata.type\":{\"required\":true,\"schema\":{\"kind\":\"string\",\"format\":null}},\"address\":{\"required\":false,\"schema\":{\"kind\":\"nullable\",\"value\":{\"kind\":\"string\",\"format\":null}}},\"name\":{\"required\":false,\"schema\":{\"kind\":\"nullable\",\"value\":{\"kind\":\"string\",\"format\":null}}}},\"additional\":{\"kind\":\"any\"}},\"original\":{\"properties\":{\"@odata.type\":{\"type\":\"string\"},\"address\":{\"description\":\"The email address of the person or entity.\",\"nullable\":true,\"type\":\"string\"},\"name\":{\"description\":\"The display name of the person or entity.\",\"nullable\":true,\"type\":\"string\"}},\"required\":[\"@odata.type\"],\"title\":\"emailAddress\",\"type\":\"object\"}},\"#/components/schemas/c4014178345004bea7f74bb2539233e0cca67b990018c1fde91cb8572f6b4ecd.microsoft.graph.phone\":{\"schema_type\":{\"kind\":\"object\",\"properties\":{\"@odata.type\":{\"required\":true,\"schema\":{\"kind\":\"string\",\"format\":null}},\"language\":{\"required\":false,\"schema\":{\"kind\":\"nullable\",\"value\":{\"kind\":\"string\",\"format\":null}}},\"number\":{\"required\":false,\"schema\":{\"kind\":\"nullable\",\"value\":{\"kind\":\"string\",\"format\":null}}},\"region\":{\"required\":false,\"schema\":{\"kind\":\"nullable\",\"value\":{\"kind\":\"string\",\"format\":null}}},\"type\":{\"required\":false,\"schema\":{\"kind\":\"union\",\"variants\":[{\"kind\":\"reference\",\"target\":\"#/components/schemas/c4014178345004bea7f74bb2539233e0cca67b990018c1fde91cb8572f6b4ecd.microsoft.graph.phoneType\"},{\"kind\":\"nullable\",\"value\":{\"kind\":\"object\",\"properties\":{},\"additional\":{\"kind\":\"any\"}}}],\"exclusive\":false,\"discriminator\":null}}},\"additional\":{\"kind\":\"any\"}},\"original\":{\"properties\":{\"@odata.type\":{\"type\":\"string\"},\"language\":{\"nullable\":true,\"type\":\"string\"},\"number\":{\"description\":\"The phone number.\",\"nullable\":true,\"type\":\"string\"},\"region\":{\"nullable\":true,\"type\":\"string\"},\"type\":{\"anyOf\":[{\"$ref\":\"#/components/schemas/c4014178345004bea7f74bb2539233e0cca67b990018c1fde91cb8572f6b4ecd.microsoft.graph.phoneType\"},{\"nullable\":true,\"type\":\"object\"}],\"description\":\"The type of phone number. The possible values are: home, business, mobile, other, assistant, homeFax, businessFax, otherFax, pager, radio.\"}},\"required\":[\"@odata.type\"],\"title\":\"phone\",\"type\":\"object\"}},\"#/components/schemas/c4014178345004bea7f74bb2539233e0cca67b990018c1fde91cb8572f6b4ecd.microsoft.graph.phoneType\":{\"schema_type\":{\"kind\":\"enum\",\"values\":[\"home\",\"business\",\"mobile\",\"other\",\"assistant\",\"homeFax\",\"businessFax\",\"otherFax\",\"pager\",\"radio\"],\"underlying\":{\"kind\":\"string\",\"format\":null}},\"original\":{\"enum\":[\"home\",\"business\",\"mobile\",\"other\",\"assistant\",\"homeFax\",\"businessFax\",\"otherFax\",\"pager\",\"radio\"],\"title\":\"phoneType\",\"type\":\"string\"}},\"#/components/schemas/c4014178345004bea7f74bb2539233e0cca67b990018c1fde91cb8572f6b4ecd.microsoft.graph.recipient\":{\"schema_type\":{\"kind\":\"object\",\"properties\":{\"@odata.type\":{\"required\":true,\"schema\":{\"kind\":\"string\",\"format\":null}},\"emailAddress\":{\"required\":false,\"schema\":{\"kind\":\"union\",\"variants\":[{\"kind\":\"reference\",\"target\":\"#/components/schemas/c4014178345004bea7f74bb2539233e0cca67b990018c1fde91cb8572f6b4ecd.microsoft.graph.emailAddress\"},{\"kind\":\"nullable\",\"value\":{\"kind\":\"object\",\"properties\":{},\"additional\":{\"kind\":\"any\"}}}],\"exclusive\":false,\"discriminator\":null}}},\"additional\":{\"kind\":\"any\"}},\"original\":{\"discriminator\":{\"mapping\":{\"#microsoft.graph.attendee\":\"#/components/schemas/c4014178345004bea7f74bb2539233e0cca67b990018c1fde91cb8572f6b4ecd.microsoft.graph.attendee\",\"#microsoft.graph.attendeeBase\":\"#/components/schemas/c4014178345004bea7f74bb2539233e0cca67b990018c1fde91cb8572f6b4ecd.microsoft.graph.attendeeBase\"},\"propertyName\":\"@odata.type\"},\"properties\":{\"@odata.type\":{\"type\":\"string\"},\"emailAddress\":{\"anyOf\":[{\"$ref\":\"#/components/schemas/c4014178345004bea7f74bb2539233e0cca67b990018c1fde91cb8572f6b4ecd.microsoft.graph.emailAddress\"},{\"nullable\":true,\"type\":\"object\"}],\"description\":\"The recipient's email address.\"}},\"required\":[\"@odata.type\"],\"title\":\"recipient\",\"type\":\"object\"}}}";
 #[derive(Debug, Clone, PartialEq, serde::Serialize, serde::Deserialize)]
-pub struct Schema790cc9116bd7ad93b2fb4fdf8bf5b098a8faa4620fc89411baebd58370646dc0 {
+pub struct Schema53809104972b7ba6f511339edecb772a9aead76c74e7417f49c31141dff64992 {
 #[serde(rename = "@odata.type")]
 pub field_0: String,
-#[serde(rename = "language", default, deserialize_with = "present", skip_serializing_if = "Option::is_none")]
-pub field_1: Option<Nullable<String>>,
-#[serde(rename = "number", default, deserialize_with = "present", skip_serializing_if = "Option::is_none")]
-pub field_2: Option<Nullable<String>>,
-#[serde(rename = "region", default, deserialize_with = "present", skip_serializing_if = "Option::is_none")]
-pub field_3: Option<Nullable<String>>,
-#[serde(rename = "type", default, deserialize_with = "present", skip_serializing_if = "Option::is_none")]
-pub field_4: Option<serde_json::Value>,
-#[serde(flatten)]
-pub additional: std::collections::BTreeMap<String, serde_json::Value>,
-}
-#[derive(Debug, Clone, PartialEq, serde::Serialize, serde::Deserialize)]
-pub struct Schema8ed364b1765bee1818b7dc061d49646a29b3665da9b063939d61a883c31c124d {
-#[serde(rename = "@odata.type")]
-pub field_0: String,
-#[serde(rename = "emailAddress", default, deserialize_with = "present", skip_serializing_if = "Option::is_none")]
-pub field_1: Option<serde_json::Value>,
-#[serde(flatten)]
-pub additional: std::collections::BTreeMap<String, serde_json::Value>,
-}
-#[derive(Debug, Clone, PartialEq, serde::Serialize, serde::Deserialize)]
-pub struct Schema91d89ad5961113ec52b8e47069686f4c33d912b8d46b98cf98702d578475f93b {
-#[serde(rename = "@odata.type")]
-pub field_0: String,
-#[serde(rename = "address", default, deserialize_with = "present", skip_serializing_if = "Option::is_none")]
-pub field_1: Option<Nullable<String>>,
-#[serde(rename = "name", default, deserialize_with = "present", skip_serializing_if = "Option::is_none")]
+#[serde(rename = "dateTime", default, deserialize_with = "present", skip_serializing_if = "Option::is_none")]
+pub field_1: Option<String>,
+#[serde(rename = "timeZone", default, deserialize_with = "present", skip_serializing_if = "Option::is_none")]
 pub field_2: Option<Nullable<String>>,
 #[serde(flatten)]
 pub additional: std::collections::BTreeMap<String, serde_json::Value>,
 }
 #[derive(Debug, Clone, PartialEq, serde::Serialize, serde::Deserialize)]
-pub enum Schemaae322aed26beaa40cad0f6b87ef91f0a3bb39c3cb4754811d14afc745ab7d206 {
+pub enum Schema61728561726532ab1276de4a7c05588a4e948de43e7022077f28a99ca02bdd25 {
 #[serde(rename = "home")]
 Variant0,
 #[serde(rename = "business")]
@@ -63,13 +39,37 @@ Variant8,
 Variant9,
 }
 #[derive(Debug, Clone, PartialEq, serde::Serialize, serde::Deserialize)]
-pub struct Schemadaffe952d8bf7c17dfee6583686a17e3eda02f8f5e9e3b5b76c5d20c8501d1bf {
+pub struct Schema618b2188ba65aa2bb7ec74809d270702a52b7f221ce22f25f4679162034d5e09 {
 #[serde(rename = "@odata.type")]
 pub field_0: String,
-#[serde(rename = "dateTime", default, deserialize_with = "present", skip_serializing_if = "Option::is_none")]
-pub field_1: Option<String>,
-#[serde(rename = "timeZone", default, deserialize_with = "present", skip_serializing_if = "Option::is_none")]
+#[serde(rename = "language", default, deserialize_with = "present", skip_serializing_if = "Option::is_none")]
+pub field_1: Option<Nullable<String>>,
+#[serde(rename = "number", default, deserialize_with = "present", skip_serializing_if = "Option::is_none")]
 pub field_2: Option<Nullable<String>>,
+#[serde(rename = "region", default, deserialize_with = "present", skip_serializing_if = "Option::is_none")]
+pub field_3: Option<Nullable<String>>,
+#[serde(rename = "type", default, deserialize_with = "present", skip_serializing_if = "Option::is_none")]
+pub field_4: Option<serde_json::Value>,
+#[serde(flatten)]
+pub additional: std::collections::BTreeMap<String, serde_json::Value>,
+}
+#[derive(Debug, Clone, PartialEq, serde::Serialize, serde::Deserialize)]
+pub struct Schema64c2383b7ac924eabb6e8b8a36a470dc9cbefc7c8f72664a84c49997c8b980b4 {
+#[serde(rename = "@odata.type")]
+pub field_0: String,
+#[serde(rename = "address", default, deserialize_with = "present", skip_serializing_if = "Option::is_none")]
+pub field_1: Option<Nullable<String>>,
+#[serde(rename = "name", default, deserialize_with = "present", skip_serializing_if = "Option::is_none")]
+pub field_2: Option<Nullable<String>>,
+#[serde(flatten)]
+pub additional: std::collections::BTreeMap<String, serde_json::Value>,
+}
+#[derive(Debug, Clone, PartialEq, serde::Serialize, serde::Deserialize)]
+pub struct Schemaa363b3eaa55e21792005319cb36193fe6629d6af60fe3dd33aa1a24f0bf659e2 {
+#[serde(rename = "@odata.type")]
+pub field_0: String,
+#[serde(rename = "emailAddress", default, deserialize_with = "present", skip_serializing_if = "Option::is_none")]
+pub field_1: Option<serde_json::Value>,
 #[serde(flatten)]
 pub additional: std::collections::BTreeMap<String, serde_json::Value>,
 }
