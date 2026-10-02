@@ -93,6 +93,7 @@ mod tests {
             scopes: vec!["https://resource.example.com/read".into()],
             credential_profile: "middle-tier".into(),
             flow: AuthFlow::OnBehalfOf,
+            api_key: None,
         }
     }
     fn incoming() -> AccessToken {

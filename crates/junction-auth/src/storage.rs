@@ -123,7 +123,7 @@ impl<S: CredentialStore> StoredTokens<S> {
         {
             bail!("stored token context mismatch");
         }
-        validate_expiry(metadata.expires_at)?;
+        validate_expiry(metadata.expires_at, request.flow)?;
         if token.expose().len() > 16 * 1024 {
             bail!("access credential exceeds size limit");
         }
@@ -153,7 +153,7 @@ impl<S: CredentialStore> StoredTokens<S> {
             // Do not delete during reads: another process may have replaced this entry.
             return Ok(None);
         }
-        validate_expiry(record.expires_at)?;
+        validate_expiry(record.expires_at, request.flow)?;
         Ok(Some(AccessToken::new(
             Secret::new(record.access_token.to_string())?,
             TokenMetadata {
@@ -201,7 +201,12 @@ impl<S: CredentialStore> StoredTokens<S> {
         if record.access_token.len() > 16 * 1024 {
             bail!("access credential exceeds size limit");
         }
-        if record.expires_at > SystemTime::now() + Duration::from_secs(86400)
+        let lifetime = if request.flow == AuthFlow::ApiKey {
+            Duration::from_secs(400 * 86400)
+        } else {
+            Duration::from_secs(86400)
+        };
+        if record.expires_at > SystemTime::now() + lifetime
             || record.client_id.is_some() != record.refresh_token.is_some()
             || record
                 .refresh_token
@@ -217,10 +222,16 @@ impl<S: CredentialStore> StoredTokens<S> {
         self.store.delete(&account(request)?)
     }
 }
-fn validate_expiry(expires_at: SystemTime) -> Result<()> {
+fn validate_expiry(expires_at: SystemTime, flow: AuthFlow) -> Result<()> {
     let now = SystemTime::now();
-    if expires_at <= now + Duration::from_secs(60) || expires_at > now + Duration::from_secs(86400)
-    {
+    // Access tokens live at most a day; operator-supplied API keys are kept
+    // until replaced or removed with `junction auth logout`.
+    let limit = if flow == AuthFlow::ApiKey {
+        Duration::from_secs(400 * 86400)
+    } else {
+        Duration::from_secs(86400)
+    };
+    if expires_at <= now + Duration::from_secs(60) || expires_at > now + limit {
         bail!("unsupported stored credential lifetime");
     }
     Ok(())
@@ -238,9 +249,9 @@ fn account(request: &TokenRequest) -> Result<String> {
     let key = request.key()?;
     if !matches!(
         request.flow,
-        AuthFlow::DeviceCode | AuthFlow::Pkce | AuthFlow::AuthorizationCode
+        AuthFlow::DeviceCode | AuthFlow::Pkce | AuthFlow::AuthorizationCode | AuthFlow::ApiKey
     ) {
-        bail!("persistent tokens require an interactive credential profile");
+        bail!("persistent tokens require an interactive or operator-supplied credential profile");
     }
     let bytes = serde_json::to_vec(&(
         1u8,
@@ -293,6 +304,7 @@ mod tests {
             ],
             credential_profile: "operator-a".into(),
             flow: AuthFlow::DeviceCode,
+            api_key: None,
         }
     }
     fn token(request: &TokenRequest) -> AccessToken {
@@ -307,6 +319,47 @@ mod tests {
                 account: None,
             },
         )
+    }
+    #[test]
+    fn api_keys_persist_for_a_year_but_access_tokens_only_a_day() {
+        let tokens = StoredTokens::new(MemoryStore::default());
+        let mut request = request();
+        request.scopes.clear();
+        request.flow = AuthFlow::ApiKey;
+        request.api_key = Some(crate::ApiKeyPlacement {
+            header: "authorization".into(),
+            prefix: Some("Token".into()),
+        });
+        let metadata = |days: u64| TokenMetadata {
+            tenant: request.tenant.clone(),
+            audience: request.audience.clone(),
+            expires_at: SystemTime::now() + Duration::from_secs(days * 86400),
+            scopes: vec![],
+            roles: vec![],
+            account: None,
+        };
+        let key = AccessToken::api_key(
+            Secret::new("private-key".into()).unwrap(),
+            metadata(365),
+            request.api_key.clone().unwrap(),
+        )
+        .unwrap();
+        tokens.save(&request, &key).unwrap();
+        assert_eq!(
+            tokens.load(&request).unwrap().unwrap().expose(),
+            "private-key"
+        );
+        let too_long = AccessToken::api_key(
+            Secret::new("private-key".into()).unwrap(),
+            metadata(500),
+            request.api_key.clone().unwrap(),
+        )
+        .unwrap();
+        assert!(tokens.save(&request, &too_long).is_err());
+        let device = super::tests::request();
+        let mut long_token = token(&device);
+        long_token.metadata.expires_at = SystemTime::now() + Duration::from_secs(2 * 86400);
+        assert!(tokens.save(&device, &long_token).is_err());
     }
     #[test]
     fn persisted_tokens_are_bound_to_every_context_dimension() {

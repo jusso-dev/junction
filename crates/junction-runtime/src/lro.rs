@@ -399,7 +399,7 @@ impl crate::Executor {
                 "GET",
                 url.clone(),
                 None,
-                Some(context.token.bearer_secret()),
+                Some(&context.token.credential()),
                 &junction_http::RequestHeaders::new(),
             )
             .await
@@ -539,7 +539,7 @@ impl crate::Executor {
                 &request.method,
                 request.url.clone(),
                 request.body.as_ref(),
-                Some(context.token.bearer_secret()),
+                Some(&context.token.credential()),
                 &request.headers,
             )
             .await
@@ -591,7 +591,7 @@ impl crate::Executor {
                 &request.method,
                 request.url.clone(),
                 request.body.as_ref(),
-                Some(context.token.bearer_secret()),
+                Some(&context.token.credential()),
                 &request.headers,
             )
             .await
@@ -631,7 +631,7 @@ impl crate::Executor {
                 "GET",
                 handle.poll_url.clone(),
                 None,
-                Some(context.token.bearer_secret()),
+                Some(&context.token.credential()),
                 &junction_http::RequestHeaders::new(),
             )
             .await;

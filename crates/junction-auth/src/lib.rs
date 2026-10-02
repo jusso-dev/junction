@@ -40,6 +40,56 @@ pub enum AuthFlow {
     Certificate,
     OnBehalfOf,
     ExternalBearer,
+    /// Out-of-band service credential (API token/key) supplied by the operator.
+    ApiKey,
+}
+/// Where an out-of-band API key is sent. Only credential headers that declared
+/// operation parameters can never set are permitted.
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord)]
+#[serde(deny_unknown_fields)]
+pub struct ApiKeyPlacement {
+    pub header: String,
+    /// Authorization scheme such as `Token` (Defender for Cloud Apps).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub prefix: Option<String>,
+}
+impl ApiKeyPlacement {
+    pub const HEADERS: [&'static str; 5] = [
+        "authorization",
+        "api-key",
+        "x-api-key",
+        "ocp-apim-subscription-key",
+        "x-functions-key",
+    ];
+    pub fn validate(&self) -> Result<()> {
+        if !Self::HEADERS.contains(&self.header.as_str()) {
+            bail!("unsupported API key header");
+        }
+        match (&self.prefix, self.header == "authorization") {
+            (Some(prefix), true)
+                if !prefix.is_empty()
+                    && prefix.len() <= 32
+                    && prefix
+                        .bytes()
+                        .all(|b| b.is_ascii_alphanumeric() || b == b'-') => {}
+            (None, false) => {}
+            _ => bail!("authorization API keys require a scheme prefix; other headers forbid one"),
+        }
+        Ok(())
+    }
+}
+/// The request header a credential is presented in.
+pub enum Credential<'a> {
+    Bearer(&'a Secret),
+    Header {
+        placement: &'a ApiKeyPlacement,
+        secret: &'a Secret,
+    },
+}
+impl<'a> From<&'a Secret> for Credential<'a> {
+    fn from(secret: &'a Secret) -> Self {
+        Self::Bearer(secret)
+    }
 }
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -50,6 +100,9 @@ pub struct TokenRequest {
     pub scopes: Vec<String>,
     pub credential_profile: String,
     pub flow: AuthFlow,
+    /// Required for, and only allowed with, `api_key`.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub api_key: Option<ApiKeyPlacement>,
 }
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord)]
 struct CacheKey {
@@ -59,6 +112,7 @@ struct CacheKey {
     scopes: Vec<String>,
     profile: String,
     flow: AuthFlow,
+    api_key: Option<ApiKeyPlacement>,
 }
 impl TokenRequest {
     /// Validate acquisition context without obtaining or exposing credentials.
@@ -103,6 +157,12 @@ impl TokenRequest {
         }
         scopes.sort();
         scopes.dedup();
+        match (&self.api_key, self.flow) {
+            (Some(placement), AuthFlow::ApiKey) => placement.validate()?,
+            (None, AuthFlow::ApiKey) => bail!("api_key flow requires an api_key placement"),
+            (Some(_), _) => bail!("api_key placement requires the api_key flow"),
+            (None, _) => {}
+        }
         Ok(CacheKey {
             tenant: self.tenant.to_ascii_lowercase(),
             authority: authority.to_string(),
@@ -110,6 +170,7 @@ impl TokenRequest {
             scopes,
             profile: self.credential_profile.clone(),
             flow: self.flow,
+            api_key: self.api_key.clone(),
         })
     }
 }
@@ -126,12 +187,39 @@ pub struct TokenMetadata {
 pub struct AccessToken {
     secret: Secret,
     metadata: TokenMetadata,
+    placement: Option<ApiKeyPlacement>,
 }
 impl AccessToken {
     /// Providers must supply tenant/audience from their trusted acquisition context.
     /// Unverified JWT claims must not authorize cache insertion.
     pub fn new(secret: Secret, metadata: TokenMetadata) -> Self {
-        Self { secret, metadata }
+        Self {
+            secret,
+            metadata,
+            placement: None,
+        }
+    }
+    /// An operator-supplied API key presented in a validated header.
+    pub fn api_key(
+        secret: Secret,
+        metadata: TokenMetadata,
+        placement: ApiKeyPlacement,
+    ) -> Result<Self> {
+        placement.validate()?;
+        Ok(Self {
+            secret,
+            metadata,
+            placement: Some(placement),
+        })
+    }
+    pub fn credential(&self) -> Credential<'_> {
+        match &self.placement {
+            Some(placement) => Credential::Header {
+                placement,
+                secret: &self.secret,
+            },
+            None => Credential::Bearer(&self.secret),
+        }
     }
     pub fn expose(&self) -> &str {
         self.secret.expose()
@@ -207,6 +295,7 @@ mod tests {
             scopes: vec!["read".into()],
             credential_profile: "default".into(),
             flow: AuthFlow::ExternalBearer,
+            api_key: None,
         }
     }
     fn token(request: &TokenRequest) -> AccessToken {

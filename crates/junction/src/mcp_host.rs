@@ -334,6 +334,12 @@ fn safe_tool_error(error: &anyhow::Error) -> ToolResult {
         .is_some()
     {
         json!({"status":"response_too_large","reason":"Reduce max_items or narrow API projections; an existing continuation remains usable."})
+    } else if let Some(required) = error.downcast_ref::<crate::api_key::CredentialRequired>() {
+        // Agents cannot supply keys; tell them what the operator must do.
+        let mut value = serde_json::to_value(required)
+            .unwrap_or_else(|_| json!({"error":"credential_required"}));
+        value["status"] = json!("credential_required");
+        value
     } else if let Some(denied) = error.downcast_ref::<junction_runtime::ExecutionDenied>() {
         serde_json::to_value(&denied.0).unwrap_or_else(|_| json!({"status":"policy_rejected"}))
     } else if let Some(timeout) = error.downcast_ref::<junction_runtime::lro::LroWaitTimeout>() {

@@ -27,5 +27,7 @@ tempfile = "3"
 serde-saphyr = "1"
 getrandom = "0.4"
 zeroize = "1"
+[target.'cfg(windows)'.dependencies]
+rpassword = "7"
 [target.'cfg(unix)'.dependencies]
 libc = "0.2"

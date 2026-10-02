@@ -202,6 +202,7 @@ mod tests {
             scopes: vec![],
             credential_profile: "certificate-profile".into(),
             flow: AuthFlow::Certificate,
+            api_key: None,
         }
     }
     #[test]

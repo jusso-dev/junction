@@ -1,0 +1,12 @@
+{
+  "endpoint": "https://dev.azure.com/contoso",
+  "token_request": {
+    "tenant": "00000000-0000-0000-0000-000000000000",
+    "authority": "https://login.microsoftonline.com",
+    "audience": "https://dev.azure.com/contoso",
+    "scopes": [],
+    "credential_profile": "devops-pat",
+    "flow": "api_key",
+    "api_key": {"header": "authorization", "prefix": "Basic"}
+  }
+}

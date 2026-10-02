@@ -19,6 +19,16 @@ fn request(cli: &Cli, file: &Option<PathBuf>) -> Result<TokenRequest> {
 }
 /// No interactive fallback: an agent cannot accidentally initiate a login prompt.
 pub async fn acquire(request: &TokenRequest) -> Result<AccessToken> {
+    acquire_with(request, false).await
+}
+/// Operator CLI execution may ask for an out-of-band API key on the terminal.
+pub async fn acquire_interactive(request: &TokenRequest) -> Result<AccessToken> {
+    acquire_with(request, true).await
+}
+async fn acquire_with(request: &TokenRequest, interactive: bool) -> Result<AccessToken> {
+    if request.flow == AuthFlow::ApiKey {
+        return crate::api_key::acquire(request, interactive);
+    }
     if request.flow == AuthFlow::DeviceCode {
         if !OsCredentialStore::available() {
             bail!("OS credential storage is unavailable on this platform");
@@ -71,6 +81,19 @@ fn saved_status<S: junction_auth::storage::CredentialStore>(
     request: &TokenRequest,
     tokens: &StoredTokens<S>,
 ) -> Result<serde_json::Value> {
+    if request.flow == AuthFlow::ApiKey {
+        let environment = std::env::var_os(crate::api_key::environment_variable(request)).is_some();
+        let saved =
+            !environment && OsCredentialStore::available() && tokens.load(request)?.is_some();
+        return Ok(json!({
+            "tenant": request.tenant,
+            "audience": request.audience,
+            "credential_profile": request.credential_profile,
+            "flow": request.flow,
+            "status": if environment { "api_key_environment" } else if saved { "api_key_saved" } else { "api_key_required" },
+            "environment_variable": crate::api_key::environment_variable(request),
+        }));
+    }
     let interactive = request.flow == AuthFlow::DeviceCode;
     let token = if interactive {
         tokens.load(request)?
@@ -94,7 +117,7 @@ pub async fn run(cli: &Cli, command: &AuthCommand, output: &OutputOptions) -> Re
             for name in context_store::list(&cli.contexts_directory)? {
                 let request =
                     context_token_request(&context_store::read(&cli.contexts_directory, &name)?)?;
-                if request.flow == AuthFlow::DeviceCode {
+                if matches!(request.flow, AuthFlow::DeviceCode | AuthFlow::ApiKey) {
                     let mut account = status(&request)?;
                     account["context"] = json!(name);
                     accounts.push(account);
@@ -122,9 +145,18 @@ pub async fn run(cli: &Cli, command: &AuthCommand, output: &OutputOptions) -> Re
             timeout_seconds,
         } => {
             let request = request(cli, context_file)?;
-            if request.flow != AuthFlow::DeviceCode {
-                bail!("CLI interactive login requires a device_code context");
+            if request.flow == AuthFlow::ApiKey {
+                // Out-of-band keys are typed by the operator, never passed as arguments.
+                let token = crate::api_key::prompt(&request, false)?;
+                crate::api_key::save(&request, &token)?;
+                return output.emit(&json!({"status": "api_key_saved", "tenant": request.tenant, "credential_profile": request.credential_profile}));
             }
+            if request.flow != AuthFlow::DeviceCode {
+                bail!("CLI interactive login requires a device_code or api_key context");
+            }
+            let client_id = client_id
+                .as_ref()
+                .ok_or_else(|| anyhow::anyhow!("device code login requires --client-id"))?;
             if !OsCredentialStore::available() {
                 bail!("OS credential storage is unavailable on this platform");
             }
@@ -212,6 +244,7 @@ mod tests {
             ],
             credential_profile: "operator".into(),
             flow: AuthFlow::DeviceCode,
+            api_key: None,
         }
     }
     fn fixture(request: &TokenRequest, expired: bool, refresh: Option<&str>) -> MemoryStore {

@@ -86,3 +86,42 @@ native Keychain round-trip acceptance testing are still required.
 Headless RSA certificate client credentials are also available through the
 `certificate` flow. See [certificate authentication](CERTIFICATE-AUTHENTICATION.md)
 for environment variables, DER key requirements, context bindings and verification limits.
+
+## Out-of-band API keys
+
+Some Microsoft services issue credentials outside Entra ID. Junction supports
+them with the `api_key` flow and an explicit placement:
+
+| Service | Placement | Example context |
+| --- | --- | --- |
+| Defender for Cloud Apps API token | `{"header":"authorization","prefix":"Token"}` | `examples/defender-cloud-apps-api-key-context.json` |
+| Azure DevOps personal access token | `{"header":"authorization","prefix":"Basic"}` (sent as Basic `:<PAT>`) | `examples/azure-devops-pat-context.json` |
+| Subscription or function keys | `{"header":"ocp-apim-subscription-key"}`, `{"header":"x-functions-key"}`, `{"header":"api-key"}` or `{"header":"x-api-key"}` | |
+
+Only these credential headers are accepted. Declared operation parameters can
+never set them. Junction never accepts the key as a command-line argument or
+context value. It looks for a key in this order:
+
+1. the `JUNCTION_API_KEY_<PROFILE>` environment variable (profile upper-cased,
+   other characters replaced by `_`), for headless and CI use;
+2. the OS credential store (macOS Keychain), saved by `junction auth login`;
+3. CLI execution only: a prompt on the controlling terminal. Echo is disabled
+   before the prompt appears, and you can optionally save the key.
+
+MCP and HTTP hosts never prompt. Agents receive a secret-free
+`{"status":"credential_required","flow":"api_key","environment_variable":...,"remediation":...}`
+response telling the operator to provide the key out of band.
+
+```sh
+junction context add mdca --file examples/defender-cloud-apps-api-key-context.json
+junction --context mdca auth login          # prompts for the key, saves it
+junction --context mdca auth status         # api_key_saved | api_key_environment | api_key_required
+junction --context mdca execute defender.cloud_apps.alerts.list --input '{}'
+junction --context mdca auth logout         # removes the saved key
+```
+
+Saved keys are bound to tenant, audience, profile and placement. They are kept
+for up to a year (access tokens: one day), and are replaced by logging in again.
+On platforms without native secure storage (currently Windows and Linux), use
+the environment variable or the per-run prompt; keys are never written to
+files.

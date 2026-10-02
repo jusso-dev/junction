@@ -1,0 +1,12 @@
+{
+  "endpoint": "https://contoso.us3.portal.cloudappsecurity.com",
+  "token_request": {
+    "tenant": "00000000-0000-0000-0000-000000000000",
+    "authority": "https://login.microsoftonline.com",
+    "audience": "https://contoso.us3.portal.cloudappsecurity.com",
+    "scopes": [],
+    "credential_profile": "mdca",
+    "flow": "api_key",
+    "api_key": {"header": "authorization", "prefix": "Token"}
+  }
+}

@@ -172,6 +172,7 @@ mod tests {
             scopes: vec![],
             credential_profile: "default".into(),
             flow: AuthFlow::ClientCredentials,
+            api_key: None,
         }
     }
     #[test]
@@ -304,6 +305,7 @@ mod transport_tests {
             scopes: vec![],
             credential_profile: "default".into(),
             flow: AuthFlow::ClientCredentials,
+            api_key: None,
         }
     }
     #[tokio::test]

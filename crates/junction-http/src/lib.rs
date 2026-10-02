@@ -126,6 +126,40 @@ fn retry_delay(
     // Honor upstream delay exactly, or return the failure when it exceeds our budget.
     (elapsed.saturating_add(delay) < Duration::from_secs(10)).then_some(delay)
 }
+/// Build the sensitive request header that presents a credential.
+fn credential_header(
+    credential: &junction_auth::Credential<'_>,
+) -> Result<(reqwest::header::HeaderName, reqwest::header::HeaderValue)> {
+    let (name, value) = match credential {
+        junction_auth::Credential::Bearer(secret) => (
+            reqwest::header::AUTHORIZATION,
+            zeroize::Zeroizing::new(format!("Bearer {}", secret.expose())),
+        ),
+        junction_auth::Credential::Header { placement, secret } => {
+            placement.validate()?;
+            let name = reqwest::header::HeaderName::from_bytes(placement.header.as_bytes())
+                .map_err(|_| anyhow::anyhow!("invalid credential header"))?;
+            let value = match placement.prefix.as_deref() {
+                // Azure DevOps personal access tokens use Basic with an empty user.
+                Some("Basic") => {
+                    use base64::Engine;
+                    let pair = zeroize::Zeroizing::new(format!(":{}", secret.expose()));
+                    format!(
+                        "Basic {}",
+                        base64::engine::general_purpose::STANDARD.encode(pair.as_bytes())
+                    )
+                }
+                Some(prefix) => format!("{prefix} {}", secret.expose()),
+                None => secret.expose().to_owned(),
+            };
+            (name, zeroize::Zeroizing::new(value))
+        }
+    };
+    let mut header = reqwest::header::HeaderValue::from_str(&value)
+        .map_err(|_| anyhow::anyhow!("invalid credential"))?;
+    header.set_sensitive(true);
+    Ok((name, header))
+}
 #[derive(Clone)]
 pub struct HttpTransport {
     client: reqwest::Client,
@@ -160,7 +194,7 @@ impl HttpTransport {
         method: &str,
         url: Url,
         body: Option<&Value>,
-        bearer: Option<&Secret>,
+        bearer: Option<&junction_auth::Credential<'_>>,
     ) -> Result<HttpResponse> {
         self.send_with_headers_retries(method, url, body, bearer, &RequestHeaders::new())
             .await
@@ -170,7 +204,7 @@ impl HttpTransport {
         method: &str,
         url: Url,
         body: Option<&Value>,
-        bearer: Option<&Secret>,
+        bearer: Option<&junction_auth::Credential<'_>>,
         headers: &RequestHeaders,
     ) -> Result<HttpResponse> {
         validate_headers(headers)?;
@@ -201,7 +235,7 @@ impl HttpTransport {
         method: &str,
         url: Url,
         body: Option<&Value>,
-        bearer: Option<&Secret>,
+        bearer: Option<&junction_auth::Credential<'_>>,
     ) -> Result<HttpResponse> {
         self.send_with_headers(method, url, body, bearer, &RequestHeaders::new())
             .await
@@ -211,7 +245,7 @@ impl HttpTransport {
         method: &str,
         url: Url,
         body: Option<&Value>,
-        bearer: Option<&Secret>,
+        bearer: Option<&junction_auth::Credential<'_>>,
         headers: &RequestHeaders,
     ) -> Result<HttpResponse> {
         validate_headers(headers)?;
@@ -236,12 +270,9 @@ impl HttpTransport {
             .header("client-request-id", &client_request_id)
             .header("x-ms-client-request-id", &client_request_id)
             .header("return-client-request-id", "true");
-        if let Some(secret) = bearer {
-            let mut header =
-                reqwest::header::HeaderValue::from_str(&format!("Bearer {}", secret.expose()))
-                    .map_err(|_| anyhow::anyhow!("invalid bearer credential"))?;
-            header.set_sensitive(true);
-            builder = builder.header(reqwest::header::AUTHORIZATION, header);
+        if let Some(credential) = bearer {
+            let (name, header) = credential_header(credential)?;
+            builder = builder.header(name, header);
         }
         if let Some(body) = body {
             builder = builder.json(body);
@@ -323,6 +354,59 @@ fn continuation_token(headers: &reqwest::header::HeaderMap) -> Result<Option<Sec
     (!value.is_empty())
         .then(|| Secret::new(value.to_owned()))
         .transpose()
+}
+#[cfg(test)]
+mod credential_tests {
+    #[test]
+    fn api_keys_use_their_validated_header_and_scheme() {
+        let secret = junction_auth::Secret::new("key-123".into()).unwrap();
+        let placement = junction_auth::ApiKeyPlacement {
+            header: "authorization".into(),
+            prefix: Some("Token".into()),
+        };
+        let (name, value) = super::credential_header(&junction_auth::Credential::Header {
+            placement: &placement,
+            secret: &secret,
+        })
+        .unwrap();
+        assert_eq!(name, reqwest::header::AUTHORIZATION);
+        assert_eq!(value, "Token key-123");
+        assert!(value.is_sensitive());
+        let placement = junction_auth::ApiKeyPlacement {
+            header: "ocp-apim-subscription-key".into(),
+            prefix: None,
+        };
+        let (name, value) = super::credential_header(&junction_auth::Credential::Header {
+            placement: &placement,
+            secret: &secret,
+        })
+        .unwrap();
+        assert_eq!(name.as_str(), "ocp-apim-subscription-key");
+        assert_eq!(value, "key-123");
+        let basic = junction_auth::ApiKeyPlacement {
+            header: "authorization".into(),
+            prefix: Some("Basic".into()),
+        };
+        let (_, value) = super::credential_header(&junction_auth::Credential::Header {
+            placement: &basic,
+            secret: &secret,
+        })
+        .unwrap();
+        assert_eq!(value, "Basic OmtleS0xMjM=");
+        let (_, value) = super::credential_header(&(&secret).into()).unwrap();
+        assert_eq!(value, "Bearer key-123");
+        let forbidden = junction_auth::ApiKeyPlacement {
+            header: "cookie".into(),
+            prefix: None,
+        };
+        assert!(
+            super::credential_header(&junction_auth::Credential::Header {
+                placement: &forbidden,
+                secret: &secret,
+            })
+            .is_err()
+        );
+    }
 }
 #[cfg(test)]
 mod tests {

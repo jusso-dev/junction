@@ -333,6 +333,7 @@ mod tests {
             ],
             credential_profile: "user-a".into(),
             flow: AuthFlow::Pkce,
+            api_key: None,
         }
     }
     fn provider() -> PkceProvider {

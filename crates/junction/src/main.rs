@@ -1,3 +1,4 @@
+mod api_key;
 mod approval_cli;
 mod auth_cli;
 mod context_store;
@@ -322,9 +323,10 @@ enum AuthCommand {
     Login {
         #[arg(long)]
         context_file: Option<PathBuf>,
-        /// Client ID of an operator-owned Entra public-client application.
+        /// Client ID of an operator-owned Entra public-client application
+        /// (device code). API key contexts prompt for the key instead.
         #[arg(long)]
-        client_id: String,
+        client_id: Option<String>,
         #[arg(long, default_value_t = 600, value_parser = clap::value_parser!(u64).range(1..=3600))]
         timeout_seconds: u64,
     },
@@ -433,6 +435,7 @@ impl ExecutionConfig {
                 | junction_auth::AuthFlow::WorkloadIdentity
                 | junction_auth::AuthFlow::ExternalBearer
                 | junction_auth::AuthFlow::OnBehalfOf
+                | junction_auth::AuthFlow::ApiKey
         ) {
             anyhow::bail!("unsupported CLI authentication flow");
         }
@@ -462,6 +465,8 @@ struct CloudExecutionConfig {
     subscription: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     default_resource_group: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    api_key: Option<junction_auth::ApiKeyPlacement>,
 }
 fn default_auth_flow() -> junction_auth::AuthFlow {
     junction_auth::AuthFlow::ClientCredentials
@@ -481,6 +486,7 @@ impl CloudExecutionConfig {
                 | junction_auth::AuthFlow::WorkloadIdentity
                 | junction_auth::AuthFlow::ExternalBearer
                 | junction_auth::AuthFlow::OnBehalfOf
+                | junction_auth::AuthFlow::ApiKey
         ) {
             anyhow::bail!("unsupported CLI authentication flow");
         }
@@ -504,6 +510,7 @@ impl CloudExecutionConfig {
             scopes: self.scopes.clone(),
             credential_profile: self.credential_profile.clone(),
             flow: self.flow,
+            api_key: self.api_key.clone(),
         }
         .validate()
     }
@@ -536,6 +543,7 @@ impl CloudExecutionConfig {
                 scopes: self.scopes,
                 credential_profile: self.credential_profile,
                 flow: self.flow,
+                api_key: self.api_key,
             },
         };
         config.token_request.validate()?;
@@ -596,6 +604,7 @@ fn context_token_request(bytes: &[u8]) -> Result<junction_auth::TokenRequest> {
         scopes: config.scopes,
         credential_profile: config.credential_profile,
         flow: config.flow,
+        api_key: None,
     };
     request.validate()?;
     Ok(request)
@@ -1022,7 +1031,7 @@ async fn run() -> Result<()> {
             let plan = junction_runtime::batch::BatchPlan::build(plan.request, &policy.limits)?;
             let executor = junction_runtime::Executor::new(registry, policy)?;
             executor.preflight_batch(&plan, &context.token_request.tenant, &context.endpoint)?;
-            let token = auth_cli::acquire(&context.token_request).await?;
+            let token = auth_cli::acquire_interactive(&context.token_request).await?;
             let result = executor
                 .execute_batch(
                     plan.request,
@@ -1183,7 +1192,7 @@ async fn run() -> Result<()> {
             if is_lro {
                 operation_store::prepare(&cli.operations_directory)?;
             }
-            let token = auth_cli::acquire(&context.token_request).await?;
+            let token = auth_cli::acquire_interactive(&context.token_request).await?;
             let execution_context = junction_runtime::ExecutionContext {
                 tenant: &context.token_request.tenant,
                 audience: &context.token_request.audience,
@@ -1324,7 +1333,7 @@ async fn run() -> Result<()> {
                     &context.token_request.audience,
                     &context.endpoint,
                 )?;
-                let token = auth_cli::acquire(&context.token_request).await?;
+                let token = auth_cli::acquire_interactive(&context.token_request).await?;
                 let checkpoint_path = stored.checkpoint_path();
                 let result = executor
                     .wait_lro_checkpointed(
@@ -1474,6 +1483,11 @@ async fn main() {
             eprintln!(
                 "{}",
                 serde_json::json!({"status":"server_failed","reason":server.to_string()})
+            );
+        } else if let Some(required) = error.downcast_ref::<api_key::CredentialRequired>() {
+            eprintln!(
+                "{}",
+                serde_json::to_string(required).expect("credential guidance serializes")
             );
         } else if let Some(approval) = error.downcast_ref::<approval_cli::ApprovalFailure>() {
             eprintln!(

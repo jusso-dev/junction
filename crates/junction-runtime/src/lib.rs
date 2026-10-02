@@ -674,7 +674,7 @@ impl Executor {
                     method,
                     url.clone(),
                     body,
-                    Some(context.token.bearer_secret()),
+                    Some(&context.token.credential()),
                     &request.headers,
                 )
                 .await
@@ -778,7 +778,7 @@ impl Executor {
                 &request.method,
                 request.url,
                 request.body.as_ref(),
-                Some(context.token.bearer_secret()),
+                Some(&context.token.credential()),
                 &request.headers,
             )
             .await
@@ -809,7 +809,7 @@ impl Executor {
                 &request.method,
                 request.url,
                 request.body.as_ref(),
-                Some(context.token.bearer_secret()),
+                Some(&context.token.credential()),
                 &request.headers,
             )
             .await

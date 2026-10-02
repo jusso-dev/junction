@@ -212,6 +212,7 @@ mod tests {
             ],
             credential_profile: "operator-a".into(),
             flow: AuthFlow::DeviceCode,
+            api_key: None,
         }
     }
     fn credential() -> RefreshCredential {

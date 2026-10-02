@@ -267,6 +267,7 @@ mod tests {
             scopes: vec![],
             credential_profile: "vm-a".into(),
             flow: AuthFlow::ManagedIdentity,
+            api_key: None,
         }
     }
     #[test]
@@ -501,6 +502,7 @@ mod transport_tests {
             scopes: vec![],
             credential_profile: "vm-a".into(),
             flow: AuthFlow::ManagedIdentity,
+            api_key: None,
         }
     }
     fn rejected(status: &str) -> String {
@@ -567,6 +569,7 @@ mod transport_tests {
             scopes: vec![],
             credential_profile: "vm-a".into(),
             flow: AuthFlow::ManagedIdentity,
+            api_key: None,
         };
         let mut provider = ManagedIdentityProvider::new(request.clone(), None).unwrap();
         let expiry = SystemTime::now()

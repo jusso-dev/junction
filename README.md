@@ -21,7 +21,7 @@ The default registry holds **19,462 operations across 10 products**, all refresh
 | Defender for Cloud | `defender.cloud.*` | azure-rest-api-specs | 29 |
 | Defender XDR (incidents, advanced hunting) | `defender.xdr.*`, plus `defender.incidents.*`/`defender.hunting.*` Graph aliases | Microsoft Learn reference | 4 |
 | Defender for Endpoint | `defender.endpoint.*` | Microsoft Learn reference | 100 |
-| Defender for Cloud Apps | `defender.cloud_apps.*` | Microsoft Learn reference | 29 |
+| Defender for Cloud Apps (API-token auth) | `defender.cloud_apps.*` | Microsoft Learn reference | 29 |
 | Defender for Identity, Defender for Office 365 | `defender.identity.*`, `defender.threat_intelligence.*`, `defender.attack_simulation.*` | Graph security API aliases | aliases |
 | Power Platform | `power_platform.*` | Microsoft Learn REST reference | 214 |
 | Power BI | `power_bi.rest.*` | [PowerBI-CSharp](https://github.com/microsoft/PowerBI-CSharp) swagger | 287 |
@@ -56,6 +56,17 @@ junction describe purview.audit.queries.list   # graph.security.audit_log.querie
 ```
 
 Aliases never create or modify operations. The canonical ID, risk and policy rules (including deny patterns) apply unchanged, and a real operation ID always wins over an alias.
+
+### Out-of-band API keys
+
+Services that issue credentials outside Entra ID use the `api_key` flow:
+Defender for Cloud Apps API tokens (`Authorization: Token <key>`), Azure DevOps
+personal access tokens (`Basic`), and subscription or function keys. When no
+key is available, `junction execute` prompts on the terminal with echo disabled
+and offers to save the key in the OS credential store. `junction auth login`
+stores a key ahead of time, and `JUNCTION_API_KEY_<PROFILE>` serves headless
+runs. MCP and HTTP agents never see a prompt; they get a structured
+`credential_required` response. See [authentication](docs/AUTHENTICATION.md#out-of-band-api-keys).
 
 ### Cloud contexts
 

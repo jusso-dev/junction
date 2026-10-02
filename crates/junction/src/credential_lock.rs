@@ -107,6 +107,7 @@ mod tests {
             scopes: vec![],
             credential_profile: "operator".into(),
             flow: junction_auth::AuthFlow::DeviceCode,
+            api_key: None,
         }
     }
     fn released_lock(directory: &Path, request: &TokenRequest) -> CredentialLock {

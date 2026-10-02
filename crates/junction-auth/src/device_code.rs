@@ -313,6 +313,7 @@ mod tests {
             ],
             credential_profile: "user-a".into(),
             flow: AuthFlow::DeviceCode,
+            api_key: None,
         }
     }
     fn session(now: Instant) -> DeviceSession {
@@ -523,6 +524,7 @@ mod transport_tests {
             scopes: vec!["https://resource.example.invalid/read".into()],
             credential_profile: "user-a".into(),
             flow: AuthFlow::DeviceCode,
+            api_key: None,
         };
         let mut session = decode_session(br#"{"device_code":"private&=+ code","user_code":"ABCD-EFGH","verification_uri":"https://login.example.invalid/device","expires_in":900,"interval":5}"#, &request, "client-a", now).unwrap();
         // Only the test transport uses plaintext loopback; production sessions

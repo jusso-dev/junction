@@ -68,6 +68,7 @@ mod tests {
             scopes: vec!["read".into()],
             credential_profile: "injected".into(),
             flow: AuthFlow::ExternalBearer,
+            api_key: None,
         };
         let token = provider.acquire(&request).unwrap();
         assert!(!format!("{token:?}").contains("opaque-secret-token"));

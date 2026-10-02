@@ -280,6 +280,7 @@ mod tests {
             scopes: vec![],
             credential_profile: "cert".into(),
             flow: crate::AuthFlow::Certificate,
+            api_key: None,
         };
         assert_eq!(
             credential
@@ -316,6 +317,7 @@ mod tests {
             scopes: vec![],
             credential_profile: "azure-vm".into(),
             flow: AuthFlow::ManagedIdentity,
+            api_key: None,
         };
         assert!(
             credential
@@ -380,6 +382,7 @@ mod tests {
             scopes: vec![],
             credential_profile: "obo".into(),
             flow: AuthFlow::OnBehalfOf,
+            api_key: None,
         };
         assert!(credential.validate_request(&request).is_ok());
         // Empty target scopes fail in the selected OBO provider before HTTP.
@@ -429,6 +432,7 @@ mod tests {
             scopes: vec![],
             credential_profile: "workload".into(),
             flow: AuthFlow::WorkloadIdentity,
+            api_key: None,
         };
         assert!(credential.validate_request(&request).is_err());
         request.tenant = "a".into();
@@ -459,6 +463,7 @@ mod tests {
             scopes: vec![],
             credential_profile: "default".into(),
             flow: AuthFlow::ClientCredentials,
+            api_key: None,
         };
         assert!(credential.validate_request(&request).is_ok());
         request.tenant = "customer-b".into();
