@@ -26,6 +26,8 @@ pub fn tools() -> Value {
     execute["max_items"] = json!({"type":"integer","minimum":1,"maximum":10000});
     execute["max_pages"] = json!({"type":"integer","minimum":1,"maximum":10000});
     execute["continuation"] = json!({"type":"string","pattern":"^[0-9a-f]{64}$"});
+    // Single-use approval an operator recorded with `junction approvals issue`.
+    execute["approval_id"] = json!({"type":"string","pattern":"^[0-9a-f]{32}$"});
     let definitions = [
         (
             "junction_search",

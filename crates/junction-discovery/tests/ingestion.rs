@@ -1104,3 +1104,35 @@ fn posture_changing_and_privilege_actions_require_approval_risk() {
     );
     assert_eq!(risk("defender.endpoint.role_assignments.get"), "read_only");
 }
+
+#[test]
+fn documented_query_posts_are_read_only() {
+    let spec = json!({"openapi":"3.0.0","servers":[{"url":"https://management.azure.com"}],"paths":{
+        "/providers/Microsoft.ResourceGraph/resources":{"post":{"operationId":"Resources"}},
+        "/api/advancedhunting/run":{"post":{"operationId":"Hunting_Run"}},
+        "/workspaces/{workspaceId}/query":{"post":{"operationId":"Query_Execute","parameters":[{"name":"workspaceId","in":"path","required":true,"schema":{"type":"string"}}]}},
+        "/providers/Microsoft.ResourceGraph/resourcesEvil":{"post":{"operationId":"Other_Post"}}
+    }});
+    let manifest = ingest(&spec, "azure", "query", "official").unwrap();
+    let risk = |path: &str| {
+        serde_json::to_value(
+            &manifest
+                .operations
+                .iter()
+                .find(|op| op.path == path)
+                .unwrap()
+                .risk,
+        )
+        .unwrap()
+    };
+    assert_eq!(
+        risk("/providers/Microsoft.ResourceGraph/resources"),
+        "read_only"
+    );
+    assert_eq!(risk("/api/advancedhunting/run"), "read_only");
+    assert_eq!(risk("/workspaces/{workspaceId}/query"), "read_only");
+    assert_eq!(
+        risk("/providers/Microsoft.ResourceGraph/resourcesEvil"),
+        "write"
+    );
+}

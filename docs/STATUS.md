@@ -25,6 +25,39 @@ The complete discovery suite passes 66 tests with its single socket-dependent
 download test filtered under the sandbox; changed-crate Clippy and workspace
 formatting checks pass.
 
+## Completion pass (2026-10-02, later)
+
+Implemented:
+
+- **Operations:** `operations cancel` (only when a documented cancel operation exists) and `api export-openapi`.
+- **Approvals:** batch approvals, and durable single-use approvals that MCP/HTTP agents use via `approval_id`.
+- **Authentication:** browser PKCE login; managed identity on App Service, Functions, Arc and Cloud Shell; the `azure_cli` flow; Windows Credential Manager and Linux Secret Service storage; SAS query placement.
+- **Paging:** Resource Graph body-token paging, and the Graph `listMore` paging fix.
+- **Risk:** read-only classification for documented query POSTs; privileged classification for posture and role changes.
+- **Typed schemas:** Learn REST reference responses and request bodies.
+- **Coverage:** Storage, Key Vault (ARM and data plane), Network and Application Insights; the catalogue now has 20,081 operations.
+- **Developer surfaces:** a compiled `junction-types` crate with readable names; a read-only TUI runner.
+- **Robustness:** large-stack command thread for Windows; opt-in live smoke script.
+
+Live, read-only verification against a real tenant (Azure CLI credential):
+
+- ARM resource groups;
+- Graph organization and users, with paging and resume;
+- a Resource Graph query with body paging and resume;
+- the TUI runner;
+- the 403 enrichment path for Graph security and Defender XDR.
+
+Not verified, or out of reach from this environment:
+
+- live write, destructive or approval-gated calls;
+- sovereign clouds;
+- device-code or browser sign-in completed by a person;
+- live managed identity hosts;
+- Defender and Power Platform calls with suitably consented apps;
+- Windows/Linux credential storage against a real desktop keyring (compiled and unit-tested in CI only).
+
+Storage Shared Key signing and Service Fabric managed identity are deliberately unsupported. The disclaimer has not had legal review.
+
 ## Coverage update (2026-10-02)
 
 A further live refresh published 19,462 default operations across 10 products.

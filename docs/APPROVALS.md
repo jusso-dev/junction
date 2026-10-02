@@ -66,3 +66,45 @@ the operator's terminal. Do not give agents an interactive shell on the
 operator's TTY. Grants are not persisted, are not shared across processes and
 are not available through MCP or HTTP; `--approve` cannot be combined with
 `--all`. Durable, cross-process or remote approvals remain future work.
+
+## Batch approvals
+
+`junction batch --approve` validates every approval-required item, confirms
+each one on the terminal, and then issues all the single-use grants together so
+none expires while you review. Items that reference earlier results cannot be
+approved, because a grant binds the exact input. Other items run with the
+normal batch rules.
+
+## Durable approvals for agents
+
+```sh
+junction --context prod approvals issue azure.compute.virtual_machines.delete \
+  --input '{"parameters":{"vmName":"old-vm"}}' --resource-group rg1 \
+  --policy agent-policy.toml --ttl-minutes 30
+# -> {"status":"approved","approval_id":"<32 hex>", ...}
+```
+
+The command validates the request, shows it on the controlling terminal and
+requires the usual confirmation. It then writes a private record (directory
+mode 0700, file mode 0600) under `--approvals-directory` (default
+`.junction/approvals`). The record binds:
+
+- the operation, API version and preview opt-in;
+- the exact input;
+- the tenant, endpoint, audience and credential profile;
+- a fingerprint of the policy the agent host will run with;
+- an expiry of at most 24 hours.
+
+An MCP or HTTP agent may then call `junction_execute` with the same operation,
+the same input and `"approval_id"`. The host claims the record atomically (it is
+spent even if a later check fails) and re-checks every binding against its own
+context and policy. Only then does it issue an in-process grant and run the
+single request. LRO starts and paged reads are not covered by durable
+approvals.
+
+`junction approvals list` shows unused records (metadata only).
+`junction approvals revoke <id>` deletes one.
+
+Limit: any process running as the same OS user can read the approvals
+directory. Run agents under a different account, or without filesystem access,
+when that matters.

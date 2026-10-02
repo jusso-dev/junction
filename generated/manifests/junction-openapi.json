@@ -14,6 +14,10 @@
             "maxLength": 256,
             "type": "string"
           },
+          "approval_id": {
+            "pattern": "^[0-9a-f]{32}$",
+            "type": "string"
+          },
           "continuation": {
             "pattern": "^[0-9a-f]{64}$",
             "type": "string"
@@ -128,6 +132,10 @@
           },
           "api_version": {
             "maxLength": 256,
+            "type": "string"
+          },
+          "approval_id": {
+            "pattern": "^[0-9a-f]{32}$",
             "type": "string"
           },
           "continuation": {

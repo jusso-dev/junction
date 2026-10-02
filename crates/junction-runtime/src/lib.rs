@@ -856,6 +856,89 @@ impl Executor {
         })
         .await)
     }
+    /// Bounded paging for operations whose continuation token travels in the
+    /// request body (Azure Resource Graph). Each page is an ordinary execution
+    /// with full policy and schema checks; the service token is copied only
+    /// into the documented body field.
+    pub async fn execute_body_pages(
+        &self,
+        operation_id: &str,
+        input: Value,
+        context: ExecutionContext<'_>,
+        options: &PageOptions,
+        start_token: Option<String>,
+    ) -> Result<BodyPages> {
+        let operation = self.registry.resolve(
+            operation_id,
+            options.api_version.as_deref(),
+            options.allow_preview,
+        )?;
+        let (request_pointer, response_pointer, items_pointer) =
+            junction_core::body_continuation(operation)
+                .ok_or_else(|| anyhow::anyhow!("operation has no documented body continuation"))?;
+        let limits = &self.policy.limits;
+        if options.max_items == 0
+            || options.max_pages == 0
+            || options.max_items > limits.max_items
+            || options.max_pages > limits.max_pages
+        {
+            bail!("pagination limits exceed policy");
+        }
+        let mut token = start_token;
+        let mut items = Vec::new();
+        let mut pages = 0;
+        while pages < options.max_pages && items.len() < options.max_items {
+            let mut page_input = input.clone();
+            if let Some(token) = &token {
+                if token.is_empty()
+                    || token.len() > 16 * 1024
+                    || token.chars().any(char::is_control)
+                {
+                    bail!("invalid continuation token");
+                }
+                let body = page_input
+                    .as_object_mut()
+                    .ok_or_else(|| anyhow::anyhow!("input must be an object"))?
+                    .entry("body")
+                    .or_insert_with(|| serde_json::json!({}));
+                set_pointer(body, request_pointer, serde_json::json!(token))?;
+            }
+            let response = self
+                .execute(
+                    operation_id,
+                    page_input,
+                    context,
+                    options.api_version.as_deref(),
+                    options.allow_preview,
+                )
+                .await?;
+            pages += 1;
+            let page = response
+                .body
+                .pointer(items_pointer)
+                .and_then(Value::as_array)
+                .ok_or_else(|| anyhow::anyhow!("paged response has no item array"))?;
+            items.extend(page.iter().cloned());
+            let next = response
+                .body
+                .pointer(response_pointer)
+                .and_then(Value::as_str)
+                .filter(|next| !next.is_empty())
+                .map(str::to_owned);
+            if next.is_some() && next == token {
+                bail!("continuation token did not advance");
+            }
+            token = next;
+            if token.is_none() {
+                break;
+            }
+        }
+        Ok(BodyPages {
+            items,
+            pages,
+            next_token: token,
+        })
+    }
     /// Execute a single approved request, rechecking policy, input and credentials.
     pub async fn execute_with_approval(
         &self,
@@ -1802,6 +1885,34 @@ mod executor_tests {
 
 pub mod pagination;
 
+/// Result of request-body paging; `next_token` resumes the next page.
+pub struct BodyPages {
+    pub items: Vec<Value>,
+    pub pages: usize,
+    pub next_token: Option<String>,
+}
+/// Create intermediate objects along a JSON pointer and set its value.
+fn set_pointer(target: &mut Value, pointer: &str, value: Value) -> Result<()> {
+    let mut current = target;
+    let parts: Vec<String> = pointer
+        .split('/')
+        .skip(1)
+        .map(|part| part.replace("~1", "/").replace("~0", "~"))
+        .collect();
+    for (index, part) in parts.iter().enumerate() {
+        let object = current
+            .as_object_mut()
+            .ok_or_else(|| anyhow::anyhow!("continuation field is not an object"))?;
+        if index + 1 == parts.len() {
+            object.insert(part.clone(), value);
+            return Ok(());
+        }
+        current = object
+            .entry(part.clone())
+            .or_insert_with(|| serde_json::json!({}));
+    }
+    bail!("invalid continuation pointer")
+}
 /// Bounded retrieval settings, independent of API parameters.
 #[derive(Clone, serde::Deserialize, serde::Serialize)]
 #[serde(default, deny_unknown_fields)]

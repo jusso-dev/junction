@@ -21,18 +21,18 @@ fn emitted_module_compiles_and_preserves_presence_nullability_and_recursion() {
     let main = format!(
         r##"
 fn main() {{
-    type User = {user};
+    type Checked = {user};
     let good = serde_json::json!({{"type":"user","state":"active","nickname":null,"optional":null,"child":{{"type":"child","state":"active","nickname":"name"}}}});
-    let value: User = serde_json::from_value(good.clone()).unwrap();
+    let value: Checked = serde_json::from_value(good.clone()).unwrap();
     assert_eq!(serde_json::to_value(value).unwrap(), good);
     for bad in [
         serde_json::json!({{"type":"user","state":"active"}}),
         serde_json::json!({{"type":null,"state":"active","nickname":null}}),
         serde_json::json!({{"type":"user","state":"invalid","nickname":null}}),
         serde_json::json!({{"type":"user","state":"active","nickname":null,"unexpected":1}}),
-    ] {{ assert!(serde_json::from_value::<User>(bad).is_err()); }}
+    ] {{ assert!(serde_json::from_value::<Checked>(bad).is_err()); }}
     let omitted = serde_json::json!({{"type":"user","state":"active","nickname":null}});
-    let value: User = serde_json::from_value(omitted.clone()).unwrap();
+    let value: Checked = serde_json::from_value(omitted.clone()).unwrap();
     assert_eq!(serde_json::to_value(value).unwrap(), omitted);
     let metadata: serde_json::Value = serde_json::from_str(SCHEMAS_JSON).unwrap();
     assert!(metadata.get("#/components/schemas/User").is_some());

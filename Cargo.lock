@@ -1440,6 +1440,7 @@ dependencies = [
  "serde",
  "serde-saphyr",
  "serde_json",
+ "sha2",
  "tempfile",
  "tokio",
  "url",
@@ -1619,6 +1620,14 @@ dependencies = [
  "junction-core",
  "junction-registry",
  "ratatui",
+ "serde_json",
+]
+
+[[package]]
+name = "junction-types"
+version = "0.1.3"
+dependencies = [
+ "serde",
  "serde_json",
 ]
 

@@ -25,7 +25,7 @@ fn cli_generates_selected_types_atomically_and_preserves_output_on_error() {
         String::from_utf8_lossy(&result.stderr)
     );
     let emitted = std::fs::read(&output).unwrap();
-    assert!(String::from_utf8_lossy(&emitted).contains("pub struct Schema"));
+    assert!(String::from_utf8_lossy(&emitted).contains("pub struct User"));
     let result = invoke("#/missing");
     assert!(!result.status.success());
     assert_eq!(std::fs::read(&output).unwrap(), emitted);

@@ -82,6 +82,13 @@ impl Policy {
         }
         let floor = match operation.method.as_str() {
             "GET" | "HEAD" | "OPTIONS" => return Decision::Allowed,
+            // Only documented query endpoints may run as reads over POST.
+            "POST"
+                if operation.risk == OperationRisk::ReadOnly
+                    && junction_core::documented_query(&operation.path) =>
+            {
+                return Decision::Allowed;
+            }
             "DELETE" => OperationRisk::Destructive,
             _ => OperationRisk::Write,
         };
@@ -255,6 +262,38 @@ impl Drop for RequestPermit {
     }
 }
 
+#[cfg(test)]
+mod query_tests {
+    use super::*;
+    fn operation(path: &str) -> junction_core::JunctionOperation {
+        serde_json::from_value(serde_json::json!({"id":"azure.resource_graph.resources.post","product":"azure","service":"resource_graph","resource":"resources","operation":"post","description":"","method":"POST","base_url":"https://management.azure.com","path":path,"parameters":[],"responses":{},"security":[],"risk":"read_only","preview":false,"source":{"id":"official","upstream":"official","operation_id":"Resources"}})).unwrap()
+    }
+    #[test]
+    fn only_documented_query_posts_run_in_read_only_mode() {
+        let policy = Policy::parse("[agent]\nmode = 'read-only'\n").unwrap();
+        assert_eq!(
+            policy.authorize_operation(
+                &operation("/providers/Microsoft.ResourceGraph/resources"),
+                "t"
+            ),
+            Decision::Allowed
+        );
+        // A read-only label alone (for example from an override) is not enough.
+        assert!(matches!(
+            policy.authorize_operation(
+                &operation("/providers/Microsoft.Compute/virtualMachines/x/start"),
+                "t"
+            ),
+            Decision::PolicyRejected { .. }
+        ));
+        let mut write = operation("/providers/Microsoft.ResourceGraph/resources");
+        write.risk = OperationRisk::Write;
+        assert!(matches!(
+            policy.authorize_operation(&write, "t"),
+            Decision::PolicyRejected { .. }
+        ));
+    }
+}
 #[cfg(test)]
 mod tests {
     use super::*;

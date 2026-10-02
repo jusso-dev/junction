@@ -11,14 +11,14 @@ The daily GitHub Actions workflow refreshes every catalog below from official Mi
 
 ## API coverage
 
-The default registry holds **19,462 operations across 10 products**, all refreshed live from official Microsoft sources. Each catalog keeps per-document receipts (repository revision or Learn page, SHA-256 and byte count) in `generated/manifests/`.
+The default registry holds **20,081 operations across 10 products**, all refreshed live from official Microsoft sources. Each catalog keeps per-document receipts (repository revision or Learn page, SHA-256 and byte count) in `generated/manifests/`.
 
 | Product area | Operation IDs | Source | Operations |
 | --- | --- | --- | --- |
 | Microsoft Graph (v1.0; beta opt-in) | `graph.*` | [msgraph-metadata](https://github.com/microsoftgraph/msgraph-metadata) OpenAPI | 17,870 (beta 29,581) |
 | Microsoft 365, Entra ID, Intune, Windows 365, Teams, SharePoint, OneDrive, Planner, Outlook/Exchange | `m365.*`, `entra.*`, `intune.*`, `windows365.*` aliases over `graph.*` | Graph | see `junction api aliases` |
-| Azure Resource Manager: Resources, Compute, Monitor, Resource Graph, Cost Management, Log Analytics, Arc, Lighthouse | `azure.*` | [azure-rest-api-specs](https://github.com/Azure/azure-rest-api-specs) OpenAPI | 520 |
-| Log Analytics query (data plane) | `azure.log_analytics_query.*` | azure-rest-api-specs data-plane OpenAPI | 7 |
+| Azure Resource Manager: Resources, Compute, Storage, Network, Key Vault, Monitor, Application Insights, Resource Graph, Cost Management, Log Analytics, Arc, Lighthouse | `azure.*` | [azure-rest-api-specs](https://github.com/Azure/azure-rest-api-specs) OpenAPI | 1,075 |
+| Azure data planes: Key Vault keys/secrets/certificates, Log Analytics query | `azure.key_vault_*.*`, `azure.log_analytics_query.*` | azure-rest-api-specs data-plane OpenAPI | 71 |
 | Microsoft Sentinel | `sentinel.*` | azure-rest-api-specs | 95 |
 | Microsoft Purview (accounts; audit, eDiscovery, labels via Graph) | `purview.*` | azure-rest-api-specs + Graph aliases | 26 + aliases |
 | Defender for Cloud | `defender.cloud.*` | azure-rest-api-specs | 29 |
@@ -26,11 +26,25 @@ The default registry holds **19,462 operations across 10 products**, all refresh
 | Defender for Endpoint | `defender.endpoint.*` | Microsoft Learn reference | 100 |
 | Defender for Cloud Apps (API-token auth) | `defender.cloud_apps.*` | Microsoft Learn reference | 29 |
 | Defender for Identity, Defender for Office 365 | `defender.identity.*`, `defender.threat_intelligence.*`, `defender.attack_simulation.*` | Graph security API aliases | aliases |
-| Power Platform | `power_platform.*` | Microsoft Learn REST reference | 214 |
+| Power Platform | `power_platform.*` | Microsoft Learn REST reference (typed definitions) | 214 |
 | Power BI | `power_bi.rest.*` | [PowerBI-CSharp](https://github.com/microsoft/PowerBI-CSharp) swagger | 287 |
 | Microsoft Fabric | `fabric.*` | [fabric-rest-api-specs](https://github.com/microsoft/fabric-rest-api-specs) | 256 |
 | Office 365 Management Activity API | `m365.office_365_management.*` | Microsoft Learn reference | 6 |
 | Azure DevOps Core | `azure_devops.*` | [vsts-rest-api-specs](https://github.com/MicrosoftDocs/vsts-rest-api-specs) | 19 |
+
+The legacy Office 365 Service Communications API is retired by Microsoft. Use Graph service health (`m365.service_health.*`) instead. Junction reads emitted OpenAPI, which Microsoft generates from its TypeSpec sources, rather than compiling TypeSpec itself; compiling would need Node.js and adds no operations.
+
+### Verified against a live tenant
+
+On 2026-10-02 the following were run read-only against a real Microsoft 365/Azure tenant through the `azure_cli` credential flow:
+
+- ARM resource groups;
+- Graph organization;
+- Graph users, with bounded `--all` paging and resume;
+- a Resource Graph query with body-token paging and resume;
+- the TUI runner.
+
+The 403 path was also exercised: Graph security incidents and Defender XDR returned secret-free `authorization_failed` responses with the required permissions. Those runs found and fixed two bugs: Graph `listMore` paging, and Resource Graph queries being classified as writes. Repeat the checks with `scripts/live-smoke.sh`.
 
 ### Documented endpoints (Microsoft Learn)
 
@@ -71,11 +85,38 @@ stores a key ahead of time, and `JUNCTION_API_KEY_<PROFILE>` serves headless
 runs. MCP and HTTP agents never see a prompt; they get a structured
 `credential_required` response. See [authentication](docs/AUTHENTICATION.md#out-of-band-api-keys).
 
+### Operator approvals, cancellation and export
+
+- `junction execute <op> --approve` and `junction batch --approve` confirm destructive or privileged requests on the terminal, then run them with single-use grants.
+- `junction approvals issue <op> --input ...` records a durable approval. It lasts at most 24 hours and is bound to the operation, the exact input, the context and the host policy. An MCP or HTTP agent may then run that one request by passing `approval_id`. `junction approvals list` and `junction approvals revoke <id>` manage records.
+- Isolating devices, restricting code, live response, quarantine, collecting investigation packages, and role or privileged-access changes are classified **privileged**. Offboarding is **destructive**.
+- Documented query POSTs (Resource Graph, advanced hunting, KQL, Cost Management, search) are reads and run under read-only policy. They come from a fixed, code-owned list.
+- `junction operations cancel <id>` sends a cancel request only when the catalog documents a cancel operation for the started request. Otherwise it reports `cancel_unsupported`.
+- `junction api export-openapi --product <p> [--service <s>] --output catalog.json` writes the selected Microsoft catalog as OpenAPI 3.1, including its reachable schemas.
+- Resource Graph `--all` carries `$skipToken` in the request body. Continuation files are private and bound to the operation and input.
+
+### Credentials
+
+| Flow | Use |
+| --- | --- |
+| `client_credentials`, `certificate`, `workload_identity`, `external_bearer`, `on_behalf_of` | Environment-supplied app credentials |
+| `managed_identity` | Azure VMs (IMDS), App Service/Functions, Azure Arc and Cloud Shell, detected from each host's environment |
+| `device_code`, `pkce` | `junction auth login` (device code or browser with a loopback redirect), with renewal |
+| `azure_cli` | Optional: reuse an existing `az login` (Junction never requires the Azure CLI) |
+| `api_key` | Out-of-band keys: Defender for Cloud Apps tokens, Azure DevOps PATs, subscription/function keys, SAS query strings |
+
+Saved credentials use the macOS Keychain, Windows Credential Manager or the Linux Secret Service. There is no file fallback.
+
+### Rust types and terminal runner
+
+- The `junction-types` crate compiles 749 generated Serde types for common Graph resources (`graph::User`, `graph::Group`, `graph::SecurityIncident`, ...), regenerated daily.
+- `junction --context <name> tui` adds `r` to run the selected operation with JSON input under a read-only policy. Changes stay in `junction execute`.
+
 ### Cloud contexts
 
 Cloud contexts resolve endpoints and token audiences for `graph`, `arm`, `defender_xdr`, `defender_endpoint`, `azure_devops`, `fabric`, `power_platform`, `power_bi`, `log_analytics` and `office365_management`. Sovereign values are included where Microsoft documents them. Services without a documented sovereign endpoint require a custom cloud.
 
-Development status: foundational implementation. Bounded CLI/library execution, native MCP stdio serving, and authenticated local HTTP serving are implemented. Full API coverage and additional authentication flows remain in development. Do not use this version for production automation.
+Development status: prerelease. The catalog, CLI, Rust crates, MCP server, local HTTP API and TUI are implemented and tested on Linux, macOS and Windows. Representative read-only calls have been verified against a live tenant. Write operations, sovereign clouds and most credential flows have not yet been exercised against live services. Evaluate carefully before relying on it for production automation, and see the [disclaimer](DISCLAIMER.md).
 
 ## Disclaimer and terms of use
 
@@ -113,8 +154,10 @@ junction --registry generated/registry/graph-beta.json tui --allow-preview
 ```
 
 The interface uses the same version selection, schema metadata and trusted
-`--risk-overrides` as CLI discovery. It browses the local catalog without loading
-credentials or making API calls. Execution continues through `junction execute`.
+`--risk-overrides` as CLI discovery. Without a context it only browses the local
+catalog. With `junction --context <name> tui` (or `--context-file`), press `r` to
+edit JSON input and run the selected operation under a read-only policy. Results
+appear in the Result tab, and changes still go through `junction execute`.
 
 ## Current workflow
 

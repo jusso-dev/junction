@@ -128,3 +128,57 @@ for up to a year (access tokens: one day), and are replaced by logging in again.
 On platforms without native secure storage (currently Windows and Linux), use
 the environment variable or the per-run prompt; keys are never written to
 files.
+
+## Browser sign-in (authorization code + PKCE)
+
+Use a context with `"flow":"pkce"`, scopes for the target audience (add
+`offline_access` for renewal), and an operator-owned public-client app that has
+`http://localhost` registered as a mobile/desktop redirect URI:
+
+```sh
+junction --context graph-user auth login --client-id <app-id>      # opens the browser
+junction --context graph-user auth login --client-id <app-id> --no-browser
+```
+
+Junction listens once on `127.0.0.1` on a random port. It validates the
+redirect's state and PKCE verifier, then saves the access and refresh
+credentials the same way as device-code logins. Entra's acceptance of the
+generated request was checked live. Completing a sign-in needs a person at a
+browser.
+
+## Managed identity hosts
+
+`managed_identity` detects the host from the variables Azure sets:
+
+| Host | Variables | Notes |
+| --- | --- | --- |
+| App Service / Functions | `IDENTITY_ENDPOINT`, `IDENTITY_HEADER` | User-assigned via `AZURE_CLIENT_ID` |
+| Azure Arc servers | `IDENTITY_ENDPOINT`, `IMDS_ENDPOINT` | System-assigned only; reads the agent's challenge key from its token directory |
+| Cloud Shell | `MSI_ENDPOINT` | Signed-in user's identity |
+| Azure VMs / scale sets | none (IMDS `169.254.169.254`) | User-assigned via `AZURE_CLIENT_ID` |
+
+Local identity endpoints must be loopback addresses. Service Fabric managed
+identity is not supported.
+
+## Azure CLI credentials (optional)
+
+`"flow":"azure_cli"` runs `az account get-access-token --resource <audience>
+--tenant <tenant>`. The returned token must belong to the context tenant.
+Junction never requires the Azure CLI; this flow is a convenience for
+operators who are already signed in.
+
+## Secure storage
+
+Saved credentials use the macOS Keychain, Windows Credential Manager or the
+Linux Secret Service (GNOME Keyring/KWallet, which requires a session D-Bus).
+Windows records are split into chunks to fit its 2,560-byte limit. There is no
+plaintext file fallback. Headless Linux hosts should use environment, managed
+or workload credentials.
+
+## SAS tokens
+
+An `api_key` context with `"api_key":{"header":"sas-query"}` appends a shared
+access signature query string (`sv=...&sig=...`) to each request. The token
+must contain `sig` and cannot override existing query parameters. Junction does
+not implement Storage Shared Key request signing; Microsoft recommends Entra ID
+or SAS instead.

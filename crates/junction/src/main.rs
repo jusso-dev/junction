@@ -1,6 +1,8 @@
 mod api_key;
 mod approval_cli;
+mod approval_store;
 mod auth_cli;
+mod body_continuation;
 mod browser_login;
 mod context_store;
 mod credential_lock;
@@ -39,6 +41,9 @@ struct Cli {
     /// Private directory for resumable long-running operation handles.
     #[arg(long, global = true, default_value = ".junction/operations")]
     operations_directory: PathBuf,
+    /// Private directory for durable single-use operator approvals.
+    #[arg(long, global = true, default_value = ".junction/approvals")]
+    approvals_directory: PathBuf,
     /// Emit compact JSON (the default output is formatted JSON).
     #[arg(long, global = true, conflicts_with_all = ["yaml", "table"])]
     json: bool,
@@ -63,6 +68,9 @@ enum Command {
     Tui {
         #[arg(long)]
         allow_preview: bool,
+        /// Enable running operations (read-only policy) with this context.
+        #[arg(long)]
+        context_file: Option<PathBuf>,
     },
     /// Serve the local HTTP API with a fixed context and policy.
     Serve {
@@ -94,6 +102,12 @@ enum Command {
     Operations {
         #[command(subcommand)]
         command: OperationsCommand,
+    },
+    /// Approve one destructive or privileged request ahead of time so an
+    /// agent host (MCP/HTTP) can execute exactly that request once.
+    Approvals {
+        #[command(subcommand)]
+        command: ApprovalsCommand,
     },
     /// Inspect credentials without exposing token values.
     Auth {
@@ -355,6 +369,37 @@ enum AuthCommand {
         #[arg(long)]
         context_file: Option<PathBuf>,
     },
+}
+#[derive(Subcommand)]
+enum ApprovalsCommand {
+    /// Review on the terminal and record a single-use approval.
+    Issue {
+        operation: String,
+        #[arg(long, conflicts_with = "input_file")]
+        input: Option<String>,
+        #[arg(long)]
+        input_file: Option<PathBuf>,
+        #[arg(long)]
+        subscription: Option<String>,
+        #[arg(long)]
+        resource_group: Option<String>,
+        #[arg(long)]
+        context_file: Option<PathBuf>,
+        /// Policy the agent host will run with; the approval is bound to it.
+        #[arg(long)]
+        policy: Option<PathBuf>,
+        #[arg(long)]
+        api_version: Option<String>,
+        #[arg(long)]
+        allow_preview: bool,
+        /// Lifetime in minutes (at most 1440).
+        #[arg(long, default_value_t = 60, value_parser = clap::value_parser!(u64).range(1..=1440))]
+        ttl_minutes: u64,
+    },
+    /// List unused approvals (metadata only).
+    List,
+    /// Delete an unused approval.
+    Revoke { id: String },
 }
 #[derive(Subcommand)]
 enum OperationsCommand {
@@ -960,8 +1005,18 @@ async fn run() -> Result<()> {
         registry
     };
     let output = match cli.command {
-        Command::Tui { allow_preview } => {
-            junction_tui::run(&registry, allow_preview)?;
+        Command::Tui {
+            allow_preview,
+            context_file,
+        } => {
+            let bytes = match (context_file, cli.context.as_deref()) {
+                (Some(file), None) => Some(context_store::read_file(&file)?),
+                (None, Some(name)) => Some(context_store::read(&cli.contexts_directory, name)?),
+                (None, None) => None,
+                _ => anyhow::bail!("select at most one named context or context file"),
+            };
+            let runner = bytes.map(|bytes| tui_runner(manifest.clone(), bytes, allow_preview));
+            junction_tui::run_with(&registry, allow_preview, runner)?;
             return Ok(());
         }
         Command::GenerateRust { schemas, output } => {
@@ -1007,6 +1062,7 @@ async fn run() -> Result<()> {
                 context,
                 cli.contexts_directory,
                 cli.operations_directory,
+                cli.approvals_directory,
             )?;
             if let Some(config) = http_server {
                 junction_server::serve(std::sync::Arc::new(host), config).await?;
@@ -1243,6 +1299,7 @@ async fn run() -> Result<()> {
                 _ => None,
             };
             let reviewed = selected.clone();
+            let body_paged = all && junction_core::body_continuation(selected).is_some();
             let executor = junction_runtime::Executor::new(registry, policy)?;
             let approval_context = match &approval_reason {
                 Some(_) => Some(junction_policy::approval::ApprovalContext::new(
@@ -1309,7 +1366,11 @@ async fn run() -> Result<()> {
                 api_version: api_version.clone(),
                 allow_preview,
             };
-            if all {
+            if all && body_paged {
+                if continuation_file.as_ref().is_some_and(|path| path.exists()) {
+                    anyhow::bail!("continuation output already exists");
+                }
+            } else if all {
                 executor.preflight_pages(
                     &operation,
                     &input,
@@ -1321,8 +1382,13 @@ async fn run() -> Result<()> {
                     anyhow::bail!("continuation output already exists");
                 }
             }
+            let body_token = match (&resume, body_paged) {
+                (Some(path), true) => Some(body_continuation::load(path, &operation, &input)?),
+                _ => None,
+            };
             let continuation = resume
                 .as_deref()
+                .filter(|_| !body_paged)
                 .map(junction_runtime::pagination::Continuation::load)
                 .transpose()?;
             if is_lro {
@@ -1382,6 +1448,26 @@ async fn run() -> Result<()> {
                 } else {
                     serde_json::to_value(handle.snapshot())?
                 }
+            } else if all && body_paged {
+                let result = executor
+                    .execute_body_pages(
+                        &operation,
+                        input.clone(),
+                        execution_context,
+                        &page_options,
+                        body_token,
+                    )
+                    .await?;
+                let continuation_path = match result.next_token {
+                    Some(token) => {
+                        let path = continuation_file
+                            .ok_or_else(|| anyhow::anyhow!("continuation output required"))?;
+                        body_continuation::save(&path, &operation, &input, &token)?;
+                        Some(path)
+                    }
+                    None => None,
+                };
+                serde_json::json!({"items":result.items,"continuation":continuation_path,"pages":result.pages})
             } else if all {
                 let result = executor
                     .execute_pages_resuming(
@@ -1433,6 +1519,116 @@ async fn run() -> Result<()> {
                 serde_json::json!({"status":response.status,"body":response.body,"correlation":response.correlation})
             }
         }
+        Command::Approvals { command } => match command {
+            ApprovalsCommand::List => {
+                let records = approval_store::list(&cli.approvals_directory)?;
+                serde_json::json!({"approvals": records.iter().map(|record| serde_json::json!({
+                    "id": record.id,
+                    "operation": record.operation,
+                    "tenant": record.tenant,
+                    "endpoint": record.endpoint,
+                    "credential_profile": record.credential_profile,
+                    "expires_at": record.expires_at,
+                })).collect::<Vec<_>>()})
+            }
+            ApprovalsCommand::Revoke { id } => {
+                approval_store::revoke(&cli.approvals_directory, &id)?;
+                serde_json::json!({"status":"revoked","id":id})
+            }
+            ApprovalsCommand::Issue {
+                operation,
+                input,
+                input_file,
+                subscription,
+                resource_group,
+                context_file,
+                policy,
+                api_version,
+                allow_preview,
+                ttl_minutes,
+            } => {
+                let mut input =
+                    parse_input(&input::load(input.as_deref(), input_file.as_deref())?)?;
+                let selected =
+                    registry.resolve(&operation, api_version.as_deref(), allow_preview)?;
+                let bytes = match (context_file, cli.context.as_deref()) {
+                    (Some(file), None) => context_store::read_file(&file)?,
+                    (None, Some(name)) => context_store::read(&cli.contexts_directory, name)?,
+                    _ => anyhow::bail!("select exactly one named context or context file"),
+                };
+                let context = load_execution_config(&bytes, selected)?;
+                scope::apply(
+                    selected,
+                    &mut input,
+                    subscription.as_deref(),
+                    resource_group.as_deref(),
+                    (
+                        context.subscription.as_deref(),
+                        context.default_resource_group.as_deref(),
+                    ),
+                )?;
+                let policy = match policy {
+                    Some(path) => junction_policy::Policy::parse(&std::fs::read_to_string(path)?)?,
+                    None => junction_policy::Policy::default(),
+                };
+                let reason =
+                    match policy.authorize_operation(selected, &context.token_request.tenant) {
+                        junction_policy::Decision::ApprovalRequired { reason, .. } => reason,
+                        junction_policy::Decision::Allowed => {
+                            return Err(approval_cli::failure("approval_not_required"));
+                        }
+                        decision => return Err(junction_runtime::ExecutionDenied(decision).into()),
+                    };
+                let reviewed = selected.clone();
+                let canonical = selected.id.clone();
+                let cloud = context
+                    .cloud
+                    .unwrap_or(junction_core::cloud::MicrosoftCloud::Custom);
+                let approval_context = junction_policy::approval::ApprovalContext::new(
+                    cloud,
+                    &context.endpoint,
+                    &context.token_request.audience,
+                    &context.token_request.credential_profile,
+                )?;
+                let executor = junction_runtime::Executor::new(registry, policy.clone())?;
+                // Full request validation before a human reviews it.
+                drop(executor.issue_approval(
+                    &canonical,
+                    &input,
+                    &context.token_request.tenant,
+                    &approval_context,
+                    junction_runtime::ApprovalOptions {
+                        api_version: api_version.as_deref(),
+                        allow_preview,
+                        lifetime: std::time::Duration::from_secs(300),
+                    },
+                )?);
+                approval_cli::confirm(&approval_cli::Summary {
+                    operation: &reviewed,
+                    reason: &reason,
+                    tenant: &context.token_request.tenant,
+                    cloud: &cloud,
+                    endpoint: approval_context.endpoint(),
+                    audience: approval_context.audience(),
+                    credential_profile: &context.token_request.credential_profile,
+                    input: &input,
+                })?;
+                let record = approval_store::issue(
+                    &cli.approvals_directory,
+                    &canonical,
+                    api_version.as_deref(),
+                    allow_preview,
+                    &input,
+                    &context.token_request.tenant,
+                    approval_context.endpoint(),
+                    approval_context.audience(),
+                    &context.token_request.credential_profile,
+                    &policy,
+                    std::time::Duration::from_secs(ttl_minutes * 60),
+                )?;
+                serde_json::json!({"status":"approved","approval_id":record.id,"operation":record.operation,"expires_at":record.expires_at})
+            }
+        },
         Command::Operations { command } => match command {
             OperationsCommand::Get { .. } => unreachable!(),
             OperationsCommand::Wait {
@@ -1664,6 +1860,95 @@ async fn run() -> Result<()> {
     };
     output_options.emit(&output)?;
     Ok(())
+}
+
+/// Read-only execution for the TUI. Errors shown on screen are limited to the
+/// same structured, secret-free diagnostics the CLI prints.
+fn tui_runner<'a>(
+    manifest: RegistryManifest,
+    bytes: Vec<u8>,
+    allow_preview: bool,
+) -> junction_tui::Runner<'a> {
+    let mut executor: Option<junction_runtime::Executor> = None;
+    Box::new(move |operation, mut input| {
+        if executor.is_none() {
+            executor = Some(junction_runtime::Executor::new(
+                Registry::load(manifest.clone())?,
+                junction_policy::Policy::parse("[agent]\nmode = 'read-only'\n")?,
+            )?);
+        }
+        let executor = executor.as_ref().expect("executor initialised");
+        let result = (|| -> Result<serde_json::Value> {
+            let context = load_execution_config(&bytes, operation)?;
+            scope::apply(
+                operation,
+                &mut input,
+                None,
+                None,
+                (
+                    context.subscription.as_deref(),
+                    context.default_resource_group.as_deref(),
+                ),
+            )?;
+            let version = operation.api_version.clone();
+            executor.preflight(
+                &operation.id,
+                &input,
+                &context.token_request.tenant,
+                &context.endpoint,
+                version.as_deref(),
+                allow_preview,
+            )?;
+            std::thread::scope(|scope| {
+                scope
+                    .spawn(|| {
+                        let runtime = tokio::runtime::Builder::new_current_thread()
+                            .enable_all()
+                            .build()?;
+                        runtime.block_on(async {
+                            let token = auth_cli::acquire(&context.token_request).await?;
+                            let response = executor
+                                .execute(
+                                    &operation.id,
+                                    input,
+                                    junction_runtime::ExecutionContext {
+                                        tenant: &context.token_request.tenant,
+                                        audience: &context.token_request.audience,
+                                        endpoint: &context.endpoint,
+                                        token: &token,
+                                    },
+                                    version.as_deref(),
+                                    allow_preview,
+                                )
+                                .await?;
+                            Ok(serde_json::json!({"status":response.status,"body":response.body,"correlation":response.correlation}))
+                        })
+                    })
+                    .join()
+                    .map_err(|_| anyhow::anyhow!("operation thread failed"))?
+            })
+        })();
+        result.map_err(|error| {
+            let safe =
+                if let Some(denied) = error.downcast_ref::<junction_runtime::ExecutionDenied>() {
+                    serde_json::to_string(&denied.0).ok()
+                } else if let Some(failure) =
+                    error.downcast_ref::<junction_runtime::authorization::AuthorizationFailure>()
+                {
+                    serde_json::to_string(failure).ok()
+                } else if let Some(required) = error.downcast_ref::<api_key::CredentialRequired>() {
+                    serde_json::to_string(required).ok()
+                } else {
+                    None
+                };
+            anyhow::anyhow!(
+                "{}",
+                safe.unwrap_or_else(
+                    || "operation failed; check input, context and credentials".into()
+                )
+            )
+        })
+    })
 }
 
 struct Diagnostics(Option<std::time::Instant>);

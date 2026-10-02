@@ -246,6 +246,41 @@ pub fn is_json_media_type(value: &str) -> bool {
                     })
             })
 }
+/// POST endpoints Microsoft documents as queries that return data without
+/// changing state (KQL, Resource Graph, Cost Management, search). This fixed,
+/// code-owned list is the only way a POST can be treated as a read.
+pub fn documented_query(path: &str) -> bool {
+    let path = path.trim_end_matches('/').to_ascii_lowercase();
+    [
+        "/providers/microsoft.resourcegraph/resources",
+        "/providers/microsoft.costmanagement/query",
+        "/providers/microsoft.costmanagement/forecast",
+        "/api/advancedhunting/run",
+        "/api/advancedqueries/run",
+        "/security/microsoft.graph.security.runhuntingquery",
+        "/search/query",
+        "/resourcequery/resources/query",
+    ]
+    .iter()
+    .any(|suffix| path.ends_with(suffix))
+        || (path.ends_with("/query")
+            && (path.starts_with("/workspaces/{") || path == "/{resourceid}/query"))
+}
+
+/// Documented request-body continuation: (request token pointer, response
+/// token pointer, response items pointer). Azure Resource Graph returns
+/// `$skipToken` and expects it back in `options.$skipToken`.
+pub fn body_continuation(
+    operation: &JunctionOperation,
+) -> Option<(&'static str, &'static str, &'static str)> {
+    (operation.method == "POST"
+        && operation
+            .path
+            .trim_end_matches('/')
+            .to_ascii_lowercase()
+            .ends_with("/providers/microsoft.resourcegraph/resources"))
+    .then_some(("/options/$skipToken", "/$skipToken", "/data"))
+}
 #[cfg(test)]
 mod media_tests {
     #[test]

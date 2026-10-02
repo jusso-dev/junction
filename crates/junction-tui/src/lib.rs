@@ -1,4 +1,5 @@
-//! Ratatui catalog explorer. Credentials are never loaded by this surface.
+//! Ratatui catalog explorer. This crate never loads credentials: running an
+//! operation is delegated to an optional runner supplied by the host.
 use anyhow::{Result, bail};
 use crossterm::event::{self, Event, KeyCode, KeyEvent, KeyEventKind, KeyModifiers};
 use junction_core::JunctionOperation;
@@ -18,12 +19,26 @@ const TEXT: Color = Color::Rgb(215, 224, 235);
 const MUTED: Color = Color::Rgb(126, 145, 166);
 const ACCENT: Color = Color::Rgb(99, 217, 190);
 
+/// Host-supplied execution for the selected operation and JSON input.
+pub type Runner<'a> =
+    Box<dyn FnMut(&JunctionOperation, serde_json::Value) -> Result<serde_json::Value> + 'a>;
+
 /// Browse an already validated catalog with the caller's trusted risk overrides.
 pub fn run(registry: &Registry, allow_preview: bool) -> Result<()> {
+    run_with(registry, allow_preview, None)
+}
+
+/// Browse the catalog and, when a runner is supplied, run operations with `r`.
+pub fn run_with<'a>(
+    registry: &'a Registry,
+    allow_preview: bool,
+    runner: Option<Runner<'a>>,
+) -> Result<()> {
     if !std::io::stdin().is_terminal() || !std::io::stdout().is_terminal() {
         bail!("Junction TUI requires an interactive terminal");
     }
     let mut app = App::new(registry, allow_preview)?;
+    app.runner = runner;
     // Ratatui installs a panic hook that restores the terminal; ordinary errors
     // are restored explicitly before returning to the caller.
     let mut terminal = ratatui::init();
@@ -66,7 +81,12 @@ struct App<'a> {
     selection: ListState,
     tab: usize,
     scroll: u16,
+    runner: Option<Runner<'a>>,
+    input: String,
+    input_editing: bool,
+    result: Option<String>,
 }
+const RESULT_LIMIT: usize = 64 * 1024;
 impl<'a> App<'a> {
     fn new(registry: &'a Registry, preview: bool) -> Result<Self> {
         let mut app = Self {
@@ -85,6 +105,10 @@ impl<'a> App<'a> {
             selection: ListState::default(),
             tab: 0,
             scroll: 0,
+            runner: None,
+            input: String::new(),
+            input_editing: false,
+            result: None,
         };
         app.reset_services();
         app.refresh()?;
@@ -149,6 +173,29 @@ impl<'a> App<'a> {
             }
             return Ok(false);
         }
+        if self.input_editing {
+            match key.code {
+                KeyCode::Esc => self.input_editing = false,
+                KeyCode::Enter => {
+                    self.input_editing = false;
+                    self.run_selected();
+                }
+                KeyCode::Backspace => {
+                    self.input.pop();
+                }
+                KeyCode::Char(character)
+                    if !character.is_control()
+                        && !key
+                            .modifiers
+                            .intersects(KeyModifiers::CONTROL | KeyModifiers::ALT)
+                        && self.input.len() + character.len_utf8() <= 8192 =>
+                {
+                    self.input.push(character);
+                }
+                _ => {}
+            }
+            return Ok(false);
+        }
         if self.editing {
             match key.code {
                 KeyCode::Esc | KeyCode::Enter => self.editing = false,
@@ -182,6 +229,12 @@ impl<'a> App<'a> {
             }
             KeyCode::Char('?') => self.help = true,
             KeyCode::Char('/') => self.editing = true,
+            KeyCode::Char('r') if self.selection.selected().is_some() => {
+                if self.input.is_empty() {
+                    self.input = "{}".into();
+                }
+                self.input_editing = true;
+            }
             KeyCode::Char('x') => {
                 self.query.clear();
                 self.refresh()?;
@@ -219,11 +272,11 @@ impl<'a> App<'a> {
                 self.scroll = 0;
             }
             KeyCode::Tab => {
-                self.tab = (self.tab + 1) % 3;
+                self.tab = (self.tab + 1) % 4;
                 self.scroll = 0;
             }
             KeyCode::BackTab => {
-                self.tab = (self.tab + 2) % 3;
+                self.tab = (self.tab + 3) % 4;
                 self.scroll = 0;
             }
             KeyCode::PageDown => self.scroll = self.scroll.saturating_add(10),
@@ -244,7 +297,54 @@ impl<'a> App<'a> {
         ));
         self.scroll = 0;
     }
+    /// Run the selected operation through the host runner and show the result.
+    fn run_selected(&mut self) {
+        self.tab = 3;
+        self.scroll = 0;
+        let Some(operation) = self
+            .selection
+            .selected()
+            .and_then(|index| self.matches.get(index))
+            .copied()
+        else {
+            return;
+        };
+        let input: serde_json::Value = match serde_json::from_str(&self.input) {
+            Ok(value) => value,
+            Err(_) => {
+                self.result = Some("Input is not valid JSON.".into());
+                return;
+            }
+        };
+        let Some(runner) = self.runner.as_mut() else {
+            self.result = Some(
+                "Running needs an execution context. Start with\n  junction --context <name> tui\nOperations run under a read-only policy; use `junction execute` for changes."
+                    .into(),
+            );
+            return;
+        };
+        let mut text = match runner(operation, input) {
+            Ok(value) => serde_json::to_string_pretty(&value)
+                .unwrap_or_else(|_| "Result could not be displayed.".into()),
+            Err(error) => format!("Failed: {error}"),
+        };
+        if text.len() > RESULT_LIMIT {
+            let mut end = RESULT_LIMIT;
+            while !text.is_char_boundary(end) {
+                end -= 1;
+            }
+            text.truncate(end);
+            text.push_str("\n… truncated");
+        }
+        self.result = Some(text);
+    }
     fn detail(&self) -> String {
+        if self.tab == 3 {
+            return self.result.clone().unwrap_or_else(|| {
+                "Press r to run the selected operation with JSON input.\nResults appear here."
+                    .into()
+            });
+        }
         let Some(operation) = self
             .selection
             .selected()
@@ -359,7 +459,9 @@ impl<'a> App<'a> {
             ),
             rows[0],
         );
-        let search = if self.query.is_empty() {
+        let search = if self.input_editing {
+            safe_text(&self.input)
+        } else if self.query.is_empty() {
             "Search operations, resources, descriptions…".into()
         } else {
             safe_text(&self.query)
@@ -373,8 +475,14 @@ impl<'a> App<'a> {
         frame.render_widget(
             Paragraph::new(format!(" {search}"))
                 .scroll((0, search_offset))
-                .style(Style::default().fg(if self.editing { ACCENT } else { MUTED }))
-                .block(panel(if self.editing {
+                .style(Style::default().fg(if self.editing || self.input_editing {
+                    ACCENT
+                } else {
+                    MUTED
+                }))
+                .block(panel(if self.input_editing {
+                    " Run · JSON input · Enter run · Esc cancel "
+                } else if self.editing {
                     " Search · typing "
                 } else {
                     " Search · / "
@@ -470,7 +578,7 @@ impl<'a> App<'a> {
         let detail_rows =
             Layout::vertical([Constraint::Length(3), Constraint::Min(1)]).split(columns[2]);
         frame.render_widget(
-            Tabs::new(["Overview", "Input", "Permissions"])
+            Tabs::new(["Overview", "Input", "Permissions", "Result"])
                 .select(self.tab)
                 .style(Style::default().fg(MUTED))
                 .highlight_style(Style::default().fg(ACCENT))
@@ -492,7 +600,7 @@ impl<'a> App<'a> {
         frame.render_widget(
             Paragraph::new(vec![
                 Line::from(Span::styled(
-                    " ? help   q quit   / search   ↑↓ browse   Tab details   n/b pages",
+                    " ? help   q quit   / search   ↑↓ browse   Tab details   r run   n/b pages",
                     Style::default().fg(MUTED),
                 )),
                 Line::from(Span::styled(
@@ -514,7 +622,7 @@ impl<'a> App<'a> {
         );
         if self.help {
             let width = area.width.min(68);
-            let height = area.height.min(16);
+            let height = area.height.min(17);
             let popup = Rect::new(
                 area.x + (area.width - width) / 2,
                 area.y + (area.height - height) / 2,
@@ -535,6 +643,7 @@ impl<'a> App<'a> {
                     " Tab / Shift+Tab   Cycle detail tabs\n",
                     " PageUp / PageDown Scroll details\n",
                     " p                 Toggle preview operations\n",
+                    " r                 Run selected operation (read-only)\n",
                     " ? / Enter / Esc   Close help\n",
                     " q / Ctrl+C        Quit"
                 ))
@@ -588,6 +697,42 @@ mod tests {
     }
     fn key(code: KeyCode) -> KeyEvent {
         KeyEvent::new(code, KeyModifiers::NONE)
+    }
+    #[test]
+    fn run_key_edits_json_and_shows_runner_results() {
+        let registry = registry();
+        let mut app = App::new(&registry, false).unwrap();
+        // Without a runner the result tab explains how to enable running.
+        app.key(key(KeyCode::Char('r'))).unwrap();
+        assert!(app.input_editing);
+        app.key(key(KeyCode::Enter)).unwrap();
+        assert_eq!(app.tab, 3);
+        assert!(app.result.as_deref().unwrap().contains("--context"));
+        let calls = std::rc::Rc::new(std::cell::RefCell::new(Vec::new()));
+        let seen = calls.clone();
+        app.runner = Some(Box::new(move |operation, input| {
+            seen.borrow_mut()
+                .push((operation.id.clone(), input.clone()));
+            Ok(serde_json::json!({"status":200,"echo":input}))
+        }));
+        app.key(key(KeyCode::Char('r'))).unwrap();
+        for _ in 0..2 {
+            app.key(key(KeyCode::Backspace)).unwrap();
+        }
+        for character in "{\"parameters\":{}}".chars() {
+            app.key(key(KeyCode::Char(character))).unwrap();
+        }
+        // While editing input, q types instead of quitting.
+        app.key(key(KeyCode::Enter)).unwrap();
+        assert_eq!(calls.borrow().len(), 1);
+        assert_eq!(calls.borrow()[0].1, serde_json::json!({"parameters":{}}));
+        assert!(app.result.as_deref().unwrap().contains("\"status\": 200"));
+        app.key(key(KeyCode::Char('r'))).unwrap();
+        app.key(key(KeyCode::Char('x'))).unwrap();
+        app.key(key(KeyCode::Enter)).unwrap();
+        assert_eq!(app.result.as_deref(), Some("Input is not valid JSON."));
+        let mut terminal = Terminal::new(TestBackend::new(120, 30)).unwrap();
+        terminal.draw(|frame| app.draw(frame)).unwrap();
     }
     #[test]
     fn keyboard_help_is_modal_and_fits_supported_terminals() {

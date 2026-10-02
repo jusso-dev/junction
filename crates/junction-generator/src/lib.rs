@@ -17,13 +17,17 @@ pub fn generate(schemas: &BTreeMap<String, CanonicalSchema>) -> Result<RustModul
     if schemas.is_empty() || schemas.len() > 4096 {
         bail!("invalid generation schema count");
     }
+    let mut used = BTreeSet::from(["Nullable".to_owned(), "SCHEMAS_JSON".to_owned()]);
     let types: BTreeMap<_, _> = schemas
         .keys()
         .map(|reference| {
-            (
-                reference.clone(),
-                format!("Schema{:x}", Sha256::digest(reference.as_bytes())),
-            )
+            let digest = format!("{:x}", Sha256::digest(reference.as_bytes()));
+            let mut name = readable_name(reference);
+            if !used.insert(name.clone()) {
+                name = format!("{name}{}", &digest[..8]);
+                used.insert(name.clone());
+            }
+            (reference.clone(), name)
         })
         .collect();
     let mut state = Generator {
@@ -54,6 +58,39 @@ pub fn generate(schemas: &BTreeMap<String, CanonicalSchema>) -> Result<RustModul
         types: types.clone(),
         dynamic: state.dynamic,
     })
+}
+/// A readable, deterministic Rust type name for a canonical reference:
+/// namespace digests and the `microsoft.graph` prefix are dropped and the
+/// remaining dotted segments are joined in PascalCase.
+fn readable_name(reference: &str) -> String {
+    let local = reference.rsplit('/').next().unwrap_or(reference);
+    let local = local.replace("~1", "/").replace("~0", "~");
+    let mut parts: Vec<&str> = local
+        .split(['.', '/'])
+        .filter(|part| !(part.len() == 64 && part.bytes().all(|b| b.is_ascii_hexdigit())))
+        .collect();
+    if parts.len() > 1 && parts[0].eq_ignore_ascii_case("microsoft") {
+        parts.remove(0);
+        if parts.len() > 1 && parts[0].eq_ignore_ascii_case("graph") {
+            parts.remove(0);
+        }
+    }
+    let mut name = String::new();
+    for part in parts {
+        let mut upper = true;
+        for c in part.chars() {
+            if c.is_ascii_alphanumeric() {
+                name.push(if upper { c.to_ascii_uppercase() } else { c });
+                upper = false;
+            } else {
+                upper = true;
+            }
+        }
+    }
+    if name.is_empty() || name.starts_with(|c: char| c.is_ascii_digit()) || name == "Self" {
+        name.insert_str(0, "Schema");
+    }
+    name
 }
 struct Generator<'a> {
     types: &'a BTreeMap<String, String>,

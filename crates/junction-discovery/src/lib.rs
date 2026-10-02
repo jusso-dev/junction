@@ -340,6 +340,7 @@ pub fn ingest(
                 } else {
                     match method {
                         "get" | "head" | "options" => OperationRisk::ReadOnly,
+                        "post" if junction_core::documented_query(&path) => OperationRisk::ReadOnly,
                         "delete" => OperationRisk::Destructive,
                         _ if destructive_action => OperationRisk::Destructive,
                         _ => OperationRisk::Write,

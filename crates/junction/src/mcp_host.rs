@@ -10,6 +10,7 @@ pub struct Host {
     context: Option<Vec<u8>>,
     contexts: PathBuf,
     operations: PathBuf,
+    approvals: PathBuf,
     pages: crate::mcp_pages::Store,
     http_call: tokio::sync::Mutex<()>,
 }
@@ -20,6 +21,7 @@ impl Host {
         context: Option<Vec<u8>>,
         contexts: PathBuf,
         operations: PathBuf,
+        approvals: PathBuf,
     ) -> Result<Self> {
         Ok(Self {
             executor: Executor::new(registry, policy.clone())?,
@@ -27,6 +29,7 @@ impl Host {
             context,
             contexts,
             operations,
+            approvals,
             pages: crate::mcp_pages::Store::new()?,
             http_call: tokio::sync::Mutex::new(()),
         })
@@ -116,6 +119,74 @@ impl Host {
                         context.default_resource_group.as_deref(),
                     ),
                 )?;
+                if let Some(id) = args.get("approval_id").and_then(Value::as_str) {
+                    if args["all"].as_bool().unwrap_or(false)
+                        || args["wait"].as_bool().unwrap_or(false)
+                        || selected.long_running.is_some()
+                    {
+                        anyhow::bail!("approved execution supports single requests only");
+                    }
+                    // Consume first: an approval is spent even if checks fail.
+                    let record = crate::approval_store::consume(&self.approvals, id)?;
+                    let cloud = context
+                        .cloud
+                        .unwrap_or(junction_core::cloud::MicrosoftCloud::Custom);
+                    let approval_context = junction_policy::approval::ApprovalContext::new(
+                        cloud,
+                        &context.endpoint,
+                        &context.token_request.audience,
+                        &context.token_request.credential_profile,
+                    )?;
+                    if record.operation != selected.id
+                        || record.api_version.as_deref() != version
+                        || record.allow_preview != preview
+                        || record.input != input
+                        || !record
+                            .tenant
+                            .eq_ignore_ascii_case(&context.token_request.tenant)
+                        || record.endpoint != approval_context.endpoint()
+                        || record.audience != approval_context.audience()
+                        || record.credential_profile != context.token_request.credential_profile
+                        || record.policy_sha256
+                            != crate::approval_store::policy_fingerprint(&self.policy)?
+                    {
+                        anyhow::bail!("approval does not match this request, context or policy");
+                    }
+                    let grant = self.executor.issue_approval(
+                        &record.operation,
+                        &input,
+                        &context.token_request.tenant,
+                        &approval_context,
+                        junction_runtime::ApprovalOptions {
+                            api_version: version,
+                            allow_preview: preview,
+                            lifetime: std::time::Duration::from_secs(300),
+                        },
+                    )?;
+                    let token = crate::auth_cli::acquire(&context.token_request).await?;
+                    let response = self
+                        .executor
+                        .execute_with_approval(
+                            operation,
+                            input,
+                            ExecutionContext {
+                                tenant: &context.token_request.tenant,
+                                audience: &context.token_request.audience,
+                                endpoint: &context.endpoint,
+                                token: &token,
+                            },
+                            version,
+                            preview,
+                            junction_runtime::ApprovedExecution {
+                                context: &approval_context,
+                                grant,
+                            },
+                        )
+                        .await?;
+                    return Ok(
+                        json!({"status":response.status,"body":response.body,"correlation":response.correlation,"approval_id":id}),
+                    );
+                }
                 self.executor.preflight(
                     operation,
                     &input,
@@ -385,6 +456,93 @@ mod http_tests {
         assert!(!unknown.to_string().contains("private-token-payload"));
     }
 
+    #[tokio::test]
+    async fn durable_approvals_are_single_use_and_bound_to_request_and_policy() {
+        let directory = tempfile::tempdir().unwrap();
+        let approvals = directory.path().join("approvals");
+        let context = serde_json::to_vec(&json!({"endpoint":"https://example.invalid","token_request":{
+            "tenant":"tenant-a","authority":"https://login.example.invalid","audience":"https://example.invalid",
+            "scopes":[],"credential_profile":"environment","flow":"client_credentials"}})).unwrap();
+        let policy = junction_policy::Policy::parse("[agent]\nmode = 'full'\n").unwrap();
+        let host = Host::new(
+            registry(),
+            policy.clone(),
+            Some(context),
+            directory.path().join("contexts"),
+            directory.path().join("operations"),
+            approvals.clone(),
+        )
+        .unwrap();
+        let record = |input: serde_json::Value, policy: &junction_policy::Policy| {
+            crate::approval_store::issue(
+                &approvals,
+                "graph.users.delete",
+                None,
+                false,
+                &input,
+                "tenant-a",
+                "https://example.invalid/",
+                "https://example.invalid",
+                "environment",
+                policy,
+                std::time::Duration::from_secs(600),
+            )
+            .unwrap()
+        };
+        let call = |id: Option<&str>| {
+            let mut body = json!({"input":{}});
+            if let Some(id) = id {
+                body["approval_id"] = json!(id);
+            }
+            body
+        };
+        let without = host
+            .handle(
+                "POST",
+                "/v1/execute/graph.users.delete",
+                call(None).to_string().as_bytes(),
+            )
+            .await;
+        assert_eq!(without.body["status"], "approval_required");
+        // Different input, or a different host policy, is rejected and spent.
+        for (input, issued_policy) in [
+            (json!({"parameters":{"x":"1"}}), policy.clone()),
+            (
+                json!({}),
+                junction_policy::Policy::parse("[agent]\nmode = 'safe-write'\n").unwrap(),
+            ),
+        ] {
+            let approval = record(input, &issued_policy);
+            let response = host
+                .handle(
+                    "POST",
+                    "/v1/execute/graph.users.delete",
+                    call(Some(&approval.id)).to_string().as_bytes(),
+                )
+                .await;
+            assert_ne!(response.status, 200);
+            assert!(crate::approval_store::list(&approvals).unwrap().is_empty());
+        }
+        // A matching approval is consumed even when execution later fails.
+        let approval = record(json!({}), &policy);
+        let _ = host
+            .handle(
+                "POST",
+                "/v1/execute/graph.users.delete",
+                call(Some(&approval.id)).to_string().as_bytes(),
+            )
+            .await;
+        assert!(crate::approval_store::list(&approvals).unwrap().is_empty());
+        let replay = host
+            .handle(
+                "POST",
+                "/v1/execute/graph.users.delete",
+                call(Some(&approval.id)).to_string().as_bytes(),
+            )
+            .await;
+        assert_ne!(replay.status, 200);
+    }
+
     fn registry() -> junction_registry::Registry {
         let operations = [("list", "GET"), ("create", "POST"), ("delete", "DELETE")].into_iter().map(|(action, method)| json!({
             "id":format!("graph.users.{action}"),"product":"graph","service":"users","resource":"users",
@@ -416,6 +574,7 @@ mod http_tests {
                 Some(context.clone()),
                 directory.path().join("contexts"),
                 directory.path().join("operations"),
+                directory.path().join("approvals"),
             )
             .unwrap();
             let denied = host
