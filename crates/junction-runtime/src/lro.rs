@@ -193,6 +193,8 @@ pub struct LroHandle {
     audience: String,
     endpoint: String,
     poll_url: Url,
+    /// Original start request URL (same origin), used to find documented cancel.
+    request_url: Option<Url>,
     final_target: Option<(Url, PollProtocol)>,
     tracker: LroTracker,
     ready_at: Instant,
@@ -300,6 +302,7 @@ impl LroHandle {
             audience: context.audience.into(),
             endpoint: context.endpoint.into(),
             poll_url,
+            request_url: Some(original),
             final_target,
             tracker,
             ready_at,
@@ -314,6 +317,38 @@ impl LroHandle {
         }
         Ok(())
     }
+}
+#[derive(Debug, Serialize)]
+pub struct CancelOutcome {
+    pub status: &'static str,
+    pub operation_id: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub cancel_operation: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub http_status: Option<u16>,
+}
+/// Match concrete URL path segments against an operation's base path and
+/// template. `{name}` matches one non-empty segment; literals ignore case.
+fn template_matches(operation: &junction_core::JunctionOperation, segments: &[&str]) -> bool {
+    let base = Url::parse(&operation.base_url)
+        .map(|url| url.path().to_owned())
+        .unwrap_or_default();
+    let template: Vec<&str> = base
+        .split('/')
+        .chain(operation.path.split('/'))
+        .filter(|segment| !segment.is_empty())
+        .collect();
+    template.len() == segments.len()
+        && template.iter().zip(segments).all(|(pattern, actual)| {
+            if pattern.starts_with('{')
+                && pattern.ends_with('}')
+                && pattern.matches('{').count() == 1
+            {
+                !actual.is_empty()
+            } else {
+                pattern.eq_ignore_ascii_case(actual)
+            }
+        })
 }
 /// Final-state hints affect POST result retrieval, not the status polling protocol.
 fn final_target(
@@ -598,6 +633,94 @@ impl crate::Executor {
             .map_err(|error| crate::authorization::enrich(error, selected, context))?;
         LroHandle::from_initial(selected, &response, request.url, context, &options)
     }
+    /// Documented remote cancellation for a started operation: a POST operation
+    /// in the same product whose path template matches the start request URL or
+    /// the polling URL followed by `/cancel` (for example ARM deployment cancel
+    /// or Fabric job-instance cancel). None means Microsoft documents no cancel.
+    pub fn cancel_target(
+        &self,
+        handle: &LroHandle,
+    ) -> Option<(&junction_core::JunctionOperation, Url)> {
+        let started = self
+            .registry
+            .resolve(
+                &handle.operation,
+                handle.version.as_deref(),
+                handle.allow_preview,
+            )
+            .ok()?;
+        let candidates = [handle.request_url.as_ref(), Some(&handle.poll_url)];
+        for base in candidates.into_iter().flatten() {
+            let mut candidate = base.clone();
+            candidate.set_query(None);
+            let path = format!("{}/cancel", candidate.path().trim_end_matches('/'));
+            candidate.set_path(&path);
+            let segments: Vec<&str> = path.split('/').filter(|s| !s.is_empty()).collect();
+            let found = self.registry.all().find(|operation| {
+                operation.product == started.product
+                    && operation.method == "POST"
+                    && operation.operation.starts_with("cancel")
+                    && !operation.preview
+                    && template_matches(operation, &segments)
+            });
+            if let Some(operation) = found {
+                if let Some(version) = &operation.api_version
+                    && operation.parameters.iter().any(|p| p.name == "api-version")
+                {
+                    candidate
+                        .query_pairs_mut()
+                        .append_pair("api-version", version);
+                }
+                return Some((operation, candidate));
+            }
+        }
+        None
+    }
+    /// Request documented remote cancellation. Policy applies to the cancel
+    /// operation itself; the local handle is unchanged and later polls report
+    /// the service's final state.
+    pub async fn cancel_lro(
+        &self,
+        handle: &LroHandle,
+        context: crate::ExecutionContext<'_>,
+    ) -> Result<CancelOutcome> {
+        handle.validate_context(context)?;
+        if handle.tracker.progress.state.is_terminal() {
+            return Ok(CancelOutcome {
+                status: "already_terminal",
+                operation_id: handle.operation_id.clone(),
+                cancel_operation: None,
+                http_status: None,
+            });
+        }
+        let Some((operation, url)) = self.cancel_target(handle) else {
+            return Ok(CancelOutcome {
+                status: "cancel_unsupported",
+                operation_id: handle.operation_id.clone(),
+                cancel_operation: None,
+                http_status: None,
+            });
+        };
+        crate::enforce(self.policy.authorize_operation(operation, context.tenant))?;
+        crate::validate_credential(context)?;
+        let response = self
+            .transport
+            .send_with_headers(
+                "POST",
+                url,
+                None,
+                Some(&context.token.credential()),
+                &junction_http::RequestHeaders::new(),
+            )
+            .await
+            .map_err(|error| crate::authorization::enrich(error, operation, context))?;
+        Ok(CancelOutcome {
+            status: "cancel_requested",
+            operation_id: handle.operation_id.clone(),
+            cancel_operation: Some(operation.id.clone()),
+            http_status: Some(response.status),
+        })
+    }
     /// One status request. Caller can wait retry_after() before invoking again.
     pub async fn poll_lro<'a>(
         &self,
@@ -756,6 +879,102 @@ mod tests {
         assert!(
             state_from_response(PollProtocol::FabricLocation, 200, &json!({"status":42})).is_err()
         );
+    }
+    #[tokio::test]
+    async fn cancellation_uses_only_documented_cancel_operations_and_policy() {
+        let mut start = crate::tests::operation();
+        start.id = "azure.resources.deployments.create_or_update".into();
+        start.product = "azure".into();
+        start.operation = "create_or_update".into();
+        start.method = "PUT".into();
+        start.base_url = "https://example.invalid".into();
+        start.path = "/subscriptions/{subscriptionId}/deployments/{deploymentName}".into();
+        start.parameters.clear();
+        start.risk = junction_core::OperationRisk::Write;
+        start.long_running = Some(Default::default());
+        let mut cancel = start.clone();
+        cancel.id = "azure.resources.deployments.cancel".into();
+        cancel.operation = "cancel".into();
+        cancel.method = "POST".into();
+        cancel.path = "/subscriptions/{subscriptionId}/deployments/{deploymentName}/cancel".into();
+        cancel.long_running = None;
+        let registry = |operations: Vec<junction_core::JunctionOperation>| {
+            junction_registry::Registry::load(junction_core::RegistryManifest {
+                format_version: 1,
+                operations,
+                schemas: json!({}),
+            })
+            .unwrap()
+        };
+        let token = junction_auth::AccessToken::new(
+            junction_auth::Secret::new("private-access-token".into()).unwrap(),
+            junction_auth::TokenMetadata {
+                tenant: "a".into(),
+                audience: "resource".into(),
+                expires_at: std::time::SystemTime::now() + Duration::from_secs(3600),
+                scopes: vec![],
+                roles: vec![],
+                account: None,
+            },
+        );
+        let context = crate::ExecutionContext {
+            tenant: "a",
+            audience: "resource",
+            endpoint: "https://example.invalid",
+            token: &token,
+        };
+        let response = junction_http::HttpResponse {
+            continuation_token: None,
+            status: 201,
+            body: json!({"properties":{"provisioningState":"Accepted"}}),
+            retry_after: None,
+            async_links: Default::default(),
+            correlation: junction_http::CorrelationIds {
+                client_request_id: Some("aaaaaaaa-bbbb-4ccc-8ddd-eeeeeeeeeeee".into()),
+                ..Default::default()
+            },
+        };
+        let handle = LroHandle::from_initial(
+            &start,
+            &response,
+            Url::parse("https://example.invalid/subscriptions/s1/deployments/d1?api-version=v1")
+                .unwrap(),
+            context,
+            &LroStartOptions {
+                max_polls: 5,
+                ..Default::default()
+            },
+        )
+        .unwrap();
+        let documented = crate::Executor::new(
+            registry(vec![start.clone(), cancel.clone()]),
+            crate::Policy::parse("[agent]\nmode='safe-write'").unwrap(),
+        )
+        .unwrap();
+        let (operation, url) = documented.cancel_target(&handle).unwrap();
+        assert_eq!(operation.id, "azure.resources.deployments.cancel");
+        assert_eq!(url.path(), "/subscriptions/s1/deployments/d1/cancel");
+        // The handle round-trips the start URL through its checkpoint.
+        let directory = tempfile::tempdir().unwrap();
+        let checkpoint = directory.path().join("op.json");
+        handle.save(&checkpoint).unwrap();
+        let restored = LroHandle::load(&checkpoint).unwrap();
+        assert!(documented.cancel_target(&restored).is_some());
+        // Without a documented cancel operation nothing is sent.
+        let undocumented = crate::Executor::new(
+            registry(vec![start.clone()]),
+            crate::Policy::parse("[agent]\nmode='safe-write'").unwrap(),
+        )
+        .unwrap();
+        let outcome = undocumented.cancel_lro(&handle, context).await.unwrap();
+        assert_eq!(outcome.status, "cancel_unsupported");
+        // Read-only policy rejects the cancel request before transport.
+        let read_only = crate::Executor::new(
+            registry(vec![start, cancel]),
+            crate::Policy::parse("[agent]\nmode='read-only'").unwrap(),
+        )
+        .unwrap();
+        assert!(read_only.cancel_lro(&handle, context).await.is_err());
     }
     #[tokio::test]
     async fn executor_polling_rechecks_context_policy_credentials_and_bounds() {

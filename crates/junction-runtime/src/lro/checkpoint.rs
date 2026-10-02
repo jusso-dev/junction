@@ -17,6 +17,8 @@ struct StoredHandle {
     audience: String,
     endpoint: String,
     poll_url: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    request_url: Option<String>,
     #[serde(default)]
     final_url: Option<String>,
     #[serde(default)]
@@ -48,6 +50,7 @@ impl LroHandle {
             audience: self.audience.clone(),
             endpoint: self.endpoint.clone(),
             poll_url: self.poll_url.to_string(),
+            request_url: self.request_url.as_ref().map(Url::to_string),
             final_url: self.final_target.as_ref().map(|(url, _)| url.to_string()),
             final_protocol: self.final_target.as_ref().map(|(_, protocol)| *protocol),
             protocol: self.tracker.protocol,
@@ -167,6 +170,22 @@ impl LroHandle {
         let ready_at = Instant::now()
             .checked_add(delay)
             .ok_or_else(|| anyhow::anyhow!("invalid operation checkpoint delay"))?;
+        let request_url = stored
+            .request_url
+            .map(|url| {
+                let url = Url::parse(&url)
+                    .map_err(|_| anyhow::anyhow!("invalid operation checkpoint endpoint"))?;
+                if url.scheme() != "https"
+                    || url.origin() != endpoint.origin()
+                    || !url.username().is_empty()
+                    || url.password().is_some()
+                    || url.fragment().is_some()
+                {
+                    bail!("invalid operation checkpoint endpoint");
+                }
+                Ok(url)
+            })
+            .transpose()?;
         let final_target = match (stored.final_url, stored.final_protocol) {
             (None, None) => None,
             (Some(url), Some(protocol)) => {
@@ -193,6 +212,7 @@ impl LroHandle {
             audience: stored.audience,
             endpoint: stored.endpoint,
             poll_url,
+            request_url,
             final_target,
             tracker: LroTracker {
                 protocol: stored.protocol,

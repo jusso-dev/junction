@@ -365,6 +365,14 @@ enum OperationsCommand {
         #[arg(long)]
         result: bool,
     },
+    /// Request remote cancellation when Microsoft documents a cancel operation.
+    Cancel {
+        id: String,
+        #[arg(long)]
+        context_file: Option<PathBuf>,
+        #[arg(long)]
+        policy: Option<PathBuf>,
+    },
 }
 #[derive(Subcommand)]
 enum McpCommand {
@@ -387,6 +395,20 @@ enum ApiCommand {
     Products,
     /// Product aliases (Intune, Teams, Entra, ...) that resolve to Graph operations.
     Aliases,
+    /// Export the selected Microsoft operation catalogue as OpenAPI 3.1.
+    ExportOpenapi {
+        #[arg(long)]
+        product: Option<String>,
+        #[arg(long)]
+        service: Option<String>,
+        #[arg(long)]
+        allow_preview: bool,
+        /// Refuse larger exports unless raised explicitly.
+        #[arg(long, default_value_t = 5000)]
+        max_operations: usize,
+        #[arg(long)]
+        output: PathBuf,
+    },
     Services {
         #[arg(long)]
         product: Option<String>,
@@ -1369,6 +1391,62 @@ async fn run() -> Result<()> {
                     snapshot
                 }
             }
+            OperationsCommand::Cancel {
+                id,
+                context_file,
+                policy,
+            } => {
+                let stored =
+                    operation_store::LockedHandle::acquire(&cli.operations_directory, &id)?;
+                let selected = registry.resolve(
+                    stored.handle.snapshot().operation,
+                    stored.handle.api_version(),
+                    stored.handle.allows_preview(),
+                )?;
+                let bytes = match (context_file, cli.context.as_deref()) {
+                    (Some(file), None) => context_store::read_file(&file)?,
+                    (None, Some(name)) => context_store::read(&cli.contexts_directory, name)?,
+                    _ => anyhow::bail!("select exactly one named context or context file"),
+                };
+                let context = load_execution_config(&bytes, selected)?;
+                let policy = match policy {
+                    Some(path) => junction_policy::Policy::parse(&std::fs::read_to_string(path)?)?,
+                    None => junction_policy::Policy::default(),
+                };
+                let executor = junction_runtime::Executor::new(registry, policy)?;
+                executor.preflight_lro(
+                    &stored.handle,
+                    &context.token_request.tenant,
+                    &context.token_request.audience,
+                    &context.endpoint,
+                )?;
+                // Report unsupported cancellation without acquiring credentials.
+                if stored.handle.snapshot().state.is_terminal()
+                    || executor.cancel_target(&stored.handle).is_none()
+                {
+                    let status = if stored.handle.snapshot().state.is_terminal() {
+                        "already_terminal"
+                    } else {
+                        "cancel_unsupported"
+                    };
+                    serde_json::json!({"status":status,"operation_id":id})
+                } else {
+                    let token = auth_cli::acquire_interactive(&context.token_request).await?;
+                    serde_json::to_value(
+                        executor
+                            .cancel_lro(
+                                &stored.handle,
+                                junction_runtime::ExecutionContext {
+                                    tenant: &context.token_request.tenant,
+                                    audience: &context.token_request.audience,
+                                    endpoint: &context.endpoint,
+                                    token: &token,
+                                },
+                            )
+                            .await?,
+                    )?
+                }
+            }
         },
         Command::Api { command } => match command {
             ApiCommand::Changes { previous } => {
@@ -1378,6 +1456,28 @@ async fn run() -> Result<()> {
             ApiCommand::Stats => serde_json::to_value(registry.stats())?,
             ApiCommand::Products => serde_json::json!({"products": registry.products()}),
             ApiCommand::Aliases => serde_json::json!({"aliases": registry.alias_summary()}),
+            ApiCommand::ExportOpenapi {
+                product,
+                service,
+                allow_preview,
+                max_operations,
+                output,
+            } => {
+                let document =
+                    registry.export_openapi(&junction_registry::export::ExportOptions {
+                        product: product.as_deref(),
+                        service: service.as_deref(),
+                        allow_preview,
+                        max_operations,
+                    })?;
+                atomic_write(&output, &serde_json::to_vec_pretty(&document)?)?;
+                serde_json::json!({
+                    "status": "exported",
+                    "paths": document["paths"].as_object().map_or(0, |paths| paths.len()),
+                    "schemas": document["components"]["schemas"].as_object().map_or(0, |s| s.len()),
+                    "skipped_duplicates": document["x-junction-skipped-duplicates"].as_array().map_or(0, Vec::len),
+                })
+            }
             ApiCommand::Services { product } => {
                 serde_json::json!({"services": registry.services(product.as_deref()).into_iter().map(|(product, service)| serde_json::json!({"product":product,"service":service})).collect::<Vec<_>>()})
             }

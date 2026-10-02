@@ -1,4 +1,5 @@
 pub mod aliases;
+pub mod export;
 mod input_schema;
 pub mod overrides;
 use anyhow::{Result, bail};
@@ -262,6 +263,10 @@ impl Registry {
     /// Includes preview/deprecated/retired metadata without selecting it for execution.
     pub fn versions(&self, id: &str) -> Result<&[JunctionOperation]> {
         self.lookup(id).map(Vec::as_slice)
+    }
+    /// Every loaded operation version, in canonical ID order.
+    pub fn all(&self) -> impl Iterator<Item = &JunctionOperation> {
+        self.operations.values().flatten()
     }
     /// Canonical IDs win; otherwise a product alias resolves to its Graph ID.
     fn lookup(&self, id: &str) -> Result<&Vec<JunctionOperation>> {
