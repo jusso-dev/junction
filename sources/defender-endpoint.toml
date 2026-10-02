@@ -1,9 +1,9 @@
-id = "defender"
+id = "defender-endpoint"
 product = "defender"
 source_type = "documentation"
 # Microsoft Learn reference pages (Markdown via Accept: text/markdown) listed in toc.json.
-upstream = "https://learn.microsoft.com/en-us/defender-xdr/"
-paths = ["api-"]
+upstream = "https://learn.microsoft.com/en-us/defender-endpoint/"
+paths = ["api"]
 authority = "microsoft"
 clouds = ["public"]
 enabled = true

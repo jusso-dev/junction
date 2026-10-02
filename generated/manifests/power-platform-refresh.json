@@ -1,0 +1,2677 @@
+{
+  "documents": [
+    {
+      "receipt": {
+        "bytes": 2302,
+        "path": "power-platform/analytics/advisor-chat",
+        "sha256": "e1e297a99e1e1abbd42b0481248ca60af0cc4a9ec1a915b15d628e9b6242a2da",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/analytics/advisor-chat"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4362,
+        "path": "power-platform/analytics/advisor-chat/send-advisor-chat-message",
+        "sha256": "206565e06a86f28018225bd4c10171263fd715ffe3ff08098a084066ebedd8c1",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/analytics/advisor-chat/send-advisor-chat-message"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 2703,
+        "path": "power-platform/analytics/recommendations",
+        "sha256": "cd4ff78b53eb8e710a961a122704ae0748b46880140a1a36835d5abb5903bd69",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/analytics/recommendations"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 5085,
+        "path": "power-platform/analytics/recommendations/execute-recommendation-action",
+        "sha256": "9a6b89051e2ba56eecc998989178468829531bbbb75b3b63f0b01a87e5a3b1bc",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/analytics/recommendations/execute-recommendation-action"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3221,
+        "path": "power-platform/analytics/recommendations/get-action-schema",
+        "sha256": "1fd34c97168ca31cb7a7e3bcf35e84dbda9d520333471ca12f8fca56887e6ae3",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/analytics/recommendations/get-action-schema"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 5269,
+        "path": "power-platform/analytics/recommendations/get-recommendation-resources",
+        "sha256": "c35f2364cfbb93c31be5c34018fe9af8b8e7e00c93e97797fb250c2b03125e57",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/analytics/recommendations/get-recommendation-resources"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3426,
+        "path": "power-platform/analytics/recommendations/get-recommendation-scenarios",
+        "sha256": "affd7f465c0c0c45f86a34755a731341984d1607a438d9c5325d452b22f4f3e4",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/analytics/recommendations/get-recommendation-scenarios"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4586,
+        "path": "power-platform/analytics/recommendations/get-recommendations",
+        "sha256": "5aaf3a2495cfb7313e94349a4ae68bb9b3648a4c7401226230f6b4b2c4b040fd",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/analytics/recommendations/get-recommendations"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3432,
+        "path": "power-platform/analytics/recommendations/get-scenario-actions",
+        "sha256": "665c060af1c86d1530ce0f9a71b6535d586743e6d8cc718fd7d12a1ecd41150e",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/analytics/recommendations/get-scenario-actions"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 2711,
+        "path": "power-platform/appmanagement/applications",
+        "sha256": "677f5c9a96585eb28e679a79a24e6092de718db7ef120b6d90418cff83449b10",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/appmanagement/applications"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4518,
+        "path": "power-platform/appmanagement/applications/get-application-package-install-status",
+        "sha256": "6d480141f5000df9826e25940717ff5705744ff361131fb57c0e1243b5f1d0eb",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/appmanagement/applications/get-application-package-install-status"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 7193,
+        "path": "power-platform/appmanagement/applications/get-environment-application-package",
+        "sha256": "7b14b0d6b6051ff45bd3fc269baddacd44f049676add9cfc5eb03b6fed770cea",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/appmanagement/applications/get-environment-application-package"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 5216,
+        "path": "power-platform/appmanagement/applications/get-tenant-application-package",
+        "sha256": "8b31883805070fb9f978a55a95d8a2056f75732074140b51dfde205b9cfcea15",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/appmanagement/applications/get-tenant-application-package"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 6817,
+        "path": "power-platform/appmanagement/applications/install-application-package",
+        "sha256": "490ba9439d0afcd356c0f81ede1fec94f7c352341eacd32b8d81f9c6ff0d22dc",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/appmanagement/applications/install-application-package"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3517,
+        "path": "power-platform/authorization/role-based-access-control",
+        "sha256": "93b824fae6d139508d577a9000ab1b4616183d248ff4e66c2e89b286d1fd2222",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/authorization/role-based-access-control"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4936,
+        "path": "power-platform/authorization/role-based-access-control/create-environment-group-role-assignment",
+        "sha256": "ed0c94029e5adc779b3c246077268e6fd14162129ea02875a686b9a08c9f768e",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/authorization/role-based-access-control/create-environment-group-role-assignment"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4844,
+        "path": "power-platform/authorization/role-based-access-control/create-environment-role-assignment",
+        "sha256": "a8e443714eb004260e7c92b19d934eb4b739c90eb67b732295e7b88715efa678",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/authorization/role-based-access-control/create-environment-role-assignment"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4596,
+        "path": "power-platform/authorization/role-based-access-control/create-role-assignment",
+        "sha256": "2629a085cb7fb3c113c158990888b89d6a15acb52fe3f230c90de6986d64efd7",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/authorization/role-based-access-control/create-role-assignment"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3828,
+        "path": "power-platform/authorization/role-based-access-control/delete-environment-group-role-assignment",
+        "sha256": "f96af07a98af5bc9d6836ddfe2a20e9d273dd401cc939dcb0e13d3103b8fbfc4",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/authorization/role-based-access-control/delete-environment-group-role-assignment"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3736,
+        "path": "power-platform/authorization/role-based-access-control/delete-environment-role-assignment",
+        "sha256": "6f5eb96af6bfca6581bdad4736120e12af07b59351ce7aedd3180edda58aa039",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/authorization/role-based-access-control/delete-environment-role-assignment"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3488,
+        "path": "power-platform/authorization/role-based-access-control/delete-role-assignment",
+        "sha256": "0b084e3fd53352118c16daf0b6c8755f2da03a83beb88daa122411c8490c3ec5",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/authorization/role-based-access-control/delete-role-assignment"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4236,
+        "path": "power-platform/authorization/role-based-access-control/list-environment-group-role-assignments",
+        "sha256": "43274e8227cb9d1a18e020289c3f5c8a7a560de9718d361acf8c231e0cafd7d7",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/authorization/role-based-access-control/list-environment-group-role-assignments"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4138,
+        "path": "power-platform/authorization/role-based-access-control/list-environment-role-assignments",
+        "sha256": "381e1651829c55475f3dc73dfe946f36e7c72de4ca25eabffb8c3df507284d41",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/authorization/role-based-access-control/list-environment-role-assignments"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3870,
+        "path": "power-platform/authorization/role-based-access-control/list-role-assignments",
+        "sha256": "6476a911d6ef194b5169e14d0655fff136b8c8ec8c453e5a671709579874e8b4",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/authorization/role-based-access-control/list-role-assignments"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3920,
+        "path": "power-platform/authorization/role-based-access-control/list-role-definitions",
+        "sha256": "8c4a19ef20f983e395bf237be051dc48cf7be2fc8a6b48584361f9da33ec3a7b",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/authorization/role-based-access-control/list-role-definitions"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 2101,
+        "path": "power-platform/connectivity/connections",
+        "sha256": "9fbf5aeb35bd0638b1c4641ac9a966a394d74194ba89c7c7290e5b35b3496cb7",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/connectivity/connections"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4744,
+        "path": "power-platform/connectivity/connections/list-connections",
+        "sha256": "b1c661bc386981185c208842b028ab52a0fca50be251a994b764a747f8c670d8",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/connectivity/connections/list-connections"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 2189,
+        "path": "power-platform/connectivity/connectors",
+        "sha256": "0a3401e702f6fe5527ea9661261b67fd29a9db24260bbbd62936e8e3a0101991",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/connectivity/connectors"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4790,
+        "path": "power-platform/connectivity/connectors/get-connector-by-id",
+        "sha256": "f7234436d1f39b3652c4c44b7aa672631ede0306c8198cff110259e4fe7a414e",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/connectivity/connectors/get-connector-by-id"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4859,
+        "path": "power-platform/connectivity/connectors/list-connectors",
+        "sha256": "558b99a54b08434860857b26c7053d50ab88a5cca6c83fd13d78b9945bf2ec9f",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/connectivity/connectors/list-connectors"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 2181,
+        "path": "power-platform/copilotstudio/agent-channels",
+        "sha256": "41b4803c3d77f643c5da2daef3c810bce5ffb2a30a11b0f5a05d62281e11e6da",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/copilotstudio/agent-channels"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4073,
+        "path": "power-platform/copilotstudio/agent-channels/download-agent-channel-manifest",
+        "sha256": "39a9c4a217cbf7ad1a95124eb2cbeb72cd4690ab41991a201eac138859b5a2dd",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/copilotstudio/agent-channels/download-agent-channel-manifest"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3568,
+        "path": "power-platform/copilotstudio/bots",
+        "sha256": "cce311d13ab919fa9f0ecadbbd1396bb17af548049be4a6e1e197df4cc324917",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/copilotstudio/bots"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3150,
+        "path": "power-platform/copilotstudio/bots/delete-copilot-agent",
+        "sha256": "59bb32f41a4725aec21d387c29a84e54caab38971bd7800ac965dd3c99613aec",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/copilotstudio/bots/delete-copilot-agent"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3504,
+        "path": "power-platform/copilotstudio/bots/download-maker-evaluation-snapshot",
+        "sha256": "f4736c08eb1428954fda355c7a6c31dd5bfc05ba0b9819bce5991997217d1f84",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/copilotstudio/bots/download-maker-evaluation-snapshot"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3330,
+        "path": "power-platform/copilotstudio/bots/get-bot-quarantine-status",
+        "sha256": "4b8f4c32017ef2338d40e604590aebb46acda28bb3005abd9abd58505e3b3ab6",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/copilotstudio/bots/get-bot-quarantine-status"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3440,
+        "path": "power-platform/copilotstudio/bots/get-connector-consent-bypass",
+        "sha256": "243a933f5113b33003f7ae01be0928f42d42d4649f83eb8afdefee4273f77767",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/copilotstudio/bots/get-connector-consent-bypass"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 8221,
+        "path": "power-platform/copilotstudio/bots/get-maker-evaluation-test-run",
+        "sha256": "8f13a84fa69b639b540317a4780deaa421fbb113eb64e72a9660fa5a8b980bbf",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/copilotstudio/bots/get-maker-evaluation-test-run"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4675,
+        "path": "power-platform/copilotstudio/bots/get-maker-evaluation-test-set",
+        "sha256": "3fe60e116d6896b5bab87ed9de9ca066c1c6e80afabd1c46e93d252299ab89e1",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/copilotstudio/bots/get-maker-evaluation-test-set"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 8420,
+        "path": "power-platform/copilotstudio/bots/list-maker-evaluation-test-runs",
+        "sha256": "2b6a5f9b974a1bccaab4998b32691ac9a7d38a0253eb2b6c0e185ed1d25c6b52",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/copilotstudio/bots/list-maker-evaluation-test-runs"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4861,
+        "path": "power-platform/copilotstudio/bots/list-maker-evaluation-test-sets",
+        "sha256": "ba19b67aca5e5f350b85d9c0706ae3b04168bc2a6d08904631bb54269f5d7cc2",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/copilotstudio/bots/list-maker-evaluation-test-sets"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3647,
+        "path": "power-platform/copilotstudio/bots/reassign-copilot-agent",
+        "sha256": "e0755b8137ee55774bc08a55a558b3f82e7e7f6eaeebe928f74bb11922651a50",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/copilotstudio/bots/reassign-copilot-agent"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 7696,
+        "path": "power-platform/copilotstudio/bots/run-maker-evaluation-test-set",
+        "sha256": "4903e0c0a2d365befa372992e085ffebe1306624a7affa2a0456e48afc3781ac",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/copilotstudio/bots/run-maker-evaluation-test-set"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3324,
+        "path": "power-platform/copilotstudio/bots/set-bot-as-quarantined",
+        "sha256": "6d1de07c1c0ddfe1c0870024991a479fc284769cd24c4343d5f69563fdf17b2e",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/copilotstudio/bots/set-bot-as-quarantined"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3348,
+        "path": "power-platform/copilotstudio/bots/set-bot-as-unquarantined",
+        "sha256": "19446cd1c858673de4fb6b73cb6bda48f2e402226df99c2cefef8874db2db70b",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/copilotstudio/bots/set-bot-as-unquarantined"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4183,
+        "path": "power-platform/copilotstudio/bots/set-connector-consent-bypass",
+        "sha256": "b0396e41c3134ce75e287f6d4d69c938d543607abab45e9be0cec3f02f03de58",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/copilotstudio/bots/set-connector-consent-bypass"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 2845,
+        "path": "power-platform/dynamics/finance-and-operations-maintenance-settings",
+        "sha256": "48cc6f4fa13ba69e12f06b3e0b0bacab51f7341807c7402af757302c8dcc079c",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/dynamics/finance-and-operations-maintenance-settings"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 5470,
+        "path": "power-platform/dynamics/finance-and-operations-maintenance-settings/get-fin-ops-maintenance-settings",
+        "sha256": "aa01f76473f95fccc9ddcb0f02c83823a0c62675df956a1e6e4cec09016d43b9",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/dynamics/finance-and-operations-maintenance-settings/get-fin-ops-maintenance-settings"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 6284,
+        "path": "power-platform/dynamics/finance-and-operations-maintenance-settings/update-fin-ops-maintenance-settings",
+        "sha256": "d9b22b9a46e47e0b2cd35df226c6dfca61b9c15e0d25e3e6cbe87023108b4818",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/dynamics/finance-and-operations-maintenance-settings/update-fin-ops-maintenance-settings"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 2587,
+        "path": "power-platform/dynamics/finance-and-operations-operation-errors",
+        "sha256": "eab0430b9941055d8fa953e5026ddaa2bc69432ce66c34f2b049372f8ee4c733",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/dynamics/finance-and-operations-operation-errors"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 5558,
+        "path": "power-platform/dynamics/finance-and-operations-operation-errors/get-fin-ops-operation-errors",
+        "sha256": "aa213b3738a97b01be5bb353d785f307ecb2d410999ffbefbecff3bcf3a7e7e4",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/dynamics/finance-and-operations-operation-errors/get-fin-ops-operation-errors"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 2120,
+        "path": "power-platform/dynamics/finance-and-operations-properties",
+        "sha256": "35320218fc7c4022151c8c78bfa32438a494d4cb73a365f3ce28532f97d338a7",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/dynamics/finance-and-operations-properties"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 5635,
+        "path": "power-platform/dynamics/finance-and-operations-properties/get-fin-ops-properties",
+        "sha256": "6c577c13a14d491a65694e9f5db2a4704d5a61a7e7ceb12692d6f63231754e60",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/dynamics/finance-and-operations-properties/get-fin-ops-properties"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 2634,
+        "path": "power-platform/dynamics/finance-and-operations-versions",
+        "sha256": "a1afe66bfece5b04a515fd859740af0b53617c5efe358a11d6e5d006dff71533",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/dynamics/finance-and-operations-versions"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4664,
+        "path": "power-platform/dynamics/finance-and-operations-versions/apply-fin-ops-version",
+        "sha256": "00f6ef3859646f9b7261be6f56abd41d5f3fde39c63c34daade00a40811154c7",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/dynamics/finance-and-operations-versions/apply-fin-ops-version"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4894,
+        "path": "power-platform/dynamics/finance-and-operations-versions/get-fin-ops-versions",
+        "sha256": "09b92cb3ca1d9d7667227d42d2c57c52bdfaf0c11e8e9b87cce25bbaa794fb9e",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/dynamics/finance-and-operations-versions/get-fin-ops-versions"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 2745,
+        "path": "power-platform/environmentmanagement/environment-backup",
+        "sha256": "e703ac299f1dc4ffef5cf110eab3b65c6b86748c9cce81ffdb304f50b0e21994",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/environmentmanagement/environment-backup"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 6445,
+        "path": "power-platform/environmentmanagement/environment-backup/create-environment-backup",
+        "sha256": "978cf677775a6509c94b4d6785c43f40063df5cc04d6a1d0b918762efe2cc4f0",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/environmentmanagement/environment-backup/create-environment-backup"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4692,
+        "path": "power-platform/environmentmanagement/environment-backup/delete-environment-backup",
+        "sha256": "c07859a350dc535f46b6f47f0dd892f295f6dc61e1b64d885d6152f9d8e27d3e",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/environmentmanagement/environment-backup/delete-environment-backup"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 6240,
+        "path": "power-platform/environmentmanagement/environment-backup/get-environment-backups",
+        "sha256": "71eba7e644001124152a52584627b3c7bda2b761f8ae6e07ace2a29d8fd37146",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/environmentmanagement/environment-backup/get-environment-backups"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 2432,
+        "path": "power-platform/environmentmanagement/environment-copy",
+        "sha256": "289483bb57125834c941bf962a5f2658cfc5eebea9fe1c995afe750e46664740",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/environmentmanagement/environment-copy"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 6652,
+        "path": "power-platform/environmentmanagement/environment-copy/copy-environment",
+        "sha256": "02462114fc6032e6e4b67e027ba2101e215222d9abd94c899664c29cdda99024",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/environmentmanagement/environment-copy/copy-environment"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 6212,
+        "path": "power-platform/environmentmanagement/environment-copy/get-environment-copy-candidates",
+        "sha256": "eeed5a56993855f116a2201bde6b4a4f64d13c522e8f9a5d8733c0160d5fb62b",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/environmentmanagement/environment-copy/get-environment-copy-candidates"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 2256,
+        "path": "power-platform/environmentmanagement/environment-delete",
+        "sha256": "9643795246359ad3f6ef7e432814955d33c61a2201134f3664c15dc3f8c97776",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/environmentmanagement/environment-delete"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 5096,
+        "path": "power-platform/environmentmanagement/environment-delete/delete-environment-by-id",
+        "sha256": "6eed49c81352572044990ea70d8a57289833706a0bc59a37da3a439f78025f9c",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/environmentmanagement/environment-delete/delete-environment-by-id"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3106,
+        "path": "power-platform/environmentmanagement/environment-groups",
+        "sha256": "b2e2804a43c3985111abb8869ec24e91835f6d4b43fef19de5d00dc307d5dd65",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/environmentmanagement/environment-groups"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3612,
+        "path": "power-platform/environmentmanagement/environment-groups/add-environment-to-group",
+        "sha256": "a6c303a1c7d12ca8db259d9ae33a0d4666099695044f99d0f275a83a02b87c02",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/environmentmanagement/environment-groups/add-environment-to-group"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4567,
+        "path": "power-platform/environmentmanagement/environment-groups/create-environment-group",
+        "sha256": "e18768808e63f88c93b7f9153f3f597c64b35fdae1e8f921a6de26e4ee606c72",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/environmentmanagement/environment-groups/create-environment-group"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3475,
+        "path": "power-platform/environmentmanagement/environment-groups/delete-environment-group",
+        "sha256": "f1750533043dace25baa4fbd5001676a0f502b1fc037adb445bd33383b27b8ce",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/environmentmanagement/environment-groups/delete-environment-group"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4204,
+        "path": "power-platform/environmentmanagement/environment-groups/get-environment-group",
+        "sha256": "79338ccc4f1f72d196399942e1156bb5a0fe284b24fc5594bd23bf7b11d4b01e",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/environmentmanagement/environment-groups/get-environment-group"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3545,
+        "path": "power-platform/environmentmanagement/environment-groups/get-environment-group-operation",
+        "sha256": "a151d560e7c770d0010caa9a696d09b80c45b7a41bc067f5d6222ff831ee94f4",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/environmentmanagement/environment-groups/get-environment-group-operation"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4432,
+        "path": "power-platform/environmentmanagement/environment-groups/list-environment-groups",
+        "sha256": "ebdfae12078d640b6f4ee0d764bb200ff2f3a4bf2e80c1680eaf3fc40a925588",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/environmentmanagement/environment-groups/list-environment-groups"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3670,
+        "path": "power-platform/environmentmanagement/environment-groups/remove-environment-from-group",
+        "sha256": "81787ceeb90d91114f88fe35db98715b45c5dc23afc46689fe417016baba289d",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/environmentmanagement/environment-groups/remove-environment-from-group"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4635,
+        "path": "power-platform/environmentmanagement/environment-groups/update-environment-group",
+        "sha256": "382c9e4d8ac9b7092397802fd39542f1948cd82efbb6c2198b53820a4fb6fdce",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/environmentmanagement/environment-groups/update-environment-group"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 2582,
+        "path": "power-platform/environmentmanagement/environment-managed-governance",
+        "sha256": "d660be68ee0fe49f0e22fc66a77c0c929bc0a0eafe92a6a8e19d2f034b9a7072",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/environmentmanagement/environment-managed-governance"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 5280,
+        "path": "power-platform/environmentmanagement/environment-managed-governance/disable-managed-environment",
+        "sha256": "59f3d5b6e6c75ccf88204f51c406489adab08f146637b4b4d8f65957db8ad141",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/environmentmanagement/environment-managed-governance/disable-managed-environment"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 5268,
+        "path": "power-platform/environmentmanagement/environment-managed-governance/enable-managed-environment",
+        "sha256": "6e1fbfe18113ba88c1794643b21f6cd684afffc876033f8685c35157aa25f1c6",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/environmentmanagement/environment-managed-governance/enable-managed-environment"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 2787,
+        "path": "power-platform/environmentmanagement/environment-management-settings",
+        "sha256": "6725686f09f2ea8ec4522b6ce6f951405d62fd1cdec563afec208809c32836f9",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/environmentmanagement/environment-management-settings"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 6658,
+        "path": "power-platform/environmentmanagement/environment-management-settings/create-environment-management-settings",
+        "sha256": "e043ebe83ace1e94d71d6d6e0b029eb05c20b3c1bdb217e6d6c405c3ad9b124e",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/environmentmanagement/environment-management-settings/create-environment-management-settings"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 9738,
+        "path": "power-platform/environmentmanagement/environment-management-settings/list-environment-management-settings",
+        "sha256": "32169e658752a45d2bab6f6c4b68f6963da47722bd5bc1864d53e2349cc18785",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/environmentmanagement/environment-management-settings/list-environment-management-settings"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 7556,
+        "path": "power-platform/environmentmanagement/environment-management-settings/update-environment-management-settings",
+        "sha256": "e63d7b30bb898bc474c4d615e3297fde8f281fa0b802381146c88cbe15b37b37",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/environmentmanagement/environment-management-settings/update-environment-management-settings"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3105,
+        "path": "power-platform/environmentmanagement/environment-provisioning",
+        "sha256": "4e45bda69607e0c706f2084a30c01837e8ddcb540d2447872ee8eca9865f2314",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/environmentmanagement/environment-provisioning"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 6041,
+        "path": "power-platform/environmentmanagement/environment-provisioning/get-provisioning-currencies",
+        "sha256": "16051543bab01764190e268602014fb3fe3c8bb4a08a84f241bfec8ce4ef55ab",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/environmentmanagement/environment-provisioning/get-provisioning-currencies"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 6281,
+        "path": "power-platform/environmentmanagement/environment-provisioning/get-provisioning-languages",
+        "sha256": "d3857426c2f3afce968882d272ae056665e89c40487ccab1fcf3c7753731e209",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/environmentmanagement/environment-provisioning/get-provisioning-languages"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 7381,
+        "path": "power-platform/environmentmanagement/environment-provisioning/get-provisioning-templates",
+        "sha256": "674c123b2a3b67e5e14e713808e3e903b3371664bfdf93627917fceef776ecd8",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/environmentmanagement/environment-provisioning/get-provisioning-templates"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 7299,
+        "path": "power-platform/environmentmanagement/environment-provisioning/get-supported-locations",
+        "sha256": "0b9ad415268c5c3d6b41f2e5957bc823d260b545289904ce94675598aa3a32b6",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/environmentmanagement/environment-provisioning/get-supported-locations"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 6280,
+        "path": "power-platform/environmentmanagement/environment-provisioning/link-dataverse",
+        "sha256": "93e1bd24f70a9429d4513a77db91b42cf649f42ce25ad1ff0c0f7a25eff924d6",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/environmentmanagement/environment-provisioning/link-dataverse"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 14553,
+        "path": "power-platform/environmentmanagement/environment-provisioning/provision-new-environment",
+        "sha256": "76f222b829861cab5e799b7c6c3bedaf3dcf290875a3d78afcbcfefb481c67c2",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/environmentmanagement/environment-provisioning/provision-new-environment"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 2244,
+        "path": "power-platform/environmentmanagement/environment-recover",
+        "sha256": "442a35378d206c03113febe2621dd74379b35a9b197c1d360eb269eafaea0f7e",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/environmentmanagement/environment-recover"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 5096,
+        "path": "power-platform/environmentmanagement/environment-recover/recover-environment",
+        "sha256": "da7c92c294f4c6a7c3dc31ca1c282fb03c5ebea0c0dc321b0e12b3890d662a66",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/environmentmanagement/environment-recover/recover-environment"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 2208,
+        "path": "power-platform/environmentmanagement/environment-reset",
+        "sha256": "1896fe3e831948394ae6516a55616adbc3545c90cc7de6431e964df8073ed84e",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/environmentmanagement/environment-reset"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 6995,
+        "path": "power-platform/environmentmanagement/environment-reset/reset-environment",
+        "sha256": "8e8de6172382a03aa6b832e3ced736d359538510e29b18f5251c667f0d52f0db",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/environmentmanagement/environment-reset/reset-environment"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 2433,
+        "path": "power-platform/environmentmanagement/environment-restore",
+        "sha256": "059d4bbaeb48592d22126f41f39fc4581704cf9823d8cc2a09688994cdfa9948",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/environmentmanagement/environment-restore"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 6272,
+        "path": "power-platform/environmentmanagement/environment-restore/get-restore-candidates",
+        "sha256": "2d591647086d7d4c928e629374de2593656b64df7a7c7676731d80bcc8bc8d49",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/environmentmanagement/environment-restore/get-restore-candidates"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 6936,
+        "path": "power-platform/environmentmanagement/environment-restore/restore-environment",
+        "sha256": "028332d8281cfafb92317822540062ef615edb809c911da8e98c8af0b02238f8",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/environmentmanagement/environment-restore/restore-environment"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 2369,
+        "path": "power-platform/environmentmanagement/environments",
+        "sha256": "752d5a03965ddbd158485d9cae4a8dc03b988e9ce9363a4aefc97fc537246b3e",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/environmentmanagement/environments"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 8706,
+        "path": "power-platform/environmentmanagement/environments/get-environment-by-id-for-user",
+        "sha256": "e78988eb66eccd3045a06a9b7711175a398656639e0ecc621017b78bc9d70793",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/environmentmanagement/environments/get-environment-by-id-for-user"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 9876,
+        "path": "power-platform/environmentmanagement/environments/list-environments-for-user",
+        "sha256": "7deae2d45c514fdc3f24c3de5493a4084580bbe3e086465ceeb8de109f889b57",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/environmentmanagement/environments/list-environments-for-user"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 2878,
+        "path": "power-platform/environmentmanagement/failover",
+        "sha256": "09be9583c537120242ff9831e04506c6cd21bc9df017808d1b1ac2e88e92b7b0",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/environmentmanagement/failover"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 5068,
+        "path": "power-platform/environmentmanagement/failover/disable-disaster-recovery",
+        "sha256": "d6ffb2751343c71d0ac5007a397df998f8cc98a044e10f7724b57a765f2f5116",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/environmentmanagement/failover/disable-disaster-recovery"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 5056,
+        "path": "power-platform/environmentmanagement/failover/enable-disaster-recovery",
+        "sha256": "808f05d47ec973c19a6a33f953372ac13c1be7a98002a7958e91d299d6e7c622",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/environmentmanagement/failover/enable-disaster-recovery"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 5464,
+        "path": "power-platform/environmentmanagement/failover/get-business-continuity-state-full-snapshot",
+        "sha256": "6bbf5ecbb1aab67dda7f2d9dfafe5471b4d82e81f535624179de4b6dc678292e",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/environmentmanagement/failover/get-business-continuity-state-full-snapshot"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4976,
+        "path": "power-platform/environmentmanagement/failover/perform-dr-drill",
+        "sha256": "7a0b8177c579d750c9eaa28b19cecfcdb508838323ddee6f4edab67aac4e3b1e",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/environmentmanagement/failover/perform-dr-drill"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 5136,
+        "path": "power-platform/environmentmanagement/failover/perform-failback",
+        "sha256": "d49f27b2991f329f8fa99c13a0c206fa04ce29d83ad9f16db21189b23754f6f7",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/environmentmanagement/failover/perform-failback"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 5791,
+        "path": "power-platform/environmentmanagement/failover/perform-force-failover",
+        "sha256": "7e746434c2e5657c585db5fd24c1ca7f53145243009fd7c9dce95adf861c3d5f",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/environmentmanagement/failover/perform-force-failover"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 2247,
+        "path": "power-platform/environmentmanagement/modify-environment-sku",
+        "sha256": "18e3417cbe15769b0a879f45a073b652d1d20e37236983ee4dd06c92ebdf1603",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/environmentmanagement/modify-environment-sku"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 2548,
+        "path": "power-platform/environmentmanagement/operation",
+        "sha256": "3445d4ef78a06281272db513bdb8019436a3ffdd48973ea0bcc9e05370c6d039",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/environmentmanagement/operation"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 7861,
+        "path": "power-platform/environmentmanagement/operation/get-environment-operation-by-id",
+        "sha256": "95e4cbb55fa1478c536d1f6cd6901b56646591f6c2701ed49dae6a1e4dfda8b9",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/environmentmanagement/operation/get-environment-operation-by-id"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 7413,
+        "path": "power-platform/environmentmanagement/operation/get-operation-by-id",
+        "sha256": "5c088e64282a4256bfaea7067beae7eb02ff0d50f212b226c6acd7487fda0aba",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/environmentmanagement/operation/get-operation-by-id"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 8505,
+        "path": "power-platform/environmentmanagement/operation/get-operations-for-environment",
+        "sha256": "b208f1e115a19e723968f25be248d5a77c75802f2b9257d64066cc5e3ec76140",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/environmentmanagement/operation/get-operations-for-environment"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 2742,
+        "path": "power-platform/governance/cross-tenant-connection-reports",
+        "sha256": "4f6dd5de5803099625fd27c8b391e83105475eace67c949a8b6e4d03924c1701",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/governance/cross-tenant-connection-reports"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4598,
+        "path": "power-platform/governance/cross-tenant-connection-reports/create-cross-tenant-connection-report",
+        "sha256": "d6317e037b989fa4bfb83a8c9b9ead96b5ba62a17c833748a70c17e67d1d2afb",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/governance/cross-tenant-connection-reports/create-cross-tenant-connection-report"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4602,
+        "path": "power-platform/governance/cross-tenant-connection-reports/get-cross-tenant-connection-report",
+        "sha256": "31be3754ee5b1f4e546f3b72e3f6c250fd9a01065b1d04d2b3c029c177cd5cfe",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/governance/cross-tenant-connection-reports/get-cross-tenant-connection-report"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4893,
+        "path": "power-platform/governance/cross-tenant-connection-reports/list-cross-tenant-connection-reports",
+        "sha256": "838bb3dc9afefb544b3b6898d665dd0f9092d5c8b9ebd0d0066efbc215f2886f",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/governance/cross-tenant-connection-reports/list-cross-tenant-connection-reports"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3790,
+        "path": "power-platform/governance/rule-based-policies",
+        "sha256": "152b5b638b554a44c4cd18c211b72d66771c5a8447072f6009061325466f29ea",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/governance/rule-based-policies"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 5154,
+        "path": "power-platform/governance/rule-based-policies/create-enviornment-group-rule-based-assignment",
+        "sha256": "461d394a91293d7149f20bdab53dc7ea6b02d9abe2b5dcd88199e523c8a9da6f",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/governance/rule-based-policies/create-enviornment-group-rule-based-assignment"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 5084,
+        "path": "power-platform/governance/rule-based-policies/create-environment-rule-based-assignment",
+        "sha256": "3a685ffc0f27559e28cc90fe3364c35fe0fbedd6d0a6aa6b7992002ae08ebf89",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/governance/rule-based-policies/create-environment-rule-based-assignment"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4505,
+        "path": "power-platform/governance/rule-based-policies/create-rule-based-policy",
+        "sha256": "1ecde0bdcfda93708be1c6d3a5b950cb5048008436e06dd8229b9a3effbb753a",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/governance/rule-based-policies/create-rule-based-policy"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4297,
+        "path": "power-platform/governance/rule-based-policies/get-rule-based-policy-by-id",
+        "sha256": "a6302aa7b9fd1fd80354a5512ba363af64fec47d878cf5469903aaa95ca04de6",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/governance/rule-based-policies/get-rule-based-policy-by-id"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4240,
+        "path": "power-platform/governance/rule-based-policies/list-rule-assignments",
+        "sha256": "759eb4b13fb7af3001eb88400d044ea5bf1f0230958d3d91e25c55c4efa5063e",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/governance/rule-based-policies/list-rule-assignments"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4587,
+        "path": "power-platform/governance/rule-based-policies/list-rule-assignments-by-environment-group-id",
+        "sha256": "138031738a7327fd621288e2caa03a1607c2488e8d4316bc959663906f8d1df5",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/governance/rule-based-policies/list-rule-assignments-by-environment-group-id"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4517,
+        "path": "power-platform/governance/rule-based-policies/list-rule-assignments-by-environment-id",
+        "sha256": "514e1699c7dd0f0effcb950191568a827dd227290e623cf762592d1ea19ca8e4",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/governance/rule-based-policies/list-rule-assignments-by-environment-id"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4449,
+        "path": "power-platform/governance/rule-based-policies/list-rule-assignments-by-policy-id",
+        "sha256": "891b2ecda754f5fccaa62de927766a4563a6886da6ceb6bd8572cce53b3d14d9",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/governance/rule-based-policies/list-rule-assignments-by-policy-id"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4259,
+        "path": "power-platform/governance/rule-based-policies/list-rule-based-policies",
+        "sha256": "fac8bf540e79adde79e0c73ee069fc69913035f23cf0386e51318494de2e7524",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/governance/rule-based-policies/list-rule-based-policies"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4602,
+        "path": "power-platform/governance/rule-based-policies/patch-rule-based-policy",
+        "sha256": "9e253f15705d42558c7ee5122dc7c3b1aa11cb72f094c2f41f1cec5e50304794",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/governance/rule-based-policies/patch-rule-based-policy"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4595,
+        "path": "power-platform/governance/rule-based-policies/remove-rule-from-rule-based-policy",
+        "sha256": "07481174bfecc953bda6e7d0037f2a4b8b8bb13e448ab2fe1f9ff8f121d6c31c",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/governance/rule-based-policies/remove-rule-from-rule-based-policy"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4674,
+        "path": "power-platform/governance/rule-based-policies/update-rule-based-policy-by-id",
+        "sha256": "e8fb35005b4691387aeaea19786ced8a9a7e987a7f043a3ef3b990dfe622956c",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/governance/rule-based-policies/update-rule-based-policy-by-id"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 2448,
+        "path": "power-platform/governance/rule-sets",
+        "sha256": "ab3200a923c2c441332b4f6eb638c29805759b18be8cf778f4bec0a0e3d76e8f",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/governance/rule-sets"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 6520,
+        "path": "power-platform/governance/rule-sets/create-rule-set",
+        "sha256": "9467b6c894df1349526dd4afb1ac4310a749b42ada239668c762661a4d8299c8",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/governance/rule-sets/create-rule-set"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3602,
+        "path": "power-platform/governance/rule-sets/delete-rule-set",
+        "sha256": "7437c455915fc3af90a86cb95cdda51096165175a9db3864b9aef2af15b623b2",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/governance/rule-sets/delete-rule-set"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 6572,
+        "path": "power-platform/governance/rule-sets/get-rule-set",
+        "sha256": "9458a11d1be130350505f1d7fbf5ba2f5159dfebafb9e47373fa47acf25cf635",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/governance/rule-sets/get-rule-set"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 7057,
+        "path": "power-platform/governance/rule-sets/get-rule-set-list-for-tenant",
+        "sha256": "424c354284d8c55d93a1311f99a3f8b69695209ef393f8966c81527ad034ddb8",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/governance/rule-sets/get-rule-set-list-for-tenant"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 6402,
+        "path": "power-platform/governance/rule-sets/update-rule-set",
+        "sha256": "01308dff55c436602728ec3dd7347c30cb25834f8786899a8eebc6143ddfe758",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/governance/rule-sets/update-rule-set"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 2428,
+        "path": "power-platform/licensing/allocation",
+        "sha256": "7bb0043c498e55bd185ebfc3fd21dc40af0db872508d3d74440ee63d145e386c",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/licensing/allocation"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4378,
+        "path": "power-platform/licensing/allocation/get-allocations-availability-v2",
+        "sha256": "0c36335c378786d2c631fe04e645e647e4b4d01c4a0edd94594fe2c04f20fa13",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/licensing/allocation/get-allocations-availability-v2"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4314,
+        "path": "power-platform/licensing/allocation/get-many-entitlements-reserved-v2",
+        "sha256": "18362ddfb7910dba77d52ff4d8724d7c13ba80448d37552b49a08416e0d9ed85",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/licensing/allocation/get-many-entitlements-reserved-v2"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 5225,
+        "path": "power-platform/licensing/allocation/put-allocations-v2",
+        "sha256": "dd3387ad18769bc1be45cf7b3af4efab9eb489d26fd38b3812b434e44484d025",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/licensing/allocation/put-allocations-v2"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 2695,
+        "path": "power-platform/licensing/allocations-by-environment",
+        "sha256": "0cce6ed0e2444aa1b06a4bb80cf895a8f79114a54eb96ed48ffcd5689eb568f4",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/licensing/allocations-by-environment"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 5225,
+        "path": "power-platform/licensing/allocations-by-environment/get-allocations-by-environment",
+        "sha256": "c655f0766853e38fd3c4a92c3433cb2baf876fef972c492c3baf1f973f8901f6",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/licensing/allocations-by-environment/get-allocations-by-environment"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 5159,
+        "path": "power-platform/licensing/allocations-by-environment/list-allocations-by-environment",
+        "sha256": "c10f8adaf97e3e35133b00b7908bd4ba102010284fdf9c966dfe78bc27dd1cbf",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/licensing/allocations-by-environment/list-allocations-by-environment"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 5255,
+        "path": "power-platform/licensing/allocations-by-environment/update-allocations-by-environment",
+        "sha256": "13cef9d85883655dc126fe50a2259c093cd8f66f1747eec4ed48a0cb629396f9",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/licensing/allocations-by-environment/update-allocations-by-environment"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 2770,
+        "path": "power-platform/licensing/billing-policy",
+        "sha256": "7cb644445f4e94d2597dfd09ecc2be398a346d072d12ff9711fbb5f42f3100e2",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/licensing/billing-policy"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 2787,
+        "path": "power-platform/licensing/billing-policy-environment",
+        "sha256": "21d11823171d58b6ea943696b5f90056a0b536625dfe290967274ae93c805c74",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/licensing/billing-policy-environment"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3538,
+        "path": "power-platform/licensing/billing-policy-environment/add-billing-policy-environment",
+        "sha256": "572f5ea11149a609465a1214cba05a3ac8fe1b5b848673a72087f872f9927993",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/licensing/billing-policy-environment/add-billing-policy-environment"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3591,
+        "path": "power-platform/licensing/billing-policy-environment/get-billing-policy-environment",
+        "sha256": "a90401a6ff4cb955356510bbc09730b24a40b6a4c4ef3312d0baf5c1cf9bf2cc",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/licensing/billing-policy-environment/get-billing-policy-environment"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3971,
+        "path": "power-platform/licensing/billing-policy-environment/list-billing-policy-environments",
+        "sha256": "29e3737ec9e9fb65791d629d01977070fc8a2f4808a00365e9bbbb6529b15658",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/licensing/billing-policy-environment/list-billing-policy-environments"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3572,
+        "path": "power-platform/licensing/billing-policy-environment/remove-billing-policy-environment",
+        "sha256": "fb946241dd5eebd8f785e2bb2f0ca37819620d183f66b5f17ae196d9072f1ebc",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/licensing/billing-policy-environment/remove-billing-policy-environment"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 5145,
+        "path": "power-platform/licensing/billing-policy/create-billing-policy",
+        "sha256": "a050bbece663a4cc20cc85c0e21ccd914714a46aa34b6caeba44428afe354cc0",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/licensing/billing-policy/create-billing-policy"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3057,
+        "path": "power-platform/licensing/billing-policy/delete-billing-policy",
+        "sha256": "93852b153e5ed7b3a6a82b7c604ea0480281301e57e1ddf578a75b4f86d0785a",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/licensing/billing-policy/delete-billing-policy"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4615,
+        "path": "power-platform/licensing/billing-policy/get-billing-policy",
+        "sha256": "0490ea746302aae4b65212be0cd5918cd2a1fcb57840e9e388d0ebe0aa4c2343",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/licensing/billing-policy/get-billing-policy"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 5004,
+        "path": "power-platform/licensing/billing-policy/list-billing-policies",
+        "sha256": "cc039d70620f5e226e49d5014850779a82fdb524fd6bffbe53458b0de4e62660",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/licensing/billing-policy/list-billing-policies"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4704,
+        "path": "power-platform/licensing/billing-policy/refresh-provisioning-status",
+        "sha256": "787e4447c7d713daaf5885a7c1524174049fe44868a442567de4d8e6e9322fb1",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/licensing/billing-policy/refresh-provisioning-status"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 5013,
+        "path": "power-platform/licensing/billing-policy/update-billing-policy",
+        "sha256": "193fd3c716e8515467e71d3eb28537915744ee54891b18dc468b0442f7efb1f2",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/licensing/billing-policy/update-billing-policy"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 2454,
+        "path": "power-platform/licensing/currency-allocation",
+        "sha256": "c86b9f810851ba4394f078905370081552ec0607e80c116f233c2b5ad97e3a5c",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/licensing/currency-allocation"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4840,
+        "path": "power-platform/licensing/currency-allocation/get-currency-allocation-by-environment",
+        "sha256": "24356ebbb24e8a6277580c870a536772112e72d584032bdb8e158370c7dec1b0",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/licensing/currency-allocation/get-currency-allocation-by-environment"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 5702,
+        "path": "power-platform/licensing/currency-allocation/patch-currency-allocation-by-environment",
+        "sha256": "337b7f398cc7fae88273ea99110483417407b58f1b5975f0633a651e2454fa2e",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/licensing/currency-allocation/patch-currency-allocation-by-environment"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 2154,
+        "path": "power-platform/licensing/currency-reports",
+        "sha256": "fe8b64b2db0fb8b01fd1069d390855da676060a87f01237448d4714c05f077e7",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/licensing/currency-reports"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4535,
+        "path": "power-platform/licensing/currency-reports/list-currency-reports",
+        "sha256": "384726c864adb3c39f506e348b61f9fa2d814e5a5ebc93cedc3c57a0a94b6a02",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/licensing/currency-reports/list-currency-reports"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 2057,
+        "path": "power-platform/licensing/entitlement",
+        "sha256": "c84358735fbe30e5faacdfc9c8b854bba56796aedd48ee7a63a608ad5a073539",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/licensing/entitlement"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 2874,
+        "path": "power-platform/licensing/entitlement-insight",
+        "sha256": "2f61e49103c24fbb5e23ded9478cde5bb24290ed8358ee8fba3425bc0f5ce38e",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/licensing/entitlement-insight"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 5835,
+        "path": "power-platform/licensing/entitlement-insight/get-environment-resources",
+        "sha256": "144547233f181646701fb8ab9620fa774c87b82a8b1d8e0014f7e5559c2b226a",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/licensing/entitlement-insight/get-environment-resources"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 5524,
+        "path": "power-platform/licensing/entitlement-insight/get-tenant-license-trends",
+        "sha256": "1ebb82cb3a2bfae6b86ec0a2e5b6390d293300ad895fefbe7d40ce7daf82bff1",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/licensing/entitlement-insight/get-tenant-license-trends"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 5038,
+        "path": "power-platform/licensing/entitlement-insight/get-tenant-resource-consumption-by-user",
+        "sha256": "5d00c6c572ce4d37ffaa2ce02f875d3f1188ea53d96413b534c965172717d7fa",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/licensing/entitlement-insight/get-tenant-resource-consumption-by-user"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 5425,
+        "path": "power-platform/licensing/entitlement-insight/get-tenant-resources-across-environments",
+        "sha256": "9726347aa7920dcd00cbf28ec525b633c8fdd9be36d6f47ad4f4b53558db5b9e",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/licensing/entitlement-insight/get-tenant-resources-across-environments"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 5254,
+        "path": "power-platform/licensing/entitlement-insight/get-tenant-user-consumption-by-resource",
+        "sha256": "09135db256b91707ad22d63ee7858cbf9d53dc19db043260376574b54fed96c8",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/licensing/entitlement-insight/get-tenant-user-consumption-by-resource"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 5123,
+        "path": "power-platform/licensing/entitlement-insight/get-tenant-users",
+        "sha256": "ea9f6eb2f9c5346d75b7a3c3260ff110c14a60a5002054c24645e580ea8318fb",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/licensing/entitlement-insight/get-tenant-users"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 7816,
+        "path": "power-platform/licensing/entitlement/get-entitlement",
+        "sha256": "3ca46b370c2cfa975a89729987a9a641d6a718c63bb618b8ec21de6ec18f7e9f",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/licensing/entitlement/get-entitlement"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 12150,
+        "path": "power-platform/licensing/entitlement/get-many-environment-entitlements",
+        "sha256": "ee4bbe6e2bf23b04ae12bb9d0487d53bdbc99dd1b3628d760402a9cc37da6b6f",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/licensing/entitlement/get-many-environment-entitlements"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 2298,
+        "path": "power-platform/licensing/environment-billing-policy",
+        "sha256": "8ed94e8a3036e7685b024e710e6d939f887a3f2111009c61f9d823d73615ae77",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/licensing/environment-billing-policy"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4785,
+        "path": "power-platform/licensing/environment-billing-policy/get-environment-billing-policy",
+        "sha256": "155d3982bc948c3c402295e553137f839d955252d11bf2eb29bf1f281680fbeb",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/licensing/environment-billing-policy/get-environment-billing-policy"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 2198,
+        "path": "power-platform/licensing/fin-ops-licensing",
+        "sha256": "c5a372b730b48941902ac36695e7b66ede47b36db95ee833eb764d68a3ea301b",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/licensing/fin-ops-licensing"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 6896,
+        "path": "power-platform/licensing/fin-ops-licensing/get-fin-ops-license-summary-v2",
+        "sha256": "1903de7e09d5323bf8574fbeef6966e78885aa1e05a68cb6269cc697129d4dce",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/licensing/fin-ops-licensing/get-fin-ops-license-summary-v2"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 2542,
+        "path": "power-platform/licensing/isv-contract",
+        "sha256": "b4abea82c0e955e00f6da8db756491fb29a4cfc005b623d415af4eb9617d4ab1",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/licensing/isv-contract"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 8148,
+        "path": "power-platform/licensing/isv-contract/create-isv-contract",
+        "sha256": "9f8814d8f552d6dc1a5f6145031f3b11a3b31d1a7abcdc934b0081bf190944a7",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/licensing/isv-contract/create-isv-contract"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3018,
+        "path": "power-platform/licensing/isv-contract/delete-isv-contract",
+        "sha256": "eb475f69f15f895b1b8cbd1059d07a4fe746c7b39558ec9f5de03a30635e8142",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/licensing/isv-contract/delete-isv-contract"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 6569,
+        "path": "power-platform/licensing/isv-contract/get-isv-contract",
+        "sha256": "e457ac444b360ae0288b67e51e34cefb0d9b80bee08639b9b49122df51a35295",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/licensing/isv-contract/get-isv-contract"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 6960,
+        "path": "power-platform/licensing/isv-contract/list-isv-contracts",
+        "sha256": "b2a2b664dd82c89c32918dcf8b5d664b3180e455f63299df30c2d42869bf913f",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/licensing/isv-contract/list-isv-contracts"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 7303,
+        "path": "power-platform/licensing/isv-contract/update-isv-contract",
+        "sha256": "f2604e8259b735de0cca02286719de73d96a6f33f35543bb86525805003dceb3",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/licensing/isv-contract/update-isv-contract"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 2387,
+        "path": "power-platform/licensing/resource-threshold",
+        "sha256": "610814000478abdcf91fefea4afe17f705b8301153a755cbbdfaf3db1b2a4c22",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/licensing/resource-threshold"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4147,
+        "path": "power-platform/licensing/resource-threshold/get-all-resource-thresholds",
+        "sha256": "00191a68e8ab583a308cd0a063ff7334cb64f2508cfe52ff2db3c7b88b27182c",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/licensing/resource-threshold/get-all-resource-thresholds"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 5275,
+        "path": "power-platform/licensing/resource-threshold/upsert-resource-threshold",
+        "sha256": "832c703ca92a1692708c6cd5ba0541ff2934dc368c98e9b94393eba0f39d06e3",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/licensing/resource-threshold/upsert-resource-threshold"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 2530,
+        "path": "power-platform/licensing/storage-warnings",
+        "sha256": "80baeb456925cec12a0c4eb9cf7497e1377c9221eb8b3ab94394549af0b804ae",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/licensing/storage-warnings"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4012,
+        "path": "power-platform/licensing/storage-warnings/get-storage-warning-by-category",
+        "sha256": "a856370fa2afdd579e08524741596819be2dc5e4932826ebf723a35528b7639d",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/licensing/storage-warnings/get-storage-warning-by-category"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4224,
+        "path": "power-platform/licensing/storage-warnings/get-storage-warning-by-category-and-entity",
+        "sha256": "abb962e0f635de8ecf1e9d5692aeabdddbdaffd8838316ac3acc2b8176964fe7",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/licensing/storage-warnings/get-storage-warning-by-category-and-entity"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3822,
+        "path": "power-platform/licensing/storage-warnings/list-storage-warnings",
+        "sha256": "7dd3ccb141e9ecc18a3d5931a0f0a6cbd8531f2847a47a10c2a1abb82c29411f",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/licensing/storage-warnings/list-storage-warnings"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 2391,
+        "path": "power-platform/licensing/temporary-currency-entitlement",
+        "sha256": "ba7abb1c5c4e5e0394fd160d0a3eab3a989e0f6224a6b0dfdb082df0ed63fa0e",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/licensing/temporary-currency-entitlement"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4640,
+        "path": "power-platform/licensing/temporary-currency-entitlement/retrieve-temporary-currency-entitlement-count",
+        "sha256": "0194af4d7c334911acc6d65bf165c5cf465b279a263ebb2506f5101eafb42fb8",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/licensing/temporary-currency-entitlement/retrieve-temporary-currency-entitlement-count"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 2249,
+        "path": "power-platform/licensing/tenant-capacity-details",
+        "sha256": "b755d993575c8605b679c3a39c56369831cd776bf6db5ef9c5d6e1c03521b2b1",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/licensing/tenant-capacity-details"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 9274,
+        "path": "power-platform/licensing/tenant-capacity-details/get-tenant-capacity-details",
+        "sha256": "5b0bb5b6e8047ae0ed12c4e7732ddebd96ecc0a63503bd2e54887a703e370fa0",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/licensing/tenant-capacity-details/get-tenant-capacity-details"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3708,
+        "path": "power-platform/licensing/user-per-flow-capacity-source",
+        "sha256": "42ce0b091e7aad4eec1b5e2b3368bc9e6c9c3ae0a71985f55f43678701e6c9bb",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/licensing/user-per-flow-capacity-source"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 6187,
+        "path": "power-platform/licensing/user-per-flow-capacity-source/get-user-per-flow-capacity-source",
+        "sha256": "fd2bc8a343721fe596b7174bea11788ba749596c31755c5f0fa647c464b0d3cb",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/licensing/user-per-flow-capacity-source/get-user-per-flow-capacity-source"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 5759,
+        "path": "power-platform/licensing/user-per-flow-capacity-source/get-user-per-flow-capacity-source-flow-context-summary",
+        "sha256": "c158c34df3cea5799c0bc2979d32cf4e4347d645cfb7ee8360b4c59eb068dc4e",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/licensing/user-per-flow-capacity-source/get-user-per-flow-capacity-source-flow-context-summary"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 5961,
+        "path": "power-platform/licensing/user-per-flow-capacity-source/get-user-per-flow-capacity-source-flow-context-summary-for-user-id",
+        "sha256": "aac67ffb2a49e1e18fdff88a2d73efd2edc3fbbdf4358e5f5cba65d7c252ddf2",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/licensing/user-per-flow-capacity-source/get-user-per-flow-capacity-source-flow-context-summary-for-user-id"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 5123,
+        "path": "power-platform/licensing/user-per-flow-capacity-source/get-user-per-flow-capacity-source-tenant-context-summary",
+        "sha256": "238bfa700c1e4815722a54b8ecc3b3a28d4599dcd2da6568de9d11dd31d17fe4",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/licensing/user-per-flow-capacity-source/get-user-per-flow-capacity-source-tenant-context-summary"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 6001,
+        "path": "power-platform/licensing/user-per-flow-capacity-source/get-user-per-flow-capacity-source-user-context-summary",
+        "sha256": "f993682caae46c990cc6379b438d55e00b4abec732674af0353d4b7d7865b3a7",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/licensing/user-per-flow-capacity-source/get-user-per-flow-capacity-source-user-context-summary"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 6203,
+        "path": "power-platform/licensing/user-per-flow-capacity-source/get-user-per-flow-capacity-source-user-context-summary-for-user-id",
+        "sha256": "1ebf00d537db5cf1ea1abec6db59df6475eab1421592c7b1aedce7005564a085",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/licensing/user-per-flow-capacity-source/get-user-per-flow-capacity-source-user-context-summary-for-user-id"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 2080,
+        "path": "power-platform/powerapps/apps",
+        "sha256": "65dac10fb338a74d1fff09a91fec46b216a64770982606dd06b7acda4d930ed7",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/powerapps/apps"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 10996,
+        "path": "power-platform/powerapps/apps/get-admin-app",
+        "sha256": "160f74ed2b0c393c5e2283c82a1799dd84c034fd36a08df5941b634bf64203d5",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/powerapps/apps/get-admin-app"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 11578,
+        "path": "power-platform/powerapps/apps/get-admin-apps",
+        "sha256": "666d51c005564fb6fbc26f8aeec2e427cbde64511fa63559f2704ecbdf133760",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/powerapps/apps/get-admin-apps"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 2294,
+        "path": "power-platform/powerautomate/cloud-flows",
+        "sha256": "d9f6cb01633d121d659ceb1a908fb0a12554b1bd852c12de53d8fa8d8f0462ed",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/powerautomate/cloud-flows"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 5052,
+        "path": "power-platform/powerautomate/cloud-flows/list-cloud-flows",
+        "sha256": "b604c61b1c175e715fae5bd7e2e9db2f795e64b647011a8fcd244e20ad508ae9",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/powerautomate/cloud-flows/list-cloud-flows"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 2308,
+        "path": "power-platform/powerautomate/flow-actions",
+        "sha256": "01cc4d01850a54df1c6c3b47e435e8f24120e4adcdac7520a6ee9cf535d6b16f",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/powerautomate/flow-actions"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4943,
+        "path": "power-platform/powerautomate/flow-actions/list-flow-actions",
+        "sha256": "53a2caff5c3650d660b4a63ccf58a980bc5c7c80b58a8f10269387fbcfdddf68",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/powerautomate/flow-actions/list-flow-actions"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 2268,
+        "path": "power-platform/powerautomate/flow-runs",
+        "sha256": "143dce5c6c8a19d251ff497e0732d5ed6a3e53f63c57fa6b07e89cdce0665e9f",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/powerautomate/flow-runs"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4044,
+        "path": "power-platform/powerautomate/flow-runs/list-flow-runs",
+        "sha256": "2d3198907f23bfe28c27e8609fc586182c20c71fa8ba3c7e89677f9213b8e362",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/powerautomate/flow-runs/list-flow-runs"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 6868,
+        "path": "power-platform/powerpages/websites",
+        "sha256": "e735cc10d3bc6e2457db23c5041646768393161fcb2f536b8291e727ea38dc12",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/powerpages/websites"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4977,
+        "path": "power-platform/powerpages/websites/add-allowed-ip-addresses",
+        "sha256": "a63f2983f7db77b1ef49f001202ec1d87903e803be909de17649ba6539dccb64",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/powerpages/websites/add-allowed-ip-addresses"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4116,
+        "path": "power-platform/powerpages/websites/add-ssl-binding-by-portal",
+        "sha256": "bf85fae8e45fd3630c1b40b84d8796d3cdc7f1be90ea3198b799cbc76e6bb5d6",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/powerpages/websites/add-ssl-binding-by-portal"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 5159,
+        "path": "power-platform/powerpages/websites/convert-trial-to-production",
+        "sha256": "425cd198ad36439716d8797b43206174e1500f2378cd3d53e28693e4a16c20f0",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/powerpages/websites/convert-trial-to-production"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3945,
+        "path": "power-platform/powerpages/websites/create-custom-domain",
+        "sha256": "0043e1bb5d164570857540703d562eaf43f2c2edee182ebc34befc6ec949cb90",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/powerpages/websites/create-custom-domain"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 7099,
+        "path": "power-platform/powerpages/websites/create-waf-rules",
+        "sha256": "ec9186bc560361da8d927dfdccbf3441891144ddbe571928f054964767b43bc2",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/powerpages/websites/create-waf-rules"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 11210,
+        "path": "power-platform/powerpages/websites/create-website",
+        "sha256": "095ad6ee489e4910378b8c1a5946b9c04bb115e1f2118b23673efd77589c9f4e",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/powerpages/websites/create-website"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4161,
+        "path": "power-platform/powerpages/websites/delete-certificate-by-portal",
+        "sha256": "123b14cc4ae5e924aedda29fbd783aff99066d1a1cd56deca9521a8dd3b382a5",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/powerpages/websites/delete-certificate-by-portal"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4274,
+        "path": "power-platform/powerpages/websites/delete-host-name-for-portal",
+        "sha256": "997dbbe68b7e3d81b85ba8962ae6b76181ad0a93d0fcb50942ac18b93c7f3995",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/powerpages/websites/delete-host-name-for-portal"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4251,
+        "path": "power-platform/powerpages/websites/delete-ssl-binding-by-thumbprint",
+        "sha256": "fde0c72abd8f7f66c4b45ec2d1d69afa586db5d92b9d96b5c7e83184d647951c",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/powerpages/websites/delete-ssl-binding-by-thumbprint"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4413,
+        "path": "power-platform/powerpages/websites/delete-waf-custom-rules",
+        "sha256": "6ee6fff860bf633ef4c59cecf1071a1352840e30124b76f33e5f048f9abaacf7",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/powerpages/websites/delete-waf-custom-rules"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4199,
+        "path": "power-platform/powerpages/websites/delete-website",
+        "sha256": "2d5e4b4c73fa465f2deddb9e102292a2f5d5e7387b6407412b9bc99d5dc23142",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/powerpages/websites/delete-website"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4182,
+        "path": "power-platform/powerpages/websites/disable-waf",
+        "sha256": "92102f6aa7c0ee810867010a7b68004aae798363258ee35a3b3890a1acfcb56f",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/powerpages/websites/disable-waf"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4247,
+        "path": "power-platform/powerpages/websites/enable-waf",
+        "sha256": "889a893e3f19a9ff53653d70b9dd7fec32c57e70858a74a492f2d895d15e95e8",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/powerpages/websites/enable-waf"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 5572,
+        "path": "power-platform/powerpages/websites/get-affected-sites",
+        "sha256": "00b2ee5e8a5e9e08f6e710ffbb600b34b1bf519801001b855f9d5309ad110b01",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/powerpages/websites/get-affected-sites"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4657,
+        "path": "power-platform/powerpages/websites/get-allowed-ip-addresses",
+        "sha256": "2e0c9d88562ae34ff1055a8e55263ffbb514c08fd0444c0760fef3bc9b7d6baa",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/powerpages/websites/get-allowed-ip-addresses"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4573,
+        "path": "power-platform/powerpages/websites/get-certificates-by-portal",
+        "sha256": "4f67892c9fc38d6608474114babc4a42c548fe56fddd8beacd3e4245cf64379e",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/powerpages/websites/get-certificates-by-portal"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4844,
+        "path": "power-platform/powerpages/websites/get-exceptions",
+        "sha256": "888d3f24ab784d0a97dcccc8cd37c7de34aa55562825c3899d9c66321d3ad09c",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/powerpages/websites/get-exceptions"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 5643,
+        "path": "power-platform/powerpages/websites/get-security-scan-report",
+        "sha256": "eb028926678684e18d86ba246f761439ed117b1e1817b71145403489c97181ab",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/powerpages/websites/get-security-scan-report"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4336,
+        "path": "power-platform/powerpages/websites/get-security-scan-score",
+        "sha256": "eb23c8680be25779596daedb397d1990778623b8ca9a3b5407f96e1c4fa3b6ba",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/powerpages/websites/get-security-scan-score"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 6993,
+        "path": "power-platform/powerpages/websites/get-waf-rules",
+        "sha256": "428b06b0d48140cb1233601154a1d8ab96e2e45e664d5b572b565ea524f5f976",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/powerpages/websites/get-waf-rules"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4014,
+        "path": "power-platform/powerpages/websites/get-waf-status",
+        "sha256": "bfcf747b996bc7ce0fb4c383c1e4ee6dc8ab3f2264732a7ff6892e3f9998f3cc",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/powerpages/websites/get-waf-status"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 11231,
+        "path": "power-platform/powerpages/websites/get-website-by-id",
+        "sha256": "7590b7beb566d2f72faa3ebff98bacfb7ad5d89d3d04ed381a6df3c34ee4a4e3",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/powerpages/websites/get-website-by-id"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 11313,
+        "path": "power-platform/powerpages/websites/get-websites",
+        "sha256": "aa5708bc16521726b41561c588be45e73d7c8da5794d023edae4828b373a0eac",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/powerpages/websites/get-websites"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 6247,
+        "path": "power-platform/powerpages/websites/grant-exception",
+        "sha256": "1b013b4a627e06ad3254d4c9d8661f1024b1831dd1004c98e762ccbc70485004",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/powerpages/websites/grant-exception"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3892,
+        "path": "power-platform/powerpages/websites/list-host-names-for-portal",
+        "sha256": "52a8987c122ed3f5630f870f3bd77704dbbf29a0a7b4c2e7e1a8dfd9e3a2867f",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/powerpages/websites/list-host-names-for-portal"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4425,
+        "path": "power-platform/powerpages/websites/list-ssl-bindings-by-thumbprints",
+        "sha256": "2ba829635e0981fba1c563cf64fbd4abd17a965970b994408c56cf2b4ebdb60d",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/powerpages/websites/list-ssl-bindings-by-thumbprints"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 5073,
+        "path": "power-platform/powerpages/websites/remove-allowed-ip-addresses",
+        "sha256": "5786a2ffbfe1a3606b79e1619602713f74ad7cb4ea781a559259074a48ce7a2d",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/powerpages/websites/remove-allowed-ip-addresses"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3963,
+        "path": "power-platform/powerpages/websites/restart-website",
+        "sha256": "c7f30c89dbfcf7f01dd10243b470b79d91d73686998b35e7ca63de54cfa6df58",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/powerpages/websites/restart-website"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 5830,
+        "path": "power-platform/powerpages/websites/revoke-exception",
+        "sha256": "5f0e77ba6ff5219082bf3c9069b92a62ab741cac3154ccb4356b6d091824e0de",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/powerpages/websites/revoke-exception"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3887,
+        "path": "power-platform/powerpages/websites/set-portal-bootstrap-v5-enabled",
+        "sha256": "7ee7bf624aae60a8155340361f4ea1102347fb5cd46db45f488e88c2978c7fbe",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/powerpages/websites/set-portal-bootstrap-v5-enabled"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4192,
+        "path": "power-platform/powerpages/websites/set-portal-data-model-version",
+        "sha256": "f4c0cf408bf0d9125349ebedf6dc431633d610302cea38a2cc2bb79a48cf4c9f",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/powerpages/websites/set-portal-data-model-version"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3915,
+        "path": "power-platform/powerpages/websites/start-deep-scan",
+        "sha256": "58d5af575e57e2590ffe05ff3a7785c0f8b179ba4e1580e3ab0a79f6d4771da9",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/powerpages/websites/start-deep-scan"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4858,
+        "path": "power-platform/powerpages/websites/start-quick-scan",
+        "sha256": "8c133e5f464f9050b3b9581b9f0ced9c323c7def1e1602825edd18b7cd901d28",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/powerpages/websites/start-quick-scan"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3937,
+        "path": "power-platform/powerpages/websites/start-website",
+        "sha256": "7ad073e8d2f1fff51a3cbf6443a366d22c92bac4b6d01b7a311df27638f3c478",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/powerpages/websites/start-website"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3924,
+        "path": "power-platform/powerpages/websites/stop-website",
+        "sha256": "1622e95433597b89c5dd1b10607d89d2b6fd6a65229fb3c5188e568add68e478",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/powerpages/websites/stop-website"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4829,
+        "path": "power-platform/powerpages/websites/toggle-afd-traffic-routing",
+        "sha256": "1b48f76764df6b8e69085fc5a6ee1522bcc1b01d24f932b2ecf53e0f7a9a88cf",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/powerpages/websites/toggle-afd-traffic-routing"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4205,
+        "path": "power-platform/powerpages/websites/update-portal-security-group",
+        "sha256": "6ff70572833743ef8e976ed2e6c07fe2ce5acc67c9d0ece4d9c77d25ab557d27",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/powerpages/websites/update-portal-security-group"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4029,
+        "path": "power-platform/powerpages/websites/update-site-visibility",
+        "sha256": "3b879b971dc007b45e0a0e5ccbde349e8eb37a440384548fdeac6f18c1959baf",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/powerpages/websites/update-site-visibility"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 6096,
+        "path": "power-platform/powerpages/websites/update-waf-policy-settings",
+        "sha256": "eb788a2894602be4dcaaf298889c499ab5b5e796481fbd389cb91d9aa1f621a1",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/powerpages/websites/update-waf-policy-settings"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4137,
+        "path": "power-platform/powerpages/websites/upload-certificate",
+        "sha256": "b3ecc5ec27834df5ed903abe172b835d29edbacdfbbfe23da1799b96d218b049",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/powerpages/websites/upload-certificate"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 2132,
+        "path": "power-platform/resourcequery/resource-query",
+        "sha256": "b13b579d441eb88a1414941326836547541279d5dfcd91820ed9941272defa24",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/resourcequery/resource-query"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 6350,
+        "path": "power-platform/resourcequery/resource-query/query-resources",
+        "sha256": "26120cbc34ca64685e02ac979b54ec5107d04f57e69af047129ceea026feceee",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/resourcequery/resource-query/query-resources"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 2078,
+        "path": "power-platform/usermanagement/users",
+        "sha256": "01e7d83d130196ae4e6ed0a206475e8da72bb164a82a680d037856a7438b3092",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/usermanagement/users"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 2905,
+        "path": "power-platform/usermanagement/users/apply-admin-role",
+        "sha256": "94859d2b7e164e54d3379108a87e5e03b0b42bdbbef36b84b5dc0fa3623dd774",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/usermanagement/users/apply-admin-role"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4129,
+        "path": "power-platform/workflowsagent/dsr-compliance",
+        "sha256": "d57e69c84a2079b9622a83762c7a117db74f2bdde0f126bd2b4b73e1c0ea81f7",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/workflowsagent/dsr-compliance"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3275,
+        "path": "power-platform/workflowsagent/dsr-compliance/delete-approval",
+        "sha256": "8c16abb27682a1ef11a7ac3504b0fc4f08f3cabb201bbb62b980a490c050e966",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/workflowsagent/dsr-compliance/delete-approval"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3361,
+        "path": "power-platform/workflowsagent/dsr-compliance/delete-connection",
+        "sha256": "57ec0640c1a68f8e04e9d9f101f5d1dbe62ef3efd66f152ed3a32d309a9842a3",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/workflowsagent/dsr-compliance/delete-connection"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3427,
+        "path": "power-platform/workflowsagent/dsr-compliance/delete-flow",
+        "sha256": "7a8bb9438283246b56a8c66f1b015657920a7a37c37d3ca59e662689515b0dc0",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/workflowsagent/dsr-compliance/delete-flow"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3286,
+        "path": "power-platform/workflowsagent/dsr-compliance/delete-prompt",
+        "sha256": "6395b2f41261ec7e31787396f60613cf82c9d6abe18b0a8ee0bcb08f8dcfccd6",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/workflowsagent/dsr-compliance/delete-prompt"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3741,
+        "path": "power-platform/workflowsagent/dsr-compliance/get-approvals",
+        "sha256": "0f9d3399246871fab6e6077f31b4ce82cda15135aab7fd61f4539bbc4a7fbda4",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/workflowsagent/dsr-compliance/get-approvals"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3767,
+        "path": "power-platform/workflowsagent/dsr-compliance/get-connections",
+        "sha256": "b8a9f3780a70223cd05409584eb0240e96daaa6463fa49731d3e638d417e3443",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/workflowsagent/dsr-compliance/get-connections"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 9310,
+        "path": "power-platform/workflowsagent/dsr-compliance/get-conversation-transcripts-for-dsr",
+        "sha256": "0667157a0c9c05eb0552eea980898005bb2494df9951416da0328e9060a79e85",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/workflowsagent/dsr-compliance/get-conversation-transcripts-for-dsr"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 9536,
+        "path": "power-platform/workflowsagent/dsr-compliance/get-conversation-transcripts-with-environment",
+        "sha256": "d2f96e7702c6e2a7ef25050f619cdbdc64a8ec58501e2390b3f8d8fe2a0c6074",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/workflowsagent/dsr-compliance/get-conversation-transcripts-with-environment"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4751,
+        "path": "power-platform/workflowsagent/dsr-compliance/get-flow-run-actions-for-dsr",
+        "sha256": "7d868ca365b67c44fc421cbfc1f35a45226e52a9d75b6c368980300c123510e9",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/workflowsagent/dsr-compliance/get-flow-run-actions-for-dsr"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4993,
+        "path": "power-platform/workflowsagent/dsr-compliance/get-flow-run-actions-with-environment",
+        "sha256": "f4e1a3182f01a3e8f23d1a8370113adbdd05280431285a5679f4ddeda012c481",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/workflowsagent/dsr-compliance/get-flow-run-actions-with-environment"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4229,
+        "path": "power-platform/workflowsagent/dsr-compliance/get-flow-runs-non-singleton",
+        "sha256": "56de0cbe1a80cd5fdc2be613da91ba7ef8cf5c22148afc858f89ec04356e8260",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/workflowsagent/dsr-compliance/get-flow-runs-non-singleton"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4119,
+        "path": "power-platform/workflowsagent/dsr-compliance/get-flow-runs-singleton",
+        "sha256": "efa597bc853d854da502fdcacdbd4b3060e9ca0811113adbc04c321883880af1",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/workflowsagent/dsr-compliance/get-flow-runs-singleton"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3883,
+        "path": "power-platform/workflowsagent/dsr-compliance/get-flows",
+        "sha256": "8b8a225496ce1e4b4a7e08de8e8fab71cf62afca5fac8ca88d2ea6f1cdd17954",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/workflowsagent/dsr-compliance/get-flows"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3735,
+        "path": "power-platform/workflowsagent/dsr-compliance/get-prompts",
+        "sha256": "8ba46ae90c02967ce46c9f2cbbc3213b65f2843bf901897d72e1f0166b9ec9e9",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/workflowsagent/dsr-compliance/get-prompts"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4202,
+        "path": "power-platform/workflowsagent/dsr-compliance/get-run-history-data",
+        "sha256": "f4e2c399546e4899c0727e70faaacb348ebe5193ba5903cba712783baeaaee7e",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/workflowsagent/dsr-compliance/get-run-history-data"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4432,
+        "path": "power-platform/workflowsagent/dsr-compliance/get-run-history-data-non-singleton",
+        "sha256": "b3d5324c4e42c41c840e3ae3b2427d3782503b7cd3ea4c3e21cc79cf27e96505",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/workflowsagent/dsr-compliance/get-run-history-data-non-singleton"
+      },
+      "status": "imported"
+    }
+  ],
+  "imported": 267,
+  "kind": "documentation",
+  "revision": "a375246a7f9963c57a22a267341916ab625f8b08c3aec366adda0bb85edf9699"
+}

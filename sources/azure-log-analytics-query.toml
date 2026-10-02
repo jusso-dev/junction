@@ -1,0 +1,9 @@
+id = "azure-log-analytics-query"
+product = "azure"
+source_type = "open_api"
+# Log Analytics query data plane (api.loganalytics.io).
+upstream = "https://github.com/Azure/azure-rest-api-specs"
+paths = ["specification/monitor/data-plane/OperationalInsights", "specification/common-types/data-plane"]
+authority = "microsoft"
+clouds = ["public"]
+enabled = true

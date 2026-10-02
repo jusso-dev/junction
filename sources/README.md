@@ -63,3 +63,12 @@ Some official definitions reference shared directories with the wrong letter
 case (Fabric's `../../Common/definitions.json` for `common/`). Refresh maps such a
 reference onto exactly one configured scope by ASCII case and records the
 receipt under the canonical path.
+
+`source_type = "documentation"` sources (`defender.toml` for Defender XDR,
+`defender-endpoint.toml`, `defender-cloud-apps.toml`, `power-platform.toml`,
+`office-365-management.toml`) point `upstream` at a Microsoft Learn directory.
+Refresh reads `<upstream>toc.json`, selects relative hrefs under `paths`
+(a trailing `-` is a string prefix, otherwise a path scope), downloads each
+page as Markdown and synthesizes OpenAPI from the documented request
+templates, parameter, body and permission tables. `power-bi.toml` and
+`azure-log-analytics-query.toml` are ordinary OpenAPI sources.

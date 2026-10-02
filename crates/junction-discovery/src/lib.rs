@@ -1,5 +1,6 @@
 pub mod bundle;
 mod continuation;
+pub mod learn;
 pub mod merge;
 mod naming;
 pub mod odata;
@@ -251,7 +252,8 @@ pub fn ingest(
                         let media = media.as_array().ok_or_else(|| {
                             anyhow::anyhow!("Swagger body requires a JSON media type")
                         })?;
-                        if media.iter().any(|m| m == "application/json") {
+                        // An empty list (Power BI) declares no restriction.
+                        if media.is_empty() || media.iter().any(|m| m == "application/json") {
                             "application/json"
                         } else {
                             media

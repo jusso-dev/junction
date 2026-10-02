@@ -5,10 +5,10 @@
       "receipt": {
         "bytes": 23221,
         "path": "specification/common-types/resource-management/v5/types.json",
-        "revision": "80b3f7b9bdd7757783cfa8c35f06a299bd5dedad",
+        "revision": "b7bfb61c524e3498b97622af39884fa1323eb7d4",
         "sha256": "66767620b8edfbc04093c76b78d168cc59822cd9da1e726d35a9d45b73e642c1",
         "source": "defender-for-cloud",
-        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/80b3f7b9bdd7757783cfa8c35f06a299bd5dedad/specification/common-types/resource-management/v5/types.json"
+        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/b7bfb61c524e3498b97622af39884fa1323eb7d4/specification/common-types/resource-management/v5/types.json"
       },
       "status": "dependency"
     }
@@ -18,10 +18,10 @@
       "receipt": {
         "bytes": 21717,
         "path": "specification/security/resource-manager/Microsoft.Security/Security/stable/2020-01-01/secureScore.json",
-        "revision": "80b3f7b9bdd7757783cfa8c35f06a299bd5dedad",
+        "revision": "b7bfb61c524e3498b97622af39884fa1323eb7d4",
         "sha256": "d4c58896c3856c5ce7f91650beab09840142bd2fd088c1b10176b93d8e700b27",
         "source": "defender-for-cloud",
-        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/80b3f7b9bdd7757783cfa8c35f06a299bd5dedad/specification/security/resource-manager/Microsoft.Security/Security/stable/2020-01-01/secureScore.json"
+        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/b7bfb61c524e3498b97622af39884fa1323eb7d4/specification/security/resource-manager/Microsoft.Security/Security/stable/2020-01-01/secureScore.json"
       },
       "status": "imported"
     }
@@ -33,11 +33,11 @@
         "blob_sha": "30d45b750d33c860bbeda2f628358d50ce1ec55a",
         "bytes": 21717,
         "path": "specification/security/resource-manager/Microsoft.Security/Security/stable/2020-01-01/secureScore.json",
-        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/80b3f7b9bdd7757783cfa8c35f06a299bd5dedad/specification/security/resource-manager/Microsoft.Security/Security/stable/2020-01-01/secureScore.json"
+        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/b7bfb61c524e3498b97622af39884fa1323eb7d4/specification/security/resource-manager/Microsoft.Security/Security/stable/2020-01-01/secureScore.json"
       }
     ],
-    "revision": "80b3f7b9bdd7757783cfa8c35f06a299bd5dedad",
+    "revision": "b7bfb61c524e3498b97622af39884fa1323eb7d4",
     "source": "defender-for-cloud",
-    "tree_sha": "80b3f7b9bdd7757783cfa8c35f06a299bd5dedad"
+    "tree_sha": "b7bfb61c524e3498b97622af39884fa1323eb7d4"
   }
 }

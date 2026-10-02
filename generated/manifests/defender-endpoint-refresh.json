@@ -1,0 +1,1337 @@
+{
+  "documents": [
+    {
+      "receipt": {
+        "bytes": 9328,
+        "path": "api/add-a-new-scan-definition",
+        "sha256": "5ef0c7da371fda5a9bf2fa558d3c034fc5e8ba8cb5350c032bbb6b9862498197",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/add-a-new-scan-definition"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4282,
+        "path": "api/add-or-remove-machine-tags",
+        "sha256": "53d71762b821d450450122730d0fdadcfc38e920ff3bd7a803b45a24df3a3351",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/add-or-remove-machine-tags"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 5025,
+        "path": "api/add-or-remove-multiple-machine-tags",
+        "sha256": "96b83ad27da868bf9cd2c5abaa91c758dc8f47fbc77f8ef9f25dd80e749b92e6",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/add-or-remove-multiple-machine-tags"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 11680,
+        "path": "api/alerts",
+        "sha256": "b9d755f0a1558491a88ba29f6accebc6aacbc9b65450d302258a34e2f1275a6b",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/alerts"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4394,
+        "path": "api/api-explorer",
+        "sha256": "b653e18f8cb5a4faa1709f5144f9ae6dd0e61e0eaa0c8e9b5e40988c2ea88275",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/api-explorer"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 10536,
+        "path": "api/api-hello-world",
+        "sha256": "2666059e5644b1538f16b40d714eb1d2bbe93a390b139e8873cd7bd85757f38c",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/api-hello-world"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 7894,
+        "path": "api/api-power-bi",
+        "sha256": "8af68ef6a844b23e0458b84afa3cbd6c5c5969e88e110baafd79bfe2c8fd99a0",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/api-power-bi"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4102,
+        "path": "api/api-release-notes",
+        "sha256": "68a52a9a0499467e4987cdb0470f1e168e760ca2f5a05f438bae47620ec99101",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/api-release-notes"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3928,
+        "path": "api/batch-delete-ti-indicators",
+        "sha256": "9869bfb60a9c2d01780ddfcb78980d1efef600f9b96650a6cf07222975148a61",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/batch-delete-ti-indicators"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 6507,
+        "path": "api/batch-update-alerts",
+        "sha256": "2999658d16480bdee3dfe83b1abc20508dab7fac1dad2adbb1c679a9ab454aa7",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/batch-update-alerts"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4300,
+        "path": "api/cancel-machine-action",
+        "sha256": "f85fa0cac4a12e5454929bdab8c5932738a9bfa69b8f122c529e157880d69466",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/cancel-machine-action"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4091,
+        "path": "api/collect-investigation-package",
+        "sha256": "7ac1e6f1867acfe279b0ae6b506217decac006ef1903e837dd15bebdced09075",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/collect-investigation-package"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 6690,
+        "path": "api/common-errors",
+        "sha256": "c77bf0093ab3aa4b33b025ce9d83bf1998b12e159746dd7f653c0cf461e61f14",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/common-errors"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 5759,
+        "path": "api/create-alert-by-reference",
+        "sha256": "b692367e02df2f67a5af4f598f20fc85a796b09a53a1e3c8b7040cab3cbdaf47",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/create-alert-by-reference"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3817,
+        "path": "api/delete-library",
+        "sha256": "f15d3941ed8dda8e1102770c0a063900bee8aadee1e8fae0d84e344ad37066a0",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/delete-library"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3131,
+        "path": "api/delete-ti-indicator-by-id",
+        "sha256": "596e652a14917cd7c22052ea652f518ba498e2ef355ad35ca35658b322bd36ed",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/delete-ti-indicator-by-id"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 11391,
+        "path": "api/device-health-api-methods-properties",
+        "sha256": "37d266ccb273dbad01664b253db4a3f9c4594abaec8c0f59afa558dc48a05b2e",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/device-health-api-methods-properties"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 14508,
+        "path": "api/device-health-export-antivirus-health-report-api",
+        "sha256": "7cbac0e8d3ad00f3a5ef9e510b43b2d37a57b64833866f5453e99af3fb3c0b90",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/device-health-export-antivirus-health-report-api"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 12312,
+        "path": "api/export-certificate-inventory-assessment",
+        "sha256": "d6434ece137e90e33492393448594166bced9eac5e0edf5bdf1fc6ec01cbe384",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/export-certificate-inventory-assessment"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 11477,
+        "path": "api/export-security-baseline-assessment",
+        "sha256": "8bc122052ea99c68276952b6ad5fcab5c582fb486f8af3f869df6c16b4dee77d",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/export-security-baseline-assessment"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 14772,
+        "path": "api/exposed-apis-create-app-nativeapp",
+        "sha256": "e4228a3e9d23eefe0fa1b0a1452a007950e6f0d8602c2a6e13ebbc7fd6d8dfc3",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/exposed-apis-create-app-nativeapp"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 14396,
+        "path": "api/exposed-apis-create-app-partners",
+        "sha256": "799787f0fd86743441350f1a871af9009f239e5e7288d2d965e2545731d7c204",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/exposed-apis-create-app-partners"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 10880,
+        "path": "api/exposed-apis-create-app-webapp",
+        "sha256": "2bed1a72b9dc02b62566cd562a3599308695b204b7c8b3b4ad27acc07d0d9d07",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/exposed-apis-create-app-webapp"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 6696,
+        "path": "api/exposed-apis-full-sample-powershell",
+        "sha256": "7b76bd3cbbfeb57df0eef545f9c5482fa17446a4bfd33aa47258d07498f62d2f",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/exposed-apis-full-sample-powershell"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3557,
+        "path": "api/exposed-apis-list",
+        "sha256": "0c1814f50c0ba04f34dbb2da2db06ceedb99a43e481fc9ef349a984f803f2871",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/exposed-apis-list"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 20581,
+        "path": "api/exposed-apis-odata-samples",
+        "sha256": "f9317aa83af06506887d0879bbdbd9233a4990f30469f4a0f2e7d598ea182e24",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/exposed-apis-odata-samples"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 10119,
+        "path": "api/fetch-alerts-mssp",
+        "sha256": "52da9725898a1e7784e6555c9926a5486e02248ffea706cbcd960a5c927a03bb",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/fetch-alerts-mssp"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3813,
+        "path": "api/files",
+        "sha256": "dfce1383eeb2fbc448b8fd69d6927a9890fc878edff6ba48ab07ea8ebc937b98",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/files"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3702,
+        "path": "api/find-machine-info-by-ip",
+        "sha256": "7c27292c383c1cf57a63dac0fde7ba071051575d514d3bdac9f4d3b350502499",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/find-machine-info-by-ip"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3990,
+        "path": "api/find-machines-by-ip",
+        "sha256": "e8234ee0a2c4da709aca9e1abe2f38afbac2f76f5e576e9df72347f4905b61ca",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/find-machines-by-ip"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4050,
+        "path": "api/find-machines-by-tag",
+        "sha256": "0a213547f4437a602e2e2f549ff8f41d520185ba6f7800004e8b2523e9a5f2de",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/find-machines-by-tag"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4327,
+        "path": "api/get-agent-details",
+        "sha256": "eaeed2b3dce8ee159bf7bc017704465387ae29442ba2847f339500c1115c8bdf",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/get-agent-details"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3555,
+        "path": "api/get-alert-info-by-id",
+        "sha256": "9b1546df505dc3dc9779e470f0d853e1dee85dbeae14abf159ed09d3cdf2e084",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/get-alert-info-by-id"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3967,
+        "path": "api/get-alert-related-domain-info",
+        "sha256": "632c043846622abad865f90594695e7ed4785b46442bec0a5534a4f290d5d424",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/get-alert-related-domain-info"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4791,
+        "path": "api/get-alert-related-files-info",
+        "sha256": "4ee801e5cb9db037e15134a0fbf8ad26c7fa0ab08d8a5be229ac8b97479ae55a",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/get-alert-related-files-info"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4003,
+        "path": "api/get-alert-related-ip-info",
+        "sha256": "01f8f6443d8cb99649a0174660ec2488b88a4f022811da808d75deedbb1f1d9c",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/get-alert-related-ip-info"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 5020,
+        "path": "api/get-alert-related-machine-info",
+        "sha256": "28bf9d29330a288d3df83198984bbb6ff2bf1a51e7c605463b908a33b8723f6c",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/get-alert-related-machine-info"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4426,
+        "path": "api/get-alert-related-user-info",
+        "sha256": "76ff1cfe3cd6b636b804db6bda5d2e3420a66ee053ba6e53a71c302a4725ba8c",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/get-alert-related-user-info"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 13290,
+        "path": "api/get-alerts",
+        "sha256": "e2a79b97191910d5b1d493117612d4e6e2e78901d28d9b0e3f76c64cd47381af",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/get-alerts"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 5328,
+        "path": "api/get-all-recommendations",
+        "sha256": "d85848c7096f22389c5e585e50dd8b12834c07a1e32c871842fb2d7bf41cd7d3",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/get-all-recommendations"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4846,
+        "path": "api/get-all-scan-agents",
+        "sha256": "2acaf28f52416f514fadb28d34d5e7f68ba4ce9a5afb609a03e4116cb5af5334",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/get-all-scan-agents"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 5226,
+        "path": "api/get-all-scan-definitions",
+        "sha256": "88a6666bcce3f74666757733951d8487110d5f284791c32b21fb29a1c51ce481",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/get-all-scan-definitions"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 5260,
+        "path": "api/get-all-vulnerabilities",
+        "sha256": "4554e892a637256b1cb10f4f35af939ba104e3b2a83b4ce62bcdc936cb5ae3f3",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/get-all-vulnerabilities"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 5400,
+        "path": "api/get-all-vulnerabilities-by-machines",
+        "sha256": "4236e585dee66f18d05ceeca8a0e634c6c0ad222affdb68d6aa2cbba6be93e8e",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/get-all-vulnerabilities-by-machines"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 12185,
+        "path": "api/get-assessment-browser-extensions",
+        "sha256": "11e4388db02f04b508c2c72fa565ba4815dcec307a3222c1b742a824acbd982b",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/get-assessment-browser-extensions"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 7060,
+        "path": "api/get-assessment-information-gathering",
+        "sha256": "d67ae80e0e8858de23c1487964ed326ffea87b9db0f1890e4e143331332b8ef1",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/get-assessment-information-gathering"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 23468,
+        "path": "api/get-assessment-methods-properties",
+        "sha256": "dd3cfd16057a7f1d6fab7823d0f507bc565f042f0c06296f6f7ab22dcbd0f971",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/get-assessment-methods-properties"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 14356,
+        "path": "api/get-assessment-non-cpe-software-inventory",
+        "sha256": "b6e63ea1799ca623c21964a0e1f6ffc492db7752c44eb89234ddc9bc5ffd03f9",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/get-assessment-non-cpe-software-inventory"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 15528,
+        "path": "api/get-assessment-secure-config",
+        "sha256": "2b672dbdaba340b91569cfd99f74af43770b739c4f40f359c52805c8eab8d16f",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/get-assessment-secure-config"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 16356,
+        "path": "api/get-assessment-software-inventory",
+        "sha256": "c98a2060752072bb4ceabdf17360eda81ba95b9b8dc6f65963e1b8e856bc701a",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/get-assessment-software-inventory"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 37695,
+        "path": "api/get-assessment-software-vulnerabilities",
+        "sha256": "4083ea487a212914c69add731c211ba25adbd8c961a885451934170e59fa955f",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/get-assessment-software-vulnerabilities"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 5556,
+        "path": "api/get-authenticated-scan-properties",
+        "sha256": "156d382346d55cefeb40d365847c2b476914ccd026be0e79d9c0decb1c45dad5",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/get-authenticated-scan-properties"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 5498,
+        "path": "api/get-browser-extensions-permission-info",
+        "sha256": "bbf1d2abe8fbcb90264c88e1b2202b9fb7aa45f8207a677d38eb9032389f5774",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/get-browser-extensions-permission-info"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3692,
+        "path": "api/get-device-secure-score",
+        "sha256": "8657ea2f028818ae6802a672063953675c75829422f00798bb3d9ee1e16fb381",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/get-device-secure-score"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4386,
+        "path": "api/get-discovered-vulnerabilities",
+        "sha256": "f1e607a309858f8bdbfa3991d1a48a02b93215c6e7237c57d3d0fdac2352742e",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/get-discovered-vulnerabilities"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3733,
+        "path": "api/get-domain-related-alerts",
+        "sha256": "75bfcc0409a6238dccedb51246fc856d1dd401c2ada03d4f7ed6f1287515cdea",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/get-domain-related-alerts"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3911,
+        "path": "api/get-domain-related-machines",
+        "sha256": "57f691d141a93e0f6fd57f1debe9c53930a60715f5d92fc09c4c5aef45aa7317",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/get-domain-related-machines"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4023,
+        "path": "api/get-domain-statistics",
+        "sha256": "9aa75a06c5db0d21fb265b44dd9590b040c6d32e5842f3759be7795729783e43",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/get-domain-statistics"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3465,
+        "path": "api/get-exposure-score",
+        "sha256": "50cf4e8772ad4cf2b55ed2a85bab8197d3652b4cc5504c418d0e437185f26481",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/get-exposure-score"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4365,
+        "path": "api/get-file-information",
+        "sha256": "12b14fdd0c58ed7a54c3c8f4bf916e9628c7cbe360302a4bdbc029d8eafb2ab1",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/get-file-information"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3936,
+        "path": "api/get-file-related-alerts",
+        "sha256": "6e338d91a6b2d04e6a44d12a2fd3e8ba9b94f8c6bde8454d7bb555e90951f0a8",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/get-file-related-alerts"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3798,
+        "path": "api/get-file-related-machines",
+        "sha256": "31b22e6a6a454601a7800d731ff56cd4cd903d2dee2baf63bfb5ac10d1847ecc",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/get-file-related-machines"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4262,
+        "path": "api/get-file-statistics",
+        "sha256": "09e495fefde903d6e76f773c7fbbc75a6a626e3c6f42873d803f5d623c8edb90",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/get-file-statistics"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3821,
+        "path": "api/get-installed-software",
+        "sha256": "c4d2d3f494b78b0315a9d291ad2b7ec89f105fee3389f6ca7b249d4f70a58019",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/get-installed-software"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4483,
+        "path": "api/get-investigation-collection",
+        "sha256": "2677e2493bf671071c8cd6145496b32631b1982013d61e22a9b611725fb41d50",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/get-investigation-collection"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3311,
+        "path": "api/get-investigation-object",
+        "sha256": "16df5c2b3a95525b3c468e54708bf369238226c480d4ffa8a17b01ea6fed087e",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/get-investigation-object"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3799,
+        "path": "api/get-ip-related-alerts",
+        "sha256": "fd51cd2e23154b65704723539276a85f4351f60d32fee9fcfe28be70f60dc011",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/get-ip-related-alerts"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4344,
+        "path": "api/get-ip-statistics",
+        "sha256": "e9ad9af37ad8dada523bb04a6f5acbe61a50f8a81820f14366b9a5d02e9e01ac",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/get-ip-statistics"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 6927,
+        "path": "api/get-live-response-result",
+        "sha256": "f1461bc237e7869e00cbe8e91763ca90639820b68d09603cb3dec2acc3dbf26e",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/get-live-response-result"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4647,
+        "path": "api/get-machine-by-id",
+        "sha256": "ec83e5f40107641f2c873eb28fc4d40f6ef5e089d48f6ec8c17272d33cc18e5f",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/get-machine-by-id"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3915,
+        "path": "api/get-machine-group-exposure-score",
+        "sha256": "6c46d3e7d9a8b2971813ed234ef327094dc9d3c18fd83fd33c302db8c85e72ca",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/get-machine-group-exposure-score"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4352,
+        "path": "api/get-machine-log-on-users",
+        "sha256": "e44fb97713da40dc53b6a94455c8d8145bbe1362de9ab7bf1b89b6f60689ae80",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/get-machine-log-on-users"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3470,
+        "path": "api/get-machine-related-alerts",
+        "sha256": "e98b8b8d09ad47d480fa04213da99c18ca4458b89086f9bd385edac270db0884",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/get-machine-related-alerts"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4295,
+        "path": "api/get-machineaction-object",
+        "sha256": "1e868ea8018acf2d0af2fd265d9dcb01007c69fadcfc903e49b9f10da96be93f",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/get-machineaction-object"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 7882,
+        "path": "api/get-machineactions-collection",
+        "sha256": "627b3fa2dbbe600fe51b16b8caa5b646f46d8d17e337108db759de4364d6349f",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/get-machineactions-collection"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 5483,
+        "path": "api/get-machines",
+        "sha256": "7cfebc2b8b227596ba67bfee3c4c43b1539db032db64dc1f79fe374e43940980",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/get-machines"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4069,
+        "path": "api/get-machines-by-software",
+        "sha256": "6f98c719c1d9ee01b56dc2e3e71142a30ea60b21d5441b2ac42168144326beb4",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/get-machines-by-software"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4104,
+        "path": "api/get-machines-by-vulnerability",
+        "sha256": "de78d15a0798e7f866ecdb472f91ce09569fe55072253a309f1889278ef1ad92",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/get-machines-by-vulnerability"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3641,
+        "path": "api/get-missing-kbs-machine",
+        "sha256": "ad937c89f107768510cbebd7f4c9e82fcdffe50e23c51ae40f46a495e3ed46a5",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/get-missing-kbs-machine"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3715,
+        "path": "api/get-missing-kbs-software",
+        "sha256": "7bab1a52118c176075a89d09e3408b037e6095ca4e870c81abe3bbac9f09c482",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/get-missing-kbs-software"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 6427,
+        "path": "api/get-package-sas-uri",
+        "sha256": "769829e9ffbe717428470ca6f7e040ecb1c3f2cf072303242f37c602e4a90d1a",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/get-package-sas-uri"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4293,
+        "path": "api/get-recommendation-by-id",
+        "sha256": "41aa1123dcf629da2b0c0d8839f01d16f1fc54c3ff34440dbccd4e4911ce91d7",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/get-recommendation-by-id"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3966,
+        "path": "api/get-recommendation-machines",
+        "sha256": "914eee1b9dc2a8c13fcb3964289ad17339241ab2f9d8408b5abbc344f209e889",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/get-recommendation-machines"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4556,
+        "path": "api/get-recommendation-vulnerabilities",
+        "sha256": "21a4b7bad69896091ca199130e59f85aade7bc66a8bfbbf1491e945a6fd2cc2f",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/get-recommendation-vulnerabilities"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 8471,
+        "path": "api/get-remediation-all-activities",
+        "sha256": "2b1060f23619d723ef6d18a6a8b9d2df0e733a25dfa97c75340a23f1b47f354a",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/get-remediation-all-activities"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 5440,
+        "path": "api/get-remediation-exposed-devices-activities",
+        "sha256": "9d5d9e34a9408ecaf4a1a533b055fef1cce8cc20a1faf30fa732e704c9a7d492",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/get-remediation-exposed-devices-activities"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 5535,
+        "path": "api/get-remediation-methods-properties",
+        "sha256": "3159d21ee46ebb229716b419c9e2e7860d1cfc0fc13c5d958d2980d2bce8ea56",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/get-remediation-methods-properties"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 8132,
+        "path": "api/get-remediation-one-activity",
+        "sha256": "c0d187904eea025fb31f14652a1b8f08785308101239ce72c18b5ec35ea198c6",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/get-remediation-one-activity"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 5920,
+        "path": "api/get-scan-history-by-definition",
+        "sha256": "6b537298f0178ea7f92802a62b583a3b6a9ec016fcf5420531af0d999c054a40",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/get-scan-history-by-definition"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 5328,
+        "path": "api/get-scan-history-by-session",
+        "sha256": "d496816cd00fd574bf3962dd7eb096b175a96e8a00283d564f90e5992937ab0a",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/get-scan-history-by-session"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 7424,
+        "path": "api/get-security-baselines-assessment-configurations",
+        "sha256": "5ab3557341f48c5e8e6bf6dc7a18c951ccb72e0b44f21c6a9a1b87fc6d826712",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/get-security-baselines-assessment-configurations"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 5660,
+        "path": "api/get-security-baselines-assessment-profiles",
+        "sha256": "8fc230ac6d2bffef04366e79563a51acd5cc8cce1346876d3ad668d2d6d7ad4f",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/get-security-baselines-assessment-profiles"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4538,
+        "path": "api/get-security-recommendations",
+        "sha256": "2360a2c7c777e119cd70c9bf42a28309301a2d9fb00be5c1e19ca7613313184f",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/get-security-recommendations"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3856,
+        "path": "api/get-software",
+        "sha256": "36e3961b9203c385ddd4bde7f462c79d805c7af4f5066f9ce7431ca25ff8cee7",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/get-software"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3652,
+        "path": "api/get-software-by-id",
+        "sha256": "76169b30150b90e97684283fb801148ec59e187094ae530fdd846e893789e2ab",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/get-software-by-id"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3924,
+        "path": "api/get-software-ver-distribution",
+        "sha256": "836d600af34a4100507c4cb83bec7a709b889cf2607ebe8c4700e6507dbc3e3f",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/get-software-ver-distribution"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 7196,
+        "path": "api/get-ti-indicators-collection",
+        "sha256": "df7ed2d9277865d9b3ed800f98aeab2a196e10128eec6f5591379ed666ae3572",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/get-ti-indicators-collection"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3831,
+        "path": "api/get-user-related-alerts",
+        "sha256": "a7cdf8b8e05bec11e888605bbac2b047d6d28b25b9d34729cee13c613d620294",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/get-user-related-alerts"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3829,
+        "path": "api/get-user-related-machines",
+        "sha256": "b42e1384747fc4dad9c6cfb7a8840fa068b841cff6968ca6a9296462a16194af",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/get-user-related-machines"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 5177,
+        "path": "api/get-vuln-by-software",
+        "sha256": "93cec2053e217264e58d55ac63610b985d0bd856297b1d586f41f41eb664918b",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/get-vuln-by-software"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 5046,
+        "path": "api/get-vulnerability-by-id",
+        "sha256": "1a2cd4a5ffb3c136e90407f040f3161d277c37b89eabd11b40e3573cef66824c",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/get-vulnerability-by-id"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 5420,
+        "path": "api/import-ti-indicators",
+        "sha256": "b2029e09db46684a69ff94e56b097401dd3c28e0a7364e5b437ba14b10fb0408",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/import-ti-indicators"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 5178,
+        "path": "api/initiate-autoir-investigation",
+        "sha256": "00a1ca5140a3daaebe655b51b38d2befd8e5ac8e2527368bbf5cdc09876faab1",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/initiate-autoir-investigation"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3678,
+        "path": "api/investigation",
+        "sha256": "5f26092b6643f8be86c3cd8c0b306ebcbb614d8ff54478a01e0958f5b7655e87",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/investigation"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 5514,
+        "path": "api/isolate-machine",
+        "sha256": "db1c44a72b281396ae6f6fba6f6d23b58c6d825fd09da382dc6ba716dd7f7c08",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/isolate-machine"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4977,
+        "path": "api/list-library-files",
+        "sha256": "031ba69746360b1a1a05ba98f929dc20e9b6c0e72ec7259c76fd3ff206386ebc",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/list-library-files"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3909,
+        "path": "api/list-recommendation-software",
+        "sha256": "da0b6e42f98f520096a1fd01f3ad277153cd31ed2a9ffa4d733e42030f3901db",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/list-recommendation-software"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4663,
+        "path": "api/machine",
+        "sha256": "7eafdc4ceb125079b6ae7247bd4f36554ebf05fed18383e2aa0e5540a5cd2ce4",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/machine"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4606,
+        "path": "api/machineaction",
+        "sha256": "91b3a0963ea260265881b058a81d3343a09f11839a1c7830bcaead0dcfa30e85",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/machineaction"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 7214,
+        "path": "api/management-apis",
+        "sha256": "3f799057f81361dcc7a9ba3acac6732bc52f077d4bceec593e88a6757eac1059",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/management-apis"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 5543,
+        "path": "api/offboard-machine-api",
+        "sha256": "64483a855b57f08311991de82789db8187f6103ea992e197adebeace0d3c4906",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/offboard-machine-api"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 5748,
+        "path": "api/post-ti-indicator",
+        "sha256": "3eb965b947b8f08885cea0da9cfa148d922000606fc6e97890b8cc0cd03ce45b",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/post-ti-indicator"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3110,
+        "path": "api/raw-data-export",
+        "sha256": "ba151be8bb6b3ac996e06c5d64d265909a50c816e9881fcab9c031163b9f9f3c",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/raw-data-export"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 6568,
+        "path": "api/raw-data-export-event-hub",
+        "sha256": "d43e63845fd9dfb2fe7c787f08867922faff4c77dd71e923f9087ef0b1ba4682",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/raw-data-export-event-hub"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 6225,
+        "path": "api/raw-data-export-storage",
+        "sha256": "f613e2542a912792a3c9a86f336edfb49c48e2f68c2e8e3151f8c011986d4c1d",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/raw-data-export-storage"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4283,
+        "path": "api/recommendation",
+        "sha256": "f29b8841807c8c99b2c8521bac6bfb6ee6781d2bbc01654a076d5eeaeb4bea6c",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/recommendation"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 5155,
+        "path": "api/restrict-code-execution",
+        "sha256": "7d4f1c357153b51725a08b77375323f5ecd4e64220ea42c0adaefa14c584101e",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/restrict-code-execution"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 7717,
+        "path": "api/run-advanced-query-api",
+        "sha256": "1bc7af5b76eb63044e68266eec174c0cc7c81721dd4d27f7feac209c469fdb9e",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/run-advanced-query-api"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 5865,
+        "path": "api/run-advanced-query-sample-powershell",
+        "sha256": "87fa623fee991e0d20181f8566230092d1678236625c834294f66f2fc4da8015",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/run-advanced-query-sample-powershell"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 6461,
+        "path": "api/run-advanced-query-sample-python",
+        "sha256": "7aa8167907df83086931af4081cdd501565f8e30b31f708d34bcb5b2c7bc2256",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/run-advanced-query-sample-python"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 5185,
+        "path": "api/run-av-scan",
+        "sha256": "700449b76e0e8e11f62589cde7d3168182748d4eae866129ebbbc5a8f9dde9e9",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/run-av-scan"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 10137,
+        "path": "api/run-live-response",
+        "sha256": "e61d199b53cf418d87da3116458634e070f7bd393ac8bd025cfa598591144db8",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/run-live-response"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 2714,
+        "path": "api/score",
+        "sha256": "e44fba0b76ebf961c12286a71b20d31d3568b4e6932447d2153ff33ae1669c2e",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/score"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4172,
+        "path": "api/set-device-value",
+        "sha256": "531f75ee0bf98642d00a13c1b080a5b790bb9b463a219fd9b194933e6b091236",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/set-device-value"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 2709,
+        "path": "api/software",
+        "sha256": "d7ddeb5d70630a116e2afd349aaf85099667272564fac75fba36249a6c671908",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/software"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 5125,
+        "path": "api/stop-and-quarantine-file",
+        "sha256": "f7d20c05ada16e287f6c185113b9b0f5ecdb1a61de1d9e4715c1507da885c91c",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/stop-and-quarantine-file"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 5329,
+        "path": "api/ti-indicator",
+        "sha256": "0399bb5b6577b04673226d96d469ce1399bb7c6952de8547e98b4d48f34bac03",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/ti-indicator"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 5030,
+        "path": "api/unisolate-machine",
+        "sha256": "4d81d279462a4cb96bfeb2ecb989be9b8387051b83a50702d7a7e0141cbc78f9",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/unisolate-machine"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 5014,
+        "path": "api/unrestrict-code-execution",
+        "sha256": "2974a2416fd80e0f8c11590fd04e0f077d97eb8a6d7909fe797594dabb9bdd6c",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/unrestrict-code-execution"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 6076,
+        "path": "api/update-alert",
+        "sha256": "2d063fc14129ec5ae95c5b054efe7d15663a460bc00a6b3d7d6025c01d65e372",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/update-alert"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 5057,
+        "path": "api/update-machine-method",
+        "sha256": "dce79b58c9d8052bfaf60453152083dd83a9ff747788aad6639e392c3d8254c8",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/update-machine-method"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4661,
+        "path": "api/upload-library",
+        "sha256": "1ba015f6de770e1284c1240dfa76fe05f983f5e12a1625b64b6187c3e9fca3de",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/upload-library"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3574,
+        "path": "api/vulnerability",
+        "sha256": "3df06d004c2513d804da4c2cb2f2541afd866ab23ea762f3095b582a92cab034",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/vulnerability"
+      },
+      "status": "imported"
+    }
+  ],
+  "imported": 133,
+  "kind": "documentation",
+  "revision": "57d53d444fe3b3c3b02d93291c87836922c65b8a4f3f2e928c24cecff4b58f94"
+}

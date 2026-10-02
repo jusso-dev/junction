@@ -5,10 +5,10 @@
       "receipt": {
         "bytes": 23221,
         "path": "specification/common-types/resource-management/v5/types.json",
-        "revision": "80b3f7b9bdd7757783cfa8c35f06a299bd5dedad",
+        "revision": "b7bfb61c524e3498b97622af39884fa1323eb7d4",
         "sha256": "66767620b8edfbc04093c76b78d168cc59822cd9da1e726d35a9d45b73e642c1",
         "source": "azure-resource-graph",
-        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/80b3f7b9bdd7757783cfa8c35f06a299bd5dedad/specification/common-types/resource-management/v5/types.json"
+        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/b7bfb61c524e3498b97622af39884fa1323eb7d4/specification/common-types/resource-management/v5/types.json"
       },
       "status": "dependency"
     }
@@ -18,10 +18,10 @@
       "receipt": {
         "bytes": 18276,
         "path": "specification/resourcegraph/resource-manager/Microsoft.ResourceGraph/ResourceGraph/stable/2024-04-01/resourcegraph.json",
-        "revision": "80b3f7b9bdd7757783cfa8c35f06a299bd5dedad",
+        "revision": "b7bfb61c524e3498b97622af39884fa1323eb7d4",
         "sha256": "b9cc4a440858bb51f10474cd36208dee324ddbddb8ce06fd31378efea5a6d111",
         "source": "azure-resource-graph",
-        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/80b3f7b9bdd7757783cfa8c35f06a299bd5dedad/specification/resourcegraph/resource-manager/Microsoft.ResourceGraph/ResourceGraph/stable/2024-04-01/resourcegraph.json"
+        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/b7bfb61c524e3498b97622af39884fa1323eb7d4/specification/resourcegraph/resource-manager/Microsoft.ResourceGraph/ResourceGraph/stable/2024-04-01/resourcegraph.json"
       },
       "status": "imported"
     }
@@ -33,11 +33,11 @@
         "blob_sha": "9de6392a2cc1f1cf8a2423d3c48ed63b1fd2e4a1",
         "bytes": 18276,
         "path": "specification/resourcegraph/resource-manager/Microsoft.ResourceGraph/ResourceGraph/stable/2024-04-01/resourcegraph.json",
-        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/80b3f7b9bdd7757783cfa8c35f06a299bd5dedad/specification/resourcegraph/resource-manager/Microsoft.ResourceGraph/ResourceGraph/stable/2024-04-01/resourcegraph.json"
+        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/b7bfb61c524e3498b97622af39884fa1323eb7d4/specification/resourcegraph/resource-manager/Microsoft.ResourceGraph/ResourceGraph/stable/2024-04-01/resourcegraph.json"
       }
     ],
-    "revision": "80b3f7b9bdd7757783cfa8c35f06a299bd5dedad",
+    "revision": "b7bfb61c524e3498b97622af39884fa1323eb7d4",
     "source": "azure-resource-graph",
-    "tree_sha": "80b3f7b9bdd7757783cfa8c35f06a299bd5dedad"
+    "tree_sha": "b7bfb61c524e3498b97622af39884fa1323eb7d4"
   }
 }

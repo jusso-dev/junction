@@ -383,6 +383,8 @@ enum ApiCommand {
     },
     Stats,
     Products,
+    /// Product aliases (Intune, Teams, Entra, ...) that resolve to Graph operations.
+    Aliases,
     Services {
         #[arg(long)]
         product: Option<String>,
@@ -703,9 +705,19 @@ async fn run() -> Result<()> {
             max_bytes: *max_bytes,
             timeout_seconds: *timeout_seconds,
         };
-        let manifest = junction_discovery::fetch::OfficialFetcher::new(128 * 1024 * 1024)?
-            .refresh_scoped(source, paths, revision.as_deref(), options)
-            .await?;
+        let manifest = if matches!(
+            source.source_type,
+            junction_discovery::sources::SourceType::Documentation
+        ) {
+            if !paths.is_empty() || revision.is_some() {
+                anyhow::bail!("documentation sources refresh their configured table of contents");
+            }
+            junction_discovery::learn::refresh(source, *timeout_seconds).await?
+        } else {
+            junction_discovery::fetch::OfficialFetcher::new(128 * 1024 * 1024)?
+                .refresh_scoped(source, paths, revision.as_deref(), options)
+                .await?
+        };
         Registry::load(manifest.clone())?;
         atomic_write(output, &serde_json::to_vec_pretty(&manifest)?)?;
         output_options.emit(
@@ -1356,6 +1368,7 @@ async fn run() -> Result<()> {
             }
             ApiCommand::Stats => serde_json::to_value(registry.stats())?,
             ApiCommand::Products => serde_json::json!({"products": registry.products()}),
+            ApiCommand::Aliases => serde_json::json!({"aliases": registry.alias_summary()}),
             ApiCommand::Services { product } => {
                 serde_json::json!({"services": registry.services(product.as_deref()).into_iter().map(|(product, service)| serde_json::json!({"product":product,"service":service})).collect::<Vec<_>>()})
             }

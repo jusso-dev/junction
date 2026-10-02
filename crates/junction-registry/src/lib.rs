@@ -1,3 +1,4 @@
+pub mod aliases;
 mod input_schema;
 pub mod overrides;
 use anyhow::{Result, bail};
@@ -44,6 +45,13 @@ pub struct RegistryStats {
     pub beta: usize,
     pub deprecated: usize,
     pub retired: usize,
+}
+
+#[derive(Debug, Serialize)]
+pub struct AliasSummary {
+    pub alias: &'static str,
+    pub target: &'static str,
+    pub operations: usize,
 }
 
 #[derive(Default)]
@@ -162,10 +170,7 @@ impl Registry {
         version: Option<&str>,
         allow_preview: bool,
     ) -> Result<&JunctionOperation> {
-        let versions = self
-            .operations
-            .get(id)
-            .ok_or_else(|| anyhow::anyhow!("unknown operation"))?;
+        let versions = self.lookup(id)?;
         let preview = |op: &&JunctionOperation| {
             op.preview || matches!(op.maturity, ApiMaturity::Preview | ApiMaturity::Beta)
         };
@@ -256,10 +261,36 @@ impl Registry {
     }
     /// Includes preview/deprecated/retired metadata without selecting it for execution.
     pub fn versions(&self, id: &str) -> Result<&[JunctionOperation]> {
+        self.lookup(id).map(Vec::as_slice)
+    }
+    /// Canonical IDs win; otherwise a product alias resolves to its Graph ID.
+    fn lookup(&self, id: &str) -> Result<&Vec<JunctionOperation>> {
         self.operations
             .get(id)
-            .map(Vec::as_slice)
+            .or_else(|| {
+                aliases::canonical(id).and_then(|canonical| self.operations.get(&canonical))
+            })
             .ok_or_else(|| anyhow::anyhow!("unknown operation"))
+    }
+    /// Alias prefixes with the number of canonical operations each reaches.
+    pub fn alias_summary(&self) -> Vec<AliasSummary> {
+        aliases::ALIASES
+            .iter()
+            .map(|(alias, target)| AliasSummary {
+                alias,
+                target,
+                operations: self
+                    .operations
+                    .keys()
+                    .filter(|id| {
+                        *id == target
+                            || id
+                                .strip_prefix(target)
+                                .is_some_and(|rest| rest.starts_with('.'))
+                    })
+                    .count(),
+            })
+            .collect()
     }
     pub fn stats(&self) -> RegistryStats {
         let mut stats = RegistryStats {

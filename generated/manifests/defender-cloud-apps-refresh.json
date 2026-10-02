@@ -1,0 +1,387 @@
+{
+  "documents": [
+    {
+      "receipt": {
+        "bytes": 7085,
+        "path": "api-activities",
+        "sha256": "e03084bf811ad7c4ca5155000527e4fc48a4b4f40c91e264614f7e779573adae",
+        "source": "defender-cloud-apps",
+        "upstream": "https://learn.microsoft.com/en-us/defender-cloud-apps/api-activities"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3324,
+        "path": "api-activities-feedback",
+        "sha256": "c9a088d868f0c091b424a572d63a9d73f62986e47f1b876c7a21edb3c40ce366",
+        "source": "defender-cloud-apps",
+        "upstream": "https://learn.microsoft.com/en-us/defender-cloud-apps/api-activities-feedback"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 2834,
+        "path": "api-activities-fetch",
+        "sha256": "325f70ab61855d93ade2fd823731e8085b9a67f392708deee93001106ced9dad",
+        "source": "defender-cloud-apps",
+        "upstream": "https://learn.microsoft.com/en-us/defender-cloud-apps/api-activities-fetch"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 6128,
+        "path": "api-activities-investigate-script",
+        "sha256": "075a7a78277cc8a4fefbed689e05e0ec8a14ed159cbbfb4219e9435d6a9082d5",
+        "source": "defender-cloud-apps",
+        "upstream": "https://learn.microsoft.com/en-us/defender-cloud-apps/api-activities-investigate-script"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3853,
+        "path": "api-activities-list",
+        "sha256": "4f201fd404b387ca094ca3cd551b673b046556d7f2c2fe889150fea89dfad551",
+        "source": "defender-cloud-apps",
+        "upstream": "https://learn.microsoft.com/en-us/defender-cloud-apps/api-activities-list"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 7353,
+        "path": "api-alerts",
+        "sha256": "f1f058b811c9e2468ad37114cd7c1046c71372af0d1fcd705fc4769993473f27",
+        "source": "defender-cloud-apps",
+        "upstream": "https://learn.microsoft.com/en-us/defender-cloud-apps/api-alerts"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4499,
+        "path": "api-alerts-close-benign",
+        "sha256": "e1180bb18b0eb20e69d334b9b2b3711c57c74e3de34d1efcaf0310edba3d1278",
+        "source": "defender-cloud-apps",
+        "upstream": "https://learn.microsoft.com/en-us/defender-cloud-apps/api-alerts-close-benign"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4542,
+        "path": "api-alerts-close-false-positive",
+        "sha256": "f6983036dc7c3506d6fe3ad69da96dc22febaa9838bdb469170face283c9369f",
+        "source": "defender-cloud-apps",
+        "upstream": "https://learn.microsoft.com/en-us/defender-cloud-apps/api-alerts-close-false-positive"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4235,
+        "path": "api-alerts-close-true-positive",
+        "sha256": "d35424a5afcd9c4bc6e1af3b9be59b1b583a71e687763e1f12d06fea6f0d420b",
+        "source": "defender-cloud-apps",
+        "upstream": "https://learn.microsoft.com/en-us/defender-cloud-apps/api-alerts-close-true-positive"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4792,
+        "path": "api-alerts-fetch",
+        "sha256": "6eadc229f305c3c590be06cc1a4fb7b6748a9e05ca91c2e642b01ab905e8173d",
+        "source": "defender-cloud-apps",
+        "upstream": "https://learn.microsoft.com/en-us/defender-cloud-apps/api-alerts-fetch"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 5999,
+        "path": "api-alerts-list",
+        "sha256": "9822f4eb8e7f1b6a4787e56f1c7e3c1f6c041d4d3ccedd7ec23813ca8424e2ad",
+        "source": "defender-cloud-apps",
+        "upstream": "https://learn.microsoft.com/en-us/defender-cloud-apps/api-alerts-list"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 2782,
+        "path": "api-alerts-mark-read",
+        "sha256": "7976661ea06e6af330c1bf15bdb618e54eabcfa1f8a09ed60065fb6cd83dadb3",
+        "source": "defender-cloud-apps",
+        "upstream": "https://learn.microsoft.com/en-us/defender-cloud-apps/api-alerts-mark-read"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 2804,
+        "path": "api-alerts-mark-unread",
+        "sha256": "f9c8dc6ca5848460f5ad80072cd2a212fd0581600dcd50a1bf3d5e57b592e644",
+        "source": "defender-cloud-apps",
+        "upstream": "https://learn.microsoft.com/en-us/defender-cloud-apps/api-alerts-mark-unread"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4315,
+        "path": "api-authentication",
+        "sha256": "6cdac1fbfd8f81a4f0292482379c0f08aa1ea015826436ac0fb012d8b90dd060",
+        "source": "defender-cloud-apps",
+        "upstream": "https://learn.microsoft.com/en-us/defender-cloud-apps/api-authentication"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 14191,
+        "path": "api-authentication-application",
+        "sha256": "7036777862a1c3212dee15abb76f278961b923430f55e5f10e881fede3edbe33",
+        "source": "defender-cloud-apps",
+        "upstream": "https://learn.microsoft.com/en-us/defender-cloud-apps/api-authentication-application"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 13184,
+        "path": "api-authentication-user",
+        "sha256": "91ea50d5068026520d09c0412ce4f965a8f59b93df8845d2d9cb25e0394644e8",
+        "source": "defender-cloud-apps",
+        "upstream": "https://learn.microsoft.com/en-us/defender-cloud-apps/api-authentication-user"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4333,
+        "path": "api-data-enrichment",
+        "sha256": "1d3bf25e9a67917a1bb7757ccb974ef59411958d6c02a3d0c6108167ef947687",
+        "source": "defender-cloud-apps",
+        "upstream": "https://learn.microsoft.com/en-us/defender-cloud-apps/api-data-enrichment"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3597,
+        "path": "api-data-enrichment-create",
+        "sha256": "8b7c607977ce56f5b2a0107ceb868c6e77268a85054b0abc1dd5607f102b8d6e",
+        "source": "defender-cloud-apps",
+        "upstream": "https://learn.microsoft.com/en-us/defender-cloud-apps/api-data-enrichment-create"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 2715,
+        "path": "api-data-enrichment-delete",
+        "sha256": "8413cb6915a4397518d23bc1e8d9252d049f6615bddab4d22c43a5de9a1cb9cb",
+        "source": "defender-cloud-apps",
+        "upstream": "https://learn.microsoft.com/en-us/defender-cloud-apps/api-data-enrichment-delete"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 5139,
+        "path": "api-data-enrichment-list",
+        "sha256": "46dfa395b37d97c691667fe3cb95b00a2870387dbaff0ca74880fc72c45ef684",
+        "source": "defender-cloud-apps",
+        "upstream": "https://learn.microsoft.com/en-us/defender-cloud-apps/api-data-enrichment-list"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 10691,
+        "path": "api-data-enrichment-manage-script",
+        "sha256": "795c94318f5ebc74605be21e1e3cae0b08f4a25d408dbbeb76f7cb7bb0034713",
+        "source": "defender-cloud-apps",
+        "upstream": "https://learn.microsoft.com/en-us/defender-cloud-apps/api-data-enrichment-manage-script"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3790,
+        "path": "api-data-enrichment-update",
+        "sha256": "7c733c58ab23726fea8a872eabb97c45dce59c405f6ad3b015b51ee2cd821717",
+        "source": "defender-cloud-apps",
+        "upstream": "https://learn.microsoft.com/en-us/defender-cloud-apps/api-data-enrichment-update"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4053,
+        "path": "api-discovery",
+        "sha256": "73f509d10f3129b592f1c38513e6bed87b18a462596d5213ad52ec685ee0f932",
+        "source": "defender-cloud-apps",
+        "upstream": "https://learn.microsoft.com/en-us/defender-cloud-apps/api-discovery"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3413,
+        "path": "api-discovery-finalize",
+        "sha256": "963c5027fb5558d03291ddbc6bca1e3350eaeb8e392c811dffa1155e617077f0",
+        "source": "defender-cloud-apps",
+        "upstream": "https://learn.microsoft.com/en-us/defender-cloud-apps/api-discovery-finalize"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 5320,
+        "path": "api-discovery-initiate",
+        "sha256": "57638ff454a734b9fed746263f6a06b6f857fb76e9c5afba51f58be55fe97315",
+        "source": "defender-cloud-apps",
+        "upstream": "https://learn.microsoft.com/en-us/defender-cloud-apps/api-discovery-initiate"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 7159,
+        "path": "api-discovery-list-categories",
+        "sha256": "232ef0637898eb4ed0739b0608c409ac7b2b3744dc0a515bcfa3c82610d910bd",
+        "source": "defender-cloud-apps",
+        "upstream": "https://learn.microsoft.com/en-us/defender-cloud-apps/api-discovery-list-categories"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 10131,
+        "path": "api-discovery-list-streams",
+        "sha256": "dcd89500e9fb8b66596c84720023098ca988640c080bff58aa3af8368f2e2574",
+        "source": "defender-cloud-apps",
+        "upstream": "https://learn.microsoft.com/en-us/defender-cloud-apps/api-discovery-list-streams"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3919,
+        "path": "api-discovery-perform",
+        "sha256": "a5d6cf7897e403a9e9462ac9043c392264ff2602ae0004ca3cb9c6abad435bd1",
+        "source": "defender-cloud-apps",
+        "upstream": "https://learn.microsoft.com/en-us/defender-cloud-apps/api-discovery-perform"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4115,
+        "path": "api-discovery-script",
+        "sha256": "3a5e3f3d653ccf5e20a0452294146de3eb8115b92c76ba012b9c68eb0a0a6715",
+        "source": "defender-cloud-apps",
+        "upstream": "https://learn.microsoft.com/en-us/defender-cloud-apps/api-discovery-script"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3963,
+        "path": "api-entities",
+        "sha256": "cc14c0173d1d76666e8570b0374a723e46f14f29b7c9bb016915ce834427ab39",
+        "source": "defender-cloud-apps",
+        "upstream": "https://learn.microsoft.com/en-us/defender-cloud-apps/api-entities"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3258,
+        "path": "api-entities-fetch",
+        "sha256": "8c13c9473db8390efc4e027eab84a4dfe916819e2066fcea0fe2007f36bea676",
+        "source": "defender-cloud-apps",
+        "upstream": "https://learn.microsoft.com/en-us/defender-cloud-apps/api-entities-fetch"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3346,
+        "path": "api-entities-fetch-tree",
+        "sha256": "a23403572ec4bbef7b9723d9c8dedfd266c4ee33500a11e6826bf735672e1093",
+        "source": "defender-cloud-apps",
+        "upstream": "https://learn.microsoft.com/en-us/defender-cloud-apps/api-entities-fetch-tree"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3837,
+        "path": "api-entities-list",
+        "sha256": "fe97dfaa4326cb09209ae231c51d3cfc5318b58ea9aebbc0a6d653ffc5668955",
+        "source": "defender-cloud-apps",
+        "upstream": "https://learn.microsoft.com/en-us/defender-cloud-apps/api-entities-list"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 5654,
+        "path": "api-files",
+        "sha256": "5a5ddc5142e5b6074821673e552d4bc4b8e1119060cad4afdf3ef5bfb37c4278",
+        "source": "defender-cloud-apps",
+        "upstream": "https://learn.microsoft.com/en-us/defender-cloud-apps/api-files"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 2985,
+        "path": "api-files-fetch",
+        "sha256": "712737ad2ce29e69f1e777db33f2da88bf45eb371b91d7da48a5708f6fcdb5dc",
+        "source": "defender-cloud-apps",
+        "upstream": "https://learn.microsoft.com/en-us/defender-cloud-apps/api-files-fetch"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3625,
+        "path": "api-files-list",
+        "sha256": "a845249614fb2eed9bcfa395ead13c22cc10fb9755536bccfa8d37a6abb6ae41",
+        "source": "defender-cloud-apps",
+        "upstream": "https://learn.microsoft.com/en-us/defender-cloud-apps/api-files-list"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 8718,
+        "path": "api-introduction",
+        "sha256": "1a30c2ae20c19a6aee57875da6fb33e3b61a655285ca1da4a8dac74033c46735",
+        "source": "defender-cloud-apps",
+        "upstream": "https://learn.microsoft.com/en-us/defender-cloud-apps/api-introduction"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4857,
+        "path": "api-tokens-legacy",
+        "sha256": "30cf3b5e9aab18dd19b3852bccd3e1aee19466c7466d562579f42dc3ca5786ae",
+        "source": "defender-cloud-apps",
+        "upstream": "https://learn.microsoft.com/en-us/defender-cloud-apps/api-tokens-legacy"
+      },
+      "status": "imported"
+    }
+  ],
+  "imported": 38,
+  "kind": "documentation",
+  "revision": "95239e91529a92b6cbe994ad9425ed53551e677077056614f6610b554efce576"
+}

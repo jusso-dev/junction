@@ -1,0 +1,31 @@
+{
+  "bytes": 1570842,
+  "dependencies": [],
+  "documents": [
+    {
+      "receipt": {
+        "bytes": 1570842,
+        "path": "sdk/swaggers/swagger.json",
+        "revision": "feb3439a39a0a96fddf389c5a80aac53082fec34",
+        "sha256": "e1431f9030c41cc6d39435507184b0a7cef17ac1cce93435f0f9d9d0a821be6c",
+        "source": "power-bi",
+        "upstream": "https://raw.githubusercontent.com/microsoft/PowerBI-CSharp/feb3439a39a0a96fddf389c5a80aac53082fec34/sdk/swaggers/swagger.json"
+      },
+      "status": "imported"
+    }
+  ],
+  "imported": 1,
+  "inventory": {
+    "documents": [
+      {
+        "blob_sha": "f1e22232adda18943a205943d6aa6eb10a96f22d",
+        "bytes": 1570842,
+        "path": "sdk/swaggers/swagger.json",
+        "upstream": "https://raw.githubusercontent.com/microsoft/PowerBI-CSharp/feb3439a39a0a96fddf389c5a80aac53082fec34/sdk/swaggers/swagger.json"
+      }
+    ],
+    "revision": "feb3439a39a0a96fddf389c5a80aac53082fec34",
+    "source": "power-bi",
+    "tree_sha": "feb3439a39a0a96fddf389c5a80aac53082fec34"
+  }
+}

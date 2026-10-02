@@ -21,7 +21,7 @@ validate_catalog() {
         .receipt.revision == $revision and .receipt.source == $source and
         (.receipt.path | type == "string" and
           (if $scope != "" then
-            (startswith($scope + "/") or startswith("specification/common-types/resource-management/"))
+            (startswith($scope + "/") or startswith("specification/common-types/resource-management/") or ($source == "azure-log-analytics-query" and startswith("specification/common-types/data-plane/")))
           elif $source == "fabric" then
             (startswith("platform/") or startswith("admin/") or startswith("common/") or startswith("lakehouse/") or startswith("notebook/"))
           elif $source == "azure-cost-management" then
@@ -230,6 +230,48 @@ for workload in "${arm_workloads[@]}"; do
     arm_registries+=("$arm_registry")
   done
 done
+# Log Analytics query data plane shares the pinned Azure revision.
+"$binary" discover azure-log-analytics-query --revision "$azure_revision" --output "$staging/azure-log-analytics-query-inventory.json"
+log_query_path='specification/monitor/data-plane/OperationalInsights/stable/v1/OperationalInsights.json'
+jq -e --arg revision "$azure_revision" --arg path "$log_query_path" \
+  '.revision == $revision and any(.documents[]; .path == $path)' \
+  "$staging/azure-log-analytics-query-inventory.json" >/dev/null
+log_query_registry="$staging/registry/azure-log-analytics-query.json"
+"$binary" refresh azure-log-analytics-query --revision "$azure_revision" --path "$log_query_path" \
+  --service log_analytics_query --max-documents 256 --output "$log_query_registry"
+validate_catalog "$log_query_registry" "$azure_revision" "$log_query_path" azure-log-analytics-query Azure/azure-rest-api-specs specification/monitor/data-plane/OperationalInsights
+"$binary" --registry "$log_query_registry" api stats > "$staging/manifests/azure-log-analytics-query-stats.json"
+jq -e '.schemas["x-junction-refresh"]' "$log_query_registry" > "$staging/manifests/azure-log-analytics-query-refresh.json"
+# Power BI publishes its REST swagger in Microsoft's .NET SDK repository.
+"$binary" discover power-bi --output "$staging/power-bi-inventory.json"
+power_bi_revision="$(jq -er '.revision | select(test("^[0-9a-f]{40}$"))' "$staging/power-bi-inventory.json")"
+power_bi_registry="$staging/registry/power-bi.json"
+"$binary" refresh power-bi --revision "$power_bi_revision" --path sdk/swaggers/swagger.json \
+  --service rest --max-documents 16 --output "$power_bi_registry"
+validate_catalog "$power_bi_registry" "$power_bi_revision" sdk/swaggers/swagger.json power-bi microsoft/PowerBI-CSharp sdk/swaggers
+"$binary" --registry "$power_bi_registry" api stats > "$staging/manifests/power-bi-stats.json"
+jq -e '.schemas["x-junction-refresh"]' "$power_bi_registry" > "$staging/manifests/power-bi-refresh.json"
+# APIs without official OpenAPI are extracted from Microsoft Learn reference
+# pages listed in each product's toc.json, with a SHA-256 receipt per page.
+docs_registries=()
+for docs_source in defender defender-endpoint defender-cloud-apps power-platform office-365-management; do
+  docs_registry="$staging/registry/${docs_source}.json"
+  "$binary" refresh "$docs_source" --output "$docs_registry"
+  upstream="$(jq -er --arg id "$docs_source" '.sources[] | select(.id == $id) | .upstream' <("$binary" sources))"
+  jq -e --arg source "$docs_source" --arg upstream "$upstream" '
+    (.operations | type == "array" and length > 0) and
+    (.schemas["x-junction-refresh"] |
+      .kind == "documentation" and (.revision | test("^[0-9a-f]{64}$")) and
+      (.documents | type == "array" and length > 0 and length == (map(.receipt.path) | unique | length)) and
+      all(.documents[]; .status == "imported" and .receipt.source == $source and
+        (.receipt.upstream | startswith($upstream)) and
+        (.receipt.sha256 | test("^[0-9a-f]{64}$")) and
+        (.receipt.bytes | type == "number" and . > 0 and . <= 4194304)))
+  ' "$docs_registry" >/dev/null
+  "$binary" --registry "$docs_registry" api stats > "$staging/manifests/${docs_source}-stats.json"
+  jq -e '.schemas["x-junction-refresh"]' "$docs_registry" > "$staging/manifests/${docs_source}-refresh.json"
+  docs_registries+=("$docs_registry")
+done
 # Fabric Platform has an independent immutable Microsoft repository revision.
 "$binary" discover fabric --output "$staging/fabric-inventory.json"
 fabric_revision="$(jq -er '.revision | select(test("^[0-9a-f]{40}$"))' "$staging/fabric-inventory.json")"
@@ -273,7 +315,7 @@ done < generators/graph/common-schema-names.txt
 jq -e '.openapi == "3.1.1" and (.info.version | type == "string") and (.paths | type == "object")' \
   "$staging/manifests/junction-openapi.json" >/dev/null
 # Publish only after every refresh and validation succeeds. Beta stays opt-in.
-"$binary" merge "$staging/registry/graph-v1.0.json" "$devops_registry" "$resources_registry" "$compute_registry" "$sentinel_registry" "$purview_registry" "$cost_management_registry" "${monitor_registries[@]}" "${resource_graph_registries[@]}" "${arm_registries[@]}" "$fabric_registry" "$fabric_admin_registry" "${fabric_workload_registries[@]}" \
+"$binary" merge "$staging/registry/graph-v1.0.json" "$devops_registry" "$resources_registry" "$compute_registry" "$sentinel_registry" "$purview_registry" "$cost_management_registry" "${monitor_registries[@]}" "${resource_graph_registries[@]}" "${arm_registries[@]}" "$log_query_registry" "$power_bi_registry" "${docs_registries[@]}" "$fabric_registry" "$fabric_admin_registry" "${fabric_workload_registries[@]}" \
   --output "$staging/registry/operations.json"
 "$binary" --registry "$staging/registry/operations.json" api stats > "$staging/manifests/operations-stats.json"
 cp "$staging/registry/"*.json generated/registry/

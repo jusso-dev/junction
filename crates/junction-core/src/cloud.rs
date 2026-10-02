@@ -21,6 +21,10 @@ pub enum CloudService {
     DefenderEndpoint,
     AzureDevops,
     Fabric,
+    PowerPlatform,
+    PowerBi,
+    LogAnalytics,
+    Office365Management,
 }
 #[derive(Debug, Clone, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
@@ -41,6 +45,14 @@ pub struct CloudEndpoints {
     pub azure_devops: Option<ServiceEndpoint>,
     #[serde(default)]
     pub fabric: Option<ServiceEndpoint>,
+    #[serde(default)]
+    pub power_platform: Option<ServiceEndpoint>,
+    #[serde(default)]
+    pub power_bi: Option<ServiceEndpoint>,
+    #[serde(default)]
+    pub log_analytics: Option<ServiceEndpoint>,
+    #[serde(default)]
+    pub office365_management: Option<ServiceEndpoint>,
     pub storage_suffix: Option<String>,
     pub key_vault_suffix: Option<String>,
 }
@@ -129,6 +141,59 @@ impl MicrosoftCloud {
                 None
             },
             key_vault_suffix: Some(vault.into()),
+            power_platform: if self == Self::Public {
+                service(
+                    "https://api.powerplatform.com",
+                    Some("https://api.powerplatform.com"),
+                )
+            } else {
+                None
+            },
+            power_bi: match self {
+                Self::Public => service(
+                    "https://api.powerbi.com",
+                    Some("https://analysis.windows.net/powerbi/api"),
+                ),
+                Self::UsGovernment => service(
+                    "https://api.powerbigov.us",
+                    Some("https://analysis.usgovcloudapi.net/powerbi/api"),
+                ),
+                Self::China => service(
+                    "https://api.powerbi.cn",
+                    Some("https://analysis.chinacloudapi.cn/powerbi/api"),
+                ),
+                _ => None,
+            },
+            log_analytics: match self {
+                Self::Public => service(
+                    "https://api.loganalytics.io",
+                    Some("https://api.loganalytics.io"),
+                ),
+                Self::UsGovernment | Self::UsGovernmentDod => service(
+                    "https://api.loganalytics.us",
+                    Some("https://api.loganalytics.us"),
+                ),
+                Self::China => service(
+                    "https://api.loganalytics.azure.cn",
+                    Some("https://api.loganalytics.azure.cn"),
+                ),
+                Self::Custom => None,
+            },
+            office365_management: match self {
+                Self::Public => service(
+                    "https://manage.office.com",
+                    Some("https://manage.office.com"),
+                ),
+                Self::UsGovernment => service(
+                    "https://manage.office365.us",
+                    Some("https://manage.office365.us"),
+                ),
+                Self::UsGovernmentDod => service(
+                    "https://manage.protection.apps.mil",
+                    Some("https://manage.protection.apps.mil"),
+                ),
+                _ => None,
+            },
         })
     }
 }
@@ -142,6 +207,10 @@ impl CloudEndpoints {
             &self.defender_endpoint,
             &self.azure_devops,
             &self.fabric,
+            &self.power_platform,
+            &self.power_bi,
+            &self.log_analytics,
+            &self.office365_management,
         ]
         .into_iter()
         .flatten()
@@ -187,6 +256,10 @@ impl CloudEndpoints {
             CloudService::DefenderEndpoint => &self.defender_endpoint,
             CloudService::AzureDevops => &self.azure_devops,
             CloudService::Fabric => &self.fabric,
+            CloudService::PowerPlatform => &self.power_platform,
+            CloudService::PowerBi => &self.power_bi,
+            CloudService::LogAnalytics => &self.log_analytics,
+            CloudService::Office365Management => &self.office365_management,
         }
         .as_ref()
         .ok_or_else(|| anyhow::anyhow!("service unavailable in configured cloud"))
@@ -314,6 +387,46 @@ mod tests {
         assert!(invalid.validate().is_err());
     }
     use super::*;
+    #[test]
+    fn data_plane_services_map_endpoints_and_audiences() {
+        let public = MicrosoftCloud::Public.endpoints().unwrap();
+        for (service, upstream, audience) in [
+            (
+                CloudService::PowerPlatform,
+                "https://api.powerplatform.com/",
+                "https://api.powerplatform.com",
+            ),
+            (
+                CloudService::PowerBi,
+                "https://api.powerbi.com/",
+                "https://analysis.windows.net/powerbi/api",
+            ),
+            (
+                CloudService::LogAnalytics,
+                "https://api.loganalytics.io/v1",
+                "https://api.loganalytics.io",
+            ),
+            (
+                CloudService::Office365Management,
+                "https://manage.office.com/",
+                "https://manage.office.com",
+            ),
+        ] {
+            let target = public.resolve(service, upstream).unwrap();
+            assert_eq!(target.audience.as_deref(), Some(audience));
+            assert!(
+                public
+                    .resolve(service, "https://graph.microsoft.com/")
+                    .is_err()
+            );
+        }
+        let government = MicrosoftCloud::UsGovernment.endpoints().unwrap();
+        let target = government
+            .resolve(CloudService::LogAnalytics, "https://api.loganalytics.io/v1")
+            .unwrap();
+        assert_eq!(target.endpoint, "https://api.loganalytics.us/v1");
+        assert!(government.target(CloudService::PowerPlatform).is_err());
+    }
     #[test]
     fn sovereign_mapping_preserves_version_paths_and_audience_separation() {
         for (cloud, host) in [

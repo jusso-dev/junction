@@ -1,0 +1,27 @@
+{
+  "documents": [
+    {
+      "receipt": {
+        "bytes": 39264,
+        "path": "office-365-management-activity-api-reference",
+        "sha256": "24070380587487a4cb9bf9a689c35b6fd93118fcfa6a9c6b55f4445096cc6845",
+        "source": "office-365-management",
+        "upstream": "https://learn.microsoft.com/en-us/office/office-365-management-api/office-365-management-activity-api-reference"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 26115,
+        "path": "office-365-service-communications-api-reference",
+        "sha256": "3d521c71116737c16c85fe34007349100f70064efa0389079e7a7341973cb4ab",
+        "source": "office-365-management",
+        "upstream": "https://learn.microsoft.com/en-us/office/office-365-management-api/office-365-service-communications-api-reference"
+      },
+      "status": "imported"
+    }
+  ],
+  "imported": 2,
+  "kind": "documentation",
+  "revision": "fb3088e2f1f1586c58d828739f890fa9f4a3307c0fdd4b011701e1768cf7e470"
+}

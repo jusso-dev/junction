@@ -626,6 +626,9 @@ fn swagger_body_and_parameter_serialization_are_normalized() {
             .pointer("/content/application~1json-patch+json/schema")
             .is_some()
     );
+    let mut unspecified = spec.clone();
+    unspecified["consumes"] = json!([]);
+    assert!(ingest(&unspecified, "azure", "items", "official").is_ok());
     let mut invalid = spec;
     for media in [
         json!(["application/xml"]),

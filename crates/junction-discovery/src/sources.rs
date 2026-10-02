@@ -169,6 +169,11 @@ mod tests {
         .unwrap();
         for required in [
             "azure",
+            "azure-log-analytics-query",
+            "defender-endpoint",
+            "defender-cloud-apps",
+            "office-365-management",
+            "power-bi",
             "azure-arc",
             "azure-lighthouse",
             "azure-log-analytics",

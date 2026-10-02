@@ -1,8 +1,9 @@
 id = "power-platform"
 product = "power-platform"
 source_type = "documentation"
-upstream = "https://learn.microsoft.com/en-us/rest/api/power-platform/"
-paths = []
+# Microsoft Learn reference pages (Markdown via Accept: text/markdown) listed in toc.json.
+upstream = "https://learn.microsoft.com/en-us/rest/api/"
+paths = ["power-platform"]
 authority = "microsoft"
 clouds = ["public"]
-enabled = false
+enabled = true

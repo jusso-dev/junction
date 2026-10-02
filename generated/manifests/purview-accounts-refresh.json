@@ -6,10 +6,10 @@
       "receipt": {
         "bytes": 78285,
         "path": "specification/purview/resource-manager/Microsoft.Purview/Purview/stable/2021-12-01/purview.json",
-        "revision": "80b3f7b9bdd7757783cfa8c35f06a299bd5dedad",
+        "revision": "b7bfb61c524e3498b97622af39884fa1323eb7d4",
         "sha256": "525d36b9e062b9c96a710a409d8c638dc77f4b082e3e166e9f4b5c07e9eef7f8",
         "source": "purview",
-        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/80b3f7b9bdd7757783cfa8c35f06a299bd5dedad/specification/purview/resource-manager/Microsoft.Purview/Purview/stable/2021-12-01/purview.json"
+        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/b7bfb61c524e3498b97622af39884fa1323eb7d4/specification/purview/resource-manager/Microsoft.Purview/Purview/stable/2021-12-01/purview.json"
       },
       "status": "imported"
     }
@@ -21,11 +21,11 @@
         "blob_sha": "41346bd8af393fc182813cfe05600174291358f9",
         "bytes": 78285,
         "path": "specification/purview/resource-manager/Microsoft.Purview/Purview/stable/2021-12-01/purview.json",
-        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/80b3f7b9bdd7757783cfa8c35f06a299bd5dedad/specification/purview/resource-manager/Microsoft.Purview/Purview/stable/2021-12-01/purview.json"
+        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/b7bfb61c524e3498b97622af39884fa1323eb7d4/specification/purview/resource-manager/Microsoft.Purview/Purview/stable/2021-12-01/purview.json"
       }
     ],
-    "revision": "80b3f7b9bdd7757783cfa8c35f06a299bd5dedad",
+    "revision": "b7bfb61c524e3498b97622af39884fa1323eb7d4",
     "source": "purview",
-    "tree_sha": "80b3f7b9bdd7757783cfa8c35f06a299bd5dedad"
+    "tree_sha": "b7bfb61c524e3498b97622af39884fa1323eb7d4"
   }
 }

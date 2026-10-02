@@ -197,7 +197,7 @@ jobs:
             git push origin "refs/tags/${tag}"
           fi
           cat > release-notes.md <<'NOTES'
-          Daily Rust binaries and official Microsoft endpoint catalogs: Graph v1.0 (beta opt-in), Azure DevOps Core, Azure Resources, Compute, Monitor, Resource Graph, Cost Management, Log Analytics, Arc, Lighthouse, Sentinel, Purview, Defender for Cloud and Fabric.
+          Daily Rust binaries and official Microsoft endpoint catalogs: Graph v1.0 (beta opt-in) with M365/Entra/Intune aliases, Azure Resource Manager (Resources, Compute, Monitor, Resource Graph, Cost Management, Log Analytics, Arc, Lighthouse), Log Analytics query, Sentinel, Purview, Defender for Cloud/Endpoint/XDR/Cloud Apps, Power Platform, Power BI, Fabric, Office 365 Management Activity and Azure DevOps Core.
           Includes generated common Graph Rust types, source revision receipts and SHA-256 archive checksums.
           These are prerelease builds: the full Junction specification remains in development.
           Extract the archive and run Junction from its root to load the bundled default registry.

@@ -44,6 +44,20 @@ while (( $# )); do
     *) if [[ "$command" == 'merge' ]]; then merge_inputs+=("$1"); fi; shift ;;
   esac
 done
+if [[ "$command" == 'sources' ]]; then
+  jq -n '{sources:[{id:"defender",upstream:"https://learn.microsoft.com/en-us/defender-xdr/"},{id:"defender-endpoint",upstream:"https://learn.microsoft.com/en-us/defender-endpoint/"},{id:"defender-cloud-apps",upstream:"https://learn.microsoft.com/en-us/defender-cloud-apps/"},{id:"power-platform",upstream:"https://learn.microsoft.com/en-us/rest/api/"},{id:"office-365-management",upstream:"https://learn.microsoft.com/en-us/office/office-365-management-api/"}]}'
+  exit
+fi
+if [[ "$command" == 'refresh' && "$source" =~ ^(defender|defender-endpoint|defender-cloud-apps|power-platform|office-365-management)$ ]]; then
+  [[ -z "$revision" && -z "$path" ]]
+  if [[ "${FAIL_DOCS:-}" == "$source" ]]; then exit 1; fi
+  upstream="$(jq -nr --arg id "$source" '{"defender":"https://learn.microsoft.com/en-us/defender-xdr/","defender-endpoint":"https://learn.microsoft.com/en-us/defender-endpoint/","defender-cloud-apps":"https://learn.microsoft.com/en-us/defender-cloud-apps/","power-platform":"https://learn.microsoft.com/en-us/rest/api/","office-365-management":"https://learn.microsoft.com/en-us/office/office-365-management-api/"}[$id]')"
+  if [[ "${FOREIGN_DOCS:-}" == "$source" ]]; then upstream='https://example.com/'; fi
+  jq -n --arg source "$source" --arg upstream "$upstream" \
+    '{operations:[{id:("docs." + ($source | gsub("-";"_")) + ".items.list")}],schemas:{"x-junction-refresh":{imported:1,kind:"documentation",revision:("c" * 64),documents:[{status:"imported",receipt:{source:$source,upstream:($upstream + "api/page"),path:"api/page",sha256:("d" * 64),bytes:10}}]}}}' > "$output"
+  if [[ "${EMPTY_DOCS:-}" == "$source" ]]; then jq '.operations = []' "$output" > "$output.changed"; mv "$output.changed" "$output"; fi
+  exit
+fi
 if [[ "$command" == 'openapi' ]]; then
   if [[ "${FAIL_OPENAPI:-0}" == '1' ]]; then exit 1; fi
   if [[ "${INVALID_OPENAPI:-0}" == '1' ]]; then echo '{}' > "$output"; exit; fi
@@ -85,6 +99,12 @@ elif [[ "$command" == 'discover' ]]; then
     jq -n --arg scope "$scope" --arg names "$names" '{revision:("a" * 40),documents:([$names | split(" ")[] as $name | ("stable/2020-01-01/" + $name + ".json"), ("stable/2025-01-01/" + $name + ".json"), ("preview/2099-01-01-preview/" + $name + ".json"), ("stable/2099-01-01/examples/" + $name + ".json")] | map({path:($scope + "/" + .)}))}' > "$output"
     if [[ "${NO_STABLE_ARM:-}" == "$source" ]]; then jq '.documents = []' "$output" > "$output.changed"; mv "$output.changed" "$output"; fi
     if [[ "${WRONG_ARM_INVENTORY:-}" == "$source" ]]; then jq '.revision = ("b" * 40)' "$output" > "$output.changed"; mv "$output.changed" "$output"; fi
+  elif [[ "$source" == 'azure-log-analytics-query' ]]; then
+    [[ "$revision" == 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' ]]
+    jq -n '{revision:("a" * 40),documents:[{path:"specification/monitor/data-plane/OperationalInsights/stable/v1/OperationalInsights.json"},{path:"specification/common-types/data-plane/v1/types.json"}]}' > "$output"
+    if [[ "${NO_LOG_QUERY:-0}" == '1' ]]; then jq '.documents = []' "$output" > "$output.changed"; mv "$output.changed" "$output"; fi
+  elif [[ "$source" == 'power-bi' ]]; then
+    jq -n '{revision:("e" * 40),documents:[{path:"sdk/swaggers/swagger.json"}]}' > "$output"
   elif [[ "$source" == 'azure-cost-management' ]]; then
     [[ "$revision" == 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' ]]
     jq -n '{revision:("a" * 40),documents:(["stable/2025-03-01/openapi.json","stable/2026-06-01/openapi.json","preview/2099-01-01-preview/openapi.json"] | map({path:("specification/cost-management/resource-manager/Microsoft.CostManagement/CostManagement/" + .)}))}' > "$output"
@@ -118,7 +138,8 @@ elif [[ "$command" == 'discover' ]]; then
     echo '{"revision":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}' > "$output"
   fi
 else
-  [[ "$revision" == 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' ]]
+  if [[ "$source" == 'power-bi' ]]; then [[ "$revision" == 'eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee' ]]; else [[ "$revision" == 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' ]]; fi
+  if [[ "${FAIL_POWER_BI:-0}" == '1' && "$source" == 'power-bi' ]]; then exit 1; fi
   if [[ "${FAIL_BETA:-0}" == '1' && "$path" == 'openapi/beta/openapi.yaml' ]]; then exit 1; fi
   if [[ "${FAIL_DEVOPS:-0}" == '1' && "$path" == 'specification/core/7.1/core.json' ]]; then exit 1; fi
   if [[ "${FAIL_MONITOR:-0}" == '1' && "$source" == 'azure-monitor' ]]; then exit 1; fi
@@ -130,11 +151,12 @@ else
   case "$source" in
     graph) repository='microsoftgraph/msgraph-metadata' ;;
     fabric) repository='microsoft/fabric-rest-api-specs' ;;
+    power-bi) repository='microsoft/PowerBI-CSharp' ;;
     azure-devops) repository='MicrosoftDocs/vsts-rest-api-specs' ;;
     *) repository='Azure/azure-rest-api-specs' ;;
   esac
   jq -n --arg revision "$revision" --arg path "$path" --arg source "$source" --arg repository "$repository" \
-    '{operations:[{id:(if ($path | startswith("platform/")) then "fabric.platform.workspaces.list" elif ($path | startswith("admin/")) then "fabric.admin.tenants.list" elif ($path | startswith("lakehouse/")) then "fabric.lakehouse.items.list" elif ($path | startswith("notebook/")) then "fabric.notebook.items.list" elif ($path | startswith("specification/cost-management/")) then "azure.cost_management.query.usage" elif ($path | startswith("specification/resourcegraph/")) then (if ($path | endswith("/resourcegraph.json")) then "azure.resource_graph.resources.query" else "azure.resource_graph.graph_queries.list" end) elif ($path | startswith("specification/monitor/")) then (if ($path | test("/metrics(_API)?\\.json$")) then "azure.monitor.metrics.list" elif ($path | endswith("/activityLogAlerts_API.json")) then "azure.monitor.activity_log_alerts.list" elif ($path | test("/metricAlert(_API)?\\.json$")) then "azure.monitor.metric_alerts.list" elif ($path | endswith("/scheduledQueryRule_API.json")) then "azure.monitor.scheduled_query_rules.list" else "azure.monitor.activity_logs.list" end) elif ($path | startswith("specification/operationalinsights/")) then "azure.log_analytics.workspaces.list" elif ($path | startswith("specification/hybridcompute/")) then "azure.arc.machines.list" elif ($path | startswith("specification/managedservices/")) then "azure.lighthouse.registration_definitions.list" elif ($path | startswith("specification/security/")) then ("defender.cloud." + ($path | capture("/(?<name>[A-Za-z]+)\\.json$").name | ascii_downcase) + ".list") elif ($path | startswith("specification/compute/")) then "azure.compute.virtual_machines.list" elif ($path | startswith("specification/securityinsights/")) then "sentinel.securityinsights.incidents.list" elif ($path | startswith("specification/purview/")) then "purview.accounts.accounts.list" elif ($path | startswith("specification/resources/")) then "azure.resources.resource_groups.list" elif ($path | startswith("specification/")) then "azure_devops.core.projects.list" else "graph.users.list" end)}],schemas:{canonical:{"#/components/schemas/hash.microsoft.graph.emailAddress":{},"#/components/schemas/hash.microsoft.graph.recipient":{},"#/components/schemas/hash.microsoft.graph.phone":{},"#/components/schemas/hash.microsoft.graph.dateTimeTimeZone":{}},"x-junction-refresh":{imported:1,documents:[{receipt:{revision:$revision,path:$path,source:$source,upstream:("https://raw.githubusercontent.com/" + $repository + "/" + $revision + "/" + $path),sha256:("a" * 64),bytes:123},status:"imported"}]}}}' > "$output"
+    '{operations:[{id:(if ($path | startswith("platform/")) then "fabric.platform.workspaces.list" elif ($path | startswith("admin/")) then "fabric.admin.tenants.list" elif ($path | startswith("lakehouse/")) then "fabric.lakehouse.items.list" elif ($path | startswith("notebook/")) then "fabric.notebook.items.list" elif ($path | startswith("specification/cost-management/")) then "azure.cost_management.query.usage" elif ($path | startswith("specification/resourcegraph/")) then (if ($path | endswith("/resourcegraph.json")) then "azure.resource_graph.resources.query" else "azure.resource_graph.graph_queries.list" end) elif ($path | startswith("specification/monitor/data-plane/")) then "azure.log_analytics_query.query.execute" elif ($path | startswith("specification/monitor/")) then (if ($path | test("/metrics(_API)?\\.json$")) then "azure.monitor.metrics.list" elif ($path | endswith("/activityLogAlerts_API.json")) then "azure.monitor.activity_log_alerts.list" elif ($path | test("/metricAlert(_API)?\\.json$")) then "azure.monitor.metric_alerts.list" elif ($path | endswith("/scheduledQueryRule_API.json")) then "azure.monitor.scheduled_query_rules.list" else "azure.monitor.activity_logs.list" end) elif ($path | startswith("sdk/swaggers/")) then "power_bi.rest.groups.list" elif ($path | startswith("specification/operationalinsights/")) then "azure.log_analytics.workspaces.list" elif ($path | startswith("specification/hybridcompute/")) then "azure.arc.machines.list" elif ($path | startswith("specification/managedservices/")) then "azure.lighthouse.registration_definitions.list" elif ($path | startswith("specification/security/")) then ("defender.cloud." + ($path | capture("/(?<name>[A-Za-z]+)\\.json$").name | ascii_downcase) + ".list") elif ($path | startswith("specification/compute/")) then "azure.compute.virtual_machines.list" elif ($path | startswith("specification/securityinsights/")) then "sentinel.securityinsights.incidents.list" elif ($path | startswith("specification/purview/")) then "purview.accounts.accounts.list" elif ($path | startswith("specification/resources/")) then "azure.resources.resource_groups.list" elif ($path | startswith("specification/")) then "azure_devops.core.projects.list" else "graph.users.list" end)}],schemas:{canonical:{"#/components/schemas/hash.microsoft.graph.emailAddress":{},"#/components/schemas/hash.microsoft.graph.recipient":{},"#/components/schemas/hash.microsoft.graph.phone":{},"#/components/schemas/hash.microsoft.graph.dateTimeTimeZone":{}},"x-junction-refresh":{imported:1,documents:[{receipt:{revision:$revision,path:$path,source:$source,upstream:("https://raw.githubusercontent.com/" + $repository + "/" + $revision + "/" + $path),sha256:("a" * 64),bytes:123},status:"imported"}]}}}' > "$output"
   if [[ "$source" == 'azure-compute' ]]; then
     if [[ -n "${BAD_RECEIPT_FIELD:-}" ]]; then
       jq --arg field "$BAD_RECEIPT_FIELD" --argjson value "${BAD_RECEIPT_VALUE:-null}" '.schemas["x-junction-refresh"].documents[0].receipt[$field] = $value' "$output" > "$output.changed"
@@ -266,9 +288,9 @@ MOCK
 chmod +x "$test_directory/mock-junction"
 export JUNCTION_BINARY="$test_directory/mock-junction"
 bash "$test_directory/scripts/update-catalogs.sh"
-[[ "$(wc -l < "$test_directory/calls.txt" | tr -d ' ')" == '70' ]]
-jq -e '.operations | length == 25' "$test_directory/generated/registry/operations.json" >/dev/null
-jq -e '[.operations[].id] | sort == ["azure.arc.machines.list", "azure.compute.virtual_machines.list", "azure.cost_management.query.usage", "azure.lighthouse.registration_definitions.list", "azure.log_analytics.workspaces.list", "azure.monitor.activity_log_alerts.list", "azure.monitor.activity_logs.list", "azure.monitor.metric_alerts.list", "azure.monitor.metrics.list", "azure.monitor.scheduled_query_rules.list", "azure.resource_graph.graph_queries.list", "azure.resource_graph.resources.query", "azure.resources.resource_groups.list", "azure_devops.core.projects.list", "defender.cloud.alerts.list", "defender.cloud.assessments.list", "defender.cloud.pricings.list", "defender.cloud.securescore.list", "fabric.admin.tenants.list", "fabric.lakehouse.items.list", "fabric.notebook.items.list", "fabric.platform.workspaces.list", "graph.users.list", "purview.accounts.accounts.list", "sentinel.securityinsights.incidents.list"]' "$test_directory/generated/registry/operations.json" >/dev/null
+[[ "$(wc -l < "$test_directory/calls.txt" | tr -d ' ')" == '91' ]]
+jq -e '.operations | length == 32' "$test_directory/generated/registry/operations.json" >/dev/null
+jq -e '[.operations[].id] | sort == ["azure.arc.machines.list", "azure.compute.virtual_machines.list", "azure.cost_management.query.usage", "azure.lighthouse.registration_definitions.list", "azure.log_analytics.workspaces.list", "azure.log_analytics_query.query.execute", "azure.monitor.activity_log_alerts.list", "azure.monitor.activity_logs.list", "azure.monitor.metric_alerts.list", "azure.monitor.metrics.list", "azure.monitor.scheduled_query_rules.list", "azure.resource_graph.graph_queries.list", "azure.resource_graph.resources.query", "azure.resources.resource_groups.list", "azure_devops.core.projects.list", "defender.cloud.alerts.list", "defender.cloud.assessments.list", "defender.cloud.pricings.list", "defender.cloud.securescore.list", "docs.defender.items.list", "docs.defender_cloud_apps.items.list", "docs.defender_endpoint.items.list", "docs.office_365_management.items.list", "docs.power_platform.items.list", "fabric.admin.tenants.list", "fabric.lakehouse.items.list", "fabric.notebook.items.list", "fabric.platform.workspaces.list", "graph.users.list", "power_bi.rest.groups.list", "purview.accounts.accounts.list", "sentinel.securityinsights.incidents.list"]' "$test_directory/generated/registry/operations.json" >/dev/null
 [[ -s "$test_directory/generated/manifests/azure-devops-core-refresh.json" ]]
 jq -e '.documents[0].receipt.path == "specification/resources/resource-manager/Microsoft.Resources/resources/stable/2021-04-01/resources.json"' "$test_directory/generated/manifests/azure-resources-refresh.json" >/dev/null
 jq -e '.revision == "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"' "$test_directory/generated/manifests/graph-beta-source.json" >/dev/null
@@ -341,6 +363,22 @@ for arm_source in azure-log-analytics azure-arc azure-lighthouse defender-for-cl
   for bad_path in specification/storage/resource-manager/private.json specification/common-types/data-plane/v1/types.json specification/security/../storage/private.json; do
     if BAD_ARM_DEPENDENCY_SOURCE="$arm_source" BAD_ARM_DEPENDENCY_PATH="$bad_path" bash "$test_directory/scripts/update-catalogs.sh"; then
       echo "Expected $arm_source dependency $bad_path to abort publication." >&2
+      exit 1
+    fi
+    cmp "$test_directory/previous.json" "$test_directory/generated/registry/operations.json"
+  done
+done
+for failure in FAIL_POWER_BI NO_LOG_QUERY; do
+  if env "$failure=1" bash "$test_directory/scripts/update-catalogs.sh"; then
+    echo "Expected $failure to abort publication." >&2
+    exit 1
+  fi
+  cmp "$test_directory/previous.json" "$test_directory/generated/registry/operations.json"
+done
+for docs_source in defender defender-endpoint defender-cloud-apps power-platform office-365-management; do
+  for failure in FAIL_DOCS EMPTY_DOCS FOREIGN_DOCS; do
+    if env "$failure=$docs_source" bash "$test_directory/scripts/update-catalogs.sh"; then
+      echo "Expected $failure for $docs_source to abort publication." >&2
       exit 1
     fi
     cmp "$test_directory/previous.json" "$test_directory/generated/registry/operations.json"
@@ -445,4 +483,4 @@ echo 'Catalog refresh orchestration passed.'
 LEGACY_MONITOR_ONLY=1 bash "$test_directory/scripts/update-catalogs.sh"
 jq -e '.documents[0].receipt.path == "specification/monitor/resource-manager/Microsoft.Insights/Insights/stable/2021-05-01/metrics_API.json"' "$test_directory/generated/manifests/azure-monitor-metrics-refresh.json" >/dev/null
 jq -e '.documents[0].receipt.path == "specification/monitor/resource-manager/Microsoft.Insights/Insights/stable/2018-03-01/metricAlert_API.json"' "$test_directory/generated/manifests/azure-monitor-metricAlert-refresh.json" >/dev/null
-jq -e '.operations | length == 25' "$test_directory/generated/registry/operations.json" >/dev/null
+jq -e '.operations | length == 32' "$test_directory/generated/registry/operations.json" >/dev/null

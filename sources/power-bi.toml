@@ -1,0 +1,9 @@
+id = "power-bi"
+product = "power-bi"
+source_type = "open_api"
+# Official Power BI REST swagger used to generate Microsoft's .NET SDK.
+upstream = "https://github.com/microsoft/PowerBI-CSharp"
+paths = ["sdk/swaggers"]
+authority = "microsoft"
+clouds = ["public"]
+enabled = true

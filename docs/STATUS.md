@@ -22,6 +22,28 @@ The complete discovery suite passes 66 tests with its single socket-dependent
 download test filtered under the sandbox; changed-crate Clippy and workspace
 formatting checks pass.
 
+## Coverage update (2026-10-02)
+
+A further live refresh published 19,462 default operations across 10 products.
+New sources:
+
+- Defender for Endpoint (100), Defender XDR (4), Defender for Cloud Apps (29),
+  Power Platform (214) and Office 365 Management Activity (6) from Microsoft
+  Learn reference pages through the documentation adapter
+  (`crates/junction-discovery/src/learn.rs`);
+- Power BI (287) from Microsoft's PowerBI-CSharp swagger;
+- Log Analytics query data plane (7) from azure-rest-api-specs.
+
+Product aliases map Intune, Windows 365, Teams, SharePoint, OneDrive, Planner,
+Outlook/Exchange, Entra ID, Purview audit/eDiscovery/labels and Graph-based
+Defender capabilities onto canonical Graph operations; every alias resolves to
+at least one operation in the live catalog. Cloud contexts gained Power
+Platform, Power BI, Log Analytics and Office 365 Management endpoints and
+audiences.
+
+Documentation-derived operations validate documented request inputs only;
+response schemas are untyped JSON. Live tenant execution remains unverified.
+
 ## Current evidence (2026-10-01)
 
 A live run of `scripts/update-catalogs.sh` against official upstream

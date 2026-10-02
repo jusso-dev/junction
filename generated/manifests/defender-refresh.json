@@ -1,0 +1,147 @@
+{
+  "documents": [
+    {
+      "receipt": {
+        "bytes": 5086,
+        "path": "api-access",
+        "sha256": "d2465b3b492551258f3b942930be6a85ed87c6dcf4c4f883236957284f563cdb",
+        "source": "defender",
+        "upstream": "https://learn.microsoft.com/en-us/defender-xdr/api-access"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 8251,
+        "path": "api-advanced-hunting",
+        "sha256": "bd37f121523e1c8447b5621094190874d57b4c1726d78c683fc7c56c39ec208a",
+        "source": "defender",
+        "upstream": "https://learn.microsoft.com/en-us/defender-xdr/api-advanced-hunting"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3117,
+        "path": "api-articles",
+        "sha256": "3d75d6c616e45ebdf324946234e7c777826ceaf13dd9ec50ef26794965e4a52f",
+        "source": "defender",
+        "upstream": "https://learn.microsoft.com/en-us/defender-xdr/api-articles"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 9943,
+        "path": "api-create-app-user-context",
+        "sha256": "fd41214f49105e659e6b6abc4d0fb231b943a99b7a7b27cfd1bd1ff0aa7d136c",
+        "source": "defender",
+        "upstream": "https://learn.microsoft.com/en-us/defender-xdr/api-create-app-user-context"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 15289,
+        "path": "api-create-app-web",
+        "sha256": "75c0e190d2c632131195139ca735721ab7b85308ca9b88a8d7aa41008f3fc858",
+        "source": "defender",
+        "upstream": "https://learn.microsoft.com/en-us/defender-xdr/api-create-app-web"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 6188,
+        "path": "api-error-codes",
+        "sha256": "ef85ea361b45c0f7d856aa2446e541151e9dc088a753a781a847308b86bb1898",
+        "source": "defender",
+        "upstream": "https://learn.microsoft.com/en-us/defender-xdr/api-error-codes"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4390,
+        "path": "api-get-incident",
+        "sha256": "71bb69d7a149a09c15b75cd23de49439a2a99a25dcf351ac245ac77f44b9d88c",
+        "source": "defender",
+        "upstream": "https://learn.microsoft.com/en-us/defender-xdr/api-get-incident"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 9943,
+        "path": "api-hello-world",
+        "sha256": "303868356a62b768b911fdc6ed1061a43f92c2df3192e1696ed10c28f70544d5",
+        "source": "defender",
+        "upstream": "https://learn.microsoft.com/en-us/defender-xdr/api-hello-world"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 6717,
+        "path": "api-incident",
+        "sha256": "fd854e749038507a541a6c324aa9525cefc9d0855e4e10692531136ae6567406",
+        "source": "defender",
+        "upstream": "https://learn.microsoft.com/en-us/defender-xdr/api-incident"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 41278,
+        "path": "api-list-incidents",
+        "sha256": "37d76e6ebd21bef11a7cbebd967646afce262df474785cacc53d99f2e2eb4297",
+        "source": "defender",
+        "upstream": "https://learn.microsoft.com/en-us/defender-xdr/api-list-incidents"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 5334,
+        "path": "api-overview",
+        "sha256": "9a78bcf0f74a2b7f219e9d34c07998bcf72d57738f0426ff41ab9418e65d1eed",
+        "source": "defender",
+        "upstream": "https://learn.microsoft.com/en-us/defender-xdr/api-overview"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 16926,
+        "path": "api-partner-access",
+        "sha256": "59e928c54cba0c5b0833a4a8150cd13bd1751dc42d3af6d94baf9b3a0f873c18",
+        "source": "defender",
+        "upstream": "https://learn.microsoft.com/en-us/defender-xdr/api-partner-access"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3445,
+        "path": "api-supported",
+        "sha256": "5356452ad6719a8f43895f76f6326f3b9d8f0e8aa2aea3e8e30053edb42877cb",
+        "source": "defender",
+        "upstream": "https://learn.microsoft.com/en-us/defender-xdr/api-supported"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 6703,
+        "path": "api-update-incidents",
+        "sha256": "47681108197ec830155caa4a613f18277ffa8dfea8880c2f3b8e2ca07c14b9f7",
+        "source": "defender",
+        "upstream": "https://learn.microsoft.com/en-us/defender-xdr/api-update-incidents"
+      },
+      "status": "imported"
+    }
+  ],
+  "imported": 14,
+  "kind": "documentation",
+  "revision": "2b916080305b1c060c1dda694449f2a72c3320f80de12acc42a835539dc7bf32"
+}

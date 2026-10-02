@@ -4,7 +4,62 @@ A Rust operation runtime for Microsoft's public APIs. Junction normalizes upstre
 
 Licensed under [MIT](LICENSE). Public repository: [jusso-dev/junction](https://github.com/jusso-dev/junction). See [contributor instructions](CONTRIBUTING.md) and [automated releases](docs/RELEASING.md).
 
-The daily GitHub Actions workflow refreshes official Graph stable/beta, Azure DevOps Core, Azure Resources, Compute VM, Sentinel, Purview Accounts, Cost Management, Azure Resource Graph resource/saved queries, Monitor Metrics, Activity Logs, Activity Log Alerts, Metric Alerts and Scheduled Query Rules, Log Analytics, Azure Arc (Hybrid Compute), Azure Lighthouse, Defender for Cloud (alerts, assessments, pricings, secure score) and Fabric Platform, Admin, Lakehouse and Notebook catalogs, increments the patch version, and builds native Rust binaries for Linux, macOS, and Windows. Versioned archives and SHA-256 checksums are published as Actions artifacts and GitHub prerelease assets once the repository is published and the workflow runs successfully.
+The daily GitHub Actions workflow refreshes every catalog below from official Microsoft sources, increments the patch version, and publishes native Rust binaries for Linux, macOS and Windows as GitHub prereleases with SHA-256 checksums.
+
+## API coverage
+
+The default registry holds **19,462 operations across 10 products**, all refreshed live from official Microsoft sources. Each catalog keeps per-document receipts (repository revision or Learn page, SHA-256 and byte count) in `generated/manifests/`.
+
+| Product area | Operation IDs | Source | Operations |
+| --- | --- | --- | --- |
+| Microsoft Graph (v1.0; beta opt-in) | `graph.*` | [msgraph-metadata](https://github.com/microsoftgraph/msgraph-metadata) OpenAPI | 17,870 (beta 29,581) |
+| Microsoft 365, Entra ID, Intune, Windows 365, Teams, SharePoint, OneDrive, Planner, Outlook/Exchange | `m365.*`, `entra.*`, `intune.*`, `windows365.*` aliases over `graph.*` | Graph | see `junction api aliases` |
+| Azure Resource Manager: Resources, Compute, Monitor, Resource Graph, Cost Management, Log Analytics, Arc, Lighthouse | `azure.*` | [azure-rest-api-specs](https://github.com/Azure/azure-rest-api-specs) OpenAPI | 520 |
+| Log Analytics query (data plane) | `azure.log_analytics_query.*` | azure-rest-api-specs data-plane OpenAPI | 7 |
+| Microsoft Sentinel | `sentinel.*` | azure-rest-api-specs | 95 |
+| Microsoft Purview (accounts; audit, eDiscovery, labels via Graph) | `purview.*` | azure-rest-api-specs + Graph aliases | 26 + aliases |
+| Defender for Cloud | `defender.cloud.*` | azure-rest-api-specs | 29 |
+| Defender XDR (incidents, advanced hunting) | `defender.xdr.*`, plus `defender.incidents.*`/`defender.hunting.*` Graph aliases | Microsoft Learn reference | 4 |
+| Defender for Endpoint | `defender.endpoint.*` | Microsoft Learn reference | 100 |
+| Defender for Cloud Apps | `defender.cloud_apps.*` | Microsoft Learn reference | 29 |
+| Defender for Identity, Defender for Office 365 | `defender.identity.*`, `defender.threat_intelligence.*`, `defender.attack_simulation.*` | Graph security API aliases | aliases |
+| Power Platform | `power_platform.*` | Microsoft Learn REST reference | 214 |
+| Power BI | `power_bi.rest.*` | [PowerBI-CSharp](https://github.com/microsoft/PowerBI-CSharp) swagger | 287 |
+| Microsoft Fabric | `fabric.*` | [fabric-rest-api-specs](https://github.com/microsoft/fabric-rest-api-specs) | 256 |
+| Office 365 Management Activity API | `m365.office_365_management.*` | Microsoft Learn reference | 6 |
+| Azure DevOps Core | `azure_devops.*` | [vsts-rest-api-specs](https://github.com/MicrosoftDocs/vsts-rest-api-specs) | 19 |
+
+### Documented endpoints (Microsoft Learn)
+
+Defender for Endpoint, Defender XDR, Defender for Cloud Apps, Power Platform and the Office 365 Management Activity API publish no official OpenAPI document. For these, Junction uses the specification's last-resort documented endpoint extraction. It reads only the pages listed in each product's official Learn `toc.json` under a configured prefix (see `sources/*.toml` with `source_type = "documentation"`). Pages are fetched as Markdown (`Accept: text/markdown`), paced and retried under Learn throttling, with a SHA-256 receipt for each page.
+
+From each page Junction extracts:
+
+- the documented HTTP request templates;
+- URI/query parameters, including the OData options when the page documents OData support;
+- request-body tables, with their required fields;
+- Application/Delegated permission tables and OAuth scopes;
+- `@odata.nextLink` pagination.
+
+It then synthesizes an OpenAPI 3 document and imports it through the same normalizer as other sources. Naming, risk classification and policy therefore behave identically. Only Microsoft-operated API hosts are accepted; sample hosts such as `contoso` are ignored. Defender for Cloud Apps' tenant-specific host becomes an endpoint template (`tenant_id`, `tenant_region`).
+
+Response shapes from documentation are unvalidated JSON. Execution validates the documented request inputs.
+
+### Product aliases
+
+Intune, Windows 365, Teams, SharePoint, OneDrive, Planner, Outlook, Entra ID, Purview audit/eDiscovery/labels and the Graph-based Defender capabilities have no separate public API: their documented endpoints are Graph operations. `junction api aliases` lists stable product names that resolve to the canonical Graph operation:
+
+```sh
+junction describe intune.devices.list          # graph.device_management.managed_devices.list
+junction defender incidents list --input '{}'  # graph.security.incidents.list
+junction describe purview.audit.queries.list   # graph.security.audit_log.queries.list
+```
+
+Aliases never create or modify operations. The canonical ID, risk and policy rules (including deny patterns) apply unchanged, and a real operation ID always wins over an alias.
+
+### Cloud contexts
+
+Cloud contexts resolve endpoints and token audiences for `graph`, `arm`, `defender_xdr`, `defender_endpoint`, `azure_devops`, `fabric`, `power_platform`, `power_bi`, `log_analytics` and `office365_management`. Sovereign values are included where Microsoft documents them. Services without a documented sovereign endpoint require a custom cloud.
 
 Development status: foundational implementation. Bounded CLI/library execution, native MCP stdio serving, and authenticated local HTTP serving are implemented. Full API coverage and additional authentication flows remain in development. Do not use this version for production automation.
 
