@@ -1,5 +1,8 @@
 # Official source catalog
 
+> Sources are Microsoft's public definitions and documentation; Junction is independent of Microsoft. See [DISCLAIMER.md](../DISCLAIMER.md).
+
+
 Fabric uses the [official Microsoft Swagger repository](https://github.com/microsoft/fabric-rest-api-specs)
 with enabled Platform, Admin, Lakehouse, Notebook and common scopes. Shared
 references resolve inside those scopes at the same pinned revision. Daily refresh

@@ -22,7 +22,7 @@ fi
 mkdir -p dist
 mkdir "$package"
 cp "$binary" "$package/junction${suffix}"
-cp LICENSE README.md CONTRIBUTING.md "$package/"
+cp LICENSE README.md CONTRIBUTING.md DISCLAIMER.md "$package/"
 cp vendor/ratatui/LICENSE "$package/RATATUI-LICENSE.txt"
 cp -R generated examples sources docs overrides "$package/"
 "$binary" openapi --output "$package/generated/manifests/junction-openapi.json"

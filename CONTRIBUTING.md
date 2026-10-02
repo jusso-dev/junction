@@ -15,3 +15,5 @@ Describe the problem, the resulting behavior, and how you verified the change. K
 Endpoint imports must come from official Microsoft sources and retain revision and digest receipts. Review the [specification](docs/SPECIFICATION.md) and [implementation status](docs/IMPLEMENTATION.md) before adding an adapter. Generated registry JSON is excluded from source control; the daily release workflow builds and packages it from upstream specifications.
 
 See [automated releases](docs/RELEASING.md) for catalog refresh, versioning, binary packaging, and repository configuration. Release versions are allocated by the workflow; do not manually reuse an existing tag.
+
+Junction is independent of Microsoft. Contributions must not imply Microsoft affiliation or endorsement and must keep the [disclaimer](DISCLAIMER.md) intact.

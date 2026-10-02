@@ -1,5 +1,8 @@
 # Interactive authentication
 
+> Junction is independent and not affiliated with or endorsed by Microsoft. Use of Microsoft services is governed by Microsoft's terms; the software is provided as is, without warranty or liability. See [DISCLAIMER.md](../DISCLAIMER.md).
+
+
 Device-code CLI login currently requires macOS Keychain. The native adapter
 uses Apple's Security framework through Rust bindings. Windows and Linux native
 storage adapters remain pending; interactive login returns an error on those

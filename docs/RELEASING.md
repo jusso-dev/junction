@@ -1,5 +1,8 @@
 # Automated releases
 
+> Junction is independent and not affiliated with or endorsed by Microsoft. Use of Microsoft services is governed by Microsoft's terms; the software is provided as is, without warranty or liability. See [DISCLAIMER.md](../DISCLAIMER.md).
+
+
 The project uses the MIT license and targets the public personal repository `jusso-dev/junction`. This workspace has not yet been published to GitHub.
 
 `.github/workflows/ci.yml` checks pushes and pull requests. `daily-release.yml` runs daily at 02:17 UTC and can be started manually. Its repository guard restricts release writes to `jusso-dev/junction`. Before preparing a version and again before publishing, the workflow queries GitHub and requires a public, active, MIT-licensed repository owned by the personal `jusso-dev` user. Missing or mismatched metadata stops the release. This check does not create the repository or change its visibility. GitHub scheduling can be delayed.

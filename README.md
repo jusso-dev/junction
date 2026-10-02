@@ -1,5 +1,8 @@
 # Junction
 
+> [!IMPORTANT]
+> **Junction is an independent open-source project. It is not affiliated with, endorsed by or supported by Microsoft, and does not represent Microsoft.** It is a way to consolidate Microsoft's published APIs under one tool. All use of Microsoft services through Junction is governed by your agreements with Microsoft and Microsoft's terms of service, including the [Microsoft APIs Terms of Use](https://learn.microsoft.com/legal/microsoft-apis/terms-of-use). The software is provided "as is" under the MIT License, without warranty, and the authors accept **no liability** for its use. You are responsible for your licences, permissions, compliance and every action you or your agents take. Read the full [disclaimer](DISCLAIMER.md).
+
 A Rust operation runtime for Microsoft's public APIs. Junction normalizes upstream specifications into a versioned operation registry rather than hand-writing an SDK.
 
 Licensed under [MIT](LICENSE). Public repository: [jusso-dev/junction](https://github.com/jusso-dev/junction). See [contributor instructions](CONTRIBUTING.md) and [automated releases](docs/RELEASING.md).
@@ -73,6 +76,17 @@ runs. MCP and HTTP agents never see a prompt; they get a structured
 Cloud contexts resolve endpoints and token audiences for `graph`, `arm`, `defender_xdr`, `defender_endpoint`, `azure_devops`, `fabric`, `power_platform`, `power_bi`, `log_analytics` and `office365_management`. Sovereign values are included where Microsoft documents them. Services without a documented sovereign endpoint require a custom cloud.
 
 Development status: foundational implementation. Bounded CLI/library execution, native MCP stdio serving, and authenticated local HTTP serving are implemented. Full API coverage and additional authentication flows remain in development. Do not use this version for production automation.
+
+## Disclaimer and terms of use
+
+Junction does not represent Microsoft. Microsoft has not reviewed, approved or endorsed it, and Microsoft provides no support for it. It is a consolidation tool: it reads Microsoft's public API definitions and documentation and sends the requests you choose, with credentials you supply. It does not grant access, bypass licensing or change what any service allows.
+
+- **Microsoft's terms apply.** Every call is subject to your agreements with Microsoft, the [Microsoft APIs Terms of Use](https://learn.microsoft.com/legal/microsoft-apis/terms-of-use), your product and licensing terms, and each service's documented policies and limits.
+- **No warranty, no liability.** Junction is MIT-licensed and provided "as is". The authors and contributors are not liable for data loss, outages, charges, security incidents or any other consequence of using it, including actions taken against your tenants.
+- **You are responsible** for your licences, permissions and consents, legal and regulatory compliance, credential security, and every action performed by you, your automation or your AI agents. Junction's policies, approvals and risk labels are safeguards only. Its catalogues are generated automatically and may be wrong or out of date.
+- **Trademarks.** Microsoft product names identify the services Junction can call. They do not imply affiliation.
+
+See [DISCLAIMER.md](DISCLAIMER.md) for the full text.
 
 ## Build
 

@@ -1,5 +1,8 @@
 # Service endpoint variables
 
+> Junction is independent and not affiliated with or endorsed by Microsoft. Use of Microsoft services is governed by Microsoft's terms; the software is provided as is, without warranty or liability. See [DISCLAIMER.md](../DISCLAIMER.md).
+
+
 `junction describe <operation> --json` includes `endpoint_template` when the
 upstream definition declares a variable service URL. Its `variables` map lists
 defaults and any allowed `choices`.

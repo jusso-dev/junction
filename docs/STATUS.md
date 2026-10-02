@@ -1,5 +1,8 @@
 # Junction delivery status
 
+> Junction is independent and not affiliated with or endorsed by Microsoft. Use of Microsoft services is governed by Microsoft's terms; the software is provided as is, without warranty or liability. See [DISCLAIMER.md](../DISCLAIMER.md).
+
+
 Junction is under development. The full specification in
 [SPECIFICATION.md](SPECIFICATION.md) has not been completed. A working local
 binary and release automation are available; this is not yet a verified

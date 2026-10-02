@@ -1,5 +1,8 @@
 # Trusted approvals
 
+> Junction is independent and not affiliated with or endorsed by Microsoft. Use of Microsoft services is governed by Microsoft's terms; the software is provided as is, without warranty or liability. See [DISCLAIMER.md](../DISCLAIMER.md).
+
+
 The policy library now exposes an in-memory `ApprovalGrant` capability through
 `Policy::issue_approval` and `Policy::authorize_with_approval`. Issuance is an
 explicit trusted operator action. It is not exposed through MCP or HTTP tools,

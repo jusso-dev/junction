@@ -21,8 +21,8 @@ use std::path::PathBuf;
 #[command(
     name = "junction",
     version,
-    about = "Microsoft API operation runtime",
-    after_help = "Operations also accept hierarchical spelling: junction graph users list --input '{}'.\nUse hyphens for underscores: junction azure compute virtual-machines list.\nThe shorthand junction azure vm list resolves azure.compute.virtual_machines.list."
+    about = "Microsoft API operation runtime (independent project; not affiliated with or endorsed by Microsoft)",
+    after_help = "Operations also accept hierarchical spelling: junction graph users list --input '{}'.\nUse hyphens for underscores: junction azure compute virtual-machines list.\nThe shorthand junction azure vm list resolves azure.compute.virtual_machines.list.\n\nJunction is independent of Microsoft. Use of Microsoft services is governed by Microsoft's terms of service; the software is provided as is, without warranty or liability (see DISCLAIMER.md)."
 )]
 struct Cli {
     #[arg(long, default_value = "generated/registry/operations.json")]
