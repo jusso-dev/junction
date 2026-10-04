@@ -5,10 +5,10 @@
       "receipt": {
         "bytes": 21347,
         "path": "specification/common-types/resource-management/v3/types.json",
-        "revision": "0799fda68aab1e2c6f5f0d06f028f451b14bf0a8",
+        "revision": "c415ef063cd4c1833ecceff7f856295115d80c0d",
         "sha256": "8f69ddbcdd8f3df61a156a129e70db08b3a03f2ec710de07f30273ec27492de3",
         "source": "azure-resources",
-        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/0799fda68aab1e2c6f5f0d06f028f451b14bf0a8/specification/common-types/resource-management/v3/types.json"
+        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/c415ef063cd4c1833ecceff7f856295115d80c0d/specification/common-types/resource-management/v3/types.json"
       },
       "status": "dependency"
     }
@@ -18,10 +18,10 @@
       "receipt": {
         "bytes": 118632,
         "path": "specification/resources/resource-manager/Microsoft.Resources/resources/stable/2025-04-01/resources.json",
-        "revision": "0799fda68aab1e2c6f5f0d06f028f451b14bf0a8",
+        "revision": "c415ef063cd4c1833ecceff7f856295115d80c0d",
         "sha256": "399d827f9a8e5f82b89922f2155c2f8c34017a5764c3e2c492f743ee9a23fe62",
         "source": "azure-resources",
-        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/0799fda68aab1e2c6f5f0d06f028f451b14bf0a8/specification/resources/resource-manager/Microsoft.Resources/resources/stable/2025-04-01/resources.json"
+        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/c415ef063cd4c1833ecceff7f856295115d80c0d/specification/resources/resource-manager/Microsoft.Resources/resources/stable/2025-04-01/resources.json"
       },
       "status": "imported"
     }
@@ -33,11 +33,11 @@
         "blob_sha": "7d73f55b59a00a6848844b137735ab8ad77a80d5",
         "bytes": 118632,
         "path": "specification/resources/resource-manager/Microsoft.Resources/resources/stable/2025-04-01/resources.json",
-        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/0799fda68aab1e2c6f5f0d06f028f451b14bf0a8/specification/resources/resource-manager/Microsoft.Resources/resources/stable/2025-04-01/resources.json"
+        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/c415ef063cd4c1833ecceff7f856295115d80c0d/specification/resources/resource-manager/Microsoft.Resources/resources/stable/2025-04-01/resources.json"
       }
     ],
-    "revision": "0799fda68aab1e2c6f5f0d06f028f451b14bf0a8",
+    "revision": "c415ef063cd4c1833ecceff7f856295115d80c0d",
     "source": "azure-resources",
-    "tree_sha": "0799fda68aab1e2c6f5f0d06f028f451b14bf0a8"
+    "tree_sha": "c415ef063cd4c1833ecceff7f856295115d80c0d"
   }
 }
