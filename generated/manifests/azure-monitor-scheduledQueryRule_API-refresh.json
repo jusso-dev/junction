@@ -5,10 +5,10 @@
       "receipt": {
         "bytes": 22268,
         "path": "specification/common-types/resource-management/v2/types.json",
-        "revision": "c415ef063cd4c1833ecceff7f856295115d80c0d",
+        "revision": "abfe7853f1382c8124b23be81984196102fd9343",
         "sha256": "ccb3b6327aad7d108bdaffca3eefcd15737032ec655ca3f933300e828047d723",
         "source": "azure-monitor",
-        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/c415ef063cd4c1833ecceff7f856295115d80c0d/specification/common-types/resource-management/v2/types.json"
+        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/abfe7853f1382c8124b23be81984196102fd9343/specification/common-types/resource-management/v2/types.json"
       },
       "status": "dependency"
     },
@@ -16,10 +16,10 @@
       "receipt": {
         "bytes": 9443,
         "path": "specification/monitor/resource-manager/Microsoft.Insights/Insights/stable/2026-03-01/common-types/v2/commonMonitoringTypes.json",
-        "revision": "c415ef063cd4c1833ecceff7f856295115d80c0d",
+        "revision": "abfe7853f1382c8124b23be81984196102fd9343",
         "sha256": "ed9427b7ca942059dc06814a09d7cfb7938b6c96af6460d01e02e14b4c544544",
         "source": "azure-monitor",
-        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/c415ef063cd4c1833ecceff7f856295115d80c0d/specification/monitor/resource-manager/Microsoft.Insights/Insights/stable/2026-03-01/common-types/v2/commonMonitoringTypes.json"
+        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/abfe7853f1382c8124b23be81984196102fd9343/specification/monitor/resource-manager/Microsoft.Insights/Insights/stable/2026-03-01/common-types/v2/commonMonitoringTypes.json"
       },
       "status": "dependency"
     },
@@ -27,10 +27,10 @@
       "receipt": {
         "bytes": 18947,
         "path": "specification/common-types/resource-management/v1/types.json",
-        "revision": "c415ef063cd4c1833ecceff7f856295115d80c0d",
+        "revision": "abfe7853f1382c8124b23be81984196102fd9343",
         "sha256": "5727903ec2102686dfbda7228fd22ccad2e1f944d27d5877f6885b83d0d453de",
         "source": "azure-monitor",
-        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/c415ef063cd4c1833ecceff7f856295115d80c0d/specification/common-types/resource-management/v1/types.json"
+        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/abfe7853f1382c8124b23be81984196102fd9343/specification/common-types/resource-management/v1/types.json"
       },
       "status": "dependency"
     }
@@ -40,10 +40,10 @@
       "receipt": {
         "bytes": 30006,
         "path": "specification/monitor/resource-manager/Microsoft.Insights/Insights/stable/2026-03-01/scheduledQueryRule_API.json",
-        "revision": "c415ef063cd4c1833ecceff7f856295115d80c0d",
+        "revision": "abfe7853f1382c8124b23be81984196102fd9343",
         "sha256": "dbb905a1e7d83a733e3d81458dbbf582fe0712bff7a1806187945df0caea8b1f",
         "source": "azure-monitor",
-        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/c415ef063cd4c1833ecceff7f856295115d80c0d/specification/monitor/resource-manager/Microsoft.Insights/Insights/stable/2026-03-01/scheduledQueryRule_API.json"
+        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/abfe7853f1382c8124b23be81984196102fd9343/specification/monitor/resource-manager/Microsoft.Insights/Insights/stable/2026-03-01/scheduledQueryRule_API.json"
       },
       "status": "imported"
     }
@@ -55,11 +55,11 @@
         "blob_sha": "0803efe9904f826ea69319c0254cc6fa0a24c498",
         "bytes": 30006,
         "path": "specification/monitor/resource-manager/Microsoft.Insights/Insights/stable/2026-03-01/scheduledQueryRule_API.json",
-        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/c415ef063cd4c1833ecceff7f856295115d80c0d/specification/monitor/resource-manager/Microsoft.Insights/Insights/stable/2026-03-01/scheduledQueryRule_API.json"
+        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/abfe7853f1382c8124b23be81984196102fd9343/specification/monitor/resource-manager/Microsoft.Insights/Insights/stable/2026-03-01/scheduledQueryRule_API.json"
       }
     ],
-    "revision": "c415ef063cd4c1833ecceff7f856295115d80c0d",
+    "revision": "abfe7853f1382c8124b23be81984196102fd9343",
     "source": "azure-monitor",
-    "tree_sha": "c415ef063cd4c1833ecceff7f856295115d80c0d"
+    "tree_sha": "abfe7853f1382c8124b23be81984196102fd9343"
   }
 }
