@@ -5,10 +5,10 @@
       "receipt": {
         "bytes": 3834,
         "path": "specification/common-types/resource-management/v5/managedidentity.json",
-        "revision": "abfe7853f1382c8124b23be81984196102fd9343",
+        "revision": "0dbfc08bb2eeea34cc05dfd25c0b0a3c74672a3b",
         "sha256": "03d8098b5f3bf4ce54fc950c949baf41f80095887a5566c961baba514d080508",
         "source": "azure-key-vault",
-        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/abfe7853f1382c8124b23be81984196102fd9343/specification/common-types/resource-management/v5/managedidentity.json"
+        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/0dbfc08bb2eeea34cc05dfd25c0b0a3c74672a3b/specification/common-types/resource-management/v5/managedidentity.json"
       },
       "status": "dependency"
     },
@@ -16,10 +16,10 @@
       "receipt": {
         "bytes": 23221,
         "path": "specification/common-types/resource-management/v5/types.json",
-        "revision": "abfe7853f1382c8124b23be81984196102fd9343",
+        "revision": "0dbfc08bb2eeea34cc05dfd25c0b0a3c74672a3b",
         "sha256": "66767620b8edfbc04093c76b78d168cc59822cd9da1e726d35a9d45b73e642c1",
         "source": "azure-key-vault",
-        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/abfe7853f1382c8124b23be81984196102fd9343/specification/common-types/resource-management/v5/types.json"
+        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/0dbfc08bb2eeea34cc05dfd25c0b0a3c74672a3b/specification/common-types/resource-management/v5/types.json"
       },
       "status": "dependency"
     }
@@ -29,10 +29,10 @@
       "receipt": {
         "bytes": 201233,
         "path": "specification/keyvault/resource-manager/Microsoft.KeyVault/KeyVault/stable/2026-05-15/openapi.json",
-        "revision": "abfe7853f1382c8124b23be81984196102fd9343",
+        "revision": "0dbfc08bb2eeea34cc05dfd25c0b0a3c74672a3b",
         "sha256": "bd7abd994935675571c030ecb531d39f1eb7b83a3505a5ba8594a25847bdc07e",
         "source": "azure-key-vault",
-        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/abfe7853f1382c8124b23be81984196102fd9343/specification/keyvault/resource-manager/Microsoft.KeyVault/KeyVault/stable/2026-05-15/openapi.json"
+        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/0dbfc08bb2eeea34cc05dfd25c0b0a3c74672a3b/specification/keyvault/resource-manager/Microsoft.KeyVault/KeyVault/stable/2026-05-15/openapi.json"
       },
       "status": "imported"
     }
@@ -44,11 +44,11 @@
         "blob_sha": "05eb5318d0b486d0d5463adb4416832856a50eac",
         "bytes": 201233,
         "path": "specification/keyvault/resource-manager/Microsoft.KeyVault/KeyVault/stable/2026-05-15/openapi.json",
-        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/abfe7853f1382c8124b23be81984196102fd9343/specification/keyvault/resource-manager/Microsoft.KeyVault/KeyVault/stable/2026-05-15/openapi.json"
+        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/0dbfc08bb2eeea34cc05dfd25c0b0a3c74672a3b/specification/keyvault/resource-manager/Microsoft.KeyVault/KeyVault/stable/2026-05-15/openapi.json"
       }
     ],
-    "revision": "abfe7853f1382c8124b23be81984196102fd9343",
+    "revision": "0dbfc08bb2eeea34cc05dfd25c0b0a3c74672a3b",
     "source": "azure-key-vault",
-    "tree_sha": "abfe7853f1382c8124b23be81984196102fd9343"
+    "tree_sha": "0dbfc08bb2eeea34cc05dfd25c0b0a3c74672a3b"
   }
 }
