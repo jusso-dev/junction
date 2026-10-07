@@ -5,10 +5,10 @@
       "receipt": {
         "bytes": 3834,
         "path": "specification/common-types/resource-management/v5/managedidentity.json",
-        "revision": "0dbfc08bb2eeea34cc05dfd25c0b0a3c74672a3b",
+        "revision": "2f3878f62a5f5c28fe60d7cb27b35d1cb06a23df",
         "sha256": "03d8098b5f3bf4ce54fc950c949baf41f80095887a5566c961baba514d080508",
         "source": "azure-log-analytics",
-        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/0dbfc08bb2eeea34cc05dfd25c0b0a3c74672a3b/specification/common-types/resource-management/v5/managedidentity.json"
+        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/2f3878f62a5f5c28fe60d7cb27b35d1cb06a23df/specification/common-types/resource-management/v5/managedidentity.json"
       },
       "status": "dependency"
     },
@@ -16,10 +16,10 @@
       "receipt": {
         "bytes": 14492,
         "path": "specification/common-types/resource-management/v5/networksecurityperimeter.json",
-        "revision": "0dbfc08bb2eeea34cc05dfd25c0b0a3c74672a3b",
+        "revision": "2f3878f62a5f5c28fe60d7cb27b35d1cb06a23df",
         "sha256": "d5a9d365fa3406de8f1c1e6f193a114ffda255dffd927f482d115d0eb15e51a6",
         "source": "azure-log-analytics",
-        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/0dbfc08bb2eeea34cc05dfd25c0b0a3c74672a3b/specification/common-types/resource-management/v5/networksecurityperimeter.json"
+        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/2f3878f62a5f5c28fe60d7cb27b35d1cb06a23df/specification/common-types/resource-management/v5/networksecurityperimeter.json"
       },
       "status": "dependency"
     },
@@ -27,10 +27,10 @@
       "receipt": {
         "bytes": 23221,
         "path": "specification/common-types/resource-management/v5/types.json",
-        "revision": "0dbfc08bb2eeea34cc05dfd25c0b0a3c74672a3b",
+        "revision": "2f3878f62a5f5c28fe60d7cb27b35d1cb06a23df",
         "sha256": "66767620b8edfbc04093c76b78d168cc59822cd9da1e726d35a9d45b73e642c1",
         "source": "azure-log-analytics",
-        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/0dbfc08bb2eeea34cc05dfd25c0b0a3c74672a3b/specification/common-types/resource-management/v5/types.json"
+        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/2f3878f62a5f5c28fe60d7cb27b35d1cb06a23df/specification/common-types/resource-management/v5/types.json"
       },
       "status": "dependency"
     }
@@ -40,10 +40,10 @@
       "receipt": {
         "bytes": 306392,
         "path": "specification/operationalinsights/resource-manager/Microsoft.OperationalInsights/OperationalInsights/stable/2026-03-01/openapi.json",
-        "revision": "0dbfc08bb2eeea34cc05dfd25c0b0a3c74672a3b",
+        "revision": "2f3878f62a5f5c28fe60d7cb27b35d1cb06a23df",
         "sha256": "cc91db8813094dcc71bba6d3014c1a6b89f1d4b6529b2f10e2d4bd6ce2978d7b",
         "source": "azure-log-analytics",
-        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/0dbfc08bb2eeea34cc05dfd25c0b0a3c74672a3b/specification/operationalinsights/resource-manager/Microsoft.OperationalInsights/OperationalInsights/stable/2026-03-01/openapi.json"
+        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/2f3878f62a5f5c28fe60d7cb27b35d1cb06a23df/specification/operationalinsights/resource-manager/Microsoft.OperationalInsights/OperationalInsights/stable/2026-03-01/openapi.json"
       },
       "status": "imported"
     }
@@ -55,11 +55,11 @@
         "blob_sha": "7c5871dc3994e63f03151970009d9ffa854cee7d",
         "bytes": 306392,
         "path": "specification/operationalinsights/resource-manager/Microsoft.OperationalInsights/OperationalInsights/stable/2026-03-01/openapi.json",
-        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/0dbfc08bb2eeea34cc05dfd25c0b0a3c74672a3b/specification/operationalinsights/resource-manager/Microsoft.OperationalInsights/OperationalInsights/stable/2026-03-01/openapi.json"
+        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/2f3878f62a5f5c28fe60d7cb27b35d1cb06a23df/specification/operationalinsights/resource-manager/Microsoft.OperationalInsights/OperationalInsights/stable/2026-03-01/openapi.json"
       }
     ],
-    "revision": "0dbfc08bb2eeea34cc05dfd25c0b0a3c74672a3b",
+    "revision": "2f3878f62a5f5c28fe60d7cb27b35d1cb06a23df",
     "source": "azure-log-analytics",
-    "tree_sha": "0dbfc08bb2eeea34cc05dfd25c0b0a3c74672a3b"
+    "tree_sha": "2f3878f62a5f5c28fe60d7cb27b35d1cb06a23df"
   }
 }

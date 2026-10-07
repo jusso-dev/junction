@@ -237,7 +237,7 @@
   "info": {
     "description": "Operator-configured Microsoft API runtime. Context, credentials and policy are fixed by the host, never request input. All routes require the host's server bearer token.",
     "title": "Junction local API",
-    "version": "0.1.9"
+    "version": "0.1.10"
   },
   "openapi": "3.1.1",
   "paths": {
