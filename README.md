@@ -30,9 +30,8 @@ The default registry holds **20,081 operations across 10 products**, all refresh
 | Power BI | `power_bi.rest.*` | [PowerBI-CSharp](https://github.com/microsoft/PowerBI-CSharp) swagger | 287 |
 | Microsoft Fabric | `fabric.*` | [fabric-rest-api-specs](https://github.com/microsoft/fabric-rest-api-specs) | 256 |
 | Office 365 Management Activity API | `m365.office_365_management.*` | Microsoft Learn reference | 6 |
-| Azure DevOps Core | `azure_devops.*` | [vsts-rest-api-specs](https://github.com/MicrosoftDocs/vsts-rest-api-specs) | 19 |
 
-The legacy Office 365 Service Communications API is retired by Microsoft. Use Graph service health (`m365.service_health.*`) instead. Junction reads emitted OpenAPI, which Microsoft generates from its TypeSpec sources, rather than compiling TypeSpec itself; compiling would need Node.js and adds no operations.
+Azure DevOps Core is no longer bundled: its upstream, `MicrosoftDocs/vsts-rest-api-specs`, was removed from GitHub, so the `azure-devops` source is disabled. The legacy Office 365 Service Communications API is retired by Microsoft. Use Graph service health (`m365.service_health.*`) instead. Junction reads emitted OpenAPI, which Microsoft generates from its TypeSpec sources, rather than compiling TypeSpec itself; compiling would need Node.js and adds no operations.
 
 ### Verified against a live tenant
 
@@ -266,7 +265,7 @@ YAML parsing uses strict boolean inference and bounded catalog-sized node/event 
 
 Junction is licensed under [MIT](LICENSE). The intended public repository is `jusso-dev/junction`; repository publication must be completed before its workflows can run.
 
-The [daily release workflow](.github/workflows/daily-release.yml) refreshes official Graph v1.0/beta, Azure DevOps Core, Resources, Compute VM, Sentinel, Purview Accounts, Cost Management, Azure Resource Graph resource/saved queries, Monitor Metrics, Activity Logs, Activity Log Alerts, Metric Alerts and Scheduled Query Rules and Fabric Platform, Admin, Lakehouse and Notebook definitions at 02:17 UTC, increments the patch version, tests and builds native Rust binaries for Linux, macOS, and Windows, and publishes archives with SHA-256 checksums as workflow artifacts and GitHub prereleases. See [release instructions](docs/RELEASING.md) for packaging, installation, and coverage.
+The [daily release workflow](.github/workflows/daily-release.yml) refreshes official Graph v1.0/beta, Resources, Compute VM, Sentinel, Purview Accounts, Cost Management, Azure Resource Graph resource/saved queries, Monitor Metrics, Activity Logs, Activity Log Alerts, Metric Alerts and Scheduled Query Rules and Fabric Platform, Admin, Lakehouse and Notebook definitions at 02:17 UTC, increments the patch version, tests and builds native Rust binaries for Linux, macOS, and Windows, and publishes archives with SHA-256 checksums as workflow artifacts and GitHub prereleases. See [release instructions](docs/RELEASING.md) for packaging, installation, and coverage.
 
 ## Bounded pagination
 

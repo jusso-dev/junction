@@ -5,4 +5,4 @@ upstream = "https://github.com/MicrosoftDocs/vsts-rest-api-specs"
 paths = ["specification"]
 authority = "microsoft"
 clouds = ["public"]
-enabled = true
+enabled = false

@@ -54,16 +54,8 @@ for api_version in v1.0 beta; do
   jq -e '.schemas["x-junction-refresh"]' "$registry" > "$staging/manifests/graph-${api_version}-refresh.json"
   jq -e '.schemas["x-junction-refresh"].documents[0].receipt' "$registry" > "$staging/manifests/graph-${api_version}-source.json"
 done
-# DevOps Core has its own independently pinned Microsoft repository revision.
-"$binary" discover azure-devops --output "$staging/devops-inventory.json"
-devops_revision="$(jq -er '.revision | select(test("^[0-9a-f]{40}$"))' "$staging/devops-inventory.json")"
-devops_registry="$staging/registry/azure-devops-core.json"
-"$binary" refresh azure-devops --revision "$devops_revision" \
-  --path specification/core/7.1/core.json --service core \
-  --max-documents 16 --output "$devops_registry"
-validate_catalog "$devops_registry" "$devops_revision" specification/core/7.1/core.json azure-devops MicrosoftDocs/vsts-rest-api-specs
-"$binary" --registry "$devops_registry" api stats > "$staging/manifests/azure-devops-core-stats.json"
-jq -e '.schemas["x-junction-refresh"]' "$devops_registry" > "$staging/manifests/azure-devops-core-refresh.json"
+# Azure DevOps Core is not refreshed: its upstream, MicrosoftDocs/vsts-rest-api-specs,
+# was removed from GitHub (404 at every revision) and has no official replacement.
 # Select the newest stable Resources definition from one pinned Azure inventory.
 "$binary" discover azure-resources --output "$staging/azure-resources-inventory.json"
 azure_revision="$(jq -er '.revision | select(test("^[0-9a-f]{40}$"))' "$staging/azure-resources-inventory.json")"
@@ -322,7 +314,7 @@ done < generators/graph/common-schema-names.txt
 jq -e '.openapi == "3.1.1" and (.info.version | type == "string") and (.paths | type == "object")' \
   "$staging/manifests/junction-openapi.json" >/dev/null
 # Publish only after every refresh and validation succeeds. Beta stays opt-in.
-"$binary" merge "$staging/registry/graph-v1.0.json" "$devops_registry" "$resources_registry" "$compute_registry" "$sentinel_registry" "$purview_registry" "$cost_management_registry" "${monitor_registries[@]}" "${resource_graph_registries[@]}" "${arm_registries[@]}" "$log_query_registry" "$power_bi_registry" "${docs_registries[@]}" "$fabric_registry" "$fabric_admin_registry" "${fabric_workload_registries[@]}" \
+"$binary" merge "$staging/registry/graph-v1.0.json" "$resources_registry" "$compute_registry" "$sentinel_registry" "$purview_registry" "$cost_management_registry" "${monitor_registries[@]}" "${resource_graph_registries[@]}" "${arm_registries[@]}" "$log_query_registry" "$power_bi_registry" "${docs_registries[@]}" "$fabric_registry" "$fabric_admin_registry" "${fabric_workload_registries[@]}" \
   --output "$staging/registry/operations.json"
 "$binary" --registry "$staging/registry/operations.json" api stats > "$staging/manifests/operations-stats.json"
 cp "$staging/registry/"*.json generated/registry/
