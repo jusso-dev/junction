@@ -23,7 +23,7 @@ validate_catalog() {
           (if $scope != "" then
             (startswith($scope + "/") or startswith("specification/common-types/resource-management/") or (($source == "azure-log-analytics-query" or $source == "azure-key-vault-data") and startswith("specification/common-types/data-plane/")))
           elif $source == "fabric" then
-            (startswith("platform/") or startswith("admin/") or startswith("common/") or startswith("lakehouse/") or startswith("notebook/"))
+            (startswith("platform/") or startswith("admin/") or startswith("common/") or startswith("lakehouse/") or startswith("notebook/") or startswith("policySet/"))
           elif $source == "azure-cost-management" then
             (startswith("specification/cost-management/resource-manager/Microsoft.CostManagement/CostManagement/") or startswith("specification/common-types/resource-management/"))
           elif $source == "azure-resource-graph" then

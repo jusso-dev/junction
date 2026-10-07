@@ -212,13 +212,21 @@ mod tests {
         );
         assert_eq!(
             fabric.paths,
-            ["platform", "admin", "lakehouse", "notebook", "common"]
+            [
+                "platform",
+                "admin",
+                "lakehouse",
+                "notebook",
+                "policySet",
+                "common"
+            ]
         );
         for path in [
             "lakehouse/swagger.json",
             "lakehouse/definitions.json",
             "notebook/swagger.json",
             "notebook/definitions.json",
+            "policySet/definitions.json",
             "common/definitions.json",
         ] {
             assert!(crate::fetch::repository(fabric, path).is_ok());
