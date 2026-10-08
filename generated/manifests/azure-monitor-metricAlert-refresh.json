@@ -5,10 +5,10 @@
       "receipt": {
         "bytes": 23221,
         "path": "specification/common-types/resource-management/v5/types.json",
-        "revision": "2f3878f62a5f5c28fe60d7cb27b35d1cb06a23df",
+        "revision": "d7e20fe5b195e9ac5a1c9d72e4bb09e0fdb193f3",
         "sha256": "66767620b8edfbc04093c76b78d168cc59822cd9da1e726d35a9d45b73e642c1",
         "source": "azure-monitor",
-        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/2f3878f62a5f5c28fe60d7cb27b35d1cb06a23df/specification/common-types/resource-management/v5/types.json"
+        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/d7e20fe5b195e9ac5a1c9d72e4bb09e0fdb193f3/specification/common-types/resource-management/v5/types.json"
       },
       "status": "dependency"
     }
@@ -18,10 +18,10 @@
       "receipt": {
         "bytes": 52045,
         "path": "specification/monitor/resource-manager/Microsoft.Insights/Insights/stable/2026-01-01/metricAlert.json",
-        "revision": "2f3878f62a5f5c28fe60d7cb27b35d1cb06a23df",
+        "revision": "d7e20fe5b195e9ac5a1c9d72e4bb09e0fdb193f3",
         "sha256": "1325c33d7c7a4f65e7ba0aa2d75d0d51db26097cfb5ec81dbaa71f609a9c975e",
         "source": "azure-monitor",
-        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/2f3878f62a5f5c28fe60d7cb27b35d1cb06a23df/specification/monitor/resource-manager/Microsoft.Insights/Insights/stable/2026-01-01/metricAlert.json"
+        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/d7e20fe5b195e9ac5a1c9d72e4bb09e0fdb193f3/specification/monitor/resource-manager/Microsoft.Insights/Insights/stable/2026-01-01/metricAlert.json"
       },
       "status": "imported"
     }
@@ -33,11 +33,11 @@
         "blob_sha": "bf6e55090d38522f5d117a98c9269e54939be271",
         "bytes": 52045,
         "path": "specification/monitor/resource-manager/Microsoft.Insights/Insights/stable/2026-01-01/metricAlert.json",
-        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/2f3878f62a5f5c28fe60d7cb27b35d1cb06a23df/specification/monitor/resource-manager/Microsoft.Insights/Insights/stable/2026-01-01/metricAlert.json"
+        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/d7e20fe5b195e9ac5a1c9d72e4bb09e0fdb193f3/specification/monitor/resource-manager/Microsoft.Insights/Insights/stable/2026-01-01/metricAlert.json"
       }
     ],
-    "revision": "2f3878f62a5f5c28fe60d7cb27b35d1cb06a23df",
+    "revision": "d7e20fe5b195e9ac5a1c9d72e4bb09e0fdb193f3",
     "source": "azure-monitor",
-    "tree_sha": "2f3878f62a5f5c28fe60d7cb27b35d1cb06a23df"
+    "tree_sha": "d7e20fe5b195e9ac5a1c9d72e4bb09e0fdb193f3"
   }
 }
