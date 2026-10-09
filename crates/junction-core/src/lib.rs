@@ -37,6 +37,9 @@ pub struct ParameterSerialization {
     pub explode: Option<bool>,
     pub collection_format: Option<String>,
     pub allow_reserved: bool,
+    /// Azure `x-ms-skip-url-encoding`: path segment separators stay literal.
+    #[serde(skip_serializing_if = "std::ops::Not::not")]
+    pub skip_url_encoding: bool,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

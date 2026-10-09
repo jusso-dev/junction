@@ -1,6 +1,6 @@
 use anyhow::{Result, bail};
 use junction_core::Parameter;
-use percent_encoding::{NON_ALPHANUMERIC, utf8_percent_encode};
+use percent_encoding::{AsciiSet, NON_ALPHANUMERIC, utf8_percent_encode};
 use serde_json::Value;
 
 pub(crate) fn scalar(value: &Value) -> Result<String> {
@@ -13,6 +13,31 @@ pub(crate) fn scalar(value: &Value) -> Result<String> {
 }
 pub(crate) fn encode(value: &str) -> String {
     utf8_percent_encode(value, NON_ALPHANUMERIC).to_string()
+}
+/// Encodes a scope-style value (`x-ms-skip-url-encoding`) one segment at a time,
+/// keeping `/`, `:` and unreserved characters literal. A single leading `/` is
+/// accepted for full resource IDs.
+pub(crate) fn scope_path(value: &str) -> Result<String> {
+    const SEGMENT: &AsciiSet = &NON_ALPHANUMERIC
+        .remove(b':')
+        .remove(b'-')
+        .remove(b'.')
+        .remove(b'_')
+        .remove(b'~');
+    let value = value.strip_prefix('/').unwrap_or(value);
+    if value.chars().any(|c| c.is_whitespace() || c.is_control()) {
+        bail!("invalid path parameter");
+    }
+    value
+        .split('/')
+        .map(|segment| {
+            if segment.is_empty() || segment == "." || segment == ".." {
+                bail!("invalid path parameter");
+            }
+            Ok(utf8_percent_encode(segment, SEGMENT).to_string())
+        })
+        .collect::<Result<Vec<_>>>()
+        .map(|segments| segments.join("/"))
 }
 /// Remove one omitted optional alias from the static function argument list.
 pub(crate) fn omit_odata_alias(path: &str, parameter: &Parameter) -> Result<String> {
