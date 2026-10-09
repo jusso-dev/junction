@@ -171,6 +171,15 @@ pub fn ingest(
                             })
                             .transpose()?
                             .unwrap_or(false),
+                        skip_url_encoding: parameter
+                            .get("x-ms-skip-url-encoding")
+                            .map(|v| {
+                                v.as_bool().ok_or_else(|| {
+                                    anyhow::anyhow!("invalid x-ms-skip-url-encoding")
+                                })
+                            })
+                            .transpose()?
+                            .unwrap_or(false),
                     },
                     schema: parameter.get("schema").cloned().unwrap_or_else(|| {
                         let mut schema = parameter.clone();

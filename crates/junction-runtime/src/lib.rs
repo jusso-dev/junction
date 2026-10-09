@@ -147,10 +147,12 @@ fn prepare_authorized(
                 if !path.contains(&placeholder) {
                     bail!("path parameter has no placeholder");
                 }
-                path = path.replace(
-                    &placeholder,
-                    &utf8_percent_encode(&scalar, NON_ALPHANUMERIC).to_string(),
-                );
+                let encoded = if parameter.serialization.skip_url_encoding {
+                    parameters::scope_path(&scalar)?
+                } else {
+                    utf8_percent_encode(&scalar, NON_ALPHANUMERIC).to_string()
+                };
+                path = path.replace(&placeholder, &encoded);
             }
             "query" => {
                 if parameter.name == "api-version"
