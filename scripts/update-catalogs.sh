@@ -195,7 +195,7 @@ arm_workloads=(
   "azure-arc|arc|specification/hybridcompute/resource-manager/Microsoft.HybridCompute/HybridCompute|openapi"
   "azure-lighthouse|lighthouse|specification/managedservices/resource-manager/Microsoft.ManagedServices/ManagedServices|managedservices"
   "defender-for-cloud|cloud|specification/security/resource-manager/Microsoft.Security/Security|alerts assessments pricings secureScore"
-  "azure-storage|storage|specification/storage/resource-manager/Microsoft.Storage|openapi"
+  "azure-storage|storage|specification/storage/resource-manager/Microsoft.Storage/Storage|openapi"
   "azure-key-vault|key_vault|specification/keyvault/resource-manager/Microsoft.KeyVault/KeyVault|openapi"
   "azure-network|network|specification/network/resource-manager/Microsoft.Network/Network|virtualNetwork loadBalancer firewall applicationGateway networkWatcher"
   "azure-application-insights|application_insights|specification/applicationinsights/resource-manager/Microsoft.Insights/ApplicationInsights|components_API workbooks_API"
@@ -212,12 +212,15 @@ for workload in "${arm_workloads[@]}"; do
     exit 1
   fi
   for arm_document in $arm_documents; do
-    arm_path="$(jq -er --arg scope "$arm_scope" --arg document "$arm_document" '
+    if ! arm_path="$(jq -er --arg scope "$arm_scope" --arg document "$arm_document" '
       [.documents[].path
        | select(startswith($scope + "/stable/") and test("/stable/[0-9]{4}-[0-9]{2}-[0-9]{2}/" + $document + "\\.json$"))
        | {path: ., version: capture("/stable/(?<version>[0-9]{4}-[0-9]{2}-[0-9]{2})/").version}]
       | sort_by(.version, .path) | last | .path | strings
-    ' "$staging/${arm_source}-inventory.json")"
+    ' "$staging/${arm_source}-inventory.json")"; then
+      echo "No stable ${arm_document}.json for ${arm_source} under ${arm_scope}." >&2
+      exit 1
+    fi
     arm_name="${arm_label:-$arm_source}"
     [[ "$arm_documents" == "$arm_document" ]] || arm_name="${arm_name}-${arm_document}"
     arm_registry="$staging/registry/${arm_name}.json"

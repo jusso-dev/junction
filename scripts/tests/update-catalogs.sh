@@ -91,7 +91,7 @@ elif [[ "$command" == 'discover' ]]; then
   elif [[ "$source" =~ ^(azure-log-analytics|azure-arc|azure-lighthouse|defender-for-cloud|azure-storage|azure-key-vault|azure-network|azure-application-insights|azure-key-vault-data)$ ]]; then
     [[ "$revision" == 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' ]]
     case "$source" in
-      azure-storage) scope='specification/storage/resource-manager/Microsoft.Storage'; names='openapi' ;;
+      azure-storage) scope='specification/storage/resource-manager/Microsoft.Storage/Storage'; names='openapi' ;;
       azure-key-vault) scope='specification/keyvault/resource-manager/Microsoft.KeyVault/KeyVault'; names='openapi' ;;
       azure-network) scope='specification/network/resource-manager/Microsoft.Network/Network'; names='virtualNetwork loadBalancer firewall applicationGateway networkWatcher' ;;
       azure-application-insights) scope='specification/applicationinsights/resource-manager/Microsoft.Insights/ApplicationInsights'; names='components_API workbooks_API' ;;
@@ -352,6 +352,7 @@ done
 # New ARM workloads: newest stable per document, scoped receipts, and atomic
 # preservation of every published catalog when any stage fails.
 jq -e '.documents[0].receipt.path == "specification/operationalinsights/resource-manager/Microsoft.OperationalInsights/OperationalInsights/stable/2025-01-01/openapi.json" and .documents[0].receipt.source == "azure-log-analytics"' "$test_directory/generated/manifests/azure-log-analytics-refresh.json" >/dev/null
+jq -e '.documents[0].receipt.path == "specification/storage/resource-manager/Microsoft.Storage/Storage/stable/2025-01-01/openapi.json" and .documents[0].receipt.source == "azure-storage"' "$test_directory/generated/manifests/azure-storage-refresh.json" >/dev/null
 jq -e '.documents[0].receipt.path == "specification/managedservices/resource-manager/Microsoft.ManagedServices/ManagedServices/stable/2025-01-01/managedservices.json"' "$test_directory/generated/manifests/azure-lighthouse-refresh.json" >/dev/null
 for document in alerts assessments pricings secureScore; do
   jq -e --arg path "specification/security/resource-manager/Microsoft.Security/Security/stable/2025-01-01/${document}.json" '.documents[0].receipt.path == $path and .documents[0].receipt.source == "defender-for-cloud"' "$test_directory/generated/manifests/defender-for-cloud-${document}-refresh.json" >/dev/null
