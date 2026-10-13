@@ -5,10 +5,10 @@
       "receipt": {
         "bytes": 3834,
         "path": "specification/common-types/resource-management/v5/managedidentity.json",
-        "revision": "65eb9311d304dcf9874d05fdec39ea65baae8db8",
+        "revision": "8ec074d8a9d4929f9db8c1e0c464507722f0f105",
         "sha256": "03d8098b5f3bf4ce54fc950c949baf41f80095887a5566c961baba514d080508",
         "source": "azure-storage",
-        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/65eb9311d304dcf9874d05fdec39ea65baae8db8/specification/common-types/resource-management/v5/managedidentity.json"
+        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/8ec074d8a9d4929f9db8c1e0c464507722f0f105/specification/common-types/resource-management/v5/managedidentity.json"
       },
       "status": "dependency"
     },
@@ -16,10 +16,10 @@
       "receipt": {
         "bytes": 23221,
         "path": "specification/common-types/resource-management/v5/types.json",
-        "revision": "65eb9311d304dcf9874d05fdec39ea65baae8db8",
+        "revision": "8ec074d8a9d4929f9db8c1e0c464507722f0f105",
         "sha256": "66767620b8edfbc04093c76b78d168cc59822cd9da1e726d35a9d45b73e642c1",
         "source": "azure-storage",
-        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/65eb9311d304dcf9874d05fdec39ea65baae8db8/specification/common-types/resource-management/v5/types.json"
+        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/8ec074d8a9d4929f9db8c1e0c464507722f0f105/specification/common-types/resource-management/v5/types.json"
       },
       "status": "dependency"
     }
@@ -29,10 +29,10 @@
       "receipt": {
         "bytes": 732739,
         "path": "specification/storage/resource-manager/Microsoft.Storage/Storage/stable/2026-09-01/openapi.json",
-        "revision": "65eb9311d304dcf9874d05fdec39ea65baae8db8",
+        "revision": "8ec074d8a9d4929f9db8c1e0c464507722f0f105",
         "sha256": "98afbd91ca5766092a70d9653c3e280384d6cd039859b396edcb37ffa552b526",
         "source": "azure-storage",
-        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/65eb9311d304dcf9874d05fdec39ea65baae8db8/specification/storage/resource-manager/Microsoft.Storage/Storage/stable/2026-09-01/openapi.json"
+        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/8ec074d8a9d4929f9db8c1e0c464507722f0f105/specification/storage/resource-manager/Microsoft.Storage/Storage/stable/2026-09-01/openapi.json"
       },
       "status": "imported"
     }
@@ -44,11 +44,11 @@
         "blob_sha": "ced16b7311f38e7439ee92b2fa2b80701ad22640",
         "bytes": 732739,
         "path": "specification/storage/resource-manager/Microsoft.Storage/Storage/stable/2026-09-01/openapi.json",
-        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/65eb9311d304dcf9874d05fdec39ea65baae8db8/specification/storage/resource-manager/Microsoft.Storage/Storage/stable/2026-09-01/openapi.json"
+        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/8ec074d8a9d4929f9db8c1e0c464507722f0f105/specification/storage/resource-manager/Microsoft.Storage/Storage/stable/2026-09-01/openapi.json"
       }
     ],
-    "revision": "65eb9311d304dcf9874d05fdec39ea65baae8db8",
+    "revision": "8ec074d8a9d4929f9db8c1e0c464507722f0f105",
     "source": "azure-storage",
-    "tree_sha": "65eb9311d304dcf9874d05fdec39ea65baae8db8"
+    "tree_sha": "8ec074d8a9d4929f9db8c1e0c464507722f0f105"
   }
 }
