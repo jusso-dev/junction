@@ -2,9 +2,9 @@
   "documents": [
     {
       "receipt": {
-        "bytes": 2302,
+        "bytes": 2312,
         "path": "power-platform/analytics/advisor-chat",
-        "sha256": "e1e297a99e1e1abbd42b0481248ca60af0cc4a9ec1a915b15d628e9b6242a2da",
+        "sha256": "598656780475ae952c5b4be7a8cf1b108c8447d344ac13115bd3ff1413d5055f",
         "source": "power-platform",
         "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/analytics/advisor-chat"
       },
@@ -12,9 +12,9 @@
     },
     {
       "receipt": {
-        "bytes": 4362,
+        "bytes": 4592,
         "path": "power-platform/analytics/advisor-chat/send-advisor-chat-message",
-        "sha256": "206565e06a86f28018225bd4c10171263fd715ffe3ff08098a084066ebedd8c1",
+        "sha256": "dc9986ca86aa5b1856f114776e5bad08c0326cc6ff92fbbdd7e9e671c7873c25",
         "source": "power-platform",
         "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/analytics/advisor-chat/send-advisor-chat-message"
       },
@@ -52,9 +52,9 @@
     },
     {
       "receipt": {
-        "bytes": 5269,
+        "bytes": 5005,
         "path": "power-platform/analytics/recommendations/get-recommendation-resources",
-        "sha256": "c35f2364cfbb93c31be5c34018fe9af8b8e7e00c93e97797fb250c2b03125e57",
+        "sha256": "a09f27a8670f5d2e2a3e552c1969f2fcddc13265c5a61fdb9f79a1e601f229e2",
         "source": "power-platform",
         "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/analytics/recommendations/get-recommendation-resources"
       },
@@ -72,9 +72,9 @@
     },
     {
       "receipt": {
-        "bytes": 4586,
+        "bytes": 4337,
         "path": "power-platform/analytics/recommendations/get-recommendations",
-        "sha256": "5aaf3a2495cfb7313e94349a4ae68bb9b3648a4c7401226230f6b4b2c4b040fd",
+        "sha256": "ac0fe4780629b8e34fa9f59f51948086487076c218176e5c596515d2761dee62",
         "source": "power-platform",
         "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/analytics/recommendations/get-recommendations"
       },
@@ -142,9 +142,9 @@
     },
     {
       "receipt": {
-        "bytes": 3517,
+        "bytes": 3771,
         "path": "power-platform/authorization/role-based-access-control",
-        "sha256": "93b824fae6d139508d577a9000ab1b4616183d248ff4e66c2e89b286d1fd2222",
+        "sha256": "560e363980e725a35ea5e7670447001634f4d02f9bc5f1d9c361800cb5d63218",
         "source": "power-platform",
         "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/authorization/role-based-access-control"
       },
@@ -154,7 +154,7 @@
       "receipt": {
         "bytes": 4936,
         "path": "power-platform/authorization/role-based-access-control/create-environment-group-role-assignment",
-        "sha256": "ed0c94029e5adc779b3c246077268e6fd14162129ea02875a686b9a08c9f768e",
+        "sha256": "ec9063ca35ff3139d7556ef1be368e2d7bb2fc2810d9639dcb6962ce901efcbd",
         "source": "power-platform",
         "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/authorization/role-based-access-control/create-environment-group-role-assignment"
       },
@@ -164,7 +164,7 @@
       "receipt": {
         "bytes": 4844,
         "path": "power-platform/authorization/role-based-access-control/create-environment-role-assignment",
-        "sha256": "a8e443714eb004260e7c92b19d934eb4b739c90eb67b732295e7b88715efa678",
+        "sha256": "cf85d74f1cc71eed0e957dcb264877b9ea20cbd8b78878f9dce46b9f46716775",
         "source": "power-platform",
         "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/authorization/role-based-access-control/create-environment-role-assignment"
       },
@@ -174,7 +174,7 @@
       "receipt": {
         "bytes": 4596,
         "path": "power-platform/authorization/role-based-access-control/create-role-assignment",
-        "sha256": "2629a085cb7fb3c113c158990888b89d6a15acb52fe3f230c90de6986d64efd7",
+        "sha256": "1ed00efdf01f6cbff772e4c811584881594b3ca546f65d6e6e629956ed55bf67",
         "source": "power-platform",
         "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/authorization/role-based-access-control/create-role-assignment"
       },
@@ -214,7 +214,7 @@
       "receipt": {
         "bytes": 4236,
         "path": "power-platform/authorization/role-based-access-control/list-environment-group-role-assignments",
-        "sha256": "43274e8227cb9d1a18e020289c3f5c8a7a560de9718d361acf8c231e0cafd7d7",
+        "sha256": "d3ef16368ef3d6aab34743e2fe541aa44b77b17c3e7c637ecd58dabca4504f6b",
         "source": "power-platform",
         "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/authorization/role-based-access-control/list-environment-group-role-assignments"
       },
@@ -224,7 +224,7 @@
       "receipt": {
         "bytes": 4138,
         "path": "power-platform/authorization/role-based-access-control/list-environment-role-assignments",
-        "sha256": "381e1651829c55475f3dc73dfe946f36e7c72de4ca25eabffb8c3df507284d41",
+        "sha256": "3d99ffbc8dd118ce9ef7d335859de85807d18535d223b7bd3e689eb016cf9c03",
         "source": "power-platform",
         "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/authorization/role-based-access-control/list-environment-role-assignments"
       },
@@ -234,7 +234,7 @@
       "receipt": {
         "bytes": 3870,
         "path": "power-platform/authorization/role-based-access-control/list-role-assignments",
-        "sha256": "6476a911d6ef194b5169e14d0655fff136b8c8ec8c453e5a671709579874e8b4",
+        "sha256": "6508d2fd055fa6843b01641693ae958cc3984289bad5efcddef8859a52a5e242",
         "source": "power-platform",
         "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/authorization/role-based-access-control/list-role-assignments"
       },
@@ -244,9 +244,29 @@
       "receipt": {
         "bytes": 3920,
         "path": "power-platform/authorization/role-based-access-control/list-role-definitions",
-        "sha256": "8c4a19ef20f983e395bf237be051dc48cf7be2fc8a6b48584361f9da33ec3a7b",
+        "sha256": "d813bf3563cc0ca40982778bcd31afdc8326d574cf94c9297dec5c6ebc6d3cae",
         "source": "power-platform",
         "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/authorization/role-based-access-control/list-role-definitions"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 7619,
+        "path": "power-platform/authorization/role-based-access-control/search-environment-role-assignments",
+        "sha256": "fe62a38ef7bb09fddd21a892ede2d1e47600019257e0a41b213ad8d8171d01fd",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/authorization/role-based-access-control/search-environment-role-assignments"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 7356,
+        "path": "power-platform/authorization/role-based-access-control/search-role-assignments",
+        "sha256": "858005d7523bcc7afff85a4f7d512b195b856528de9a1dcbf333183f69b9aadb",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/authorization/role-based-access-control/search-role-assignments"
       },
       "status": "imported"
     },
@@ -1144,7 +1164,7 @@
       "receipt": {
         "bytes": 3790,
         "path": "power-platform/governance/rule-based-policies",
-        "sha256": "152b5b638b554a44c4cd18c211b72d66771c5a8447072f6009061325466f29ea",
+        "sha256": "0960a309b11fc8319e6823538b5a99e459d61f1a11819a91f5acee4ad8ded851",
         "source": "power-platform",
         "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/governance/rule-based-policies"
       },
@@ -1152,9 +1172,9 @@
     },
     {
       "receipt": {
-        "bytes": 5154,
+        "bytes": 5157,
         "path": "power-platform/governance/rule-based-policies/create-enviornment-group-rule-based-assignment",
-        "sha256": "461d394a91293d7149f20bdab53dc7ea6b02d9abe2b5dcd88199e523c8a9da6f",
+        "sha256": "be1dde34d1fed0dfec498eeb54547c97825b252631b90d76e43b0298e8290331",
         "source": "power-platform",
         "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/governance/rule-based-policies/create-enviornment-group-rule-based-assignment"
       },
@@ -1162,9 +1182,9 @@
     },
     {
       "receipt": {
-        "bytes": 5084,
+        "bytes": 5087,
         "path": "power-platform/governance/rule-based-policies/create-environment-rule-based-assignment",
-        "sha256": "3a685ffc0f27559e28cc90fe3364c35fe0fbedd6d0a6aa6b7992002ae08ebf89",
+        "sha256": "eeae1decad1e18d457459c31d2b9bdf3ebea3f12b9ff21397d5150f8a0e00e84",
         "source": "power-platform",
         "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/governance/rule-based-policies/create-environment-rule-based-assignment"
       },
@@ -1194,7 +1214,7 @@
       "receipt": {
         "bytes": 4240,
         "path": "power-platform/governance/rule-based-policies/list-rule-assignments",
-        "sha256": "759eb4b13fb7af3001eb88400d044ea5bf1f0230958d3d91e25c55c4efa5063e",
+        "sha256": "e6bdb23ca1cfa46fd71f9da055af38f9e4df4476a783bface358283a071a83cd",
         "source": "power-platform",
         "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/governance/rule-based-policies/list-rule-assignments"
       },
@@ -1204,7 +1224,7 @@
       "receipt": {
         "bytes": 4587,
         "path": "power-platform/governance/rule-based-policies/list-rule-assignments-by-environment-group-id",
-        "sha256": "138031738a7327fd621288e2caa03a1607c2488e8d4316bc959663906f8d1df5",
+        "sha256": "ee45334e1a1deace593d7e0c27f19ea00e247654719134047f66e7ffacf3d14c",
         "source": "power-platform",
         "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/governance/rule-based-policies/list-rule-assignments-by-environment-group-id"
       },
@@ -1214,7 +1234,7 @@
       "receipt": {
         "bytes": 4517,
         "path": "power-platform/governance/rule-based-policies/list-rule-assignments-by-environment-id",
-        "sha256": "514e1699c7dd0f0effcb950191568a827dd227290e623cf762592d1ea19ca8e4",
+        "sha256": "e654ec021662022cab51af2d6358bdac99176c18a3653099e0601c53345bd467",
         "source": "power-platform",
         "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/governance/rule-based-policies/list-rule-assignments-by-environment-id"
       },
@@ -1224,7 +1244,7 @@
       "receipt": {
         "bytes": 4449,
         "path": "power-platform/governance/rule-based-policies/list-rule-assignments-by-policy-id",
-        "sha256": "891b2ecda754f5fccaa62de927766a4563a6886da6ceb6bd8572cce53b3d14d9",
+        "sha256": "b57f7482b6a7270714f1ea9be788f1b2c52c51c5bcf77c820db208fd5def30ba",
         "source": "power-platform",
         "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/governance/rule-based-policies/list-rule-assignments-by-policy-id"
       },
@@ -1592,9 +1612,9 @@
     },
     {
       "receipt": {
-        "bytes": 2874,
+        "bytes": 3109,
         "path": "power-platform/licensing/entitlement-insight",
-        "sha256": "2f61e49103c24fbb5e23ded9478cde5bb24290ed8358ee8fba3425bc0f5ce38e",
+        "sha256": "787784787725534d860989ea01659471ed28bcf1a31d50ced74d4d67de262bf5",
         "source": "power-platform",
         "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/licensing/entitlement-insight"
       },
@@ -1602,9 +1622,9 @@
     },
     {
       "receipt": {
-        "bytes": 5835,
+        "bytes": 5861,
         "path": "power-platform/licensing/entitlement-insight/get-environment-resources",
-        "sha256": "144547233f181646701fb8ab9620fa774c87b82a8b1d8e0014f7e5559c2b226a",
+        "sha256": "52af5f3a5c97041112e768866c10dc1467fe47807928a54019c06b903d3724c5",
         "source": "power-platform",
         "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/licensing/entitlement-insight/get-environment-resources"
       },
@@ -1622,9 +1642,9 @@
     },
     {
       "receipt": {
-        "bytes": 5038,
+        "bytes": 5274,
         "path": "power-platform/licensing/entitlement-insight/get-tenant-resource-consumption-by-user",
-        "sha256": "5d00c6c572ce4d37ffaa2ce02f875d3f1188ea53d96413b534c965172717d7fa",
+        "sha256": "a99ac66152e2bb7cb0fd4beb9c89daac1c096b057e7e817e0abbf4356ef04c5c",
         "source": "power-platform",
         "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/licensing/entitlement-insight/get-tenant-resource-consumption-by-user"
       },
@@ -1632,9 +1652,9 @@
     },
     {
       "receipt": {
-        "bytes": 5425,
+        "bytes": 5661,
         "path": "power-platform/licensing/entitlement-insight/get-tenant-resources-across-environments",
-        "sha256": "9726347aa7920dcd00cbf28ec525b633c8fdd9be36d6f47ad4f4b53558db5b9e",
+        "sha256": "4a6bb1052399314bc3b9225e05e3ad80cd1bac895522f0c84f3570249e95cac6",
         "source": "power-platform",
         "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/licensing/entitlement-insight/get-tenant-resources-across-environments"
       },
@@ -1642,9 +1662,9 @@
     },
     {
       "receipt": {
-        "bytes": 5254,
+        "bytes": 5280,
         "path": "power-platform/licensing/entitlement-insight/get-tenant-user-consumption-by-resource",
-        "sha256": "09135db256b91707ad22d63ee7858cbf9d53dc19db043260376574b54fed96c8",
+        "sha256": "80094cb42e2061a77102444adf3763ab884f0e7d38f430807aac17ac57241d47",
         "source": "power-platform",
         "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/licensing/entitlement-insight/get-tenant-user-consumption-by-resource"
       },
@@ -1652,9 +1672,9 @@
     },
     {
       "receipt": {
-        "bytes": 5123,
+        "bytes": 5227,
         "path": "power-platform/licensing/entitlement-insight/get-tenant-users",
-        "sha256": "ea9f6eb2f9c5346d75b7a3c3260ff110c14a60a5002054c24645e580ea8318fb",
+        "sha256": "760880db2fbe86e5236024632d0c39a3884a0995fc3456699d5c115e2358bd46",
         "source": "power-platform",
         "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/licensing/entitlement-insight/get-tenant-users"
       },
@@ -1662,9 +1682,9 @@
     },
     {
       "receipt": {
-        "bytes": 7816,
+        "bytes": 8024,
         "path": "power-platform/licensing/entitlement/get-entitlement",
-        "sha256": "3ca46b370c2cfa975a89729987a9a641d6a718c63bb618b8ec21de6ec18f7e9f",
+        "sha256": "88903ff31673c54147f61eca67fae74a98434731e79ea9dafd0d01e4b6432fff",
         "source": "power-platform",
         "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/licensing/entitlement/get-entitlement"
       },
@@ -1672,9 +1692,9 @@
     },
     {
       "receipt": {
-        "bytes": 12150,
+        "bytes": 12358,
         "path": "power-platform/licensing/entitlement/get-many-environment-entitlements",
-        "sha256": "ee4bbe6e2bf23b04ae12bb9d0487d53bdbc99dd1b3628d760402a9cc37da6b6f",
+        "sha256": "f9535dded52dc7da9d6e0bc6bdac11c3cb1063115c9e1d88888a2c9b4ceda1ed",
         "source": "power-platform",
         "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/licensing/entitlement/get-many-environment-entitlements"
       },
@@ -1957,6 +1977,26 @@
         "sha256": "1ebf00d537db5cf1ea1abec6db59df6475eab1421592c7b1aedce7005564a085",
         "source": "power-platform",
         "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/licensing/user-per-flow-capacity-source/get-user-per-flow-capacity-source-user-context-summary-for-user-id"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 2328,
+        "path": "power-platform/monitoringhub/monitoring-hub",
+        "sha256": "52107799990d54acc6e6578bc7c172f6ff88b34ba0df7f54eff71051b682e976",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/monitoringhub/monitoring-hub"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 10077,
+        "path": "power-platform/monitoringhub/monitoring-hub/on-alert-triggered",
+        "sha256": "91fc98ea79dc6364ad1f8f122a24fa23cba7a9332b5053ff2a11c4542f2d3cc5",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/monitoringhub/monitoring-hub/on-alert-triggered"
       },
       "status": "imported"
     },
@@ -2671,7 +2711,7 @@
       "status": "imported"
     }
   ],
-  "imported": 267,
+  "imported": 271,
   "kind": "documentation",
-  "revision": "a375246a7f9963c57a22a267341916ab625f8b08c3aec366adda0bb85edf9699"
+  "revision": "f3ebe541775d5ef399fa5ffae30fffe9563064123a34d1e8c1828c8a1882461f"
 }
