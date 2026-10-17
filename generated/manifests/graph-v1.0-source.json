@@ -1,8 +1,8 @@
 {
   "bytes": 44387283,
   "path": "openapi/v1.0/openapi.yaml",
-  "revision": "0991dc11958473dd323ad04bfbbcaf2b3efc5ffc",
+  "revision": "34b8e9c29032c82352a6fd7138be0a864a842bb2",
   "sha256": "533f6d86985584327109ba2c52c0e51454ce1ba2153c11f4d841e898b88c5b1b",
   "source": "graph",
-  "upstream": "https://raw.githubusercontent.com/microsoftgraph/msgraph-metadata/0991dc11958473dd323ad04bfbbcaf2b3efc5ffc/openapi/v1.0/openapi.yaml"
+  "upstream": "https://raw.githubusercontent.com/microsoftgraph/msgraph-metadata/34b8e9c29032c82352a6fd7138be0a864a842bb2/openapi/v1.0/openapi.yaml"
 }
