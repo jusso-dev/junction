@@ -5,10 +5,10 @@
       "receipt": {
         "bytes": 23221,
         "path": "specification/common-types/resource-management/v5/types.json",
-        "revision": "ae348cc71f54a61f5d17472052cfef279a23db6b",
+        "revision": "01fdd6a82b0d97158b1dcc67bbe55f4eba11490f",
         "sha256": "66767620b8edfbc04093c76b78d168cc59822cd9da1e726d35a9d45b73e642c1",
         "source": "azure-network",
-        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/ae348cc71f54a61f5d17472052cfef279a23db6b/specification/common-types/resource-management/v5/types.json"
+        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/01fdd6a82b0d97158b1dcc67bbe55f4eba11490f/specification/common-types/resource-management/v5/types.json"
       },
       "status": "dependency"
     },
@@ -16,10 +16,10 @@
       "receipt": {
         "bytes": 205247,
         "path": "specification/network/resource-manager/Microsoft.Network/Network/stable/2026-03-01/applicationGateway.json",
-        "revision": "ae348cc71f54a61f5d17472052cfef279a23db6b",
+        "revision": "01fdd6a82b0d97158b1dcc67bbe55f4eba11490f",
         "sha256": "6038be148094e25b27a0c3357cac5984140a6696255e1696c5d6fdeb208af5cc",
         "source": "azure-network",
-        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/ae348cc71f54a61f5d17472052cfef279a23db6b/specification/network/resource-manager/Microsoft.Network/Network/stable/2026-03-01/applicationGateway.json"
+        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/01fdd6a82b0d97158b1dcc67bbe55f4eba11490f/specification/network/resource-manager/Microsoft.Network/Network/stable/2026-03-01/applicationGateway.json"
       },
       "status": "dependency"
     },
@@ -27,10 +27,10 @@
       "receipt": {
         "bytes": 275590,
         "path": "specification/network/resource-manager/Microsoft.Network/Network/stable/2026-03-01/common.json",
-        "revision": "ae348cc71f54a61f5d17472052cfef279a23db6b",
+        "revision": "01fdd6a82b0d97158b1dcc67bbe55f4eba11490f",
         "sha256": "af181cf1d801ad5a4b28f2805a419271849c44a81ad546159b397ee13cd87252",
         "source": "azure-network",
-        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/ae348cc71f54a61f5d17472052cfef279a23db6b/specification/network/resource-manager/Microsoft.Network/Network/stable/2026-03-01/common.json"
+        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/01fdd6a82b0d97158b1dcc67bbe55f4eba11490f/specification/network/resource-manager/Microsoft.Network/Network/stable/2026-03-01/common.json"
       },
       "status": "dependency"
     },
@@ -38,10 +38,10 @@
       "receipt": {
         "bytes": 343809,
         "path": "specification/network/resource-manager/Microsoft.Network/Network/stable/2026-03-01/expressRoute.json",
-        "revision": "ae348cc71f54a61f5d17472052cfef279a23db6b",
+        "revision": "01fdd6a82b0d97158b1dcc67bbe55f4eba11490f",
         "sha256": "13e9f54b30c0e60f1b468dfe2580a58f63108c44e393dff5b58aa83fdd60eedd",
         "source": "azure-network",
-        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/ae348cc71f54a61f5d17472052cfef279a23db6b/specification/network/resource-manager/Microsoft.Network/Network/stable/2026-03-01/expressRoute.json"
+        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/01fdd6a82b0d97158b1dcc67bbe55f4eba11490f/specification/network/resource-manager/Microsoft.Network/Network/stable/2026-03-01/expressRoute.json"
       },
       "status": "dependency"
     },
@@ -49,10 +49,10 @@
       "receipt": {
         "bytes": 104884,
         "path": "specification/network/resource-manager/Microsoft.Network/Network/stable/2026-03-01/loadBalancer.json",
-        "revision": "ae348cc71f54a61f5d17472052cfef279a23db6b",
+        "revision": "01fdd6a82b0d97158b1dcc67bbe55f4eba11490f",
         "sha256": "b90c4fa94b6636d67ddd918e80bf184e85d7ff2c6370e0967723a4cbcda0d055",
         "source": "azure-network",
-        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/ae348cc71f54a61f5d17472052cfef279a23db6b/specification/network/resource-manager/Microsoft.Network/Network/stable/2026-03-01/loadBalancer.json"
+        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/01fdd6a82b0d97158b1dcc67bbe55f4eba11490f/specification/network/resource-manager/Microsoft.Network/Network/stable/2026-03-01/loadBalancer.json"
       },
       "status": "dependency"
     },
@@ -60,10 +60,10 @@
       "receipt": {
         "bytes": 231988,
         "path": "specification/network/resource-manager/Microsoft.Network/Network/stable/2026-03-01/networkGateway.json",
-        "revision": "ae348cc71f54a61f5d17472052cfef279a23db6b",
+        "revision": "01fdd6a82b0d97158b1dcc67bbe55f4eba11490f",
         "sha256": "97a5dbb82e00b2253f23924a13b2588da94de4399094e928b0e2a6919056210e",
         "source": "azure-network",
-        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/ae348cc71f54a61f5d17472052cfef279a23db6b/specification/network/resource-manager/Microsoft.Network/Network/stable/2026-03-01/networkGateway.json"
+        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/01fdd6a82b0d97158b1dcc67bbe55f4eba11490f/specification/network/resource-manager/Microsoft.Network/Network/stable/2026-03-01/networkGateway.json"
       },
       "status": "dependency"
     },
@@ -71,10 +71,10 @@
       "receipt": {
         "bytes": 190012,
         "path": "specification/network/resource-manager/Microsoft.Network/Network/stable/2026-03-01/networkWatcher.json",
-        "revision": "ae348cc71f54a61f5d17472052cfef279a23db6b",
+        "revision": "01fdd6a82b0d97158b1dcc67bbe55f4eba11490f",
         "sha256": "fe8119afc5b4aa0e3926bf4d3f2d74e0a166483056bbe5685fcafffd524f3dcb",
         "source": "azure-network",
-        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/ae348cc71f54a61f5d17472052cfef279a23db6b/specification/network/resource-manager/Microsoft.Network/Network/stable/2026-03-01/networkWatcher.json"
+        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/01fdd6a82b0d97158b1dcc67bbe55f4eba11490f/specification/network/resource-manager/Microsoft.Network/Network/stable/2026-03-01/networkWatcher.json"
       },
       "status": "dependency"
     }
@@ -84,10 +84,10 @@
       "receipt": {
         "bytes": 785043,
         "path": "specification/network/resource-manager/Microsoft.Network/Network/stable/2026-03-01/virtualNetwork.json",
-        "revision": "ae348cc71f54a61f5d17472052cfef279a23db6b",
+        "revision": "01fdd6a82b0d97158b1dcc67bbe55f4eba11490f",
         "sha256": "0bfb316d7cbbecc06ae43c2cf57ed134d456e5b12607f9eab61c1a798d6452c5",
         "source": "azure-network",
-        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/ae348cc71f54a61f5d17472052cfef279a23db6b/specification/network/resource-manager/Microsoft.Network/Network/stable/2026-03-01/virtualNetwork.json"
+        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/01fdd6a82b0d97158b1dcc67bbe55f4eba11490f/specification/network/resource-manager/Microsoft.Network/Network/stable/2026-03-01/virtualNetwork.json"
       },
       "status": "imported"
     }
@@ -99,11 +99,11 @@
         "blob_sha": "31099b9884b364f52d66e77a49037c817d668b2b",
         "bytes": 785043,
         "path": "specification/network/resource-manager/Microsoft.Network/Network/stable/2026-03-01/virtualNetwork.json",
-        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/ae348cc71f54a61f5d17472052cfef279a23db6b/specification/network/resource-manager/Microsoft.Network/Network/stable/2026-03-01/virtualNetwork.json"
+        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/01fdd6a82b0d97158b1dcc67bbe55f4eba11490f/specification/network/resource-manager/Microsoft.Network/Network/stable/2026-03-01/virtualNetwork.json"
       }
     ],
-    "revision": "ae348cc71f54a61f5d17472052cfef279a23db6b",
+    "revision": "01fdd6a82b0d97158b1dcc67bbe55f4eba11490f",
     "source": "azure-network",
-    "tree_sha": "ae348cc71f54a61f5d17472052cfef279a23db6b"
+    "tree_sha": "01fdd6a82b0d97158b1dcc67bbe55f4eba11490f"
   }
 }
