@@ -12,9 +12,9 @@
     },
     {
       "receipt": {
-        "bytes": 8251,
+        "bytes": 8264,
         "path": "api-advanced-hunting",
-        "sha256": "bd37f121523e1c8447b5621094190874d57b4c1726d78c683fc7c56c39ec208a",
+        "sha256": "352e50b721a34e6800f80c31fe4964417277a040caf6a8c853a427753e50b74f",
         "source": "defender",
         "upstream": "https://learn.microsoft.com/en-us/defender-xdr/api-advanced-hunting"
       },
