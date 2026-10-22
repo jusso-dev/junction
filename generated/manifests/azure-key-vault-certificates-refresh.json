@@ -1,15 +1,15 @@
 {
-  "bytes": 86670,
+  "bytes": 87608,
   "dependencies": [],
   "documents": [
     {
       "receipt": {
-        "bytes": 86670,
-        "path": "specification/keyvault/data-plane/Certificates/stable/2025-07-01/certificates.json",
-        "revision": "2371f14ab26ab99500de46ac5c507476a8e0fc61",
-        "sha256": "7afcc3e0fb095b62b5d99e2b02ee970580663b85c68ba70b8a7f147e9ed4d2fb",
+        "bytes": 87608,
+        "path": "specification/keyvault/data-plane/Certificates/stable/2026-04-01/certificates.json",
+        "revision": "20aa3dd0386bd992c0cd7322635456bb4fa9bd0a",
+        "sha256": "64e788eaad5764841fce37d0eccf41b5abb161dc0eb6a9b1ed2802b1622835c3",
         "source": "azure-key-vault-data",
-        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/2371f14ab26ab99500de46ac5c507476a8e0fc61/specification/keyvault/data-plane/Certificates/stable/2025-07-01/certificates.json"
+        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/20aa3dd0386bd992c0cd7322635456bb4fa9bd0a/specification/keyvault/data-plane/Certificates/stable/2026-04-01/certificates.json"
       },
       "status": "imported"
     }
@@ -18,14 +18,14 @@
   "inventory": {
     "documents": [
       {
-        "blob_sha": "0213e4933338b13394539b045fb18d8a584d7f56",
-        "bytes": 86670,
-        "path": "specification/keyvault/data-plane/Certificates/stable/2025-07-01/certificates.json",
-        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/2371f14ab26ab99500de46ac5c507476a8e0fc61/specification/keyvault/data-plane/Certificates/stable/2025-07-01/certificates.json"
+        "blob_sha": "8a5afe050d08377b3a895d4f57067dbe55cd4b27",
+        "bytes": 87608,
+        "path": "specification/keyvault/data-plane/Certificates/stable/2026-04-01/certificates.json",
+        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/20aa3dd0386bd992c0cd7322635456bb4fa9bd0a/specification/keyvault/data-plane/Certificates/stable/2026-04-01/certificates.json"
       }
     ],
-    "revision": "2371f14ab26ab99500de46ac5c507476a8e0fc61",
+    "revision": "20aa3dd0386bd992c0cd7322635456bb4fa9bd0a",
     "source": "azure-key-vault-data",
-    "tree_sha": "2371f14ab26ab99500de46ac5c507476a8e0fc61"
+    "tree_sha": "20aa3dd0386bd992c0cd7322635456bb4fa9bd0a"
   }
 }
