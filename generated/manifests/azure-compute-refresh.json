@@ -1,14 +1,14 @@
 {
-  "bytes": 1091858,
+  "bytes": 1091815,
   "dependencies": [
     {
       "receipt": {
         "bytes": 21347,
         "path": "specification/common-types/resource-management/v3/types.json",
-        "revision": "20aa3dd0386bd992c0cd7322635456bb4fa9bd0a",
+        "revision": "ff36c08b53365936c68686269ce78469c0c1f8e3",
         "sha256": "8f69ddbcdd8f3df61a156a129e70db08b3a03f2ec710de07f30273ec27492de3",
         "source": "azure-compute",
-        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/20aa3dd0386bd992c0cd7322635456bb4fa9bd0a/specification/common-types/resource-management/v3/types.json"
+        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/ff36c08b53365936c68686269ce78469c0c1f8e3/specification/common-types/resource-management/v3/types.json"
       },
       "status": "dependency"
     },
@@ -16,10 +16,10 @@
       "receipt": {
         "bytes": 7631,
         "path": "specification/compute/resource-manager/Microsoft.Compute/Compute/common-types/v1/common.json",
-        "revision": "20aa3dd0386bd992c0cd7322635456bb4fa9bd0a",
+        "revision": "ff36c08b53365936c68686269ce78469c0c1f8e3",
         "sha256": "0339076f3c6bbbeaa6a4d017b3216c50b92c4bf8d7282807480e682afe3e13c1",
         "source": "azure-compute",
-        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/20aa3dd0386bd992c0cd7322635456bb4fa9bd0a/specification/compute/resource-manager/Microsoft.Compute/Compute/common-types/v1/common.json"
+        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/ff36c08b53365936c68686269ce78469c0c1f8e3/specification/compute/resource-manager/Microsoft.Compute/Compute/common-types/v1/common.json"
       },
       "status": "dependency"
     }
@@ -27,12 +27,12 @@
   "documents": [
     {
       "receipt": {
-        "bytes": 1062880,
+        "bytes": 1062837,
         "path": "specification/compute/resource-manager/Microsoft.Compute/Compute/stable/2026-04-01/ComputeRP.json",
-        "revision": "20aa3dd0386bd992c0cd7322635456bb4fa9bd0a",
-        "sha256": "9b05d8485f2e9e9311a364ecf9033e5c070044b9051b70ad82d6cdfd389e8cf9",
+        "revision": "ff36c08b53365936c68686269ce78469c0c1f8e3",
+        "sha256": "4924365a99c34acffa6d5405f554283f2df042d1fdee1da471fe4e5124716dce",
         "source": "azure-compute",
-        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/20aa3dd0386bd992c0cd7322635456bb4fa9bd0a/specification/compute/resource-manager/Microsoft.Compute/Compute/stable/2026-04-01/ComputeRP.json"
+        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/ff36c08b53365936c68686269ce78469c0c1f8e3/specification/compute/resource-manager/Microsoft.Compute/Compute/stable/2026-04-01/ComputeRP.json"
       },
       "status": "imported"
     }
@@ -41,14 +41,14 @@
   "inventory": {
     "documents": [
       {
-        "blob_sha": "af638d0160a212be8cc5e3bb355917fd463bfe4d",
-        "bytes": 1062880,
+        "blob_sha": "268019010f1e9d6c854e65b65352c194fa224890",
+        "bytes": 1062837,
         "path": "specification/compute/resource-manager/Microsoft.Compute/Compute/stable/2026-04-01/ComputeRP.json",
-        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/20aa3dd0386bd992c0cd7322635456bb4fa9bd0a/specification/compute/resource-manager/Microsoft.Compute/Compute/stable/2026-04-01/ComputeRP.json"
+        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/ff36c08b53365936c68686269ce78469c0c1f8e3/specification/compute/resource-manager/Microsoft.Compute/Compute/stable/2026-04-01/ComputeRP.json"
       }
     ],
-    "revision": "20aa3dd0386bd992c0cd7322635456bb4fa9bd0a",
+    "revision": "ff36c08b53365936c68686269ce78469c0c1f8e3",
     "source": "azure-compute",
-    "tree_sha": "20aa3dd0386bd992c0cd7322635456bb4fa9bd0a"
+    "tree_sha": "ff36c08b53365936c68686269ce78469c0c1f8e3"
   }
 }
