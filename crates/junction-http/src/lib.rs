@@ -162,9 +162,20 @@ fn looks_secret(word: &str) -> bool {
         || lower.contains("token=")
         || (core.len() >= 32
             && !is_guid(core)
+            && !is_arm_resource_scope(core)
             && core
                 .chars()
                 .all(|c| c.is_ascii_alphanumeric() || matches!(c, '+' | '/' | '=' | '_' | '-')))
+}
+/// ARM scopes such as `/subscriptions/<guid>/resourceGroups/rg1` name what was denied;
+/// keep them. Only this exact prefix is exempt, since `/` is also a base64 character.
+fn is_arm_resource_scope(value: &str) -> bool {
+    let mut segments = value.split('/');
+    matches!(segments.next(), Some(""))
+        && segments
+            .next()
+            .is_some_and(|segment| segment.eq_ignore_ascii_case("subscriptions"))
+        && segments.next().is_some_and(is_guid)
 }
 fn is_guid(value: &str) -> bool {
     value.len() == 36
@@ -729,6 +740,34 @@ mod upstream_error_tests {
         );
         assert!(upstream_error(&vec![b' '; UPSTREAM_ERROR_BYTES + 1]).is_none());
         assert!(upstream_error(b"<html>nope</html>").is_none());
+    }
+    #[test]
+    fn arm_scopes_are_kept_but_slash_bearing_base64_is_not() {
+        let arm = serde_json::json!({"error":{"code":"AuthorizationFailed","message":
+            "The client does not have authorization to perform action 'Microsoft.Compute/virtualMachines/read' over scope '/subscriptions/00000000-1111-2222-3333-444444444444/resourceGroups/rg1/providers/Microsoft.Compute/virtualMachines/vm1'."}});
+        let message = upstream_error(arm.to_string().as_bytes())
+            .unwrap()
+            .message
+            .unwrap();
+        assert!(
+            message
+                .contains("/subscriptions/00000000-1111-2222-3333-444444444444/resourceGroups/rg1")
+        );
+        assert!(!message.contains("[redacted]"));
+        let base64 = serde_json::json!({"error":{"code":"X","message":"key /QUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVphYmNkZWZn/aGlqa2xtbm9w end"}});
+        let message = upstream_error(base64.to_string().as_bytes())
+            .unwrap()
+            .message
+            .unwrap();
+        assert!(message.contains("[redacted]") && !message.contains("QUJDREVG"));
+        let fake = serde_json::json!({"error":{"code":"X","message":"/subscriptions/not-a-guid-QUJDREVGR0hJSktMTU5PUFFSU1RV end"}});
+        assert!(
+            upstream_error(fake.to_string().as_bytes())
+                .unwrap()
+                .message
+                .unwrap()
+                .contains("[redacted]")
+        );
         assert!(upstream_error(br#"{"value":[]}"#).is_none());
     }
 }
