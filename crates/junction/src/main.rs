@@ -185,7 +185,7 @@ enum Command {
         #[command(subcommand)]
         command: ContextCommand,
     },
-    /// Execute a discovered operation using environment client-secret credentials.
+    /// Execute a discovered operation with the selected context's credentials (saved interactive login, Azure CLI, client secret, certificate, managed identity or API key).
     Execute {
         operation: String,
         /// Set the operation's declared subscription path parameter.
@@ -2032,6 +2032,25 @@ async fn async_main() {
             eprintln!(
                 "{}",
                 serde_json::to_string(failure).expect("authorization failures serialize")
+            );
+        } else if let Some(input) = error.downcast_ref::<junction_runtime::InputError>() {
+            let mut diagnostic = serde_json::json!({"error":"invalid_input"});
+            diagnostic["detail"] = serde_json::to_value(input).expect("input errors serialize");
+            eprintln!("{diagnostic}");
+        } else if let Some(violation) = error.downcast_ref::<junction_schema::SchemaViolation>() {
+            let mut diagnostic = serde_json::json!({"error":"input_schema_violation"});
+            diagnostic["detail"] =
+                serde_json::to_value(violation).expect("schema violations serialize");
+            eprintln!("{diagnostic}");
+        } else if let Some(http) = error.downcast_ref::<junction_http::HttpStatusError>() {
+            eprintln!(
+                "{}",
+                serde_json::json!({
+                    "error": "upstream_http_error",
+                    "http_status": http.status,
+                    "correlation": http.correlation,
+                    "upstream": http.upstream,
+                })
             );
         } else if let Some(failure) =
             error.downcast_ref::<junction_discovery::refresh::RefreshFailure>()

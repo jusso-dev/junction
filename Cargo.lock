@@ -1428,6 +1428,7 @@ dependencies = [
  "junction-core",
  "junction-discovery",
  "junction-generator",
+ "junction-http",
  "junction-mcp",
  "junction-policy",
  "junction-registry",

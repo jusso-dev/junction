@@ -152,13 +152,18 @@ pub(crate) fn decode_interactive(
     request: &TokenRequest,
     client_id: &str,
 ) -> Result<(AccessToken, Option<RefreshCredential>)> {
-    let token = crate::client_credentials::decode(bytes, request)?;
+    let mut token = crate::client_credentials::decode(bytes, request)?;
     #[derive(Deserialize)]
     struct Response {
         refresh_token: Option<Zeroizing<String>>,
+        /// Space-separated scopes the identity platform actually granted.
+        scope: Option<String>,
     }
     let response: Response = serde_json::from_slice(bytes)
         .map_err(|_| anyhow::anyhow!("invalid interactive token response"))?;
+    // Unlike client credentials (.default), interactive responses report the granted
+    // delegated scopes. Record them so authorization failures can show what is missing.
+    token.metadata.scopes = granted_scopes(response.scope.as_deref());
     let refresh = if request.scopes.iter().any(|scope| scope == "offline_access") {
         response
             .refresh_token
@@ -174,6 +179,18 @@ pub(crate) fn decode_interactive(
         None
     };
     Ok((token, refresh))
+}
+fn granted_scopes(scope: Option<&str>) -> Vec<String> {
+    let mut scopes: Vec<String> = scope
+        .unwrap_or_default()
+        .split_whitespace()
+        .filter(|s| s.len() <= 2048 && !s.chars().any(char::is_control))
+        .take(64)
+        .map(str::to_owned)
+        .collect();
+    scopes.sort();
+    scopes.dedup();
+    scopes
 }
 fn validate_client(client_id: &str) -> Result<()> {
     if client_id.is_empty()
@@ -327,5 +344,26 @@ mod tests {
             )
             .is_err()
         );
+    }
+    #[test]
+    fn interactive_responses_record_granted_scopes() {
+        let mut request = request();
+        request.scopes.push("offline_access".into());
+        let (token, _) = decode_interactive(br#"{"access_token":"access","token_type":"Bearer","expires_in":3600,"scope":"https://graph.microsoft.us/User.Read https://graph.microsoft.us/AuditLog.Read.All User.Read"}"#, &request, "client-a").unwrap();
+        assert_eq!(
+            token.metadata().scopes,
+            vec![
+                "User.Read",
+                "https://graph.microsoft.us/AuditLog.Read.All",
+                "https://graph.microsoft.us/User.Read"
+            ]
+        );
+        let (token, _) = decode_interactive(
+            br#"{"access_token":"access","token_type":"Bearer","expires_in":3600}"#,
+            &request,
+            "client-a",
+        )
+        .unwrap();
+        assert!(token.metadata().scopes.is_empty());
     }
 }

@@ -16,6 +16,7 @@ anyhow.workspace = true
 clap.workspace = true
 junction-policy = { path = "../junction-policy" }
 junction-schema = { path = "../junction-schema" }
+junction-http = { path = "../junction-http" }
 junction-auth = { path = "../junction-auth" }
 junction-runtime = { path = "../junction-runtime" }
 junction-mcp = { path = "../junction-mcp" }

@@ -361,10 +361,52 @@ pub fn validate_json_schema(schema: &Value, instance: &Value) -> Result<()> {
         .should_validate_formats(true)
         .build(schema)
         .map_err(|_| anyhow::anyhow!("invalid or unresolved validation schema"))?;
-    if !validator.is_valid(instance) {
-        bail!("input_schema_violation");
+    if let Some(error) = validator.iter_errors(instance).next() {
+        return Err(SchemaViolation {
+            instance_path: bounded_pointer(&error.instance_path().to_string()),
+            keyword: error.kind().keyword().to_owned(),
+        }
+        .into());
     }
     Ok(())
+}
+/// First schema violation: where (JSON pointer) and which rule (keyword). Never the
+/// offending value. Display keeps the stable `input_schema_violation` reason.
+#[derive(Debug, serde::Serialize)]
+pub struct SchemaViolation {
+    pub instance_path: String,
+    pub keyword: String,
+}
+impl std::fmt::Display for SchemaViolation {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str("input_schema_violation")
+    }
+}
+impl std::error::Error for SchemaViolation {}
+impl SchemaViolation {
+    /// Re-anchor a violation found in a nested value under `prefix` (a JSON pointer),
+    /// so callers see `/parameters/$top` rather than an empty path. Other errors pass through.
+    pub fn prefixed(error: anyhow::Error, prefix: &str) -> anyhow::Error {
+        match error.downcast::<SchemaViolation>() {
+            Ok(mut violation) => {
+                violation.instance_path =
+                    bounded_pointer(&format!("{prefix}{}", violation.instance_path));
+                violation.into()
+            }
+            Err(error) => error,
+        }
+    }
+}
+/// Escape one JSON pointer reference token (RFC 6901).
+pub fn pointer_segment(name: &str) -> String {
+    name.replace('~', "~0").replace('/', "~1")
+}
+fn bounded_pointer(pointer: &str) -> String {
+    pointer
+        .chars()
+        .filter(|c| !c.is_control())
+        .take(256)
+        .collect()
 }
 #[cfg(test)]
 mod validation_tests {
@@ -593,5 +635,22 @@ mod definition_tests {
             )
             .is_err()
         );
+    }
+    #[test]
+    fn violations_report_location_and_keyword_without_values() {
+        let schema = serde_json::json!({"type":"object","properties":{"top":{"type":"integer"}}});
+        let error =
+            validate_json_schema(&schema, &serde_json::json!({"top":"secret-value"})).unwrap_err();
+        let error = SchemaViolation::prefixed(error, "/parameters");
+        let violation = error.downcast_ref::<SchemaViolation>().unwrap();
+        assert_eq!(violation.instance_path, "/parameters/top");
+        assert_eq!(violation.keyword, "type");
+        assert_eq!(error.to_string(), "input_schema_violation");
+        assert!(
+            !serde_json::to_string(violation)
+                .unwrap()
+                .contains("secret-value")
+        );
+        assert_eq!(pointer_segment("a/b~c"), "a~1b~0c");
     }
 }
