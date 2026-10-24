@@ -83,11 +83,119 @@ pub struct HttpResponse {
     pub retry_after: Option<Duration>,
 }
 /// Safe upstream error metadata; response bodies and request URLs are excluded.
+/// `upstream` keeps only the service's documented error code and a bounded,
+/// redacted message, so a 403 says why without echoing the payload.
 #[derive(Debug)]
 pub struct HttpStatusError {
     pub correlation: CorrelationIds,
     pub status: u16,
     pub retry_after: Option<Duration>,
+    pub upstream: Option<UpstreamError>,
+}
+/// The documented error code and message from a Microsoft error response.
+#[derive(Debug, Clone, Default, PartialEq, Eq, serde::Serialize)]
+pub struct UpstreamError {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub code: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub message: Option<String>,
+}
+const UPSTREAM_ERROR_BYTES: usize = 16 * 1024;
+const UPSTREAM_MESSAGE_CHARS: usize = 300;
+/// Parse `{"error":{"code","message"}}` (Graph, ARM) or `{"error","error_description"}`
+/// (OAuth). Anything else, including oversized bodies, yields `None`.
+pub fn upstream_error(bytes: &[u8]) -> Option<UpstreamError> {
+    if bytes.len() > UPSTREAM_ERROR_BYTES {
+        return None;
+    }
+    let value: Value = serde_json::from_slice(bytes).ok()?;
+    let error = value.get("error")?;
+    let (code, message) = match error {
+        Value::Object(fields) => (
+            fields.get("code").and_then(Value::as_str),
+            fields.get("message").and_then(Value::as_str),
+        ),
+        Value::String(code) => (
+            Some(code.as_str()),
+            value.get("error_description").and_then(Value::as_str),
+        ),
+        _ => return None,
+    };
+    let code = code
+        .filter(|code| {
+            !code.is_empty()
+                && code.len() <= 128
+                && code
+                    .bytes()
+                    .all(|b| b.is_ascii_alphanumeric() || matches!(b, b'_' | b'-' | b'.'))
+        })
+        .map(str::to_owned);
+    let message = message.map(redact_message).filter(|m| !m.is_empty());
+    (code.is_some() || message.is_some()).then_some(UpstreamError { code, message })
+}
+fn redact_message(message: &str) -> String {
+    let words: Vec<&str> = message
+        .split_whitespace()
+        .map(|word| {
+            if looks_secret(word) {
+                "[redacted]"
+            } else {
+                word
+            }
+        })
+        .collect();
+    words
+        .join(" ")
+        .chars()
+        .filter(|c| !c.is_control())
+        .take(UPSTREAM_MESSAGE_CHARS)
+        .collect()
+}
+fn looks_secret(word: &str) -> bool {
+    let core = word.trim_matches(|c: char| {
+        !(c.is_ascii_alphanumeric() || matches!(c, '+' | '/' | '=' | '_' | '-'))
+    });
+    let lower = word.to_ascii_lowercase();
+    word.contains("eyJ")
+        || (word.contains("://") && word.contains('?'))
+        || lower.contains("sig=")
+        || lower.contains("token=")
+        || (core.len() >= 32
+            && !is_guid(core)
+            && !is_arm_resource_scope(core)
+            && core
+                .chars()
+                .all(|c| c.is_ascii_alphanumeric() || matches!(c, '+' | '/' | '=' | '_' | '-')))
+}
+/// ARM scopes such as `/subscriptions/<guid>/resourceGroups/rg1` name what was denied;
+/// keep them. Only this exact prefix is exempt, since `/` is also a base64 character.
+fn is_arm_resource_scope(value: &str) -> bool {
+    let mut segments = value.split('/');
+    matches!(segments.next(), Some(""))
+        && segments
+            .next()
+            .is_some_and(|segment| segment.eq_ignore_ascii_case("subscriptions"))
+        && segments.next().is_some_and(is_guid)
+}
+fn is_guid(value: &str) -> bool {
+    value.len() == 36
+        && value.char_indices().all(|(i, c)| {
+            if matches!(i, 8 | 13 | 18 | 23) {
+                c == '-'
+            } else {
+                c.is_ascii_hexdigit()
+            }
+        })
+}
+async fn read_error_body(response: &mut reqwest::Response) -> Option<Vec<u8>> {
+    let mut bytes = Vec::new();
+    while let Ok(Some(chunk)) = response.chunk().await {
+        if bytes.len().saturating_add(chunk.len()) > UPSTREAM_ERROR_BYTES {
+            return None;
+        }
+        bytes.extend_from_slice(&chunk);
+    }
+    Some(bytes)
 }
 impl std::fmt::Display for HttpStatusError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -332,12 +440,17 @@ impl HttpTransport {
                 .and_then(|h| h.to_str().ok()),
             SystemTime::now(),
         );
-        // Only return response bodies on success. Error payloads may echo secrets.
+        // Only return response bodies on success. Error payloads may echo secrets, so
+        // only the documented code and a bounded, redacted message are kept.
         if !response.status().is_success() {
+            let upstream = read_error_body(&mut response)
+                .await
+                .and_then(|bytes| upstream_error(&bytes));
             return Err(HttpStatusError {
                 correlation,
                 status,
                 retry_after,
+                upstream,
             }
             .into());
         }
@@ -534,6 +647,7 @@ mod tests {
             correlation: CorrelationIds::default(),
             status: 429,
             retry_after: Some(Duration::from_secs(2)),
+            upstream: None,
         };
         assert_eq!(
             retry_delay("GET", &error, 0, Duration::ZERO),
@@ -550,7 +664,8 @@ mod tests {
                     &HttpStatusError {
                         correlation: CorrelationIds::default(),
                         status,
-                        retry_after: None
+                        retry_after: None,
+                        upstream: None
                     },
                     0,
                     Duration::ZERO
@@ -577,5 +692,82 @@ mod tests {
         assert!(HttpTransport::new(governor.clone(), Duration::ZERO, 1024).is_err());
         assert!(HttpTransport::new(governor.clone(), Duration::from_secs(30), 0).is_err());
         assert!(HttpTransport::new(governor, Duration::from_secs(30), 1024).is_ok());
+    }
+}
+
+#[cfg(test)]
+mod upstream_error_tests {
+    use super::*;
+    #[test]
+    fn graph_and_oauth_error_shapes_keep_code_and_message() {
+        let graph = br#"{"error":{"code":"Forbidden","message":"The service principal for App ID 8bd644d1-64a1-4d4b-ae52-2e0cbf64e373 was not found.","innerError":{"date":"2026-10-24"}}}"#;
+        let parsed = upstream_error(graph).unwrap();
+        assert_eq!(parsed.code.as_deref(), Some("Forbidden"));
+        assert!(
+            parsed
+                .message
+                .unwrap()
+                .contains("8bd644d1-64a1-4d4b-ae52-2e0cbf64e373")
+        );
+        let oauth = br#"{"error":"invalid_grant","error_description":"AADSTS50076: MFA required"}"#;
+        let parsed = upstream_error(oauth).unwrap();
+        assert_eq!(parsed.code.as_deref(), Some("invalid_grant"));
+        assert_eq!(parsed.message.as_deref(), Some("AADSTS50076: MFA required"));
+    }
+    #[test]
+    fn secrets_are_redacted_and_bounds_hold() {
+        let body = serde_json::json!({"error":{"code":"Bad code!","message":
+            "token eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJ4In0.sig at https://x.example/a?sig=abc and secret QUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVphYmNkZWZnaGlqa2xtbm9w end"}});
+        let parsed = upstream_error(body.to_string().as_bytes()).unwrap();
+        assert!(
+            parsed.code.is_none(),
+            "codes outside the safe charset are dropped"
+        );
+        let message = parsed.message.unwrap();
+        assert!(!message.contains("eyJ"));
+        assert!(!message.contains("sig=abc"));
+        assert!(!message.contains("QUJDREVGR0hJSktMTU5PUFFSU1RVVld"));
+        assert!(message.contains("[redacted]") && message.ends_with("end"));
+        let long = serde_json::json!({"error":{"code":"X","message":"word ".repeat(200)}});
+        assert!(
+            upstream_error(long.to_string().as_bytes())
+                .unwrap()
+                .message
+                .unwrap()
+                .chars()
+                .count()
+                <= 300
+        );
+        assert!(upstream_error(&vec![b' '; UPSTREAM_ERROR_BYTES + 1]).is_none());
+        assert!(upstream_error(b"<html>nope</html>").is_none());
+    }
+    #[test]
+    fn arm_scopes_are_kept_but_slash_bearing_base64_is_not() {
+        let arm = serde_json::json!({"error":{"code":"AuthorizationFailed","message":
+            "The client does not have authorization to perform action 'Microsoft.Compute/virtualMachines/read' over scope '/subscriptions/00000000-1111-2222-3333-444444444444/resourceGroups/rg1/providers/Microsoft.Compute/virtualMachines/vm1'."}});
+        let message = upstream_error(arm.to_string().as_bytes())
+            .unwrap()
+            .message
+            .unwrap();
+        assert!(
+            message
+                .contains("/subscriptions/00000000-1111-2222-3333-444444444444/resourceGroups/rg1")
+        );
+        assert!(!message.contains("[redacted]"));
+        let base64 = serde_json::json!({"error":{"code":"X","message":"key /QUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVphYmNkZWZn/aGlqa2xtbm9w end"}});
+        let message = upstream_error(base64.to_string().as_bytes())
+            .unwrap()
+            .message
+            .unwrap();
+        assert!(message.contains("[redacted]") && !message.contains("QUJDREVG"));
+        let fake = serde_json::json!({"error":{"code":"X","message":"/subscriptions/not-a-guid-QUJDREVGR0hJSktMTU5PUFFSU1RV end"}});
+        assert!(
+            upstream_error(fake.to_string().as_bytes())
+                .unwrap()
+                .message
+                .unwrap()
+                .contains("[redacted]")
+        );
+        assert!(upstream_error(br#"{"value":[]}"#).is_none());
     }
 }

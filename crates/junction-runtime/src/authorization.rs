@@ -15,6 +15,9 @@ pub struct AuthorizationFailure {
     pub correlation: junction_http::CorrelationIds,
     pub detected_scopes: Vec<String>,
     pub detected_roles: Vec<String>,
+    /// The service's error code and a bounded, redacted message, when it sent one.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub upstream: Option<junction_http::UpstreamError>,
     pub remediation: &'static str,
 }
 impl std::fmt::Display for AuthorizationFailure {
@@ -37,6 +40,7 @@ pub(crate) fn enrich(
     };
     let status = failure.status;
     let correlation = failure.correlation.clone();
+    let upstream = failure.upstream.clone();
     AuthorizationFailure {
         status: "authorization_failed", http_status: status, operation: operation.id.clone(),
         audience: context.audience.to_owned(), authentication: "bearer",
@@ -44,6 +48,7 @@ pub(crate) fn enrich(
         documentation_url: operation.documentation().map(str::to_owned),
         correlation,
         detected_scopes: context.token.metadata().scopes.clone(), detected_roles: context.token.metadata().roles.clone(),
+        upstream,
         remediation: if status == 401 { "Check token expiry, issuer, tenant and resource audience; reacquire credentials for this context." }
             else { "Check the service's documented permissions, consent, RBAC and resource-specific access policies; Junction does not grant permissions." },
     }.into()
@@ -85,6 +90,7 @@ mod tests {
                     },
                     status,
                     retry_after: None,
+                    upstream: None,
                 }
                 .into(),
                 &operation,
@@ -116,6 +122,7 @@ mod tests {
                 correlation: junction_http::CorrelationIds::default(),
                 status: 403,
                 retry_after: None,
+                upstream: None,
             }
             .into(),
             &operation,
@@ -140,6 +147,7 @@ mod tests {
                 correlation: junction_http::CorrelationIds::default(),
                 status: 500,
                 retry_after: None,
+                upstream: None,
             }
             .into(),
             &operation,

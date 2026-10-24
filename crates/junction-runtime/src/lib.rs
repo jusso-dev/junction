@@ -22,6 +22,25 @@ impl std::fmt::Display for ExecutionDenied {
     }
 }
 impl std::error::Error for ExecutionDenied {}
+/// Input shape error. Names the offending top-level field (never a value) so callers
+/// can fix their input; Display keeps the stable reason string.
+#[derive(Debug, serde::Serialize)]
+pub struct InputError {
+    pub reason: &'static str,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub field: Option<String>,
+    pub expected: &'static str,
+}
+impl std::fmt::Display for InputError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.reason)
+    }
+}
+impl std::error::Error for InputError {}
+const INPUT_SHAPE: &str = r#"{"parameters": {...}, "body": {...}} (query, path and header options go under "parameters")"#;
+fn safe_field_name(name: &str) -> Option<String> {
+    (name.len() <= 64 && name.chars().all(|c| c.is_ascii_graphic())).then(|| name.to_owned())
+}
 fn enforce(decision: Decision) -> Result<()> {
     match decision {
         Decision::Allowed => Ok(()),
@@ -76,21 +95,31 @@ fn prepare_authorized(
     endpoint: &str,
     definitions: &Value,
 ) -> Result<PreparedRequest> {
-    let object = input
-        .as_object()
-        .ok_or_else(|| anyhow::anyhow!("input must be an object"))?;
-    if object
+    let object = input.as_object().ok_or(InputError {
+        reason: "input must be an object",
+        field: None,
+        expected: INPUT_SHAPE,
+    })?;
+    if let Some(key) = object
         .keys()
-        .any(|key| !["parameters", "body"].contains(&key.as_str()))
+        .find(|key| !["parameters", "body"].contains(&key.as_str()))
     {
-        bail!("unknown input field");
+        return Err(InputError {
+            reason: "unknown input field",
+            field: safe_field_name(key),
+            expected: INPUT_SHAPE,
+        }
+        .into());
     }
     let empty = serde_json::Map::new();
     let parameters = object
         .get("parameters")
         .map(|p| {
-            p.as_object()
-                .ok_or_else(|| anyhow::anyhow!("parameters must be an object"))
+            p.as_object().ok_or(InputError {
+                reason: "parameters must be an object",
+                field: Some("parameters".into()),
+                expected: INPUT_SHAPE,
+            })
         })
         .transpose()?
         .unwrap_or(&empty);
@@ -128,7 +157,17 @@ fn prepare_authorized(
             }
             continue;
         };
-        junction_schema::validate_with_definitions(&parameter.schema, definitions, value)?;
+        junction_schema::validate_with_definitions(&parameter.schema, definitions, value).map_err(
+            |error| {
+                junction_schema::SchemaViolation::prefixed(
+                    error,
+                    &format!(
+                        "/parameters/{}",
+                        junction_schema::pointer_segment(&parameter.name)
+                    ),
+                )
+            },
+        )?;
         match parameter.location.as_str() {
             "path" => {
                 if parameter
@@ -271,7 +310,8 @@ fn validate_body(
         let schema = body_media_type(operation)
             .and_then(|media| operation.request_body.as_ref()?["content"][media].get("schema"))
             .ok_or_else(|| anyhow::anyhow!("request body schema resolution required"))?;
-        junction_schema::validate_with_definitions(schema, definitions, body)?;
+        junction_schema::validate_with_definitions(schema, definitions, body)
+            .map_err(|error| junction_schema::SchemaViolation::prefixed(error, "/body"))?;
     }
     Ok(())
 }
