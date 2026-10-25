@@ -91,11 +91,12 @@ permission for each. The generated tables follow: one per pack, then the union f
 | Permission | Type | Checks | Operations |
 |---|---|---|---|
 | `Device.Read.All` | Microsoft Graph application | `endpoint.onboarding_coverage` | `graph.devices.list` |
+| `DeviceManagementConfiguration.Read.All` | Microsoft Graph application | `endpoint.asr_quick_wins`, `endpoint.asr_rule_state` | `graph.device_management.configuration_policies.list`, `graph.device_management.intents.list`, `graph.device_management.intents.settings.list` |
 | `DeviceManagementManagedDevices.Read.All` | Microsoft Graph application | `endpoint.onboarding_coverage` | `graph.device_management.managed_devices.list` |
-| `ThreatHunting.Read.All` | Microsoft Graph application | `endpoint.av_definition_age`, `endpoint.av_mode`, `endpoint.edr_block_mode`, `endpoint.network_protection` | `graph.security.run_hunting_query` |
+| `ThreatHunting.Read.All` | Microsoft Graph application | `endpoint.asr_audit_noise`, `endpoint.asr_quick_wins`, `endpoint.asr_rule_state`, `endpoint.av_definition_age`, `endpoint.av_mode`, `endpoint.edr_block_mode`, `endpoint.network_protection` | `graph.security.run_hunting_query` |
 | `Machine.Read.All` | Defender for Endpoint application | `endpoint.linux_macos_health`, `endpoint.onboarding_coverage`, `endpoint.servers_covered`, `endpoint.stale_sensors`, `endpoint.unsupported_os` | `defender.endpoint.machines.list` |
 | `Vulnerability.Read.All` | Defender for Endpoint application | `endpoint.cloud_protection`, `endpoint.network_protection`, `endpoint.realtime_protection`, `endpoint.tamper_protection` | `defender.endpoint.machines.list_secure_configurations_assessment_by_machine` |
-| `AdvancedHunting.Read.All` | Defender XDR application | `endpoint.av_definition_age`, `endpoint.av_mode`, `endpoint.edr_block_mode`, `endpoint.network_protection` | `defender.xdr.advancedhunting.run` |
+| `AdvancedHunting.Read.All` | Defender XDR application | `endpoint.asr_audit_noise`, `endpoint.asr_quick_wins`, `endpoint.asr_rule_state`, `endpoint.av_definition_age`, `endpoint.av_mode`, `endpoint.edr_block_mode`, `endpoint.network_protection` | `defender.xdr.advancedhunting.run` |
 | `Reader` | Azure RBAC role | `endpoint.servers_covered` | `azure.arc.machines.list_by_subscription`, `azure.resource_graph.resources.post` |
 
 ### Email (`email`)
@@ -128,6 +129,7 @@ permission for each. The generated tables follow: one per pack, then the union f
 | `AuditLog.Read.All` | Microsoft Graph application | `identity.mfa_admins`, `identity.mfa_coverage`, `identity.phishing_resistant_admins` | `graph.reports.authentication_methods.user_registration_details.list` |
 | `BackupRestore-Configuration.Read.All` | Microsoft Graph application | `backup.m365_backup` | `graph.solutions.backup_restore.exchange_protection_policies.list`, `graph.solutions.backup_restore.get`, `graph.solutions.backup_restore.one_drive_for_business_protection_policies.list`, `graph.solutions.backup_restore.share_point_protection_policies.list` |
 | `Device.Read.All` | Microsoft Graph application | `endpoint.onboarding_coverage` | `graph.devices.list` |
+| `DeviceManagementConfiguration.Read.All` | Microsoft Graph application | `endpoint.asr_quick_wins`, `endpoint.asr_rule_state` | `graph.device_management.configuration_policies.list`, `graph.device_management.intents.list`, `graph.device_management.intents.settings.list` |
 | `DeviceManagementManagedDevices.Read.All` | Microsoft Graph application | `endpoint.onboarding_coverage` | `graph.device_management.managed_devices.list` |
 | `Domain.Read.All` | Microsoft Graph application | `email.dkim`, `email.dmarc`, `email.spf` | `graph.domains.list` |
 | `GroupMember.Read.All` | Microsoft Graph application | `identity.break_glass`, `identity.mfa_admins`, `identity.phishing_resistant_admins`, `identity.separate_admin_accounts` | `graph.groups.transitive_members.list`, `graph.users.transitive_member_of.list` |
@@ -136,12 +138,12 @@ permission for each. The generated tables follow: one per pack, then the union f
 | `RoleAssignmentSchedule.Read.Directory` | Microsoft Graph application | `identity.pim_used` | `graph.role_management.directory.role_assignment_schedules.list` |
 | `RoleEligibilitySchedule.Read.Directory` | Microsoft Graph application | `identity.pim_used` | `graph.role_management.directory.role_eligibility_schedules.list` |
 | `RoleManagement.Read.Directory` | Microsoft Graph application | `identity.break_glass`, `identity.global_admin_count`, `identity.mfa_admins`, `identity.phishing_resistant_admins`, `identity.separate_admin_accounts` | `graph.role_management.directory.role_assignments.list` |
-| `ThreatHunting.Read.All` | Microsoft Graph application | `endpoint.av_definition_age`, `endpoint.av_mode`, `endpoint.edr_block_mode`, `endpoint.network_protection` | `graph.security.run_hunting_query` |
+| `ThreatHunting.Read.All` | Microsoft Graph application | `endpoint.asr_audit_noise`, `endpoint.asr_quick_wins`, `endpoint.asr_rule_state`, `endpoint.av_definition_age`, `endpoint.av_mode`, `endpoint.edr_block_mode`, `endpoint.network_protection` | `graph.security.run_hunting_query` |
 | `User.Read.All` | Microsoft Graph application | `identity.mfa_coverage`, `identity.separate_admin_accounts` | `graph.users.list` |
 | `UserAuthenticationMethod.Read.All` | Microsoft Graph application | `identity.mfa_admins` | `graph.users.authentication.methods.list` |
 | `Machine.Read.All` | Defender for Endpoint application | `endpoint.linux_macos_health`, `endpoint.onboarding_coverage`, `endpoint.servers_covered`, `endpoint.stale_sensors`, `endpoint.unsupported_os` | `defender.endpoint.machines.list` |
 | `Vulnerability.Read.All` | Defender for Endpoint application | `endpoint.cloud_protection`, `endpoint.network_protection`, `endpoint.realtime_protection`, `endpoint.tamper_protection` | `defender.endpoint.machines.list_secure_configurations_assessment_by_machine` |
-| `AdvancedHunting.Read.All` | Defender XDR application | `endpoint.av_definition_age`, `endpoint.av_mode`, `endpoint.edr_block_mode`, `endpoint.network_protection` | `defender.xdr.advancedhunting.run` |
+| `AdvancedHunting.Read.All` | Defender XDR application | `endpoint.asr_audit_noise`, `endpoint.asr_quick_wins`, `endpoint.asr_rule_state`, `endpoint.av_definition_age`, `endpoint.av_mode`, `endpoint.edr_block_mode`, `endpoint.network_protection` | `defender.xdr.advancedhunting.run` |
 | `Log Analytics Reader` | Azure RBAC role | `sentinel.connectors`, `sentinel.health_auditing`, `sentinel.ingestion_cost`, `sentinel.retention`, `sentinel.rules_enabled` | `azure.log_analytics.tables.list_by_workspace`, `azure.log_analytics_query.query.execute` |
 | `Microsoft Sentinel Reader` | Azure RBAC role | `sentinel.automation`, `sentinel.connectors`, `sentinel.health_auditing`, `sentinel.incidents_stale`, `sentinel.ingestion_cost`, `sentinel.retention`, `sentinel.rules_enabled`, `sentinel.workspace` | `sentinel.securityinsights.alert_rules.list`, `sentinel.securityinsights.automation_rules.list`, `sentinel.securityinsights.data_connectors.list`, `sentinel.securityinsights.incidents.list`, `sentinel.securityinsights.sentinel_onboarding_states.list` |
 | `Reader` | Azure RBAC role | `backup.azure_vaults`, `endpoint.servers_covered`, `sentinel.automation`, `sentinel.connectors`, `sentinel.health_auditing`, `sentinel.incidents_stale`, `sentinel.ingestion_cost`, `sentinel.retention`, `sentinel.rules_enabled`, `sentinel.workspace` | `azure.arc.machines.list_by_subscription`, `azure.resource_graph.resources.post` |

@@ -46,6 +46,7 @@ fn with<'a>(base: &[&'a str], extra: &[&'a str]) -> Vec<&'a str> {
 fn normalise(mut report: Value) -> Value {
     report["finished_at"] = json!("<finished>");
     report["run_id"] = json!("<run>");
+    report["started_at"] = json!("<started>");
     report
 }
 

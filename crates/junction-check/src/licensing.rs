@@ -93,7 +93,6 @@ mod tests {
                 "defender_endpoint_p2",
                 "defender_office_p1",
                 "defender_vulnerability_management",
-                "defender_xdr_hunting",
                 "entra_id_p1",
                 "exchange_online",
                 "intune"

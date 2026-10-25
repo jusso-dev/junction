@@ -48,7 +48,7 @@ fn local_contract_imports_and_closes_execution_requests_to_host_configuration() 
             }
         }
     }
-    assert_eq!(ids.len(), 9);
+    assert_eq!(ids.len(), 14);
     let error_schema = &contract["paths"]["/v1/execute/{id}"]["post"]["responses"]["429"]["content"]
         ["application/json"]["schema"];
     assert_eq!(error_schema["properties"]["retryable"]["type"], "boolean");
@@ -87,4 +87,22 @@ fn local_contract_imports_and_closes_execution_requests_to_host_configuration() 
     ] {
         assert!(junction_schema::validate_json_schema(schema, &input).is_err());
     }
+}
+
+#[test]
+fn contract_documents_check_routes() {
+    let contract = junction_server::openapi();
+    for (path, method) in [
+        ("/v1/checks", "get"),
+        ("/v1/checks/run", "post"),
+        ("/v1/checks/runs/{id}", "get"),
+        ("/v1/checks/attestations", "get"),
+        ("/v1/checks/attestations", "post"),
+    ] {
+        assert!(
+            contract["paths"][path][method].is_object(),
+            "{method} {path}"
+        );
+    }
+    refs(&contract, &contract);
 }

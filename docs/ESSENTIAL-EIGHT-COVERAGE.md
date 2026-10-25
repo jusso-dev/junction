@@ -28,8 +28,8 @@ follows ASD's Essential Eight Assessment Process Guide.
 | Multi-factor authentication | `identity.baseline`<br>`identity.legacy_auth_blocked`<br>`identity.mfa_admins`<br>`identity.mfa_coverage` | `identity.baseline`<br>`identity.legacy_auth_blocked`<br>`identity.mfa_admins`<br>`identity.mfa_coverage`<br>`identity.phishing_resistant_admins`<br>`sentinel.connectors`<br>`sentinel.incidents_stale`<br>`sentinel.rules_enabled`<br>`sentinel.workspace` | `identity.baseline`<br>`identity.legacy_auth_blocked`<br>`identity.mfa_admins`<br>`identity.mfa_coverage`<br>`identity.phishing_resistant_admins`<br>`sentinel.connectors`<br>`sentinel.incidents_stale`<br>`sentinel.rules_enabled`<br>`sentinel.workspace` |
 | Restrict administrative privileges | `identity.global_admin_count`<br>`identity.separate_admin_accounts` | `identity.break_glass_monitored` (manual)<br>`identity.global_admin_count`<br>`identity.separate_admin_accounts`<br>`sentinel.connectors`<br>`sentinel.incidents_stale`<br>`sentinel.rules_enabled`<br>`sentinel.workspace` | `identity.break_glass_monitored` (manual)<br>`identity.global_admin_count`<br>`identity.pim_used`<br>`identity.separate_admin_accounts`<br>`sentinel.connectors`<br>`sentinel.incidents_stale`<br>`sentinel.rules_enabled`<br>`sentinel.workspace` |
 | Application control | none | `sentinel.incidents_stale`<br>`sentinel.rules_enabled` | `sentinel.incidents_stale`<br>`sentinel.rules_enabled` |
-| Restrict Microsoft Office macros | none | none | none |
-| User application hardening | none | `sentinel.incidents_stale`<br>`sentinel.rules_enabled` | `sentinel.incidents_stale`<br>`sentinel.rules_enabled` |
+| Restrict Microsoft Office macros | none | `endpoint.asr_quick_wins`<br>`endpoint.asr_rule_state` | `endpoint.asr_quick_wins`<br>`endpoint.asr_rule_state` |
+| User application hardening | none | `endpoint.asr_quick_wins`<br>`endpoint.asr_rule_state`<br>`sentinel.incidents_stale`<br>`sentinel.rules_enabled` | `endpoint.asr_quick_wins`<br>`endpoint.asr_rule_state`<br>`sentinel.incidents_stale`<br>`sentinel.rules_enabled` |
 | Regular backups | `backup.azure_vaults`<br>`backup.m365_backup`<br>`backup.offline_copy` (manual)<br>`backup.restore_tested` (manual)<br>`backup.third_party_app` | `backup.admin_separation` (manual)<br>`backup.azure_vaults`<br>`backup.m365_backup`<br>`backup.offline_copy` (manual)<br>`backup.restore_tested` (manual)<br>`backup.third_party_app` | `backup.admin_separation` (manual)<br>`backup.azure_vaults`<br>`backup.m365_backup`<br>`backup.offline_copy` (manual)<br>`backup.restore_tested` (manual)<br>`backup.third_party_app` |
 
 (manual) marks a check answered by attestation rather than an API.
@@ -43,8 +43,8 @@ follows ASD's Essential Eight Assessment Process Guide.
 | Multi-factor authentication | 24 | 11 | 13 |
 | Restrict administrative privileges | 28 | 12 | 16 |
 | Application control | 19 | 5 | 14 |
-| Restrict Microsoft Office macros | 10 | 0 | 10 |
-| User application hardening | 29 | 5 | 24 |
+| Restrict Microsoft Office macros | 10 | 1 | 9 |
+| User application hardening | 29 | 9 | 20 |
 | Regular backups | 11 | 9 | 2 |
 
 ## Gaps
@@ -160,7 +160,6 @@ Requirements with no check tagged with the same ISM control.
 | ISM-1671 | ML1, ML2, ML3 | Microsoft Office macros are disabled for human users that do not have a demonstrated business requirement |
 | ISM-1488 | ML1, ML2, ML3 | Microsoft Office macros in files originating from the internet are blocked |
 | ISM-1672 | ML1, ML2, ML3 | Microsoft Office macro antivirus scanning is enabled |
-| ISM-1673 | ML2, ML3 | Microsoft Office macros are blocked from making Win32 API calls |
 | ISM-1674 | ML3 | Only Microsoft Office macros running from within a sandboxed environment, a Trusted Location or that are digitally signed by a trusted… |
 | ISM-1890 | ML3 | Microsoft Office macros are checked to ensure they are free of malicious code before being digitally signed or placed within Trusted… |
 | ISM-1487 | ML3 | Only privileged human users responsible for checking that Microsoft Office macros are free of malicious code can write to and modify… |
@@ -181,13 +180,9 @@ Requirements with no check tagged with the same ISM control.
 | ISM-1622 | ML3 | PowerShell is configured to use Constrained Language Mode |
 | ISM-1623 | ML2, ML3 | PowerShell module logging, script block logging and transcription events are centrally logged |
 | ISM-1859 | ML2, ML3 | Office productivity suites are hardened using ASD and vendor hardening guidance, with the most restrictive guidance taking precedence when… |
-| ISM-1667 | ML2, ML3 | Microsoft Office is blocked from creating child processes |
-| ISM-1668 | ML2, ML3 | Microsoft Office is blocked from creating executable content |
-| ISM-1669 | ML2, ML3 | Microsoft Office is blocked from injecting code into other processes |
 | ISM-1542 | ML2, ML3 | Microsoft Office is configured to prevent activation of Object Linking and Embedding packages |
 | ISM-1823 | ML2, ML3 | Office productivity suite security settings cannot be changed by human users |
 | ISM-1676 | ML3 | Microsoft Office’s list of trusted publishers is validated at least annually |
-| ISM-1670 | ML2, ML3 | PDF applications are blocked from creating child processes |
 | ISM-1860 | ML2, ML3 | PDF applications are hardened using ASD and vendor hardening guidance, with the most restrictive guidance taking precedence when conflicts… |
 | ISM-1824 | ML2, ML3 | PDF application security settings cannot be changed by human users |
 | ISM-1486 | ML1, ML2, ML3 | Web browsers do not process Java from the internet |
