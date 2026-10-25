@@ -1,0 +1,57 @@
+{
+    "operation": "graph.device_management.device_configurations.list",
+    "responses": [
+        {
+            "body": {
+                "value": [
+                    {
+                        "@odata.type": "#microsoft.graph.windowsUpdateForBusinessConfiguration",
+                        "id": "r-broad",
+                        "displayName": "Broad",
+                        "qualityUpdatesDeferralPeriodInDays": 7,
+                        "featureUpdatesDeferralPeriodInDays": 0,
+                        "qualityUpdatesPaused": false,
+                        "assignments": [
+                            {
+                                "id": "a1",
+                                "target": {
+                                    "@odata.type": "#microsoft.graph.allDevicesAssignmentTarget"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "@odata.type": "#microsoft.graph.windowsUpdateForBusinessConfiguration",
+                        "id": "r-pilot",
+                        "displayName": "Pilot",
+                        "qualityUpdatesDeferralPeriodInDays": 0,
+                        "featureUpdatesDeferralPeriodInDays": 0,
+                        "qualityUpdatesPaused": false,
+                        "assignments": [
+                            {
+                                "id": "a2",
+                                "target": {
+                                    "@odata.type": "#microsoft.graph.groupAssignmentTarget",
+                                    "groupId": "00000000-0000-4000-8000-000000000040"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "@odata.type": "#microsoft.graph.windows10GeneralConfiguration",
+                        "id": "c-1",
+                        "displayName": "Device restrictions",
+                        "assignments": [
+                            {
+                                "id": "a1",
+                                "target": {
+                                    "@odata.type": "#microsoft.graph.allDevicesAssignmentTarget"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    ]
+}

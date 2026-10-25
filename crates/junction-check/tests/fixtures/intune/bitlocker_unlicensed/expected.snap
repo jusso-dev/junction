@@ -1,0 +1,16 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": null,
+    "summary": "The tenant has no Microsoft Intune licence, so this cannot be read from Intune. If Group Policy or another device manager enforces it, record that with `junction check attest intune.bitlocker_escrow`."
+  },
+  "id": "intune.bitlocker_escrow",
+  "reason": {
+    "code": "licence_required",
+    "detail": "The tenant has no Microsoft Intune licence, so this cannot be read from Intune. If Group Policy or another device manager enforces it, record that with `junction check attest intune.bitlocker_escrow`."
+  },
+  "status": "not_applicable"
+}

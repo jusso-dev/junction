@@ -1,0 +1,43 @@
+{
+  "affected": {
+    "items": [
+      "WIN-01",
+      "WIN-03"
+    ],
+    "total": 2
+  },
+  "evidence": {
+    "data": {
+      "behind": 1,
+      "behind_devices": [
+        {
+          "device": "WIN-03",
+          "missing_since": "2026-08-11",
+          "missing_update": "KB5121003",
+          "os_version": "10.0.26100.8875",
+          "release": "Windows 11, version 24H2 (and Enterprise LTSC 2024)"
+        }
+      ],
+      "builds_reviewed": "2026-10-25",
+      "current": 2,
+      "maturity_level": 1,
+      "max_age_days": 30,
+      "stale_left_out": 0,
+      "tvm": {
+        "overdue": 1,
+        "overdue_by_device": {
+          "WIN-01": 1
+        },
+        "status": "read",
+        "vulnerable_software_rows": 3
+      },
+      "unrecognised": [],
+      "unsupported": [],
+      "windows_devices": 3
+    },
+    "summary": "1 of 3 Windows devices are missing a security update released more than 30 days ago; Defender Vulnerability Management reports 1 vulnerable software install past the patch timeframe."
+  },
+  "id": "intune.patch_age",
+  "reason": null,
+  "status": "fail"
+}

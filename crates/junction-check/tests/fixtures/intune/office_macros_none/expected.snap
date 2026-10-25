@@ -1,0 +1,21 @@
+{
+  "affected": {
+    "items": [
+      "excel",
+      "powerpoint",
+      "word"
+    ],
+    "total": 3
+  },
+  "evidence": {
+    "data": {
+      "internet_macros_blocked": [],
+      "policies": [],
+      "vba_notification": {}
+    },
+    "summary": "No assigned Intune settings catalog policy sets Office macro security. If Cloud Policy or Group Policy controls macros, record that with `junction check attest intune.office_macros`."
+  },
+  "id": "intune.office_macros",
+  "reason": null,
+  "status": "fail"
+}

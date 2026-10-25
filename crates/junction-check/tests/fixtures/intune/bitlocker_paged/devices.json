@@ -1,0 +1,31 @@
+{
+    "operation": "graph.device_management.managed_devices.list",
+    "responses": [
+        {
+            "body": {
+                "value": [
+                    {
+                        "id": "md-1",
+                        "deviceName": "WIN-01",
+                        "operatingSystem": "Windows",
+                        "osVersion": "10.0.26100.9711",
+                        "complianceState": "compliant",
+                        "isEncrypted": true,
+                        "azureADDeviceId": "00000000-0000-4000-8000-000000000001",
+                        "lastSyncDateTime": "2026-10-24T10:00:00Z"
+                    },
+                    {
+                        "id": "md-2",
+                        "deviceName": "WIN-02",
+                        "operatingSystem": "Windows",
+                        "osVersion": "10.0.26200.9445",
+                        "complianceState": "compliant",
+                        "isEncrypted": true,
+                        "azureADDeviceId": "00000000-0000-4000-8000-000000000002",
+                        "lastSyncDateTime": "2026-10-24T10:00:00Z"
+                    }
+                ]
+            }
+        }
+    ]
+}

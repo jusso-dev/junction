@@ -1,0 +1,17 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "policies": [],
+      "stale_left_out": 0,
+      "windows_devices": 2
+    },
+    "summary": "No assigned Intune policy configures Windows LAPS (2 active Windows devices)."
+  },
+  "id": "intune.laps",
+  "reason": null,
+  "status": "fail"
+}

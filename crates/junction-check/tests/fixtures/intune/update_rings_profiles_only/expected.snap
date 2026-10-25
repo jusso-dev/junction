@@ -1,0 +1,20 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "autopatch": false,
+      "max_quality_deferral_days": 7,
+      "rings": [],
+      "update_profiles": [
+        "Windows 11 25H2"
+      ]
+    },
+    "summary": "Only feature or quality update profiles are assigned (Windows 11 25H2); no update ring sets the quality update deferral."
+  },
+  "id": "intune.update_rings",
+  "reason": null,
+  "status": "warn"
+}

@@ -1,0 +1,32 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "conditional_access": null,
+      "covered": {
+        "Windows": [
+          "Windows compliance"
+        ],
+        "macOS": [
+          "macOS compliance"
+        ]
+      },
+      "managed_devices": 2,
+      "noncompliant": [],
+      "noncompliant_devices": 0,
+      "platforms_in_use": {
+        "Windows": 1,
+        "macOS": 1
+      },
+      "secure_by_default": true,
+      "uncovered": []
+    },
+    "summary": "Every platform in use has an assigned compliance policy (Windows, macOS); no Entra ID P1, so Conditional Access cannot require compliance."
+  },
+  "id": "intune.compliance_policy",
+  "reason": null,
+  "status": "pass"
+}

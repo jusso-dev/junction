@@ -1,0 +1,15 @@
+{
+    "operation": "graph.device_management.get",
+    "responses": [
+        {
+            "body": {
+                "id": "deviceManagement",
+                "settings": {
+                    "deviceComplianceCheckinThresholdDays": 30,
+                    "isScheduledActionEnabled": true,
+                    "secureByDefault": true
+                }
+            }
+        }
+    ]
+}

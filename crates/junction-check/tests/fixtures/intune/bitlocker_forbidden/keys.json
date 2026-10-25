@@ -1,0 +1,12 @@
+{
+    "operation": "graph.information_protection.bitlocker.recovery_keys.list",
+    "responses": [
+        {
+            "status": 403,
+            "error": {
+                "code": "Forbidden",
+                "message": "Application is not authorized to perform this operation."
+            }
+        }
+    ]
+}

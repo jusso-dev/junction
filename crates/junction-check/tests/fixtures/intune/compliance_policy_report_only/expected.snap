@@ -1,0 +1,33 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "conditional_access": {
+        "enforced": [],
+        "partial": [
+          "Require compliant device (enabledForReportingButNotEnforced)"
+        ]
+      },
+      "covered": {
+        "Windows": [
+          "Windows compliance"
+        ]
+      },
+      "managed_devices": 1,
+      "noncompliant": [],
+      "noncompliant_devices": 0,
+      "platforms_in_use": {
+        "Windows": 1
+      },
+      "secure_by_default": true,
+      "uncovered": []
+    },
+    "summary": "Conditional Access requires a compliant device only in report-only or narrowly scoped policies: Require compliant device (enabledForReportingButNotEnforced)."
+  },
+  "id": "intune.compliance_policy",
+  "reason": null,
+  "status": "warn"
+}

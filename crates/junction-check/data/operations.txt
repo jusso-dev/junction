@@ -44,6 +44,9 @@ graph.device_management.device_configurations.list
 graph.device_management.device_compliance_policies.list
 graph.device_management.device_enrollment_configurations.list
 graph.device_management.configuration_policies.list@beta
+graph.device_management.configuration_policies.settings.list@beta
+graph.device_management.compliance_policies.list@beta
+graph.device_management.get
 graph.device_management.intents.list@beta
 graph.device_management.intents.settings.list@beta
 graph.device_management.windows_feature_update_profiles.list@beta
@@ -65,6 +68,7 @@ defender.endpoint.advancedqueries.run
 defender.endpoint.machines.list_secure_configurations_assessment_by_machine
 defender.endpoint.machines.list_software_inventory_by_machine
 defender.endpoint.vulnerabilities.list_machines_vulnerabilities
+defender.endpoint.vulnerabilities.list
 defender.endpoint.recommendations.list
 
 # Backups

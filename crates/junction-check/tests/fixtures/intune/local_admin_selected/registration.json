@@ -1,0 +1,29 @@
+{
+    "operation": "graph.policies.device_registration_policy.get",
+    "responses": [
+        {
+            "body": {
+                "id": "deviceRegistrationPolicy",
+                "displayName": "Device Registration Policy",
+                "azureADJoin": {
+                    "isAdminConfigurable": true,
+                    "allowedToJoin": {
+                        "@odata.type": "#microsoft.graph.allDeviceRegistrationMembership"
+                    },
+                    "localAdmins": {
+                        "enableGlobalAdmins": true,
+                        "registeringUsers": {
+                            "@odata.type": "#microsoft.graph.enumeratedDeviceRegistrationMembership",
+                            "users": [
+                                "00000000-0000-4000-8000-000000000021"
+                            ],
+                            "groups": [
+                                "00000000-0000-4000-8000-000000000022"
+                            ]
+                        }
+                    }
+                }
+            }
+        }
+    ]
+}

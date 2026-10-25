@@ -1,1 +1,73 @@
-{}
+# Framework tags for the intune pack. Essential Eight levels are the maturity levels the
+# requirement the check tests belongs to (data/frameworks/essential-eight.yaml).
+intune.update_rings:
+  essential_eight:
+    # Rings are how Intune meets the one-month workstation timeframe (ISM-1695, ISM-1902).
+    - strategy: patch-operating-systems
+      levels: [1, 2, 3]
+  ism: [ISM-1695, ISM-1902]
+  cis_v8: ["7.3"]
+  nist_csf: [PR.PS-02]
+  mitre: [T1068, T1210]
+
+intune.patch_age:
+  essential_eight:
+    - strategy: patch-operating-systems
+      levels: [1, 2, 3]
+    # TVM part: application patch timeframes (ISM-1691 two weeks at ML1 and ML2, ISM-1693 at ML2).
+    - strategy: patch-applications
+      levels: [1, 2, 3]
+  ism: [ISM-1695, ISM-1696, ISM-1902, ISM-1501, ISM-1691, ISM-1693, ISM-1699, ISM-1702]
+  cis_v8: ["7.3", "7.4", "7.5"]
+  nist_csf: [ID.RA-01, PR.PS-02]
+  mitre: [T1068, T1203, T1210]
+
+intune.browser_updates:
+  essential_eight:
+    - strategy: patch-applications
+      levels: [1, 2, 3]
+  ism: [ISM-1691, ISM-1692]
+  cis_v8: ["7.4", "9.1"]
+  nist_csf: [PR.PS-02]
+  mitre: [T1203]
+
+intune.laps:
+  essential_eight:
+    # Unique, managed local administrator credentials are ISM-1685 (ML2 and ML3).
+    - strategy: restrict-admin-privileges
+      levels: [2, 3]
+  ism: [ISM-1685, ISM-1795, ISM-1954]
+  cis_v8: ["5.2"]
+  nist_csf: [PR.AA-01]
+  mitre: [T1078, T1021, T1550]
+
+intune.bitlocker_escrow:
+  ism: [ISM-0459]
+  cis_v8: ["3.6"]
+  nist_csf: [PR.DS-01]
+
+intune.local_admin:
+  essential_eight:
+    - strategy: restrict-admin-privileges
+      levels: [1, 2, 3]
+  ism: [ISM-1507, ISM-1508]
+  cis_v8: ["5.4"]
+  nist_csf: [PR.AA-05]
+  mitre: [T1068, T1078, T1562.001]
+
+intune.office_macros:
+  essential_eight:
+    # Internet macros blocked (ISM-1488, ML1+) and only trusted or signed macros run
+    # (ISM-1674, ML3). Win32 API blocking (ISM-1673) is the ASR pack's job.
+    - strategy: office-macros
+      levels: [1, 2, 3]
+  ism: [ISM-1671, ISM-1488, ISM-1674, ISM-1675]
+  cis_v8: ["2.7"]
+  nist_csf: [PR.PS-01]
+  mitre: [T1566.001, T1204.002, T1059.005]
+
+intune.compliance_policy:
+  cis_m365: ["4.1"]
+  cis_v8: ["4.1"]
+  nist_csf: [PR.PS-01, PR.AA-05]
+  mitre: [T1078]
