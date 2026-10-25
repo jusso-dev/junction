@@ -98,6 +98,20 @@ pub struct AuditEntry {
     pub detail: String,
 }
 
+fn is_busy(error: &anyhow::Error) -> bool {
+    error.chain().any(|cause| {
+        cause
+            .downcast_ref::<rusqlite::Error>()
+            .and_then(rusqlite::Error::sqlite_error_code)
+            .is_some_and(|code| {
+                matches!(
+                    code,
+                    rusqlite::ErrorCode::DatabaseBusy | rusqlite::ErrorCode::DatabaseLocked
+                )
+            })
+    })
+}
+
 impl Store {
     /// The store file for `tenant_id` in `directory`.
     pub fn path_for(directory: &Path, tenant_id: &str) -> Result<PathBuf> {
@@ -133,8 +147,20 @@ impl Store {
             std::fs::set_permissions(&path, std::fs::Permissions::from_mode(0o600))
                 .context("history store permissions")?;
         }
-        let conn = Connection::open(&path).context("history store unavailable")?;
-        Self::init(conn, tenant_id)
+        // SQLite can report SQLITE_BUSY without consulting the busy handler
+        // when several new handles switch the same file to WAL at once (or to
+        // avoid a lock-upgrade deadlock), so opening retries briefly.
+        let mut attempt = 0u64;
+        loop {
+            let conn = Connection::open(&path).context("history store unavailable")?;
+            match Self::init(conn, tenant_id) {
+                Err(error) if attempt < 100 && is_busy(&error) => {
+                    attempt += 1;
+                    std::thread::sleep(Duration::from_millis(10 + (attempt * 7) % 40));
+                }
+                other => return other,
+            }
+        }
     }
 
     pub fn in_memory(tenant_id: &str) -> Result<Self> {
