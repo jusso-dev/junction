@@ -71,7 +71,7 @@ fn local_contract_imports_and_closes_execution_requests_to_host_configuration() 
     );
     let manifest =
         junction_discovery::ingest(&contract, "junction", "local", "junction-local").unwrap();
-    assert_eq!(manifest.operations.len(), 9);
+    assert_eq!(manifest.operations.len(), 14);
     junction_registry::Registry::load(manifest).unwrap();
     let schema = &contract["components"]["schemas"]["ExecuteRequest"];
     junction_schema::validate_json_schema(
