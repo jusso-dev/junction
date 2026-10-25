@@ -610,6 +610,11 @@
    "maturity": "stable",
    "method": "GET",
    "operation": "list",
+   "pageable": {
+    "item_name": "value",
+    "next_link_name": "@odata.nextLink",
+    "operation_name": null
+   },
    "parameters": [
     {
      "location": "query",
@@ -1008,6 +1013,11 @@
    "maturity": "stable",
    "method": "GET",
    "operation": "list",
+   "pageable": {
+    "item_name": "value",
+    "next_link_name": "@odata.nextLink",
+    "operation_name": null
+   },
    "parameters": [
     {
      "location": "query",
@@ -1134,6 +1144,11 @@
    "maturity": "stable",
    "method": "GET",
    "operation": "list_machines_vulnerabilities",
+   "pageable": {
+    "item_name": "value",
+    "next_link_name": "@odata.nextLink",
+    "operation_name": null
+   },
    "parameters": [
     {
      "location": "query",

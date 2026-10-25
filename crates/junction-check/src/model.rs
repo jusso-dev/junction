@@ -11,8 +11,9 @@ use serde_json::Value;
 /// change that breaks an existing consumer.
 pub const SCHEMA_VERSION: &str = "1.0";
 
-/// How many affected resources a result lists before it only counts.
-pub const AFFECTED_CAP: usize = 50;
+/// How many affected resources the JSON result lists before it only counts.
+/// Human-readable reports show the first 20.
+pub const AFFECTED_CAP: usize = 1000;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]

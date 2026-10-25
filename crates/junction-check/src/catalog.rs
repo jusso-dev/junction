@@ -184,6 +184,30 @@ mod tests {
     }
 
     #[test]
+    fn defender_for_endpoint_listings_page() {
+        let executor =
+            junction_runtime::Executor::new(registry().unwrap(), crate::gateway::check_policy()).unwrap();
+        let endpoints = MicrosoftCloud::Public.endpoints().unwrap();
+        let op = versions("defender.endpoint.machines.list")[0];
+        assert!(op.pageable.is_some());
+        let route = route(op, &endpoints).unwrap();
+        executor
+            .preflight_pages(
+                &op.id,
+                &serde_json::json!({}),
+                "tenant",
+                &route.endpoint,
+                &junction_runtime::PageOptions {
+                    max_items: 50_000,
+                    max_pages: 200,
+                    api_version: None,
+                    allow_preview: false,
+                },
+            )
+            .unwrap();
+    }
+
+    #[test]
     fn read_only_policy_allows_every_embedded_operation() {
         let registry = registry().unwrap();
         let policy = junction_policy::Policy::default();

@@ -74,6 +74,25 @@ def set_pointer(target, pointer: str, value) -> None:
     node[parts[-1]] = value
 
 
+# Defender for Endpoint list APIs page with OData `@odata.nextLink` (10,000 items per page,
+# https://learn.microsoft.com/defender-endpoint/api/get-machines), but the published
+# specification does not declare it, so the runtime would stop after the first page.
+MDE_PAGED = {
+    "defender.endpoint.machines.list",
+    "defender.endpoint.machines.list_secure_configurations_assessment_by_machine",
+    "defender.endpoint.machines.list_software_inventory_by_machine",
+    "defender.endpoint.vulnerabilities.list_machines_vulnerabilities",
+    "defender.endpoint.recommendations.list",
+}
+
+
+def declare_paging(op: dict) -> dict:
+    if op["id"] in MDE_PAGED and op["method"] == "GET" and not op.get("pageable"):
+        op = dict(op)
+        op["pageable"] = {"item_name": "value", "next_link_name": "@odata.nextLink", "operation_name": None}
+    return op
+
+
 def strip_responses(op: dict) -> dict:
     op = dict(op)
     op["responses"] = {
@@ -107,7 +126,7 @@ def main() -> int:
                 continue
             ids.discard(op["id"])
             sources.add(manifest_path.name)
-            op = strip_responses(op)
+            op = declare_paging(strip_responses(op))
             operations.append(op)
             refs: set[str] = set()
             walk_refs(op, refs)
