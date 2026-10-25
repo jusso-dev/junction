@@ -1,0 +1,19 @@
+{
+  "affected": {
+    "items": [
+      "Exchange Exporter (2 secret(s); full_access_as_app)",
+      "Mail Archiver (1 secret(s); Mail.ReadWrite)"
+    ],
+    "total": 2
+  },
+  "evidence": {
+    "data": {
+      "privileged_apps": 2,
+      "with_secrets": 2
+    },
+    "summary": "2 of 2 privileged app registrations use a client secret."
+  },
+  "id": "apps.privileged_app_secrets",
+  "reason": null,
+  "status": "fail"
+}

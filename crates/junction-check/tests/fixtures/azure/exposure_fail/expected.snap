@@ -1,0 +1,28 @@
+{
+  "affected": {
+    "items": [
+      "redis-cache (redis)",
+      "stpublic"
+    ],
+    "total": 2
+  },
+  "evidence": {
+    "data": {
+      "blob_public_access_allowed": [
+        "stpublic"
+      ],
+      "data_services": 2,
+      "data_services_public": [
+        "redis-cache (redis)"
+      ],
+      "storage_accounts": 2,
+      "storage_network_open": [
+        "stpublic"
+      ]
+    },
+    "summary": "1 storage account(s) allow anonymous blob access, 1 accept traffic from all networks, 1 data service(s) have public network access."
+  },
+  "id": "azure.public_network_exposure",
+  "reason": null,
+  "status": "fail"
+}

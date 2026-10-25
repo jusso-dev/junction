@@ -1,0 +1,11 @@
+{
+    "operation": "graph.policies.admin_consent_request_policy.get",
+    "responses": [
+        {
+            "body": {
+                "isEnabled": false,
+                "reviewers": []
+            }
+        }
+    ]
+}

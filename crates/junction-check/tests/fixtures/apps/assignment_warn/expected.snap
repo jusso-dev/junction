@@ -1,0 +1,18 @@
+{
+  "affected": {
+    "items": [
+      "Survey Tool (00000000-0000-4000-8000-000000000d04)"
+    ],
+    "total": 1
+  },
+  "evidence": {
+    "data": {
+      "assignment_not_required": 1,
+      "service_principals": 5
+    },
+    "summary": "1 third-party enterprise applications do not require assignment."
+  },
+  "id": "apps.assignment_required",
+  "reason": null,
+  "status": "warn"
+}

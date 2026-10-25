@@ -1,0 +1,16 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "allowed_domains": 1,
+      "mode": "allowList"
+    },
+    "summary": "Allow list with 1 domain(s)."
+  },
+  "id": "collaboration.sharing_domain_restriction",
+  "reason": null,
+  "status": "pass"
+}

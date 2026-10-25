@@ -141,6 +141,8 @@ junction check list --tag e8:ml1
 
 See [docs/CHECKS.md](docs/CHECKS.md), [docs/CHECKS-PERMISSIONS.md](docs/CHECKS-PERMISSIONS.md), [docs/ESSENTIAL-EIGHT-COVERAGE.md](docs/ESSENTIAL-EIGHT-COVERAGE.md) and [docs/WRITING-A-CHECK.md](docs/WRITING-A-CHECK.md). Results indicate alignment; they are not a formal Essential Eight, IRAP or CIS assessment.
 
+Coming from M365-Secure? Its checks are moving into `junction check` packs, with a schema 1.1 export for crownguard. See the [migration plan and mapping table](docs/migration/m365-secure.md).
+
 ## Disclaimer and terms of use
 
 Junction does not represent Microsoft. Microsoft has not reviewed, approved or endorsed it, and Microsoft provides no support for it. It is a consolidation tool: it reads Microsoft's public API definitions and documentation and sends the requests you choose, with credentials you supply. It does not grant access, bypass licensing or change what any service allows.

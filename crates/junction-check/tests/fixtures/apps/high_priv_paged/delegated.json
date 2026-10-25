@@ -1,0 +1,10 @@
+{
+    "operation": "graph.oauth2permission_grants.list",
+    "responses": [
+        {
+            "body": {
+                "value": []
+            }
+        }
+    ]
+}

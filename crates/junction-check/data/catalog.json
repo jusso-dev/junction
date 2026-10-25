@@ -6186,6 +6186,79 @@
   {
    "api_version": "v1.0",
    "base_url": "https://graph.microsoft.com/v1.0",
+   "description": "Get tenantAppManagementPolicy",
+   "documentation_url": null,
+   "id": "graph.policies.default_app_management_policy.get",
+   "long_running": null,
+   "maturity": "stable",
+   "method": "GET",
+   "operation": "get",
+   "parameters": [
+    {
+     "location": "query",
+     "name": "$select",
+     "required": false,
+     "schema": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "uniqueItems": true
+     },
+     "serialization": {
+      "allow_reserved": false,
+      "collection_format": null,
+      "explode": false,
+      "style": "form"
+     }
+    },
+    {
+     "location": "query",
+     "name": "$expand",
+     "required": false,
+     "schema": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "uniqueItems": true
+     },
+     "serialization": {
+      "allow_reserved": false,
+      "collection_format": null,
+      "explode": false,
+      "style": "form"
+     }
+    }
+   ],
+   "path": "/policies/defaultAppManagementPolicy",
+   "preview": false,
+   "product": "graph",
+   "request_body": null,
+   "resource": "policies.default_app_management_policy",
+   "responses": {
+    "2XX": {
+     "description": "Retrieved navigation property"
+    },
+    "4XX": {
+     "description": ""
+    },
+    "5XX": {
+     "description": ""
+    }
+   },
+   "risk": "read_only",
+   "security": [],
+   "service": "policies",
+   "source": {
+    "id": "https://raw.githubusercontent.com/microsoftgraph/msgraph-metadata/1fd0ef510f79f3dadb3e083bdebc9496f939a11c/openapi/v1.0/openapi.yaml",
+    "operation_id": "policies.GetDefaultAppManagementPolicy",
+    "upstream": "https://raw.githubusercontent.com/microsoftgraph/msgraph-metadata/1fd0ef510f79f3dadb3e083bdebc9496f939a11c/openapi/v1.0/openapi.yaml"
+   }
+  },
+  {
+   "api_version": "v1.0",
+   "base_url": "https://graph.microsoft.com/v1.0",
    "description": "Get deviceRegistrationPolicy",
    "documentation_url": null,
    "id": "graph.policies.device_registration_policy.get",
@@ -7564,6 +7637,188 @@
    "source": {
     "id": "https://raw.githubusercontent.com/microsoftgraph/msgraph-metadata/1fd0ef510f79f3dadb3e083bdebc9496f939a11c/openapi/v1.0/openapi.yaml",
     "operation_id": "security.ListSecureScores",
+    "upstream": "https://raw.githubusercontent.com/microsoftgraph/msgraph-metadata/1fd0ef510f79f3dadb3e083bdebc9496f939a11c/openapi/v1.0/openapi.yaml"
+   }
+  },
+  {
+   "api_version": "v1.0",
+   "base_url": "https://graph.microsoft.com/v1.0",
+   "description": "Get appRoleAssignment",
+   "documentation_url": null,
+   "id": "graph.service_principals.app_role_assigned_to.list",
+   "long_running": null,
+   "maturity": "stable",
+   "method": "GET",
+   "operation": "list",
+   "pageable": {
+    "item_name": "value",
+    "next_link_name": "@odata.nextLink",
+    "operation_name": "listMore"
+   },
+   "parameters": [
+    {
+     "location": "path",
+     "name": "servicePrincipal-id",
+     "required": true,
+     "schema": {
+      "type": "string"
+     },
+     "serialization": {
+      "allow_reserved": false,
+      "collection_format": null,
+      "explode": null,
+      "style": null
+     }
+    },
+    {
+     "location": "query",
+     "name": "$top",
+     "required": false,
+     "schema": {
+      "minimum": 0,
+      "type": "integer"
+     },
+     "serialization": {
+      "allow_reserved": false,
+      "collection_format": null,
+      "explode": false,
+      "style": "form"
+     }
+    },
+    {
+     "location": "query",
+     "name": "$skip",
+     "required": false,
+     "schema": {
+      "minimum": 0,
+      "type": "integer"
+     },
+     "serialization": {
+      "allow_reserved": false,
+      "collection_format": null,
+      "explode": false,
+      "style": "form"
+     }
+    },
+    {
+     "location": "query",
+     "name": "$search",
+     "required": false,
+     "schema": {
+      "type": "string"
+     },
+     "serialization": {
+      "allow_reserved": false,
+      "collection_format": null,
+      "explode": false,
+      "style": "form"
+     }
+    },
+    {
+     "location": "query",
+     "name": "$filter",
+     "required": false,
+     "schema": {
+      "type": "string"
+     },
+     "serialization": {
+      "allow_reserved": false,
+      "collection_format": null,
+      "explode": false,
+      "style": "form"
+     }
+    },
+    {
+     "location": "query",
+     "name": "$count",
+     "required": false,
+     "schema": {
+      "type": "boolean"
+     },
+     "serialization": {
+      "allow_reserved": false,
+      "collection_format": null,
+      "explode": false,
+      "style": "form"
+     }
+    },
+    {
+     "location": "query",
+     "name": "$orderby",
+     "required": false,
+     "schema": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "uniqueItems": true
+     },
+     "serialization": {
+      "allow_reserved": false,
+      "collection_format": null,
+      "explode": false,
+      "style": "form"
+     }
+    },
+    {
+     "location": "query",
+     "name": "$select",
+     "required": false,
+     "schema": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "uniqueItems": true
+     },
+     "serialization": {
+      "allow_reserved": false,
+      "collection_format": null,
+      "explode": false,
+      "style": "form"
+     }
+    },
+    {
+     "location": "query",
+     "name": "$expand",
+     "required": false,
+     "schema": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "uniqueItems": true
+     },
+     "serialization": {
+      "allow_reserved": false,
+      "collection_format": null,
+      "explode": false,
+      "style": "form"
+     }
+    }
+   ],
+   "path": "/servicePrincipals/{servicePrincipal-id}/appRoleAssignedTo",
+   "preview": false,
+   "product": "graph",
+   "request_body": null,
+   "resource": "service_principals.app_role_assigned_to",
+   "responses": {
+    "2XX": {
+     "description": ""
+    },
+    "4XX": {
+     "description": ""
+    },
+    "5XX": {
+     "description": ""
+    }
+   },
+   "risk": "read_only",
+   "security": [],
+   "service": "service_principals",
+   "source": {
+    "id": "https://raw.githubusercontent.com/microsoftgraph/msgraph-metadata/1fd0ef510f79f3dadb3e083bdebc9496f939a11c/openapi/v1.0/openapi.yaml",
+    "operation_id": "servicePrincipals.ListAppRoleAssignedTo",
     "upstream": "https://raw.githubusercontent.com/microsoftgraph/msgraph-metadata/1fd0ef510f79f3dadb3e083bdebc9496f939a11c/openapi/v1.0/openapi.yaml"
    }
   },

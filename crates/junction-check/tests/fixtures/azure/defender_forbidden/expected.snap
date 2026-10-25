@@ -1,0 +1,20 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": null,
+    "summary": "defender.cloud.pricings.list was refused (HTTP 403 AuthorizationFailed). Grant Security Reader or Reader (read-only) and re-run."
+  },
+  "id": "azure.defender_plans",
+  "reason": {
+    "code": "missing_permission",
+    "detail": "defender.cloud.pricings.list was refused (HTTP 403 AuthorizationFailed). Grant Security Reader or Reader (read-only) and re-run.",
+    "missing_permissions": [
+      "Security Reader",
+      "Reader"
+    ]
+  },
+  "status": "unknown"
+}

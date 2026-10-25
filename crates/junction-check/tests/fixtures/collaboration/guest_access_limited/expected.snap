@@ -1,0 +1,15 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "guest_user_role_id": "a0b1b346-4d3e-4e8b-98f8-753987be4970"
+    },
+    "summary": "Guests have limited access (the default): they can enumerate groups and other users."
+  },
+  "id": "collaboration.guest_access_restricted",
+  "reason": null,
+  "status": "warn"
+}

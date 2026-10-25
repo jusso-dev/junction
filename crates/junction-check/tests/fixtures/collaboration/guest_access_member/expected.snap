@@ -1,0 +1,15 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "guest_user_role_id": "10dae51f-b6af-4016-8d66-8c2a99b929b3"
+    },
+    "summary": "Guests have the same directory access as members."
+  },
+  "id": "collaboration.guest_access_restricted",
+  "reason": null,
+  "status": "fail"
+}

@@ -1,0 +1,16 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "enabled": true,
+      "reviewers": 1
+    },
+    "summary": "The admin consent workflow is on with 1 reviewer scope(s)."
+  },
+  "id": "apps.admin_consent_workflow",
+  "reason": null,
+  "status": "pass"
+}

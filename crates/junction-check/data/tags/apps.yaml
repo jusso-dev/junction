@@ -1,1 +1,40 @@
-{}
+apps.user_consent_restricted:
+  cis_m365: ["5.1.5.1"]
+  cis_v8: ["2.5"]
+  nist_csf: [PR.AA-05]
+  mitre: [T1528, T1550.001]
+apps.admin_consent_workflow:
+  cis_m365: ["5.1.5.2"]
+  nist_csf: [PR.AA-05]
+  mitre: [T1528]
+apps.users_cannot_register_apps:
+  cis_m365: ["5.1.2.2"]
+  nist_csf: [PR.AA-05]
+  mitre: [T1098]
+apps.app_management_policy:
+  cis_m365: ["5.1.5.6"]
+  nist_csf: [PR.AA-01]
+  mitre: [T1098]
+apps.credential_expiry:
+  cis_v8: ["5.3"]
+  nist_csf: [PR.AA-01]
+apps.secret_lifetime:
+  nist_csf: [PR.AA-01]
+  mitre: [T1552, T1098]
+apps.privileged_app_secrets:
+  cis_m365: ["5.1.5.3", "5.1.5.4"]
+  nist_csf: [PR.AA-01]
+  mitre: [T1552, T1078.004]
+apps.multi_tenant_apps:
+  nist_csf: [PR.AA-05]
+  mitre: [T1550.001]
+apps.high_privilege_permissions:
+  cis_v8: ["6.8"]
+  nist_csf: [PR.AA-05, ID.AM-02]
+  mitre: [T1528, T1098, T1114]
+apps.sp_password_credentials:
+  nist_csf: [PR.AA-01]
+  mitre: [T1098, T1552]
+apps.assignment_required:
+  cis_v8: ["6.8"]
+  nist_csf: [PR.AA-05]

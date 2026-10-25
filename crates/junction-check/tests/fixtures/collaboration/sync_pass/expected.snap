@@ -1,0 +1,15 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "unmanaged_sync_restricted": true
+    },
+    "summary": "OneDrive sync is restricted to managed devices."
+  },
+  "id": "collaboration.unmanaged_sync_restricted",
+  "reason": null,
+  "status": "pass"
+}
