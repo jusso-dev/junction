@@ -235,6 +235,12 @@ fn is_poison(e: &CallError) -> bool {
     }
 }
 
+fn is_throttle(e: &CallError) -> bool {
+    matches!(e.kind, FailureKind::LocalThrottle)
+        || (matches!(e.kind, FailureKind::Http)
+            && (e.status == Some(429) || e.code.as_deref() == Some("AF429")))
+}
+
 const BLOB_RETRY_RUNS: u32 = 3;
 
 #[allow(clippy::too_many_arguments)]
@@ -344,6 +350,12 @@ async fn collect_windows(
                         ),
                     )?;
                     outcome.quarantined_blobs += 1;
+                }
+                // Throttling is about the app's request budget, not this blob: stop
+                // and retry next run without counting a strike against it.
+                Err(e) if is_throttle(&e) => {
+                    failure = Some(e);
+                    break 'windows;
                 }
                 Err(e) if e.is_transient() => {
                     let key = blob_failure_key(&item.id);

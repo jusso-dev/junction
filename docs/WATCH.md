@@ -25,7 +25,7 @@ Microsoft 365 ──(read-only app permissions)──▶ junction watch run ─�
 | Organisation, domains, subscriptions | Graph `organization`, `subscribedSkus` | `Organization.Read.All` | All plans. |
 | SharePoint sharing settings | Graph `admin/sharepoint/settings` | `SharePointTenantSettings.Read.All` | All plans with SharePoint. |
 
-`junction watch permissions` explains every permission in plain English, including what it *cannot* do. All are read-only application permissions. The watchdog never reads email or file contents, and it does not request `Directory.ReadWrite.All`, `Mail.Read`, `Sites.Read.All` or similar broad permissions.
+`junction watch permissions` explains every permission in plain English, including what it *cannot* do. Phase 1 requests only the four permissions above. `--include-optional` lists the extra read-only permissions that later phases need (role assignments, app registrations, user list, inbox rules, policies, and the Exchange runner); do not grant them until those phases ship. All are read-only application permissions. The watchdog never reads email or file contents, and it does not request `Directory.ReadWrite.All`, `Mail.Read`, `Sites.Read.All` or similar broad permissions.
 
 The only change the watchdog ever makes to a tenant is starting the audit feed subscription (`junction watch subscribe` or *Start audit feeds* on the dashboard). That turns on delivery of audit data Microsoft already records. It is audited and limited to one attempt per feed every 15 minutes, as Microsoft asks.
 
@@ -68,7 +68,7 @@ The only change the watchdog ever makes to a tenant is starting the audit feed s
 
 ### Opt-in live validation
 
-`junction watch validate` probes every source, samples the last hour of each enabled feed into a throwaway in-memory store, and reports granted roles, capability states, which detections could run, and the event types actually observed. It never starts subscriptions and never changes the tenant.
+`junction watch validate` probes every source, samples the last two hours of each enabled feed (at most five content blobs per feed) into a throwaway in-memory store, and reports granted roles, capability states, which detections could run, and the event types actually observed. It never starts subscriptions and never changes the tenant.
 
 ### Running in the background on macOS
 

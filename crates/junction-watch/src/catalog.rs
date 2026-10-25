@@ -56,8 +56,8 @@ pub const PERMISSIONS: &[Permission] = &[
         resource: "Microsoft Graph",
         resource_app_id: GRAPH_APP_ID,
         app_role_id: "483bed4a-2ad3-4361-a73b-c83ccdbdc53c",
-        optional: false,
-        why: "Reads who holds admin roles, to baseline Global Administrators and spot new privileged assignments.",
+        optional: true,
+        why: "Not used until detections ship (Phase 2); leave it out until then. Reads who holds admin roles, to baseline Global Administrators and spot new privileged assignments.",
         cannot: "Cannot assign or remove roles.",
     },
     Permission {
@@ -65,8 +65,8 @@ pub const PERMISSIONS: &[Permission] = &[
         resource: "Microsoft Graph",
         resource_app_id: GRAPH_APP_ID,
         app_role_id: "9a5d68dd-52b0-4cc2-bd40-abcf44ac3a30",
-        optional: false,
-        why: "Reads app registrations, enterprise apps and their granted permissions, to spot malicious OAuth consent and new app credentials.",
+        optional: true,
+        why: "Not used until detections ship (Phase 2); leave it out until then. Reads app registrations, enterprise apps and their granted permissions, to spot malicious OAuth consent and new app credentials.",
         cannot: "Cannot create apps, add credentials or grant consent.",
     },
     Permission {
@@ -74,8 +74,8 @@ pub const PERMISSIONS: &[Permission] = &[
         resource: "Microsoft Graph",
         resource_app_id: GRAPH_APP_ID,
         app_role_id: "97235f07-e226-4f63-ace3-39588e11d3a1",
-        optional: false,
-        why: "Lists users by name and email address so inbox rules can be checked per mailbox.",
+        optional: true,
+        why: "Not used until detections ship (Phase 2); leave it out until then. Lists users by name and email address so inbox rules can be checked per mailbox.",
         cannot: "Cannot read profiles beyond basic fields, or change users.",
     },
     Permission {
@@ -83,8 +83,8 @@ pub const PERMISSIONS: &[Permission] = &[
         resource: "Microsoft Graph",
         resource_app_id: GRAPH_APP_ID,
         app_role_id: "40f97065-369a-49f4-947c-6a255697ae91",
-        optional: false,
-        why: "Reads inbox rules and mailbox settings to baseline forwarding and hidden-mail rules.",
+        optional: true,
+        why: "Not used until detections ship (Phase 2); leave it out until then. Reads inbox rules and mailbox settings to baseline forwarding and hidden-mail rules.",
         cannot: "Cannot read, send or delete email.",
     },
     Permission {

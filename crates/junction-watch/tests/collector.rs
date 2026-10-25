@@ -725,3 +725,34 @@ async fn one_feed_failing_does_not_stop_the_others_and_starved_feeds_go_first() 
     let out = collect_all(&m, &store, &feeds, &opts()).await;
     assert_eq!(out[0].content_type, "Audit.Exchange");
 }
+
+#[tokio::test]
+async fn throttling_never_counts_towards_quarantine() {
+    for throttle in [err(429, ""), err(403, "AF429")] {
+        let store = Store::in_memory(TENANT).unwrap();
+        let m = Mock::new();
+        m.route(
+            Api::ManagementActivity,
+            "GET",
+            "/subscriptions/content",
+            None,
+            vec![ok(json!([content("busy", "2026-10-25T04:00:00.000Z")]))],
+        );
+        m.route(
+            Api::ManagementActivity,
+            "GET",
+            "/audit/busy",
+            None,
+            vec![throttle],
+        );
+        for _ in 0..5 {
+            let out = collect(&m, &store, CT, now(), &opts()).await.unwrap();
+            assert_eq!(out.status, RunStatus::Failed);
+        }
+        assert!(
+            !store.content_processed("busy").unwrap(),
+            "a throttled blob is retried, never skipped"
+        );
+        assert!(store.meta("blob_failures:busy").unwrap().is_none());
+    }
+}

@@ -528,3 +528,49 @@ async fn dashboard_starts_only_feeds_that_need_it() {
     assert_eq!(starts.len(), 1, "{starts:?}");
     assert!(starts[0].contains("contentType=Audit.SharePoint"));
 }
+
+#[tokio::test]
+async fn dashboard_reports_a_feed_that_failed_to_start() {
+    let store = store_with_users();
+    store
+        .put_capability(&cap(
+            "o365:Audit.Exchange",
+            CapabilityState::NotEnabled,
+            Reason::SubscriptionNotStarted,
+        ))
+        .unwrap();
+    let mock = Arc::new(Mock::new());
+    mock.route(
+        Api::ManagementActivity,
+        "POST",
+        "/subscriptions/start",
+        None,
+        vec![err(400, "AF20020")],
+    );
+    mock.route(
+        Api::Graph,
+        "GET",
+        "/v1.0/",
+        None,
+        vec![ok(json!({"value": []}))],
+    );
+    mock.route(
+        Api::ManagementActivity,
+        "GET",
+        "/subscriptions/list",
+        None,
+        vec![ok(json!([]))],
+    );
+    let app = app(store, Some(mock.clone()));
+    let (admin, csrf) = login(&app, "admin").await;
+    let (status, _, body) = send(
+        &app,
+        post("/actions/subscribe", Some(&admin), &format!("csrf={csrf}")),
+    )
+    .await;
+    assert_eq!(status, StatusCode::BAD_GATEWAY, "{body}");
+    assert!(
+        mock.calls_to("/subscriptions/list") > 0,
+        "coverage re-probed before reporting"
+    );
+}

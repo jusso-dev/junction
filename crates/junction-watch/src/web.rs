@@ -646,19 +646,22 @@ async fn action_subscribe<U: Upstream + 'static>(
     if types.is_empty() {
         return Page::Redirect("/coverage");
     }
-    if probe::start_subscriptions(
+    let started = probe::start_subscriptions(
         upstream.as_ref(),
         &state.store,
         &session.user.username,
         &types,
     )
-    .await
-    .is_err()
-    {
-        return Page::Status(StatusCode::BAD_GATEWAY, "could not start feeds");
-    }
+    .await;
+    // Re-probe first so Coverage shows the current reason either way.
     let _ = probe::probe_all(upstream.as_ref(), &state.store).await;
-    Page::Redirect("/coverage")
+    match started {
+        Ok(results) if results.iter().all(|(_, r)| r.is_ok()) => Page::Redirect("/coverage"),
+        _ => Page::Status(
+            StatusCode::BAD_GATEWAY,
+            "could not start every audit feed; see Coverage for the reason",
+        ),
+    }
 }
 
 async fn css() -> impl IntoResponse {

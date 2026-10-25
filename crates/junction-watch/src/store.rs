@@ -268,15 +268,22 @@ impl Store {
         conn.execute_batch(
             "PRAGMA journal_mode=WAL; PRAGMA foreign_keys=ON; PRAGMA secure_delete=ON; PRAGMA busy_timeout=5000;",
         )?;
-        let version: i64 = conn.query_row("PRAGMA user_version", [], |r| r.get(0))?;
+        // Migration and tenant binding commit together. An interrupted first open
+        // leaves nothing behind, and a concurrent opener waits (busy_timeout)
+        // and then sees the finished schema.
+        let mut conn = conn;
+        let tx = conn.transaction_with_behavior(rusqlite::TransactionBehavior::Immediate)?;
+        let version: i64 = tx.query_row("PRAGMA user_version", [], |r| r.get(0))?;
         if version == 0 {
-            conn.execute_batch(MIGRATION_1)?;
-            conn.execute(
+            tx.execute_batch(MIGRATION_1)?;
+            tx.execute(
                 "INSERT INTO meta(key, value) VALUES ('tenant_id', ?1)",
                 [tenant_id.to_ascii_lowercase()],
             )?;
-            conn.execute_batch(&format!("PRAGMA user_version = {SCHEMA_VERSION}"))?;
-        } else if version > SCHEMA_VERSION {
+            tx.execute_batch(&format!("PRAGMA user_version = {SCHEMA_VERSION}"))?;
+        }
+        tx.commit()?;
+        if version > SCHEMA_VERSION {
             bail!("store was created by a newer version of junction");
         }
         let bound: String = conn
