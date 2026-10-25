@@ -79,6 +79,8 @@ async fn network_protection_outcomes() {
         &[
             ("protection_tvm_pass", Status::Pass),
             ("protection_network_audit", Status::Warn),
+            // Compliant assessment but no events: audit and block look alike.
+            ("protection_network_quiet", Status::Warn),
             ("protection_tvm_fail", Status::Fail),
             ("protection_tvm_forbidden", Status::Unknown),
             ("protection_unlicensed", Status::NotApplicable),

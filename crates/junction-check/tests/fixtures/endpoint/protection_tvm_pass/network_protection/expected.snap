@@ -16,7 +16,7 @@
       "percent_compliant": 100,
       "truncated": false
     },
-    "summary": "Network protection is on for all 3 assessed devices (100% compliant), and none logged audit-mode events in the last 30 days."
+    "summary": "Network protection is on for all 3 assessed devices (100% compliant); 1 logged block events and none logged audit-mode events in the last 30 days."
   },
   "id": "endpoint.network_protection",
   "reason": null,

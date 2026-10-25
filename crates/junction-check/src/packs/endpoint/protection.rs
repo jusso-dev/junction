@@ -369,9 +369,17 @@ async fn network_protection(ctx: &CheckContext) -> Evaluation {
     let mut data = c.data();
     data["audit_mode"] = json!(audit.len());
     data["block_events_seen"] = json!(blocking.len());
-    let finding = if audit.is_empty() {
+    // The assessment counts audit mode as compliant, so a pass needs positive
+    // evidence of block mode: block events and no audit events.
+    let finding = if audit.is_empty() && !blocking.is_empty() {
         Finding::pass(format!(
-            "Network protection is on for {} (100% compliant), and none logged audit-mode events in the last 30 days.",
+            "Network protection is on for {} (100% compliant); {} logged block events and none logged audit-mode events in the last 30 days.",
+            all(total, "assessed device"),
+            blocking.len()
+        ))
+    } else if audit.is_empty() {
+        Finding::warn(format!(
+            "Network protection is on for {}, but no device logged block or audit events in the last 30 days, so block mode (rather than audit) is not confirmed. Check the policy sets Enabled (block mode).",
             all(total, "assessed device")
         ))
     } else {

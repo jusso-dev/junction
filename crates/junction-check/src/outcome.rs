@@ -76,7 +76,6 @@ fn licence_hint(message: Option<&str>) -> bool {
         || m.contains("license is required")
         || m.contains("licence is required")
         || m.contains("tenant is not provisioned")
-        || m.contains("not onboarded")
 }
 
 /// Codes for `unknown` results that mean "a person has not answered yet",

@@ -160,16 +160,27 @@ impl CheckContext {
         }
     }
 
-    /// Shorthand for `list` with `{"parameters": parameters}`.
+    /// Shorthand for `list` with `{"parameters": parameters}`. A listing cut
+    /// short by the page limits is a failure (the check becomes `unknown`),
+    /// never a silently partial answer.
     pub async fn list_with(
         &self,
         operation: &str,
         parameters: Value,
     ) -> Result<Vec<Value>, CallFailure> {
-        Ok(self
+        let listing = self
             .list(operation, serde_json::json!({ "parameters": parameters }))
-            .await?
-            .items)
+            .await?;
+        if listing.truncated {
+            return Err(CallFailure {
+                operation: operation.to_owned(),
+                error: GatewayError::Unavailable(format!(
+                    "the listing returned more than {} items, so the result would be incomplete; narrow the scope or raise the limits",
+                    listing.items.len()
+                )),
+            });
+        }
+        Ok(listing.items)
     }
 
     /// Run a Defender XDR advanced hunting query and return its rows. Uses the
@@ -289,6 +300,26 @@ mod tests {
         assert_eq!(a.unwrap(), b.unwrap());
         ctx.list("graph.users.list", json!({})).await.unwrap();
         assert_eq!(gateway.calls().len(), 1);
+    }
+
+    #[tokio::test]
+    async fn truncated_listings_are_failures_not_partial_answers() {
+        let gateway = FixtureGateway::new(TENANT);
+        let mut entries = vec![];
+        for page in 0..=200 {
+            entries.push(json!({
+                "url": format!("fixture:p{page}"),
+                "responses": [{"body": {"value": [{"id": page}], "@odata.nextLink": format!("fixture:p{}", page + 1)}}]
+            }));
+        }
+        entries.push(json!({"operation": "graph.users.list",
+            "responses": [{"body": {"value": [{"id": "first"}], "@odata.nextLink": "fixture:p0"}}]}));
+        for e in entries {
+            gateway.push(serde_json::from_value(e).unwrap()).unwrap();
+        }
+        let (ctx, _) = context(gateway);
+        let failure = ctx.list_with("graph.users.list", json!({})).await.unwrap_err();
+        assert!(matches!(failure.error, GatewayError::Unavailable(ref m) if m.contains("incomplete")));
     }
 
     #[test]
