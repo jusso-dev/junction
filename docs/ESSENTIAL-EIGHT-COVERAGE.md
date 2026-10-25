@@ -23,12 +23,12 @@ follows ASD's Essential Eight Assessment Process Guide.
 
 | Strategy | ML1 | ML2 | ML3 |
 |---|---|---|---|
-| Patch applications | none | none | none |
-| Patch operating systems | `endpoint.unsupported_os` | `endpoint.unsupported_os` | `endpoint.unsupported_os` |
+| Patch applications | `intune.browser_updates`<br>`intune.patch_age` | `intune.browser_updates`<br>`intune.patch_age` | `intune.browser_updates`<br>`intune.patch_age` |
+| Patch operating systems | `endpoint.unsupported_os`<br>`intune.patch_age`<br>`intune.update_rings` | `endpoint.unsupported_os`<br>`intune.patch_age`<br>`intune.update_rings` | `endpoint.unsupported_os`<br>`intune.patch_age`<br>`intune.update_rings` |
 | Multi-factor authentication | `identity.baseline`<br>`identity.legacy_auth_blocked`<br>`identity.mfa_admins`<br>`identity.mfa_coverage` | `identity.baseline`<br>`identity.legacy_auth_blocked`<br>`identity.mfa_admins`<br>`identity.mfa_coverage`<br>`identity.phishing_resistant_admins`<br>`sentinel.connectors`<br>`sentinel.incidents_stale`<br>`sentinel.rules_enabled`<br>`sentinel.workspace` | `identity.baseline`<br>`identity.legacy_auth_blocked`<br>`identity.mfa_admins`<br>`identity.mfa_coverage`<br>`identity.phishing_resistant_admins`<br>`sentinel.connectors`<br>`sentinel.incidents_stale`<br>`sentinel.rules_enabled`<br>`sentinel.workspace` |
-| Restrict administrative privileges | `identity.global_admin_count`<br>`identity.separate_admin_accounts` | `identity.break_glass_monitored` (manual)<br>`identity.global_admin_count`<br>`identity.separate_admin_accounts`<br>`sentinel.connectors`<br>`sentinel.incidents_stale`<br>`sentinel.rules_enabled`<br>`sentinel.workspace` | `identity.break_glass_monitored` (manual)<br>`identity.global_admin_count`<br>`identity.pim_used`<br>`identity.separate_admin_accounts`<br>`sentinel.connectors`<br>`sentinel.incidents_stale`<br>`sentinel.rules_enabled`<br>`sentinel.workspace` |
+| Restrict administrative privileges | `identity.global_admin_count`<br>`identity.separate_admin_accounts`<br>`intune.local_admin` | `identity.break_glass_monitored` (manual)<br>`identity.global_admin_count`<br>`identity.separate_admin_accounts`<br>`intune.laps`<br>`intune.local_admin`<br>`sentinel.connectors`<br>`sentinel.incidents_stale`<br>`sentinel.rules_enabled`<br>`sentinel.workspace` | `identity.break_glass_monitored` (manual)<br>`identity.global_admin_count`<br>`identity.pim_used`<br>`identity.separate_admin_accounts`<br>`intune.laps`<br>`intune.local_admin`<br>`sentinel.connectors`<br>`sentinel.incidents_stale`<br>`sentinel.rules_enabled`<br>`sentinel.workspace` |
 | Application control | none | `sentinel.incidents_stale`<br>`sentinel.rules_enabled` | `sentinel.incidents_stale`<br>`sentinel.rules_enabled` |
-| Restrict Microsoft Office macros | none | `endpoint.asr_quick_wins`<br>`endpoint.asr_rule_state` | `endpoint.asr_quick_wins`<br>`endpoint.asr_rule_state` |
+| Restrict Microsoft Office macros | `intune.office_macros` | `endpoint.asr_quick_wins`<br>`endpoint.asr_rule_state`<br>`intune.office_macros` | `endpoint.asr_quick_wins`<br>`endpoint.asr_rule_state`<br>`intune.office_macros` |
 | User application hardening | none | `endpoint.asr_quick_wins`<br>`endpoint.asr_rule_state`<br>`sentinel.incidents_stale`<br>`sentinel.rules_enabled` | `endpoint.asr_quick_wins`<br>`endpoint.asr_rule_state`<br>`sentinel.incidents_stale`<br>`sentinel.rules_enabled` |
 | Regular backups | `backup.azure_vaults`<br>`backup.m365_backup`<br>`backup.offline_copy` (manual)<br>`backup.restore_tested` (manual)<br>`backup.third_party_app` | `backup.admin_separation` (manual)<br>`backup.azure_vaults`<br>`backup.m365_backup`<br>`backup.offline_copy` (manual)<br>`backup.restore_tested` (manual)<br>`backup.third_party_app` | `backup.admin_separation` (manual)<br>`backup.azure_vaults`<br>`backup.m365_backup`<br>`backup.offline_copy` (manual)<br>`backup.restore_tested` (manual)<br>`backup.third_party_app` |
 
@@ -38,12 +38,12 @@ follows ASD's Essential Eight Assessment Process Guide.
 
 | Strategy | Requirements | Tagged by a check | Gaps |
 |---|---:|---:|---:|
-| Patch applications | 14 | 0 | 14 |
-| Patch operating systems | 21 | 1 | 20 |
+| Patch applications | 14 | 4 | 10 |
+| Patch operating systems | 21 | 5 | 16 |
 | Multi-factor authentication | 24 | 11 | 13 |
-| Restrict administrative privileges | 28 | 12 | 16 |
+| Restrict administrative privileges | 28 | 13 | 15 |
 | Application control | 19 | 5 | 14 |
-| Restrict Microsoft Office macros | 10 | 1 | 9 |
+| Restrict Microsoft Office macros | 10 | 5 | 5 |
 | User application hardening | 29 | 9 | 20 |
 | Regular backups | 11 | 9 | 2 |
 
@@ -57,17 +57,13 @@ Requirements with no check tagged with the same ISM control.
 |---|---|---|
 | ISM-1876 | ML1, ML2, ML3 | Patches, updates or other vendor mitigations for vulnerabilities in online services are applied within 48 hours of release when… |
 | ISM-1690 | ML1, ML2, ML3 | Patches, updates or other vendor mitigations for vulnerabilities in online services are applied within two weeks of release when… |
-| ISM-1691 | ML1, ML2 | Patches, updates or other vendor mitigations for vulnerabilities in office productivity suites, web browsers and their extensions, email… |
-| ISM-1692 | ML3 | Patches, updates or other vendor mitigations for vulnerabilities in office productivity suites, web browsers and their extensions, email… |
 | ISM-1901 | ML3 | Patches, updates or other vendor mitigations for vulnerabilities in office productivity suites, web browsers and their extensions, email… |
-| ISM-1693 | ML2, ML3 | Patches, updates or other vendor mitigations for vulnerabilities in applications other than office productivity suites, web browsers and… |
 | ISM-1905 | ML1, ML2, ML3 | Online services that are no longer supported by vendors are removed |
 | ISM-1704 | ML1, ML2, ML3 | Office productivity suites, web browsers and their extensions, email clients, PDF applications, Adobe Flash Player, and security products… |
 | ISM-0304 | ML3 | Applications other than office productivity suites, web browsers and their extensions, email clients, PDF applications, Adobe Flash… |
 | ISM-1807 | ML1, ML2, ML3 | An automated method of asset discovery is used at least fortnightly to support the detection of assets for subsequent vulnerability… |
 | ISM-1808 | ML1, ML2, ML3 | A vulnerability scanner with an up-to-date vulnerability database is used for vulnerability scanning activities |
 | ISM-1698 | ML1, ML2, ML3 | A vulnerability scanner is used at least daily to identify missing patches or updates for vulnerabilities in online services |
-| ISM-1699 | ML1, ML2, ML3 | A vulnerability scanner is used at least weekly to identify missing patches or updates for vulnerabilities in office productivity suites,… |
 | ISM-1700 | ML2, ML3 | A vulnerability scanner is used at least fortnightly to identify missing patches or updates for vulnerabilities in applications other than… |
 
 ### Patch operating systems
@@ -79,9 +75,6 @@ Requirements with no check tagged with the same ISM control.
 | ISM-1690 | ML1, ML2, ML3 | Patches, updates or other vendor mitigations for vulnerabilities in online services are applied within two weeks of release when… |
 | ISM-1877 | ML1, ML2, ML3 | Patches, updates or other vendor mitigations for vulnerabilities in operating systems of internet-facing servers and internet-facing… |
 | ISM-1694 | ML1, ML2, ML3 | Patches, updates or other vendor mitigations for vulnerabilities in operating systems of internet-facing servers and internet-facing… |
-| ISM-1695 | ML1, ML2 | Patches, updates or other vendor mitigations for vulnerabilities in operating systems of workstations, non-internet-facing servers and… |
-| ISM-1696 | ML3 | Patches, updates or other vendor mitigations for vulnerabilities in operating systems of workstations, non-internet-facing servers and… |
-| ISM-1902 | ML3 | Patches, updates or other vendor mitigations for vulnerabilities in operating systems of workstations, non-internet-facing servers and… |
 | ISM-1879 | ML3 | Patches, updates or other vendor mitigations for vulnerabilities in drivers are applied within 48 hours of release when vulnerabilities… |
 | ISM-1697 | ML3 | Patches, updates or other vendor mitigations for vulnerabilities in drivers are applied within one month of release when vulnerabilities… |
 | ISM-1903 | ML3 | Patches, updates or other vendor mitigations for vulnerabilities in firmware are applied within 48 hours of release when vulnerabilities… |
@@ -91,7 +84,6 @@ Requirements with no check tagged with the same ISM control.
 | ISM-1808 | ML1, ML2, ML3 | A vulnerability scanner with an up-to-date vulnerability database is used for vulnerability scanning activities |
 | ISM-1698 | ML1, ML2, ML3 | A vulnerability scanner is used at least daily to identify missing patches or updates for vulnerabilities in online services |
 | ISM-1701 | ML1, ML2, ML3 | A vulnerability scanner is used at least daily to identify missing patches or updates for vulnerabilities in operating systems of… |
-| ISM-1702 | ML1, ML2, ML3 | A vulnerability scanner is used at least fortnightly to identify missing patches or updates for vulnerabilities in operating systems of… |
 | ISM-1703 | ML3 | A vulnerability scanner is used at least fortnightly to identify missing patches or updates for vulnerabilities in drivers |
 | ISM-1900 | ML3 | A vulnerability scanner is used at least fortnightly to identify missing patches or updates for vulnerabilities in firmware |
 
@@ -121,7 +113,6 @@ Requirements with no check tagged with the same ISM control.
 | ISM-1883 | ML1, ML2, ML3 | Privileged user accounts explicitly authorised to access online services are strictly limited to only what is required for users to… |
 | ISM-1648 | ML2, ML3 | Privileged access to systems and their resources are disabled after 45 days of inactivity |
 | ISM-1647 | ML2, ML3 | Privileged access to systems and their resources are disabled after 12 months unless revalidated |
-| ISM-1685 | ML2, ML3 | Credentials for break glass accounts, local administrator accounts and service accounts are long, unique, unpredictable and managed |
 | ISM-1861 | ML3 | Local Security Authority protection functionality is enabled |
 | ISM-1686 | ML3 | Credential Guard functionality is enabled |
 | ISM-1897 | ML3 | Remote Credential Guard functionality is enabled |
@@ -157,13 +148,9 @@ Requirements with no check tagged with the same ISM control.
 
 | Requirement | Levels | Control |
 |---|---|---|
-| ISM-1671 | ML1, ML2, ML3 | Microsoft Office macros are disabled for human users that do not have a demonstrated business requirement |
-| ISM-1488 | ML1, ML2, ML3 | Microsoft Office macros in files originating from the internet are blocked |
 | ISM-1672 | ML1, ML2, ML3 | Microsoft Office macro antivirus scanning is enabled |
-| ISM-1674 | ML3 | Only Microsoft Office macros running from within a sandboxed environment, a Trusted Location or that are digitally signed by a trusted… |
 | ISM-1890 | ML3 | Microsoft Office macros are checked to ensure they are free of malicious code before being digitally signed or placed within Trusted… |
 | ISM-1487 | ML3 | Only privileged human users responsible for checking that Microsoft Office macros are free of malicious code can write to and modify… |
-| ISM-1675 | ML3 | Microsoft Office macros digitally signed by an untrusted publisher cannot be enabled via the Message Bar or Backstage View |
 | ISM-1891 | ML3 | Microsoft Office macros digitally signed by signatures other than V3 signatures cannot be enabled via the Message Bar or Backstage View |
 | ISM-1489 | ML1, ML2, ML3 | Microsoft Office macro security settings cannot be changed by human users |
 

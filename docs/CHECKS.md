@@ -298,6 +298,14 @@ and PowerShell 7 for the Exchange runner contract test. The daily release workfl
 | `endpoint.stale_sensors` | Defender for Endpoint sensors are active and reporting | endpoint | medium | automated | `defender_endpoint` | `Machine.Read.All` |
 | `endpoint.tamper_protection` | Tamper protection is on for every onboarded device | endpoint | high | automated | `defender_endpoint`, `defender_vulnerability_management` | `Vulnerability.Read.All` |
 | `endpoint.unsupported_os` | Onboarded devices run a supported operating system | endpoint | high | automated | `defender_endpoint` | `Machine.Read.All` |
+| `intune.bitlocker_escrow` | Encrypted Windows devices have their BitLocker recovery key in Entra ID | intune | medium | automated | none | `BitlockerKey.ReadBasic.All`, `DeviceManagementManagedDevices.Read.All` |
+| `intune.browser_updates` | Edge and Chrome are up to date on every device | intune | medium | automated | `defender_vulnerability_management` | `Software.Read.All` |
+| `intune.compliance_policy` | Every platform has a compliance policy and Conditional Access requires compliant devices | intune | high | automated | none | `DeviceManagementConfiguration.Read.All`, `DeviceManagementManagedDevices.Read.All`, `Policy.Read.All` |
+| `intune.laps` | Windows LAPS manages local administrator passwords and backs them up to Entra ID | intune | high | automated | none | `DeviceLocalCredential.ReadBasic.All`, `DeviceManagementConfiguration.Read.All`, `DeviceManagementManagedDevices.Read.All` |
+| `intune.local_admin` | Users are not made local administrators of their devices | intune | high | automated | none | `DeviceManagementConfiguration.Read.All`, `Policy.Read.DeviceConfiguration` |
+| `intune.office_macros` | Office blocks internet macros and only runs trusted or signed macros | intune | high | automated | none | `DeviceManagementConfiguration.Read.All` |
+| `intune.patch_age` | Windows devices have security updates within Essential Eight timeframes | intune | high | automated | none | `DeviceManagementManagedDevices.Read.All`, `Machine.Read.All`, `Vulnerability.Read.All` |
+| `intune.update_rings` | Windows update rings install quality updates within a week | intune | high | automated | none | `DeviceManagementConfiguration.Read.All` |
 | `email.auto_forward_blocked` | Automatic forwarding to external recipients is blocked | email | high | manual | `exchange_online` | none |
 | `email.dkim` | DKIM selector CNAMEs are published for every Exchange Online domain | email | medium | automated | `exchange_online` | `Domain.Read.All` |
 | `email.dmarc` | Every mail domain enforces DMARC with reporting | email | high | automated | `exchange_online` | `Domain.Read.All` |
