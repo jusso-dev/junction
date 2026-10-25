@@ -1,0 +1,4 @@
+[[attestations]]
+check = "backup.admin_separation"
+answer = "partial"
+note = "Recorded by the backup owner."

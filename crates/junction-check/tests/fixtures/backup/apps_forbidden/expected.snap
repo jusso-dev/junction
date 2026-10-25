@@ -1,0 +1,19 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": null,
+    "summary": "graph.service_principals.list was refused (HTTP 403 Authorization_RequestDenied). Grant Application.Read.All (read-only) and re-run."
+  },
+  "id": "backup.third_party_app",
+  "reason": {
+    "code": "missing_permission",
+    "detail": "graph.service_principals.list was refused (HTTP 403 Authorization_RequestDenied). Grant Application.Read.All (read-only) and re-run.",
+    "missing_permissions": [
+      "Application.Read.All"
+    ]
+  },
+  "status": "unknown"
+}

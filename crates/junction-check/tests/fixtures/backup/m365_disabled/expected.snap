@@ -1,0 +1,18 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "service_status": "disabled"
+    },
+    "summary": "Microsoft 365 Backup is not enabled for this tenant. If another product backs up Microsoft 365, answer backup.offline_copy, backup.restore_tested and backup.admin_separation."
+  },
+  "id": "backup.m365_backup",
+  "reason": {
+    "code": "service_not_enabled",
+    "detail": "Microsoft 365 Backup is not enabled for this tenant. If another product backs up Microsoft 365, answer backup.offline_copy, backup.restore_tested and backup.admin_separation."
+  },
+  "status": "not_applicable"
+}

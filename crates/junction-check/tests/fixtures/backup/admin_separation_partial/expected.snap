@@ -1,0 +1,13 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": null,
+    "summary": "Attested 'partial' by fixture on 2026-10-25."
+  },
+  "id": "backup.admin_separation",
+  "reason": null,
+  "status": "warn"
+}

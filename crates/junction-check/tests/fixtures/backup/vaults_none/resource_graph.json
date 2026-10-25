@@ -1,0 +1,60 @@
+[
+  {
+    "operation": "azure.resource_graph.resources.post",
+    "responses": [
+      {
+        "status": 200,
+        "body": {
+          "totalRecords": 0,
+          "count": 0,
+          "data": []
+        }
+      }
+    ],
+    "match": {
+      "body": {
+        "query": "resources | where type in~ ('microsoft.recoveryservices/vaults', 'microsoft.dataprotection/backupvaults') | project id, name, type = tolower(type), properties"
+      }
+    }
+  },
+  {
+    "operation": "azure.resource_graph.resources.post",
+    "responses": [
+      {
+        "status": 200,
+        "body": {
+          "totalRecords": 1,
+          "count": 1,
+          "data": [
+            {
+              "vms": 0
+            }
+          ]
+        }
+      }
+    ],
+    "match": {
+      "body": {
+        "query": "resources | where type =~ 'microsoft.compute/virtualmachines' | summarize vms = count()"
+      }
+    }
+  },
+  {
+    "operation": "azure.resource_graph.resources.post",
+    "responses": [
+      {
+        "status": 200,
+        "body": {
+          "totalRecords": 0,
+          "count": 0,
+          "data": []
+        }
+      }
+    ],
+    "match": {
+      "body": {
+        "query": "resources | where type =~ 'microsoft.compute/virtualmachines' | where tostring(tags['criticality']) =~ 'critical' | project id = tolower(id), name"
+      }
+    }
+  }
+]

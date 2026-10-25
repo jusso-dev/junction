@@ -1,0 +1,12 @@
+{
+  "operation": "graph.solutions.backup_restore.get",
+  "responses": [
+    {
+      "status": 400,
+      "error": {
+        "code": "BadRequest",
+        "message": "Backup service is not enabled for the tenant."
+      }
+    }
+  ]
+}
