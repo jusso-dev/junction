@@ -62,6 +62,10 @@ fn markers(name: &str) -> (String, String) {
     )
 }
 
+fn lf(text: &str) -> String {
+    text.replace("\r\n", "\n")
+}
+
 /// Replace a generated section in `text`.
 pub fn replace_section(text: &str, name: &str, content: &str) -> Result<String> {
     let (start, end) = markers(name);
@@ -87,8 +91,8 @@ pub fn sync(registry: &CheckRegistry, dir: &Path, check: bool) -> Result<Vec<Str
     for (file, name, content) in sections(registry) {
         let current = match files.get(file) {
             Some(text) => text.clone(),
-            None => std::fs::read_to_string(dir.join(file))
-                .with_context(|| format!("reading docs/{file}"))?,
+            None => lf(&std::fs::read_to_string(dir.join(file))
+                .with_context(|| format!("reading docs/{file}"))?),
         };
         let updated =
             replace_section(&current, name, &content).with_context(|| format!("docs/{file}"))?;
@@ -96,7 +100,8 @@ pub fn sync(registry: &CheckRegistry, dir: &Path, check: bool) -> Result<Vec<Str
     }
     for (file, text) in files {
         let path = dir.join(file);
-        if std::fs::read_to_string(&path)? != text {
+        // Compare with LF endings: Windows checkouts may convert to CRLF.
+        if lf(&std::fs::read_to_string(&path)?) != text {
             stale.push(file.to_owned());
             if !check {
                 std::fs::write(&path, text)?;
@@ -109,6 +114,21 @@ pub fn sync(registry: &CheckRegistry, dir: &Path, check: bool) -> Result<Vec<Str
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn crlf_checkouts_are_not_stale() {
+        let dir = tempfile::tempdir().unwrap();
+        let source = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../docs");
+        for (file, _, _) in sections(CheckRegistry::builtin()) {
+            let text = std::fs::read_to_string(source.join(file)).unwrap();
+            std::fs::write(dir.path().join(file), text.replace('\n', "\r\n")).unwrap();
+        }
+        assert!(
+            sync(CheckRegistry::builtin(), dir.path(), true)
+                .unwrap()
+                .is_empty()
+        );
+    }
 
     #[test]
     fn sections_replace_between_markers() {

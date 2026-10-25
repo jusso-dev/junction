@@ -1,0 +1,6 @@
+# Check docs, data, queries, fixtures and snapshots are compared byte for byte.
+docs/*.md text eol=lf
+crates/junction-check/data/** text eol=lf
+crates/junction-check/queries/** text eol=lf
+crates/junction-check/tests/** text eol=lf
+crates/junction/tests/fixtures/** text eol=lf
