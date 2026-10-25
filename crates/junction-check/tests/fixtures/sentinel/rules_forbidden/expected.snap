@@ -1,0 +1,19 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": null,
+    "summary": "sentinel.securityinsights.alert_rules.list was refused (HTTP 403 AuthorizationFailed). Grant Microsoft Sentinel Reader (read-only) and re-run."
+  },
+  "id": "sentinel.rules_enabled",
+  "reason": {
+    "code": "missing_permission",
+    "detail": "sentinel.securityinsights.alert_rules.list was refused (HTTP 403 AuthorizationFailed). Grant Microsoft Sentinel Reader (read-only) and re-run.",
+    "missing_permissions": [
+      "Microsoft Sentinel Reader"
+    ]
+  },
+  "status": "unknown"
+}

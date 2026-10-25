@@ -1,0 +1,68 @@
+[
+  {
+    "operation": "sentinel.securityinsights.data_connectors.list",
+    "match": {
+      "parameters": {
+        "workspaceName": "law-sentinel-01"
+      }
+    },
+    "responses": [
+      {
+        "status": 200,
+        "body": {
+          "value": [
+            {
+              "id": "/subscriptions/00000000-0000-4000-8000-0000000000a1/resourceGroups/rg-security/providers/Microsoft.OperationalInsights/workspaces/law-sentinel-01/providers/Microsoft.SecurityInsights/dataConnectors/office365",
+              "name": "office365",
+              "type": "Microsoft.SecurityInsights/dataConnectors",
+              "kind": "Office365",
+              "properties": {
+                "tenantId": "00000000-0000-4000-8000-000000000001"
+              }
+            },
+            {
+              "id": "/subscriptions/00000000-0000-4000-8000-0000000000a1/resourceGroups/rg-security/providers/Microsoft.OperationalInsights/workspaces/law-sentinel-01/providers/Microsoft.SecurityInsights/dataConnectors/threatintelligence",
+              "name": "threatintelligence",
+              "type": "Microsoft.SecurityInsights/dataConnectors",
+              "kind": "ThreatIntelligence",
+              "properties": {
+                "tenantId": "00000000-0000-4000-8000-000000000001"
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "operation": "azure.log_analytics_query.query.execute",
+    "match": {
+      "parameters": {
+        "workspaceId": "00000000-0000-4000-8000-0000000000c1"
+      }
+    },
+    "responses": [
+      {
+        "status": 200,
+        "body": {
+          "tables": [
+            {
+              "name": "PrimaryResult",
+              "columns": [
+                {
+                  "name": "TableName",
+                  "type": "string"
+                }
+              ],
+              "rows": [
+                [
+                  "SigninLogs"
+                ]
+              ]
+            }
+          ]
+        }
+      }
+    ]
+  }
+]

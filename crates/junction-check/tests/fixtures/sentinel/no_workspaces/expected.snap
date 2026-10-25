@@ -1,0 +1,18 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "not_found": [],
+      "sentinel_workspaces": 0,
+      "unreadable": [],
+      "workspaces": []
+    },
+    "summary": "No Log Analytics workspace in 2 readable subscriptions, so Microsoft Sentinel is not set up."
+  },
+  "id": "sentinel.workspace",
+  "reason": null,
+  "status": "fail"
+}
