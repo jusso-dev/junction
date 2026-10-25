@@ -1,0 +1,68 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "description": "A tenant's Junction check score fell by at least 5 points since its previous run. Resource API version: Microsoft.SecurityInsights 2023-02-01 (stable)."
+  },
+  "parameters": {
+    "workspace": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of the Sentinel-enabled Log Analytics workspace."
+      }
+    },
+    "ruleId": {
+      "type": "string",
+      "defaultValue": "[newGuid()]",
+      "metadata": {
+        "description": "Rule id (a GUID). Reuse it to update the rule."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/providers/alertRules",
+      "apiVersion": "2023-02-01",
+      "name": "[concat(parameters('workspace'), '/Microsoft.SecurityInsights/', parameters('ruleId'))]",
+      "kind": "Scheduled",
+      "properties": {
+        "displayName": "Junction check: posture score dropped",
+        "description": "A tenant's Junction check score fell by at least 5 points since its previous run.",
+        "severity": "Medium",
+        "enabled": true,
+        "query": "// Alert when a tenant's latest score is at least `threshold` points below its previous run.\nlet threshold = 5.0;\nJunctionCheck_CL\n| where isnotnull(Score)\n| summarize Score = take_any(Score), TenantLabel = take_any(TenantLabel) by EntraTenantId, RunId, TimeGenerated\n| order by EntraTenantId asc, TimeGenerated asc\n| extend PreviousScore = iff(prev(EntraTenantId) == EntraTenantId, prev(Score), real(null)),\n         PreviousRunId = iff(prev(EntraTenantId) == EntraTenantId, prev(RunId), \"\")\n| summarize arg_max(TimeGenerated, *) by EntraTenantId\n| where TimeGenerated > ago(1d)\n| where isnotnull(PreviousScore) and PreviousScore - Score >= threshold\n| project TimeGenerated, EntraTenantId, Tenant = iff(isempty(TenantLabel), EntraTenantId, TenantLabel), RunId, PreviousRunId, PreviousScore, Score, Drop = round(PreviousScore - Score, 1)",
+        "queryFrequency": "P1D",
+        "queryPeriod": "P14D",
+        "triggerOperator": "GreaterThan",
+        "triggerThreshold": 0,
+        "suppressionDuration": "PT5H",
+        "suppressionEnabled": false,
+        "tactics": [],
+        "techniques": [],
+        "eventGroupingSettings": {
+          "aggregationKind": "AlertPerResult"
+        },
+        "customDetails": {
+          "Tenant": "Tenant",
+          "Score": "Score",
+          "PreviousScore": "PreviousScore"
+        },
+        "alertDetailsOverride": {
+          "alertDisplayNameFormat": "Posture score dropped {{Drop}} points in {{Tenant}}"
+        },
+        "incidentConfiguration": {
+          "createIncident": true,
+          "groupingConfiguration": {
+            "enabled": false,
+            "reopenClosedIncident": false,
+            "lookbackDuration": "PT5H",
+            "matchingMethod": "AllEntities",
+            "groupByEntities": [],
+            "groupByAlertDetails": [],
+            "groupByCustomDetails": []
+          }
+        }
+      }
+    }
+  ]
+}
