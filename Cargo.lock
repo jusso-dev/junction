@@ -1519,6 +1519,33 @@ dependencies = [
 ]
 
 [[package]]
+name = "junction-check"
+version = "0.1.25"
+dependencies = [
+ "anyhow",
+ "futures-util",
+ "getrandom 0.4.3",
+ "jsonschema",
+ "junction-auth",
+ "junction-core",
+ "junction-http",
+ "junction-policy",
+ "junction-registry",
+ "junction-runtime",
+ "junction-watch",
+ "regex",
+ "rusqlite",
+ "serde",
+ "serde-saphyr",
+ "serde_json",
+ "sha2",
+ "tempfile",
+ "tokio",
+ "toml",
+ "url",
+]
+
+[[package]]
 name = "junction-core"
 version = "0.1.25"
 dependencies = [

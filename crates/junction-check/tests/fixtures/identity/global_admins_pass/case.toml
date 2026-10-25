@@ -1,0 +1,2 @@
+[config.checks."identity.global_admin_count"]
+max = 4

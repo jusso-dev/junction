@@ -1,0 +1,22 @@
+{
+  "affected": {
+    "items": [
+      "admin1@contoso.example",
+      "admin2@contoso.example",
+      "admin3@contoso.example"
+    ],
+    "total": 3
+  },
+  "evidence": {
+    "data": {
+      "global_admins": 3,
+      "group_assignments": 0,
+      "max": 4,
+      "min": 2
+    },
+    "summary": "3 Global Administrators."
+  },
+  "id": "identity.global_admin_count",
+  "reason": null,
+  "status": "pass"
+}

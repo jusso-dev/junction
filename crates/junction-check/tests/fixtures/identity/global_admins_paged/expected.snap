@@ -1,0 +1,24 @@
+{
+  "affected": {
+    "items": [
+      "admin1@contoso.example",
+      "admin2@contoso.example",
+      "admin3@contoso.example",
+      "admin4@contoso.example",
+      "admin5@contoso.example"
+    ],
+    "total": 5
+  },
+  "evidence": {
+    "data": {
+      "global_admins": 5,
+      "group_assignments": 0,
+      "max": 4,
+      "min": 2
+    },
+    "summary": "5 Global Administrators; keep no more than 4."
+  },
+  "id": "identity.global_admin_count",
+  "reason": null,
+  "status": "fail"
+}

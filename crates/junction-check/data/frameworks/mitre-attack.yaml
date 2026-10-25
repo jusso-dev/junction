@@ -1,0 +1,98 @@
+# Maintained in this repository: the Enterprise ATT&CK techniques check packs reference.
+# Add a technique here before tagging a check with it.
+id: mitre-attack
+name: MITRE ATT&CK Enterprise
+version: "v16"
+source: https://attack.mitre.org/
+licence: >-
+  ATT&CK is © The MITRE Corporation and is reproduced under the ATT&CK Terms of Use, which permit
+  use and copying with attribution. Only technique ids and names are recorded.
+controls:
+  - id: T1003
+    title: OS Credential Dumping
+  - id: T1003.001
+    title: "OS Credential Dumping: LSASS Memory"
+  - id: T1021
+    title: Remote Services
+  - id: T1040
+    title: Network Sniffing
+  - id: T1059
+    title: Command and Scripting Interpreter
+  - id: T1059.001
+    title: "Command and Scripting Interpreter: PowerShell"
+  - id: T1059.005
+    title: "Command and Scripting Interpreter: Visual Basic"
+  - id: T1068
+    title: Exploitation for Privilege Escalation
+  - id: T1070
+    title: Indicator Removal
+  - id: T1078
+    title: Valid Accounts
+  - id: T1078.004
+    title: "Valid Accounts: Cloud Accounts"
+  - id: T1098
+    title: Account Manipulation
+  - id: T1110
+    title: Brute Force
+  - id: T1110.003
+    title: "Brute Force: Password Spraying"
+  - id: T1114
+    title: Email Collection
+  - id: T1114.003
+    title: "Email Collection: Email Forwarding Rule"
+  - id: T1133
+    title: External Remote Services
+  - id: T1136
+    title: Create Account
+  - id: T1190
+    title: Exploit Public-Facing Application
+  - id: T1203
+    title: Exploitation for Client Execution
+  - id: T1204
+    title: User Execution
+  - id: T1204.002
+    title: "User Execution: Malicious File"
+  - id: T1210
+    title: Exploitation of Remote Services
+  - id: T1484
+    title: Domain or Tenant Policy Modification
+  - id: T1486
+    title: Data Encrypted for Impact
+  - id: T1490
+    title: Inhibit System Recovery
+  - id: T1528
+    title: Steal Application Access Token
+  - id: T1530
+    title: Data from Cloud Storage
+  - id: T1534
+    title: Internal Spearphishing
+  - id: T1537
+    title: Transfer Data to Cloud Account
+  - id: T1550
+    title: Use Alternate Authentication Material
+  - id: T1550.001
+    title: "Use Alternate Authentication Material: Application Access Token"
+  - id: T1552
+    title: Unsecured Credentials
+  - id: T1556
+    title: Modify Authentication Process
+  - id: T1562
+    title: Impair Defenses
+  - id: T1562.001
+    title: "Impair Defenses: Disable or Modify Tools"
+  - id: T1562.008
+    title: "Impair Defenses: Disable or Modify Cloud Logs"
+  - id: T1566
+    title: Phishing
+  - id: T1566.001
+    title: "Phishing: Spearphishing Attachment"
+  - id: T1566.002
+    title: "Phishing: Spearphishing Link"
+  - id: T1567
+    title: Exfiltration Over Web Service
+  - id: T1586
+    title: Compromise Accounts
+  - id: T1606
+    title: Forge Web Credentials
+  - id: T1621
+    title: Multi-Factor Authentication Request Generation

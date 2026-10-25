@@ -1,0 +1,8 @@
+identity.global_admin_count:
+  essential_eight:
+    - strategy: restrict-admin-privileges
+      levels: [1, 2, 3]
+  ism: [ISM-1507, ISM-1508]
+  cis_m365: ["1.1.3"]
+  cis_v8: ["5.4"]
+  mitre: [T1078.004, T1098]
