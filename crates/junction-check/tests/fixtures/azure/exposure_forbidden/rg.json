@@ -1,0 +1,37 @@
+[
+    {
+        "operation": "azure.resource_graph.resources.post",
+        "match": {
+            "body": {
+                "query": "resources | where type =~ 'microsoft.storage/storageaccounts' | project id, name, subscriptionId, allowSharedKeyAccess = properties.allowSharedKeyAccess, allowBlobPublicAccess = properties.allowBlobPublicAccess, publicNetworkAccess = tostring(properties.publicNetworkAccess), defaultAction = tostring(properties.networkAcls.defaultAction)"
+            }
+        },
+        "responses": [
+            {
+                "status": 403,
+                "error": {
+                    "code": "AuthorizationFailed",
+                    "message": "The client does not have authorization to perform action."
+                }
+            }
+        ]
+    },
+    {
+        "operation": "azure.resource_graph.resources.post",
+        "responses": [
+            {
+                "body": {
+                    "totalRecords": 0,
+                    "count": 0,
+                    "data": [],
+                    "resultTruncated": "false"
+                }
+            }
+        ],
+        "match": {
+            "body": {
+                "query": "resources | where type in~ ('microsoft.sql/servers', 'microsoft.documentdb/databaseaccounts', 'microsoft.dbforpostgresql/flexibleservers', 'microsoft.dbforpostgresql/servers', 'microsoft.dbformysql/flexibleservers', 'microsoft.dbformysql/servers', 'microsoft.dbformariadb/servers', 'microsoft.synapse/workspaces', 'microsoft.cache/redis') | project id, name, type, publicNetworkAccess = iff(isnotempty(tostring(properties.publicNetworkAccess)), tostring(properties.publicNetworkAccess), tostring(properties.network.publicNetworkAccess))"
+            }
+        }
+    }
+]

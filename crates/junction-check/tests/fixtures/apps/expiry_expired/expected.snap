@@ -1,0 +1,20 @@
+{
+  "affected": {
+    "items": [
+      "HR Portal (certificate expires 2026-11-10)",
+      "Payroll Sync (secret expired 2025-01-01)"
+    ],
+    "total": 2
+  },
+  "evidence": {
+    "data": {
+      "expired": 1,
+      "expiring": 1,
+      "warn_days": 30
+    },
+    "summary": "1 expired and 1 soon-expiring app credentials."
+  },
+  "id": "apps.credential_expiry",
+  "reason": null,
+  "status": "fail"
+}

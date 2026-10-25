@@ -1,0 +1,16 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "service_principals": 3,
+      "with_secrets": 0
+    },
+    "summary": "No third-party service principal carries its own client secret."
+  },
+  "id": "apps.sp_password_credentials",
+  "reason": null,
+  "status": "pass"
+}

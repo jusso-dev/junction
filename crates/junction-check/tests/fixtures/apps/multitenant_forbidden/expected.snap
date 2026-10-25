@@ -1,0 +1,19 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": null,
+    "summary": "graph.applications.list was refused (HTTP 403 Authorization_RequestDenied). Grant Application.Read.All (read-only) and re-run."
+  },
+  "id": "apps.multi_tenant_apps",
+  "reason": {
+    "code": "missing_permission",
+    "detail": "graph.applications.list was refused (HTTP 403 Authorization_RequestDenied). Grant Application.Read.All (read-only) and re-run.",
+    "missing_permissions": [
+      "Application.Read.All"
+    ]
+  },
+  "status": "unknown"
+}

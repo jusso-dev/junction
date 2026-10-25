@@ -1,0 +1,18 @@
+{
+  "affected": {
+    "items": [
+      "Partner Portal (AzureADMultipleOrgs)"
+    ],
+    "total": 1
+  },
+  "evidence": {
+    "data": {
+      "app_registrations": 2,
+      "multi_tenant": 1
+    },
+    "summary": "1 of 2 app registrations accept other organisations or personal accounts."
+  },
+  "id": "apps.multi_tenant_apps",
+  "reason": null,
+  "status": "warn"
+}

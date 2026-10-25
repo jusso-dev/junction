@@ -446,9 +446,11 @@ pub(crate) const REAL_TLDS: &[&str] = &[
 /// top-level domain is real.
 fn domains(text: &str) -> Vec<String> {
     let mut out = vec![];
-    for raw in
-        text.split(|c: char| !(c.is_ascii_alphanumeric() || c == '.' || c == '-' || c == '@'))
-    {
+    // `_` stays in the token: hostnames never contain it, while check and operation
+    // ids (`graph.service_principals.app_role_assigned_to.list`) do.
+    for raw in text.split(|c: char| {
+        !(c.is_ascii_alphanumeric() || c == '.' || c == '-' || c == '@' || c == '_')
+    }) {
         let candidate = raw
             .rsplit('@')
             .next()

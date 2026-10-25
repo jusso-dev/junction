@@ -18,6 +18,7 @@ graph.policies.authentication_strength_policies.list
 graph.policies.authentication_methods_policy.get
 graph.policies.authorization_policy.get
 graph.policies.admin_consent_request_policy.get
+graph.policies.default_app_management_policy.get
 graph.policies.cross_tenant_access_policy.default.get
 graph.policies.device_registration_policy.get
 graph.policies.role_management_policy_assignments.list
@@ -32,6 +33,7 @@ graph.group_settings.list
 # Applications and consent
 graph.applications.list
 graph.service_principals.list
+graph.service_principals.app_role_assigned_to.list
 graph.oauth2permission_grants.list
 
 # Devices, Intune and endpoint hardening

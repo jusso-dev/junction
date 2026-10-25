@@ -1,0 +1,16 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "enabled": false,
+      "password_restrictions": []
+    },
+    "summary": "The tenant app management policy is off."
+  },
+  "id": "apps.app_management_policy",
+  "reason": null,
+  "status": "fail"
+}

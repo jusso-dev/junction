@@ -1,0 +1,17 @@
+{
+    "operation": "azure.resource_graph.resources.post",
+    "match": {
+        "body": {
+            "query": "resources | where type =~ 'microsoft.keyvault/vaults' | project id, name, subscriptionId, enableRbacAuthorization = properties.enableRbacAuthorization, enablePurgeProtection = properties.enablePurgeProtection, enableSoftDelete = properties.enableSoftDelete, publicNetworkAccess = tostring(properties.publicNetworkAccess), defaultAction = tostring(properties.networkAcls.defaultAction)"
+        }
+    },
+    "responses": [
+        {
+            "status": 403,
+            "error": {
+                "code": "AuthorizationFailed",
+                "message": "The client does not have authorization to perform action."
+            }
+        }
+    ]
+}

@@ -1,0 +1,20 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": null,
+    "summary": "graph.group_settings.list was refused (HTTP 403 Authorization_RequestDenied). Grant GroupSettings.Read.All or Directory.Read.All (read-only) and re-run."
+  },
+  "id": "collaboration.group_creation_restricted",
+  "reason": {
+    "code": "missing_permission",
+    "detail": "graph.group_settings.list was refused (HTTP 403 Authorization_RequestDenied). Grant GroupSettings.Read.All or Directory.Read.All (read-only) and re-run.",
+    "missing_permissions": [
+      "GroupSettings.Read.All",
+      "Directory.Read.All"
+    ]
+  },
+  "status": "unknown"
+}

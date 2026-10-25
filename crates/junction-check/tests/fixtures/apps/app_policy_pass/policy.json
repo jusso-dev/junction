@@ -1,0 +1,24 @@
+{
+    "operation": "graph.policies.default_app_management_policy.get",
+    "responses": [
+        {
+            "body": {
+                "isEnabled": true,
+                "applicationRestrictions": {
+                    "passwordCredentials": [
+                        {
+                            "restrictionType": "passwordAddition",
+                            "state": "enabled",
+                            "maxLifetime": null
+                        },
+                        {
+                            "restrictionType": "customPasswordAddition",
+                            "state": "disabled",
+                            "maxLifetime": null
+                        }
+                    ]
+                }
+            }
+        }
+    ]
+}

@@ -1,0 +1,23 @@
+{
+    "operation": "graph.policies.authorization_policy.get",
+    "responses": [
+        {
+            "body": {
+                "id": "authorizationPolicy",
+                "allowInvitesFrom": "adminsAndGuestInviters",
+                "allowEmailVerifiedUsersToJoinOrganization": false,
+                "guestUserRoleId": "2af84b1e-32c8-42b7-82bc-daa82404023b",
+                "defaultUserRolePermissions": {
+                    "allowedToCreateApps": false,
+                    "allowedToCreateSecurityGroups": false,
+                    "allowedToCreateTenants": false,
+                    "allowedToReadBitlockerKeysForOwnedDevice": false,
+                    "permissionGrantPoliciesAssigned": [
+                        "ManagePermissionGrantsForSelf.microsoft-user-default-low",
+                        "ManagePermissionGrantsForOwnedResource.microsoft-dynamically-managed-permissions-for-team"
+                    ]
+                }
+            }
+        }
+    ]
+}

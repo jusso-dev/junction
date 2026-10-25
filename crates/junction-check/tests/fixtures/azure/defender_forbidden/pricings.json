@@ -1,0 +1,14 @@
+[
+    {
+        "operation": "defender.cloud.pricings.list",
+        "responses": [
+            {
+                "status": 403,
+                "error": {
+                    "code": "AuthorizationFailed",
+                    "message": "The client does not have authorization to perform action."
+                }
+            }
+        ]
+    }
+]

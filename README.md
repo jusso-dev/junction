@@ -128,6 +128,8 @@ junction watch probe              # live capability discovery
 junction watch run                # collect every 15 minutes, dashboard on 127.0.0.1:8787
 ```
 
+Coming from M365-Secure? Its checks are moving into `junction check` packs, with a schema 1.1 export for crownguard. See the [migration plan and mapping table](docs/migration/m365-secure.md).
+
 ## Disclaimer and terms of use
 
 Junction does not represent Microsoft. Microsoft has not reviewed, approved or endorsed it, and Microsoft provides no support for it. It is a consolidation tool: it reads Microsoft's public API definitions and documentation and sends the requests you choose, with credentials you supply. It does not grant access, bypass licensing or change what any service allows.

@@ -1,0 +1,16 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": null,
+    "summary": "No storage accounts or PaaS data services in the readable subscriptions."
+  },
+  "id": "azure.public_network_exposure",
+  "reason": {
+    "code": "no_resources",
+    "detail": "No storage accounts or PaaS data services in the readable subscriptions."
+  },
+  "status": "not_applicable"
+}

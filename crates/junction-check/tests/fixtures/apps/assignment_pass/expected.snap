@@ -1,0 +1,16 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "assignment_not_required": 0,
+      "service_principals": 5
+    },
+    "summary": "Every enabled third-party enterprise application requires assignment."
+  },
+  "id": "apps.assignment_required",
+  "reason": null,
+  "status": "pass"
+}

@@ -1,0 +1,18 @@
+{
+    "operation": "graph.oauth2permission_grants.list",
+    "responses": [
+        {
+            "body": {
+                "value": [
+                    {
+                        "id": "d0",
+                        "clientId": "00000000-0000-4000-8000-000000000c03",
+                        "consentType": "AllPrincipals",
+                        "resourceId": "00000000-0000-4000-8000-000000000b01",
+                        "scope": "Files.ReadWrite.All offline_access"
+                    }
+                ]
+            }
+        }
+    ]
+}

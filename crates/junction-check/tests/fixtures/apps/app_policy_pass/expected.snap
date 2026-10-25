@@ -1,0 +1,18 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "enabled": true,
+      "password_restrictions": [
+        "passwordAddition"
+      ]
+    },
+    "summary": "The app management policy restricts secrets (passwordAddition)."
+  },
+  "id": "apps.app_management_policy",
+  "reason": null,
+  "status": "pass"
+}

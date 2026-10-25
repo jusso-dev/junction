@@ -1,0 +1,16 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "enabled": true,
+      "password_restrictions": []
+    },
+    "summary": "The app management policy is on but restricts no password credentials."
+  },
+  "id": "apps.app_management_policy",
+  "reason": null,
+  "status": "warn"
+}
