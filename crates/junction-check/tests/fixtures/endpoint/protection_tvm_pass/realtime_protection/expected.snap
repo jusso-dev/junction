@@ -1,0 +1,24 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "compliant": 3,
+      "configuration_ids": [
+        "scid-2012",
+        "scid-5090",
+        "scid-6090"
+      ],
+      "devices_assessed": 3,
+      "non_compliant": 0,
+      "percent_compliant": 100,
+      "truncated": false
+    },
+    "summary": "Real-time protection is on for all 3 assessed devices (100% compliant)."
+  },
+  "id": "endpoint.realtime_protection",
+  "reason": null,
+  "status": "pass"
+}

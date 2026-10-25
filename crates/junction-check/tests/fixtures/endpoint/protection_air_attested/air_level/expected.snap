@@ -1,0 +1,13 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": null,
+    "summary": "Attested 'yes' by fixture on 2026-10-25."
+  },
+  "id": "endpoint.air_level",
+  "reason": null,
+  "status": "pass"
+}

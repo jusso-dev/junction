@@ -1,1 +1,39 @@
-{}
+# Defender for Endpoint protection settings (src/packs/endpoint/protection.rs). Defender Antivirus
+# settings are not an Essential Eight strategy, so no Essential Eight tags are claimed.
+endpoint.tamper_protection:
+  ism: [ISM-1825, ISM-1417]
+  cis_v8: ["10.1"]
+  nist_csf: [PR.PS-01, DE.CM-09]
+  mitre: [T1562.001]
+endpoint.cloud_protection:
+  ism: [ISM-1417]
+  cis_v8: ["10.1", "10.7"]
+  nist_csf: [DE.CM-09]
+  mitre: [T1204.002]
+endpoint.realtime_protection:
+  ism: [ISM-1417]
+  cis_v8: ["10.1"]
+  nist_csf: [DE.CM-09]
+  mitre: [T1562.001, T1204.002]
+endpoint.network_protection:
+  ism: [ISM-0963, ISM-1236]
+  cis_v8: ["9.3", "10.1"]
+  nist_csf: [PR.PS-01, DE.CM-09]
+  mitre: [T1189, T1566.002]
+endpoint.edr_block_mode:
+  ism: [ISM-1417]
+  cis_v8: ["10.1", "10.7"]
+  nist_csf: [DE.CM-09, RS.MI-01]
+  mitre: [T1204.002]
+endpoint.air_level:
+  cis_v8: ["17.4"]
+  nist_csf: [RS.MA-01, RS.MI-01, RS.MI-02]
+endpoint.av_definition_age:
+  ism: [ISM-1417]
+  cis_v8: ["10.2"]
+  nist_csf: [DE.CM-09]
+endpoint.av_mode:
+  ism: [ISM-1417]
+  cis_v8: ["10.1"]
+  nist_csf: [DE.CM-09]
+  mitre: [T1562.001]

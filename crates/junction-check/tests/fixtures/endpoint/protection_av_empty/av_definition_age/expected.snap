@@ -1,0 +1,16 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": null,
+    "summary": "No device reported a security intelligence update time in Defender Vulnerability Management (DeviceTvmInfoGathering) in the last 7 days. Check that devices are onboarded and reporting."
+  },
+  "id": "endpoint.av_definition_age",
+  "reason": {
+    "code": "no_av_data",
+    "detail": "No device reported a security intelligence update time in Defender Vulnerability Management (DeviceTvmInfoGathering) in the last 7 days. Check that devices are onboarded and reporting."
+  },
+  "status": "unknown"
+}

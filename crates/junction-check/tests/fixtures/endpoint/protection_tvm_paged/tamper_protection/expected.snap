@@ -1,0 +1,25 @@
+{
+  "affected": {
+    "items": [
+      "pc-03.contoso.example"
+    ],
+    "total": 1
+  },
+  "evidence": {
+    "data": {
+      "compliant": 3,
+      "configuration_ids": [
+        "scid-2003",
+        "scid-5092"
+      ],
+      "devices_assessed": 4,
+      "non_compliant": 1,
+      "percent_compliant": 75,
+      "truncated": false
+    },
+    "summary": "Tamper protection is off on 1 of 4 devices (75% compliant)."
+  },
+  "id": "endpoint.tamper_protection",
+  "reason": null,
+  "status": "fail"
+}

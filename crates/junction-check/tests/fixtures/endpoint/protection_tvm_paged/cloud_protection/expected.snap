@@ -1,0 +1,24 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "compliant": 4,
+      "configuration_ids": [
+        "scid-2016",
+        "scid-5094",
+        "scid-6094"
+      ],
+      "devices_assessed": 4,
+      "non_compliant": 0,
+      "percent_compliant": 100,
+      "truncated": false
+    },
+    "summary": "Cloud-delivered protection is on for all 4 assessed devices (100% compliant)."
+  },
+  "id": "endpoint.cloud_protection",
+  "reason": null,
+  "status": "pass"
+}

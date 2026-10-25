@@ -1,0 +1,26 @@
+[
+    {
+        "operation": "defender.xdr.advancedhunting.run",
+        "responses": [
+            {
+                "status": 403,
+                "error": {
+                    "code": "Forbidden",
+                    "message": "The application does not have any of the required application permissions (AdvancedHunting.Read.All) to access the resource."
+                }
+            }
+        ]
+    },
+    {
+        "operation": "graph.security.run_hunting_query",
+        "responses": [
+            {
+                "status": 403,
+                "error": {
+                    "code": "Forbidden",
+                    "message": "Missing application roles. API required roles: ThreatHunting.Read.All."
+                }
+            }
+        ]
+    }
+]
