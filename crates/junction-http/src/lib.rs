@@ -76,6 +76,9 @@ fn validate_headers(headers: &RequestHeaders) -> Result<()> {
 }
 pub struct HttpResponse {
     pub continuation_token: Option<Secret>,
+    /// Office 365 Management Activity API page link (`NextPageUri` header),
+    /// accepted only when it stays on the responding HTTPS origin.
+    pub next_page_uri: Option<Url>,
     pub async_links: AsyncLinks,
     pub correlation: CorrelationIds,
     pub status: u16,
@@ -462,6 +465,7 @@ impl HttpTransport {
         }
         let mut bytes = Vec::new();
         let continuation_token = continuation_token(response.headers())?;
+        let next_page_uri = next_page_uri(response.headers(), response.url())?;
         while let Some(chunk) = response
             .chunk()
             .await
@@ -480,6 +484,7 @@ impl HttpTransport {
         };
         Ok(HttpResponse {
             continuation_token,
+            next_page_uri,
             async_links,
             correlation,
             status,
@@ -505,6 +510,35 @@ fn continuation_token(headers: &reqwest::header::HeaderMap) -> Result<Option<Sec
     (!value.is_empty())
         .then(|| Secret::new(value.to_owned()))
         .transpose()
+}
+fn next_page_uri(headers: &reqwest::header::HeaderMap, origin: &Url) -> Result<Option<Url>> {
+    let mut values = headers.get_all("nextpageuri").iter();
+    let Some(value) = values.next() else {
+        return Ok(None);
+    };
+    if values.next().is_some() {
+        bail!("ambiguous next page header");
+    }
+    let value = value
+        .to_str()
+        .map_err(|_| anyhow::anyhow!("invalid next page header"))?;
+    if value.is_empty() {
+        return Ok(None);
+    }
+    if value.len() > 8192 {
+        bail!("invalid next page header");
+    }
+    let next = Url::parse(value).map_err(|_| anyhow::anyhow!("invalid next page header"))?;
+    // A page link must never move the bearer token to another host.
+    if next.scheme() != "https"
+        || next.origin() != origin.origin()
+        || !next.username().is_empty()
+        || next.password().is_some()
+        || next.fragment().is_some()
+    {
+        bail!("next page link left the trusted origin");
+    }
+    Ok(Some(next))
 }
 #[cfg(test)]
 mod credential_tests {
@@ -607,6 +641,40 @@ mod tests {
         headers.clear();
         headers.insert("x-ms-continuationtoken", "a".repeat(16385).parse().unwrap());
         assert!(continuation_token(&headers).is_err());
+    }
+    #[test]
+    fn next_page_header_stays_on_origin() {
+        let origin =
+            Url::parse("https://manage.office.com/api/v1.0/t/activity/feed/subscriptions/content")
+                .unwrap();
+        let mut headers = reqwest::header::HeaderMap::new();
+        assert!(next_page_uri(&headers, &origin).unwrap().is_none());
+        headers.insert(
+            "NextPageUri",
+            "https://manage.office.com/api/v1.0/t/activity/feed/subscriptions/content?nextPage=2"
+                .parse()
+                .unwrap(),
+        );
+        let next = next_page_uri(&headers, &origin).unwrap().unwrap();
+        assert_eq!(next.query(), Some("nextPage=2"));
+        for bad in [
+            "https://evil.example/api?nextPage=2",
+            "http://manage.office.com/api?nextPage=2",
+            "https://user:pw@manage.office.com/api",
+            "not a url",
+        ] {
+            headers.insert("NextPageUri", bad.parse().unwrap());
+            assert!(next_page_uri(&headers, &origin).is_err(), "{bad}");
+        }
+        headers.insert(
+            "NextPageUri",
+            "https://manage.office.com/a".parse().unwrap(),
+        );
+        headers.append(
+            "NextPageUri",
+            "https://manage.office.com/b".parse().unwrap(),
+        );
+        assert!(next_page_uri(&headers, &origin).is_err());
     }
     use junction_policy::Policy;
     #[test]

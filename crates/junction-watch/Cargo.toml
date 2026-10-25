@@ -1,0 +1,35 @@
+[package]
+name = "junction-watch"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "Microsoft 365 security watchdog: licence-aware audit collection, detections and alerting"
+
+[dependencies]
+junction-auth = { path = "../junction-auth" }
+junction-core = { path = "../junction-core" }
+junction-http = { path = "../junction-http" }
+junction-policy = { path = "../junction-policy" }
+serde.workspace = true
+serde_json.workspace = true
+anyhow.workspace = true
+clap.workspace = true
+tokio = { version = "1", features = ["macros", "rt-multi-thread", "time", "signal", "net", "sync"] }
+url = "2"
+toml = "0.8"
+rusqlite = { version = "0.37", features = ["bundled"] }
+sha2 = "0.10"
+base64 = "0.22"
+getrandom = "0.4"
+zeroize = "1"
+axum = { version = "0.7.9", default-features = false, features = ["http1", "tokio", "form", "query"] }
+maud = "0.27"
+argon2 = "0.5"
+subtle = "2"
+rpassword = "7"
+
+[dev-dependencies]
+tempfile = "3"
+tower = { version = "0.5", features = ["util"] }
