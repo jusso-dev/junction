@@ -1,0 +1,7 @@
+licences = ["exchange_online"]
+
+[dns."_dmarc.contoso.example"]
+txt = ["v=DMARC1; p=reject; rua=mailto:dmarc-reports@contoso.example"]
+
+[dns."fabrikam.example"]
+fail = ["mx"]

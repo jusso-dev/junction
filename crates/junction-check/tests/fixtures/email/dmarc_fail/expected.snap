@@ -1,0 +1,45 @@
+{
+  "affected": {
+    "items": [
+      "fabrikam.example",
+      "mail.example.org"
+    ],
+    "total": 2
+  },
+  "evidence": {
+    "data": {
+      "assessed": 3,
+      "domains": [
+        {
+          "detail": "p=reject with aggregate reporting",
+          "domain": "contoso.example",
+          "record": "v=DMARC1; p=reject; rua=mailto:dmarc-reports@contoso.example",
+          "result": "pass",
+          "role": "exchange"
+        },
+        {
+          "detail": "no DMARC record at _dmarc.fabrikam.example",
+          "domain": "fabrikam.example",
+          "result": "fail",
+          "role": "exchange"
+        },
+        {
+          "detail": "no rua= address, so aggregate reports are not collected",
+          "domain": "mail.example.org",
+          "record": "v=DMARC1; p=quarantine",
+          "result": "warn",
+          "role": "other_mail"
+        }
+      ],
+      "failed": 1,
+      "passed": 1,
+      "skipped": 0,
+      "unresolved": 0,
+      "warned": 1
+    },
+    "summary": "DMARC fails for 1 of 3 domains: fabrikam.example (no DMARC record at _dmarc.fabrikam.example)."
+  },
+  "id": "email.dmarc",
+  "reason": null,
+  "status": "fail"
+}

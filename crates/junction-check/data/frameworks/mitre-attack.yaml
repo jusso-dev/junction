@@ -38,6 +38,8 @@ controls:
     title: "Brute Force: Password Spraying"
   - id: T1114
     title: Email Collection
+  - id: T1114.002
+    title: "Email Collection: Remote Email Collection"
   - id: T1114.003
     title: "Email Collection: Email Forwarding Rule"
   - id: T1133

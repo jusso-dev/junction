@@ -1,0 +1,17 @@
+licences = ["exchange_online"]
+[[attestations]]
+check = "email.preset_policies"
+answer = "yes"
+
+[[attestations]]
+check = "email.external_sender_tag"
+answer = "yes"
+
+[[attestations]]
+check = "email.auto_forward_blocked"
+answer = "no"
+note = "Default outbound policy AutoForwardingMode is On."
+
+[[attestations]]
+check = "email.mailbox_audit"
+answer = "partial"

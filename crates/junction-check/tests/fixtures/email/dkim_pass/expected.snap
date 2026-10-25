@@ -1,0 +1,42 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "assessed": 1,
+      "domains": [
+        {
+          "detail": "selector CNAMEs published (selector1 -> selector1-contoso-example._domainkey.contoso.onmicrosoft.com.example; selector2 -> selector2-contoso-example._domainkey.contoso.onmicrosoft.com.example)",
+          "domain": "contoso.example",
+          "result": "pass",
+          "role": "exchange"
+        },
+        {
+          "detail": "mail is not hosted in Exchange Online",
+          "domain": "fabrikam.example",
+          "result": "skipped",
+          "role": "other_mail"
+        },
+        {
+          "detail": "no mail",
+          "domain": "parked.example.org",
+          "result": "skipped",
+          "role": "parked"
+        }
+      ],
+      "failed": 0,
+      "method": "selector CNAME records in public DNS",
+      "passed": 1,
+      "signing_state": "not read: Get-DkimSigningConfig needs Exchange Online PowerShell, which Junction does not call",
+      "skipped": 2,
+      "unresolved": 0,
+      "warned": 0
+    },
+    "summary": "DKIM passes for 1 domain. Signing state was not read (Get-DkimSigningConfig needs Exchange Online PowerShell); the published CNAMEs decided."
+  },
+  "id": "email.dkim",
+  "reason": null,
+  "status": "pass"
+}

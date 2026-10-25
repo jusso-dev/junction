@@ -1,1 +1,39 @@
-{}
+email.spf:
+  ism: [ISM-0574, ISM-1183]
+  cis_m365: ["2.1.8"]
+  cis_v8: ["9.5"]
+  nist_csf: [PR.PS-01]
+  mitre: [T1566]
+email.dkim:
+  ism: [ISM-0861]
+  cis_m365: ["2.1.9"]
+  cis_v8: ["9.5"]
+  nist_csf: [PR.PS-01]
+  mitre: [T1566]
+email.dmarc:
+  ism: [ISM-1540]
+  cis_m365: ["2.1.10"]
+  cis_v8: ["9.5"]
+  nist_csf: [PR.PS-01]
+  mitre: [T1566]
+email.preset_policies:
+  ism: [ISM-1234]
+  cis_m365: ["2.1.1", "2.1.4", "2.1.7"]
+  cis_v8: ["9.6", "9.7"]
+  nist_csf: [PR.PS-01]
+  mitre: [T1566, T1566.001, T1566.002]
+email.external_sender_tag:
+  cis_m365: ["6.2.3"]
+  cis_v8: ["9.7"]
+  mitre: [T1566]
+email.auto_forward_blocked:
+  cis_m365: ["6.2.1"]
+  cis_v8: ["3.3"]
+  nist_csf: [PR.DS-01]
+  mitre: [T1114.003]
+email.mailbox_audit:
+  ism: [ISM-PRINCIPLE-DET-01]
+  cis_m365: ["6.1.1"]
+  cis_v8: ["8.2"]
+  nist_csf: [DE.CM-09]
+  mitre: [T1114, T1114.002]

@@ -1,0 +1,10 @@
+licences = ["exchange_online"]
+
+[dns."selector1._domainkey.contoso.example"]
+cname = ["selector1-contoso-example._domainkey.contoso.onmicrosoft.com.example"]
+
+[dns."selector2._domainkey.contoso.example"]
+cname = ["selector2-contoso-example._domainkey.contoso.onmicrosoft.com.example"]
+
+[dns."selector1._domainkey.fabrikam.example"]
+cname = ["selector1-fabrikam-example._domainkey.contoso.onmicrosoft.com.example"]

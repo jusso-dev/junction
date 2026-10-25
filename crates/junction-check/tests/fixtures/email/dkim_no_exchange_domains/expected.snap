@@ -1,0 +1,39 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "assessed": 0,
+      "domains": [
+        {
+          "detail": "mail is not hosted in Exchange Online",
+          "domain": "fabrikam.example",
+          "result": "skipped",
+          "role": "other_mail"
+        },
+        {
+          "detail": "no mail",
+          "domain": "parked.example.org",
+          "result": "skipped",
+          "role": "parked"
+        }
+      ],
+      "failed": 0,
+      "method": "selector CNAME records in public DNS",
+      "passed": 0,
+      "signing_state": "not read: Get-DkimSigningConfig needs Exchange Online PowerShell, which Junction does not call",
+      "skipped": 2,
+      "unresolved": 0,
+      "warned": 0
+    },
+    "summary": "No custom domain sends mail through Exchange Online."
+  },
+  "id": "email.dkim",
+  "reason": {
+    "code": "no_mail_domains",
+    "detail": "No custom domain sends mail through Exchange Online."
+  },
+  "status": "not_applicable"
+}
