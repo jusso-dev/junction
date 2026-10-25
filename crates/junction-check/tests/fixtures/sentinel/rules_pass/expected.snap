@@ -1,0 +1,29 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "disabled": 1,
+      "enabled_nrt": 3,
+      "enabled_scheduled": 6,
+      "enabled_total": 10,
+      "failing_rules": [],
+      "fusion_enabled": true,
+      "min": 10,
+      "rule_health_read": true,
+      "workspaces": [
+        {
+          "enabled": 10,
+          "rules": 12,
+          "workspace": "law-sentinel-01"
+        }
+      ]
+    },
+    "summary": "10 analytics rules enabled (6 Scheduled, 3 NRT, Fusion on)."
+  },
+  "id": "sentinel.rules_enabled",
+  "reason": null,
+  "status": "pass"
+}

@@ -1,0 +1,5 @@
+union isfuzzy=true
+    (datatable(TableName: string)[]),
+    (SentinelHealth | take 1 | project TableName = "SentinelHealth"),
+    (SentinelAudit | take 1 | project TableName = "SentinelAudit")
+| distinct TableName

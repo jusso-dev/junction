@@ -1,0 +1,19 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": null,
+    "summary": "azure.log_analytics.tables.list_by_workspace was refused (HTTP 403 AuthorizationFailed). Grant Log Analytics Reader (read-only) and re-run."
+  },
+  "id": "sentinel.retention",
+  "reason": {
+    "code": "missing_permission",
+    "detail": "azure.log_analytics.tables.list_by_workspace was refused (HTTP 403 AuthorizationFailed). Grant Log Analytics Reader (read-only) and re-run.",
+    "missing_permissions": [
+      "Log Analytics Reader"
+    ]
+  },
+  "status": "unknown"
+}

@@ -1,0 +1,27 @@
+{
+  "affected": {
+    "items": [
+      "law-sentinel-01 (30 days)",
+      "law-sentinel-01/SecurityEvent (Analytics, 30 days)",
+      "law-sentinel-01/Syslog (Basic, 30 days)"
+    ],
+    "total": 3
+  },
+  "evidence": {
+    "data": {
+      "min_days": 90,
+      "workspaces": [
+        {
+          "retention_days": 30,
+          "short_tables": 2,
+          "tables": 4,
+          "workspace": "law-sentinel-01"
+        }
+      ]
+    },
+    "summary": "Retention is below 90 days in 3 places: law-sentinel-01 (30 days), law-sentinel-01/SecurityEvent (Analytics, 30 days), law-sentinel-01/Syslog (Basic, 30 days)."
+  },
+  "id": "sentinel.retention",
+  "reason": null,
+  "status": "fail"
+}

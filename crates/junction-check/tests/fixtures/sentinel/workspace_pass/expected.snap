@@ -1,0 +1,31 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "not_found": [],
+      "sentinel_workspaces": 1,
+      "unreadable": [],
+      "workspaces": [
+        {
+          "resource_group": "rg-security",
+          "sentinel": true,
+          "subscription": "00000000-0000-4000-8000-0000000000a1",
+          "workspace": "law-sentinel-01"
+        },
+        {
+          "resource_group": "rg-security",
+          "sentinel": false,
+          "subscription": "00000000-0000-4000-8000-0000000000a1",
+          "workspace": "law-apps-01"
+        }
+      ]
+    },
+    "summary": "Microsoft Sentinel is onboarded to 1 of 2 workspaces: law-sentinel-01."
+  },
+  "id": "sentinel.workspace",
+  "reason": null,
+  "status": "pass"
+}
