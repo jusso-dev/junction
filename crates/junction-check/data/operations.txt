@@ -45,6 +45,7 @@ graph.device_management.device_compliance_policies.list
 graph.device_management.device_enrollment_configurations.list
 graph.device_management.configuration_policies.list@beta
 graph.device_management.intents.list@beta
+graph.device_management.intents.settings.list@beta
 graph.device_management.windows_feature_update_profiles.list@beta
 graph.device_management.windows_quality_update_profiles.list@beta
 graph.directory.device_local_credentials.list

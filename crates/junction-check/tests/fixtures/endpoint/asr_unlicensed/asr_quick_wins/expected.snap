@@ -1,0 +1,16 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": null,
+    "summary": "The tenant has neither Microsoft Intune nor Defender for Endpoint with advanced hunting, so ASR rule modes cannot be read."
+  },
+  "id": "endpoint.asr_quick_wins",
+  "reason": {
+    "code": "licence_required",
+    "detail": "The tenant has neither Microsoft Intune nor Defender for Endpoint with advanced hunting, so ASR rule modes cannot be read."
+  },
+  "status": "not_applicable"
+}
