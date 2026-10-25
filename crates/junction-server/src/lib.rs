@@ -135,6 +135,52 @@ pub fn openapi() -> Value {
         None,
         json!({"type":"object","properties":{"operation":{"type":"string"},"required_permissions":{}},"required":["operation","required_permissions"]}),
     );
+    let text = |name: &str, description: &str| {
+        let mut p = parameter(name, "query", false, json!({"type":"string","maxLength":2048}));
+        p["description"] = json!(description);
+        p
+    };
+    paths["/v1/checks"]["get"] = make(
+        "junction_check_list",
+        json!([
+            text("pack", "Comma-separated packs"),
+            text("tag", "Comma-separated tag selectors, for example e8:ml1"),
+            text("check", "Comma-separated check ids")
+        ]),
+        None,
+        json!({"type":"object","properties":{"checks":{"type":"array","items":{"type":"object"}}},"required":["checks"]}),
+    );
+    paths["/v1/checks/run"]["post"] = make(
+        "junction_check_run",
+        json!([]),
+        Some(json!({"$ref":"#/components/schemas/junction_check_run"})),
+        json!({"type":"object","description":"A check run result (docs/check-result.schema.json), or {run_id, status} for background runs"}),
+    );
+    paths["/v1/checks/runs/{id}"]["get"] = make(
+        "junction_check_run_status",
+        json!([id.clone(), text("context", "Context whose history holds a finished run")]),
+        None,
+        json!({"type":"object","properties":{"status":{"type":"string"}},"required":["status"]}),
+    );
+    let mut attestation = schemas["junction_check_attestations"].clone();
+    attestation["properties"]
+        .as_object_mut()
+        .expect("attestation properties")
+        .remove("action");
+    attestation["required"] = json!(["check", "answer"]);
+    schemas["CheckAttestationRequest"] = attestation;
+    paths["/v1/checks/attestations"]["get"] = make(
+        "junction_check_attestations_pending",
+        json!([text("context", "Context to read answers for")]),
+        None,
+        json!({"type":"object","properties":{"pending":{"type":"array","items":{"type":"object"}}},"required":["pending"]}),
+    );
+    paths["/v1/checks/attestations"]["post"] = make(
+        "junction_check_attestations_submit",
+        json!([]),
+        Some(json!({"$ref":"#/components/schemas/CheckAttestationRequest"})),
+        json!({"type":"object"}),
+    );
     paths["/openapi.json"]["get"] = make(
         "junction_openapi",
         json!([]),

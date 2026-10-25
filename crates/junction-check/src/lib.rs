@@ -9,9 +9,11 @@
 pub mod attest;
 pub mod catalog;
 pub mod check;
+pub mod cli;
 pub mod config;
 pub mod context;
 pub mod dns;
+pub mod docs;
 pub mod gateway;
 pub mod history;
 pub mod licensing;

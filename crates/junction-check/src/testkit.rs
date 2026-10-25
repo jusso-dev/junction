@@ -670,6 +670,11 @@ mod tests {
 #[derive(Debug, Clone, Default, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct CaseSettings {
+    /// Tenant id for CLI fixture runs (`junction check run --fixtures`).
+    #[serde(default)]
+    pub tenant_id: Option<String>,
+    #[serde(default)]
+    pub label: Option<String>,
     #[serde(default)]
     pub licences: Option<Vec<String>>,
     #[serde(default)]
@@ -710,20 +715,26 @@ pub struct CaseDns {
 /// Default fixed clock for fixture runs.
 pub const FIXTURE_NOW: &str = "2026-10-25T00:00:00.000Z";
 
-/// Build a context for a fixture case directory (fixtures plus `case.toml`).
-pub fn case_context(
+/// Read `case.toml` from a fixture case directory (defaults when absent).
+pub fn case_settings(dir: &Path) -> Result<CaseSettings> {
+    match std::fs::read_to_string(dir.join("case.toml")) {
+        Ok(text) => toml::from_str(&text).with_context(|| format!("{}/case.toml", dir.display())),
+        Err(_) => Ok(CaseSettings::default()),
+    }
+}
+
+/// The fixture gateway and DNS records for a case directory.
+pub fn case_gateway(
+    tenant: &str,
     dir: &Path,
-) -> Result<(crate::context::CheckContext, std::sync::Arc<FixtureGateway>)> {
+    settings: &CaseSettings,
+) -> Result<(std::sync::Arc<dyn crate::gateway::Gateway>, std::sync::Arc<dyn crate::dns::Resolver>)> {
+    let gateway = std::sync::Arc::new(FixtureGateway::load(tenant, dir)?);
+    Ok((gateway, std::sync::Arc::new(case_dns(settings))))
+}
+
+fn case_dns(settings: &CaseSettings) -> crate::dns::StaticDns {
     use crate::dns::{RecordType, StaticDns};
-    let settings: CaseSettings = match std::fs::read_to_string(dir.join("case.toml")) {
-        Ok(text) => {
-            toml::from_str(&text).with_context(|| format!("{}/case.toml", dir.display()))?
-        }
-        Err(_) => CaseSettings::default(),
-    };
-    let gateway = std::sync::Arc::new(FixtureGateway::load(TENANT, dir)?);
-    let now =
-        junction_watch::clock::Instant::parse(settings.now.as_deref().unwrap_or(FIXTURE_NOW))?;
     let mut dns = StaticDns::new();
     for (name, records) in &settings.dns {
         for (kind, values) in [
@@ -737,33 +748,43 @@ pub fn case_context(
             }
         }
     }
+    dns
+}
+
+fn case_attestations(settings: &CaseSettings) -> Result<std::collections::BTreeMap<String, crate::model::Attestation>> {
     let mut attestations = std::collections::BTreeMap::new();
-    for a in settings.attestations {
+    for a in &settings.attestations {
         attestations.insert(
             a.check.clone(),
             crate::model::Attestation {
                 answer: crate::model::Answer::parse(&a.answer)
                     .with_context(|| format!("attestation answer {}", a.answer))?,
-                note: a.note,
+                note: a.note.clone(),
                 author: "fixture".into(),
                 attested_at: FIXTURE_NOW.into(),
-                expires_at: a.expires_at,
+                expires_at: a.expires_at.clone(),
             },
         );
     }
+    Ok(attestations)
+}
+
+/// Build a context for a fixture case directory (fixtures plus `case.toml`).
+pub fn case_context(dir: &Path) -> Result<(crate::context::CheckContext, std::sync::Arc<FixtureGateway>)> {
+    let settings = case_settings(dir)?;
+    let gateway = std::sync::Arc::new(FixtureGateway::load(TENANT, dir)?);
+    let now = junction_watch::clock::Instant::parse(settings.now.as_deref().unwrap_or(FIXTURE_NOW))?;
     let ctx = crate::context::CheckContext::new(crate::context::ContextParts {
         tenant_id: TENANT.into(),
         label: None,
         gateway: gateway.clone(),
-        licences: settings
-            .licences
-            .map(|features| crate::model::LicenceSnapshot {
-                features,
-                skus: vec![],
-            }),
-        config: std::sync::Arc::new(settings.config),
-        attestations,
-        dns: std::sync::Arc::new(dns),
+        licences: settings.licences.clone().map(|features| crate::model::LicenceSnapshot {
+            features,
+            skus: vec![],
+        }),
+        config: std::sync::Arc::new(settings.config.clone()),
+        attestations: case_attestations(&settings)?,
+        dns: std::sync::Arc::new(case_dns(&settings)),
         now,
     });
     Ok((ctx, gateway))

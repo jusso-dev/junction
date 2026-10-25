@@ -10,7 +10,7 @@ use serde_json::json;
 use std::{path::PathBuf, time::Duration};
 
 fn request(cli: &Cli, file: &Option<PathBuf>) -> Result<TokenRequest> {
-    let bytes = match (file, cli.context.as_deref()) {
+    let bytes = match (file, crate::one_context(&cli.context)?) {
         (Some(file), None) => context_store::read_file(file)?,
         (None, Some(name)) => context_store::read(&cli.contexts_directory, name)?,
         _ => bail!("select exactly one named context or context file"),

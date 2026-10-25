@@ -22,6 +22,7 @@ junction-runtime = { path = "../junction-runtime" }
 junction-mcp = { path = "../junction-mcp" }
 junction-server = { path = "../junction-server" }
 junction-watch = { path = "../junction-watch" }
+junction-check = { path = "../junction-check" }
 serde.workspace = true
 tokio = { version = "1", features = ["macros", "rt-multi-thread", "time", "signal", "net", "io-util"] }
 url = "2"

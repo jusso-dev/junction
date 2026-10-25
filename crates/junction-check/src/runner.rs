@@ -24,6 +24,20 @@ use std::panic::AssertUnwindSafe;
 use std::sync::Arc;
 use std::time::Duration;
 
+/// Live progress of a run, for background runs polled over MCP or HTTP.
+#[derive(Debug, Default)]
+pub struct Progress {
+    pub total: std::sync::atomic::AtomicUsize,
+    pub done: std::sync::atomic::AtomicUsize,
+}
+
+impl Progress {
+    pub fn snapshot(&self) -> (usize, usize) {
+        use std::sync::atomic::Ordering::SeqCst;
+        (self.done.load(SeqCst), self.total.load(SeqCst))
+    }
+}
+
 /// One tenant to assess.
 pub struct TenantPlan {
     pub tenant_id: String,
@@ -51,6 +65,7 @@ pub struct RunOptions {
     pub now: Instant,
     /// Fixed run id (tests); random when `None`.
     pub run_id: Option<String>,
+    pub progress: Option<Arc<Progress>>,
 }
 
 impl Default for RunOptions {
@@ -66,6 +81,7 @@ impl Default for RunOptions {
             dns: Arc::new(crate::dns::NoDns),
             now: Instant::now(),
             run_id: None,
+            progress: None,
         }
     }
 }
@@ -89,6 +105,11 @@ pub async fn run(
     options: &RunOptions,
 ) -> Result<RunReport> {
     let checks = registry.select(&options.selection)?;
+    if let Some(progress) = &options.progress {
+        progress
+            .total
+            .fetch_add(checks.len() * plans.len(), std::sync::atomic::Ordering::SeqCst);
+    }
     let started = std::time::Instant::now();
     let mut tenants: Vec<(usize, TenantReport)> =
         futures_util::stream::iter(plans.into_iter().enumerate())
@@ -130,6 +151,23 @@ fn failed(plan_id: String, label: Option<String>, reason: Reason) -> TenantRepor
 }
 
 async fn run_tenant(
+    registry: &CheckRegistry,
+    checks: &[Arc<dyn Check>],
+    plan: TenantPlan,
+    options: &RunOptions,
+) -> TenantReport {
+    let report = assess_tenant(registry, checks, plan, options).await;
+    if report.status == TenantStatus::Failed
+        && let Some(progress) = &options.progress
+    {
+        progress
+            .done
+            .fetch_add(checks.len(), std::sync::atomic::Ordering::SeqCst);
+    }
+    report
+}
+
+async fn assess_tenant(
     registry: &CheckRegistry,
     checks: &[Arc<dyn Check>],
     plan: TenantPlan,
@@ -178,7 +216,13 @@ async fn run_tenant(
         now: options.now,
     });
     let mut results: Vec<CheckResult> = futures_util::stream::iter(checks.iter())
-        .map(|check| evaluate(registry, check.as_ref(), &ctx, options.check_timeout))
+        .map(|check| async {
+            let result = evaluate(registry, check.as_ref(), &ctx, options.check_timeout).await;
+            if let Some(progress) = &options.progress {
+                progress.done.fetch_add(1, std::sync::atomic::Ordering::SeqCst);
+            }
+            result
+        })
         .buffer_unordered(options.check_concurrency.max(1))
         .collect()
         .await;

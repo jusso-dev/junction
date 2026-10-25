@@ -1474,6 +1474,7 @@ dependencies = [
  "clap",
  "getrandom 0.4.3",
  "junction-auth",
+ "junction-check",
  "junction-core",
  "junction-discovery",
  "junction-generator",
@@ -1523,6 +1524,7 @@ name = "junction-check"
 version = "0.1.25"
 dependencies = [
  "anyhow",
+ "clap",
  "futures-util",
  "getrandom 0.4.3",
  "jsonschema",

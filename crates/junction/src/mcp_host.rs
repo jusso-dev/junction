@@ -13,6 +13,7 @@ pub struct Host {
     approvals: PathBuf,
     pages: crate::mcp_pages::Store,
     http_call: tokio::sync::Mutex<()>,
+    checks: crate::check_tools::CheckTools,
 }
 impl Host {
     pub fn new(
@@ -22,6 +23,7 @@ impl Host {
         contexts: PathBuf,
         operations: PathBuf,
         approvals: PathBuf,
+        checks: crate::check_tools::CheckTools,
     ) -> Result<Self> {
         Ok(Self {
             executor: Executor::new(registry, policy.clone())?,
@@ -32,6 +34,7 @@ impl Host {
             approvals,
             pages: crate::mcp_pages::Store::new()?,
             http_call: tokio::sync::Mutex::new(()),
+            checks,
         })
     }
     pub async fn serve(&self) -> Result<()> {
@@ -73,6 +76,9 @@ impl Host {
         }
     }
     async fn dispatch(&self, name: &str, args: Value) -> Result<Value> {
+        if crate::check_tools::CheckTools::handles(name) {
+            return self.checks.call(name, args).await;
+        }
         let registry = self.executor.registry();
         let operation = args["operation"].as_str().unwrap_or_default();
         let version = args["api_version"].as_str();
@@ -411,6 +417,8 @@ fn safe_tool_error(error: &anyhow::Error) -> ToolResult {
             .unwrap_or_else(|_| json!({"error":"credential_required"}));
         value["status"] = json!("credential_required");
         value
+    } else if let Some(check) = error.downcast_ref::<crate::check_tools::CheckToolError>() {
+        serde_json::to_value(check).unwrap_or_else(|_| json!({"status":"check_failed"}))
     } else if let Some(denied) = error.downcast_ref::<junction_runtime::ExecutionDenied>() {
         serde_json::to_value(&denied.0).unwrap_or_else(|_| json!({"status":"policy_rejected"}))
     } else if let Some(timeout) = error.downcast_ref::<junction_runtime::lro::LroWaitTimeout>() {
@@ -471,6 +479,12 @@ mod http_tests {
             directory.path().join("contexts"),
             directory.path().join("operations"),
             approvals.clone(),
+            crate::check_tools::CheckTools::new(
+                directory.path().join("contexts"),
+                None,
+                directory.path().join("check-history"),
+                false,
+            ),
         )
         .unwrap();
         let record = |input: serde_json::Value, policy: &junction_policy::Policy| {
@@ -575,6 +589,12 @@ mod http_tests {
                 directory.path().join("contexts"),
                 directory.path().join("operations"),
                 directory.path().join("approvals"),
+                crate::check_tools::CheckTools::new(
+                    directory.path().join("contexts"),
+                    None,
+                    directory.path().join("check-history"),
+                    false,
+                ),
             )
             .unwrap();
             let denied = host
