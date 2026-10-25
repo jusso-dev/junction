@@ -1,0 +1,61 @@
+[
+    {
+        "operation": "graph.device_management.intents.list",
+        "responses": [
+            {
+                "body": {
+                    "value": [
+                        {
+                            "id": "00000000-0000-4000-8000-000000000301",
+                            "displayName": "Legacy ASR template",
+                            "isAssigned": true,
+                            "templateId": "00000000-0000-4000-8000-000000000302"
+                        },
+                        {
+                            "id": "00000000-0000-4000-8000-000000000303",
+                            "displayName": "Unassigned template",
+                            "isAssigned": false,
+                            "templateId": "00000000-0000-4000-8000-000000000302"
+                        }
+                    ]
+                }
+            }
+        ]
+    },
+    {
+        "operation": "graph.device_management.intents.settings.list",
+        "match": {
+            "parameters": {
+                "deviceManagementIntent-id": "00000000-0000-4000-8000-000000000301"
+            }
+        },
+        "responses": [
+            {
+                "body": {
+                    "value": [
+                        {
+                            "@odata.type": "#microsoft.graph.deviceManagementStringSettingInstance",
+                            "id": "s1",
+                            "definitionId": "deviceConfiguration--windows10EndpointProtectionConfiguration_defenderAdobeReaderLaunchChildProcess",
+                            "valueJson": "\"warn\"",
+                            "value": "warn"
+                        },
+                        {
+                            "@odata.type": "#microsoft.graph.deviceManagementStringSettingInstance",
+                            "id": "s2",
+                            "definitionId": "deviceConfiguration--windows10EndpointProtectionConfiguration_defenderUntrustedUSBProcessType",
+                            "valueJson": "\"userDefined\"",
+                            "value": "userDefined"
+                        },
+                        {
+                            "@odata.type": "#microsoft.graph.deviceManagementBooleanSettingInstance",
+                            "id": "s3",
+                            "definitionId": "deviceConfiguration--windows10EndpointProtectionConfiguration_defenderCloudBlockLevel",
+                            "valueJson": "true"
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+]

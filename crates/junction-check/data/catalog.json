@@ -2402,6 +2402,188 @@
    }
   },
   {
+   "api_version": "beta",
+   "base_url": "https://graph.microsoft.com/beta",
+   "description": "Get settings from deviceManagement",
+   "documentation_url": null,
+   "id": "graph.device_management.intents.settings.list",
+   "long_running": null,
+   "maturity": "beta",
+   "method": "GET",
+   "operation": "list",
+   "pageable": {
+    "item_name": "value",
+    "next_link_name": "@odata.nextLink",
+    "operation_name": "listMore"
+   },
+   "parameters": [
+    {
+     "location": "path",
+     "name": "deviceManagementIntent-id",
+     "required": true,
+     "schema": {
+      "type": "string"
+     },
+     "serialization": {
+      "allow_reserved": false,
+      "collection_format": null,
+      "explode": null,
+      "style": null
+     }
+    },
+    {
+     "location": "query",
+     "name": "$top",
+     "required": false,
+     "schema": {
+      "minimum": 0,
+      "type": "integer"
+     },
+     "serialization": {
+      "allow_reserved": false,
+      "collection_format": null,
+      "explode": false,
+      "style": "form"
+     }
+    },
+    {
+     "location": "query",
+     "name": "$skip",
+     "required": false,
+     "schema": {
+      "minimum": 0,
+      "type": "integer"
+     },
+     "serialization": {
+      "allow_reserved": false,
+      "collection_format": null,
+      "explode": false,
+      "style": "form"
+     }
+    },
+    {
+     "location": "query",
+     "name": "$search",
+     "required": false,
+     "schema": {
+      "type": "string"
+     },
+     "serialization": {
+      "allow_reserved": false,
+      "collection_format": null,
+      "explode": false,
+      "style": "form"
+     }
+    },
+    {
+     "location": "query",
+     "name": "$filter",
+     "required": false,
+     "schema": {
+      "type": "string"
+     },
+     "serialization": {
+      "allow_reserved": false,
+      "collection_format": null,
+      "explode": false,
+      "style": "form"
+     }
+    },
+    {
+     "location": "query",
+     "name": "$count",
+     "required": false,
+     "schema": {
+      "type": "boolean"
+     },
+     "serialization": {
+      "allow_reserved": false,
+      "collection_format": null,
+      "explode": false,
+      "style": "form"
+     }
+    },
+    {
+     "location": "query",
+     "name": "$orderby",
+     "required": false,
+     "schema": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "uniqueItems": true
+     },
+     "serialization": {
+      "allow_reserved": false,
+      "collection_format": null,
+      "explode": false,
+      "style": "form"
+     }
+    },
+    {
+     "location": "query",
+     "name": "$select",
+     "required": false,
+     "schema": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "uniqueItems": true
+     },
+     "serialization": {
+      "allow_reserved": false,
+      "collection_format": null,
+      "explode": false,
+      "style": "form"
+     }
+    },
+    {
+     "location": "query",
+     "name": "$expand",
+     "required": false,
+     "schema": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "uniqueItems": true
+     },
+     "serialization": {
+      "allow_reserved": false,
+      "collection_format": null,
+      "explode": false,
+      "style": "form"
+     }
+    }
+   ],
+   "path": "/deviceManagement/intents/{deviceManagementIntent-id}/settings",
+   "preview": true,
+   "product": "graph",
+   "request_body": null,
+   "resource": "device_management.intents.settings",
+   "responses": {
+    "2XX": {
+     "description": ""
+    },
+    "4XX": {
+     "description": ""
+    },
+    "5XX": {
+     "description": ""
+    }
+   },
+   "risk": "read_only",
+   "security": [],
+   "service": "device_management",
+   "source": {
+    "id": "https://raw.githubusercontent.com/microsoftgraph/msgraph-metadata/1fd0ef510f79f3dadb3e083bdebc9496f939a11c/openapi/beta/openapi.yaml",
+    "operation_id": "deviceManagement.intents.ListSettings",
+    "upstream": "https://raw.githubusercontent.com/microsoftgraph/msgraph-metadata/1fd0ef510f79f3dadb3e083bdebc9496f939a11c/openapi/beta/openapi.yaml"
+   }
+  },
+  {
    "api_version": "v1.0",
    "base_url": "https://graph.microsoft.com/v1.0",
    "description": "Get managedDevices from deviceManagement",
