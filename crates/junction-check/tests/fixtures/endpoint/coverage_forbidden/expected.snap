@@ -1,0 +1,19 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": null,
+    "summary": "defender.endpoint.machines.list was refused (HTTP 403 Forbidden). Grant Machine.Read.All (read-only) and re-run."
+  },
+  "id": "endpoint.onboarding_coverage",
+  "reason": {
+    "code": "missing_permission",
+    "detail": "defender.endpoint.machines.list was refused (HTTP 403 Forbidden). Grant Machine.Read.All (read-only) and re-run.",
+    "missing_permissions": [
+      "Machine.Read.All"
+    ]
+  },
+  "status": "unknown"
+}

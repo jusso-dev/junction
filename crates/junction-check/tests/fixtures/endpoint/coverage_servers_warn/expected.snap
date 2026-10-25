@@ -1,0 +1,37 @@
+{
+  "affected": {
+    "items": [
+      "arc-002",
+      "vm-db-01"
+    ],
+    "total": 2
+  },
+  "evidence": {
+    "data": {
+      "arc_machines": 2,
+      "azure_vms": 3,
+      "by_platform": {
+        "Linux": {
+          "missing": 2,
+          "onboarded": 1,
+          "servers": 3
+        },
+        "Windows": {
+          "missing": 0,
+          "onboarded": 2,
+          "servers": 2
+        }
+      },
+      "covered": 3,
+      "expired_arc_machines_skipped": 0,
+      "mde_servers_without_azure_record": 1,
+      "missing": 2,
+      "stopped_vms_skipped": 0,
+      "subscriptions": 1
+    },
+    "summary": "2 of 5 Azure VMs and Arc machines have no onboarded Defender for Endpoint record."
+  },
+  "id": "endpoint.servers_covered",
+  "reason": null,
+  "status": "warn"
+}

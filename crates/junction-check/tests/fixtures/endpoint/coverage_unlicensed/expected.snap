@@ -1,0 +1,16 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": null,
+    "summary": "The tenant has no Microsoft Defender for Endpoint (Plan 1, Plan 2 or Defender for Business) licence, which this check needs."
+  },
+  "id": "endpoint.onboarding_coverage",
+  "reason": {
+    "code": "licence_required",
+    "detail": "The tenant has no Microsoft Defender for Endpoint (Plan 1, Plan 2 or Defender for Business) licence, which this check needs."
+  },
+  "status": "not_applicable"
+}

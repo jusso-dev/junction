@@ -1,0 +1,48 @@
+{
+  "affected": {
+    "items": [
+      "mac-001 (macOS 14.6)",
+      "srv-old (WindowsServer2012R2 9600)",
+      "ws-002.contoso.example (Windows10 19042)"
+    ],
+    "total": 3
+  },
+  "evidence": {
+    "data": {
+      "assessed": 5,
+      "by_platform": {
+        "Windows10": {
+          "limited_support": 0,
+          "machines": 1,
+          "unsupported": 1
+        },
+        "Windows11": {
+          "limited_support": 1,
+          "machines": 2,
+          "unsupported": 0
+        },
+        "WindowsServer2012R2": {
+          "limited_support": 0,
+          "machines": 1,
+          "unsupported": 1
+        },
+        "macOS": {
+          "limited_support": 0,
+          "machines": 1,
+          "unsupported": 1
+        }
+      },
+      "limited_support": 1,
+      "limited_support_notes": [
+        "Windows 11 23H2 (22631) and 24H2 (26100) are serviced only for Enterprise, Education and LTSC editions; Home and Pro need 25H2 (26200) or later."
+      ],
+      "not_assessed": 0,
+      "support_data_reviewed": "2026-10-25",
+      "unsupported": 3
+    },
+    "summary": "3 of 5 assessed machines run an operating system that no longer receives security updates; 1 more has limited support."
+  },
+  "id": "endpoint.unsupported_os",
+  "reason": null,
+  "status": "fail"
+}

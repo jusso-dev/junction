@@ -1,0 +1,11 @@
+{
+    "operation": "defender.endpoint.machines.list",
+    "responses": [
+        {
+            "status": 200,
+            "body": {
+                "value": []
+            }
+        }
+    ]
+}
