@@ -216,8 +216,9 @@ pub struct PushArgs {
     /// Context whose credential sends the rows (audience https://monitor.azure.com).
     #[arg(long, requires = "push_sentinel")]
     pub push_context: Option<String>,
-    /// Policy file that allows azure.monitor.logs_ingestion.upload.
-    #[arg(long, requires = "push_sentinel", conflicts_with = "approve_push")]
+    /// Policy file that allows azure.monitor.logs_ingestion.upload (its deny
+    /// rules and tenant allow-list also apply with --approve-push).
+    #[arg(long, requires = "push_sentinel")]
     pub push_policy: Option<PathBuf>,
     /// Approve the push on this terminal instead of with a policy file.
     #[arg(long, requires = "push_sentinel")]
@@ -412,11 +413,13 @@ pub struct Planned {
     pub dns: Option<Arc<dyn Resolver>>,
 }
 
-/// Build gateways for every target.
+/// Build gateways for every target. A `host_policy` (MCP or HTTP host) keeps
+/// its deny rules and tenant allow-list; checks still run read-only.
 pub fn plan(
     targets: &[Target],
     args: &Targets,
     env: Option<&dyn Environment>,
+    host_policy: Option<&junction_policy::Policy>,
 ) -> Result<Vec<Planned>> {
     targets
         .iter()
@@ -452,9 +455,21 @@ pub fn plan(
             let (tenant_id, gateway) = match built {
                 Ok(live) => {
                     let tenant = live.tenant_id.clone();
-                    let gateway = LiveGateway::new(live, env.tokens(), NetworkGuard::from_env())
-                        .map(|g| Arc::new(g) as Arc<dyn Gateway>)
-                        .map_err(|_| Reason::new("context_invalid", "The context's cloud endpoints are invalid."));
+                    let allowed = host_policy.is_none_or(|p| {
+                        p.allow.tenants.is_empty()
+                            || p.allow.tenants.iter().any(|t| t.eq_ignore_ascii_case(&tenant))
+                    });
+                    let policy = match host_policy {
+                        Some(host) => crate::gateway::check_policy_within(host),
+                        None => crate::gateway::check_policy(),
+                    };
+                    let gateway = if !allowed {
+                        Err(Reason::new("tenant_not_allowed", "The host policy does not allow this tenant."))
+                    } else {
+                        LiveGateway::with_policy(live, env.tokens(), NetworkGuard::from_env(), policy)
+                            .map(|g| Arc::new(g) as Arc<dyn Gateway>)
+                            .map_err(|_| Reason::new("context_invalid", "The context's cloud endpoints are invalid."))
+                    };
                     (tenant, gateway)
                 }
                 Err(_) => (
@@ -595,6 +610,10 @@ pub struct RunRequest<'a> {
     /// History directory and retention in days; `None` disables history.
     pub history: Option<(&'a Path, u32)>,
     pub progress: Option<Arc<runner::Progress>>,
+    /// Host policy for MCP and HTTP runs (deny rules, tenant allow-list).
+    pub host_policy: Option<&'a junction_policy::Policy>,
+    /// Run id chosen by the caller (background runs); random when `None`.
+    pub run_id: Option<String>,
 }
 
 /// Run checks and return the report (shared by the CLI, MCP and HTTP).
@@ -613,11 +632,13 @@ pub async fn execute_run(
         per_host,
         history,
         progress,
+        host_policy,
+        run_id,
     } = request;
     // Fail fast on a bad selection before resolving credentials.
     registry.select(&selection)?;
     let resolved = targets(contexts, targets_args, env)?;
-    let mut planned = plan(&resolved, targets_args, env)?;
+    let mut planned = plan(&resolved, targets_args, env, host_policy)?;
     let now = Instant::now();
     if let Some((dir, _)) = history {
         for p in &mut planned {
@@ -636,6 +657,7 @@ pub async fn execute_run(
         dns,
         now,
         progress,
+        run_id,
         ..RunOptions::default()
     };
     let mut report = runner::run(
@@ -710,13 +732,12 @@ pub async fn run(
                     per_host: usize::from(args.per_host),
                     history,
                     progress: None,
+                    host_policy: None,
+                    run_id: None,
                 },
                 Some(env),
             )
             .await?;
-            if let Some(push) = push {
-                push.send(&report, env).await?;
-            }
             if args.split {
                 let dir = args.output.as_ref().expect("clap requires --output");
                 std::fs::create_dir_all(dir)?;
@@ -735,6 +756,18 @@ pub async fn run(
                     Some(path) => write_output(path, text.as_bytes())?,
                     None => out.write_all(text.as_bytes())?,
                 }
+            }
+            // The report is written before the optional push, so a failed push
+            // never loses it.
+            if let Some(push) = push
+                && let Err(error) = push.send(&report, env).await
+            {
+                out.flush()?;
+                eprintln!(
+                    "{}",
+                    json!({"error": "push_failed", "message": format!("{error:#}"), "report_written": true})
+                );
+                return Ok(exit::ERROR);
             }
             Ok(exit_code(&report, &args))
         }
@@ -1137,21 +1170,17 @@ fn push_plan(args: &PushArgs, env: &dyn Environment) -> Result<Option<PushPlan>>
         .push_context
         .clone()
         .context("--push-context names the context whose credential sends the rows")?;
-    let policy = match (&args.push_policy, args.approve_push) {
-        (Some(path), _) => junction_policy::Policy::parse(&std::fs::read_to_string(path)?)?,
-        (None, true) => {
-            env.confirm_push(&context, target.dce.as_str(), &format!(
-                "Send check results (status, severity, score, tags and one-line summaries; no raw tenant data) to stream {} via DCR {} at {}?",
-                target.stream, target.dcr_immutable_id, target.dce
-            ))?;
-            junction_policy::Policy::parse("[agent]\nmode = 'safe-write'\n")?
-        }
-        (None, false) => junction_policy::Policy::default(),
+    let base = match &args.push_policy {
+        Some(path) => junction_policy::Policy::parse(&std::fs::read_to_string(path)?)?,
+        None => junction_policy::Policy::default(),
     };
-    if !crate::push::policy_allows(&policy) {
-        bail!(
-            "pushing to Sentinel writes to your workspace: pass --approve-push to confirm on this terminal, or --push-policy with a policy that allows azure.monitor.logs_ingestion.upload"
-        );
+    // Validate first (deny rules can never be approved away), then ask.
+    let policy = crate::push::effective_policy(true, &base, args.approve_push)?;
+    if args.approve_push && !crate::push::policy_allows(&base) {
+        env.confirm_push(&context, target.dce.as_str(), &format!(
+            "Send check results (status, severity, score, tags and one-line summaries; no raw tenant data) to stream {} via DCR {} at {}?",
+            target.stream, target.dcr_immutable_id, target.dce
+        ))?;
     }
     Ok(Some(PushPlan {
         target,

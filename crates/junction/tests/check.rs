@@ -520,7 +520,12 @@ fn mcp_check_run_matches_cli_json() {
         .env("JUNCTION_CHECK_FIXTURES", fixtures())
         .arg("--registry")
         .arg(&registry)
-        .args(["mcp", "serve", "--check-history-dir"])
+        .args([
+            "mcp",
+            "serve",
+            "--allow-check-contexts",
+            "--check-history-dir",
+        ])
         .arg(directory.path().join("history"))
         .stdin(Stdio::piped())
         .stdout(Stdio::piped())
@@ -560,4 +565,123 @@ fn mcp_check_run_matches_cli_json() {
             .len()
             > 1
     );
+}
+
+fn mcp(fixtures_env: bool, flags: &[&str], calls: &[Value]) -> Vec<Value> {
+    let directory = tempfile::tempdir().unwrap();
+    let registry = directory.path().join("registry.json");
+    std::fs::write(
+        &registry,
+        br#"{"format_version":1,"schemas":{},"operations":[]}"#,
+    )
+    .unwrap();
+    let mut command = Command::new(env!("CARGO_BIN_EXE_junction"));
+    command.env("JUNCTION_CHECK_OFFLINE", "1");
+    if fixtures_env {
+        command.env("JUNCTION_CHECK_FIXTURES", fixtures());
+    } else {
+        command.env_remove("JUNCTION_CHECK_FIXTURES");
+    }
+    let mut child = command
+        .arg("--contexts-directory")
+        .arg(directory.path().join("contexts"))
+        .arg("--registry")
+        .arg(&registry)
+        .args(["mcp", "serve"])
+        .args(flags)
+        .arg("--check-history-dir")
+        .arg(directory.path().join("history"))
+        .stdin(Stdio::piped())
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped())
+        .spawn()
+        .unwrap();
+    let mut stdin = child.stdin.take().unwrap();
+    writeln!(stdin, "{}", json!({"jsonrpc":"2.0","id":0,"method":"initialize","params":{"protocolVersion":"2025-11-25","capabilities":{},"clientInfo":{"name":"test","version":"1"}}})).unwrap();
+    writeln!(
+        stdin,
+        "{}",
+        json!({"jsonrpc":"2.0","method":"notifications/initialized"})
+    )
+    .unwrap();
+    for (i, args) in calls.iter().enumerate() {
+        writeln!(
+            stdin,
+            "{}",
+            json!({"jsonrpc":"2.0","id":i + 1,"method":"tools/call","params":args})
+        )
+        .unwrap();
+    }
+    drop(stdin);
+    let output = child.wait_with_output().unwrap();
+    String::from_utf8(output.stdout)
+        .unwrap()
+        .lines()
+        .skip(1)
+        .map(|l| serde_json::from_str::<Value>(l).unwrap()["result"]["structuredContent"].clone())
+        .collect()
+}
+
+#[test]
+fn agents_only_reach_other_contexts_with_the_operator_flag() {
+    let run = json!({"name":"junction_check_run","arguments":{"contexts":["weak"],"checks":["identity.global_admin_count"]}});
+    let all = json!({"name":"junction_check_run","arguments":{"all_contexts":true}});
+    let traversal = json!({"name":"junction_check_attestations","arguments":{"action":"pending","context":"..x"}});
+    let pending = json!({"name":"junction_check_attestations","arguments":{"action":"pending","context":"weak"}});
+    let replies = mcp(true, &[], &[run.clone(), all, traversal, pending]);
+    assert_eq!(replies[0]["status"], "context_not_allowed");
+    assert_eq!(replies[1]["status"], "context_not_allowed");
+    // Path-like names never reach the host: the tool schema rejects them.
+    assert!(replies[2].is_null(), "{}", replies[2]);
+    assert_eq!(replies[3]["status"], "context_not_allowed");
+    let replies = mcp(true, &["--allow-check-contexts"], &[run]);
+    assert_eq!(replies[0]["schema_version"], "1.0");
+}
+
+#[test]
+fn fixture_replay_needs_both_environment_flags() {
+    // Without JUNCTION_CHECK_FIXTURES the host resolves real contexts (none exist).
+    let run = json!({"name":"junction_check_run","arguments":{"contexts":["weak"],"checks":["identity.global_admin_count"]}});
+    let replies = mcp(false, &["--allow-check-contexts"], &[run]);
+    assert_eq!(
+        replies[0]["tenants"][0]["status"], "failed",
+        "{}",
+        replies[0]
+    );
+    assert_eq!(replies[0]["tenants"][0]["error"]["code"], "context_invalid");
+}
+
+#[test]
+fn push_is_refused_without_approval_and_never_loses_the_report() {
+    let history = tempfile::tempdir().unwrap();
+    let push = [
+        "--push-sentinel",
+        "--dce",
+        "https://contoso.australiaeast-1.ingest.monitor.azure.com",
+        "--dcr",
+        "dcr-00000000000000000000000000000000",
+        "--stream",
+        "Custom-JunctionCheck_CL",
+        "--push-context",
+        "weak",
+    ];
+    let refused = run(
+        history.path(),
+        &with(&with(&["--context", "weak"], GA), &push),
+    );
+    assert_eq!(code(&refused), 2);
+    assert!(String::from_utf8_lossy(&refused.stderr).contains("approve the push interactively"));
+    // A policy whose deny rules forbid the upload cannot be approved away.
+    let dir = tempfile::tempdir().unwrap();
+    let policy = dir.path().join("deny.toml");
+    std::fs::write(
+        &policy,
+        "[agent]\nmode = 'safe-write'\n[deny]\noperations = ['azure.monitor.*']\n",
+    )
+    .unwrap();
+    let mut args = with(&with(&["--context", "weak"], GA), &push);
+    args.extend(["--push-policy", policy.to_str().unwrap()]);
+    let denied = run(history.path(), &args);
+    assert_eq!(code(&denied), 2);
+    assert!(String::from_utf8_lossy(&denied.stderr).contains("deny"));
 }

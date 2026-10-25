@@ -318,8 +318,13 @@ mod tests {
             gateway.push(serde_json::from_value(e).unwrap()).unwrap();
         }
         let (ctx, _) = context(gateway);
-        let failure = ctx.list_with("graph.users.list", json!({})).await.unwrap_err();
-        assert!(matches!(failure.error, GatewayError::Unavailable(ref m) if m.contains("incomplete")));
+        let failure = ctx
+            .list_with("graph.users.list", json!({}))
+            .await
+            .unwrap_err();
+        assert!(
+            matches!(failure.error, GatewayError::Unavailable(ref m) if m.contains("incomplete"))
+        );
     }
 
     #[test]

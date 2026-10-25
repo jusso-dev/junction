@@ -64,7 +64,8 @@ pub fn restricted(p: &Value) -> bool {
     let apps = &c["clientAppTypes"];
     (non_empty(&platforms["includePlatforms"]) && !has(&platforms["includePlatforms"], "all"))
         || non_empty(&platforms["excludePlatforms"])
-        || (non_empty(&locations["includeLocations"]) && !has(&locations["includeLocations"], "All"))
+        || (non_empty(&locations["includeLocations"])
+            && !has(&locations["includeLocations"], "All"))
         || non_empty(&locations["excludeLocations"])
         || non_empty(&c["devices"]["deviceFilter"])
         || (non_empty(apps) && !has(apps, "all"))
@@ -313,30 +314,52 @@ mod tests {
             p
         };
         // Emergency-access exclusions are allowed.
-        assert!(targets_all_users(&with("/conditions/users/excludeUsers", json!(["a", "b"]))));
-        assert!(targets_all_users(&with("/conditions/users/excludeGroups", json!(["g"]))));
+        assert!(targets_all_users(&with(
+            "/conditions/users/excludeUsers",
+            json!(["a", "b"])
+        )));
+        assert!(targets_all_users(&with(
+            "/conditions/users/excludeGroups",
+            json!(["g"])
+        )));
         // Anything wider is not "all users".
         for (pointer, value) in [
             ("/conditions/users/excludeUsers", json!(["a", "b", "c"])),
             ("/conditions/users/excludeGroups", json!(["g1", "g2"])),
-            ("/conditions/users/excludeRoles", json!(["62e90394-69f5-4237-9190-012177145e10"])),
-            ("/conditions/users/excludeGuestsOrExternalUsers", json!({"guestOrExternalUserTypes": "b2bCollaborationGuest"})),
+            (
+                "/conditions/users/excludeRoles",
+                json!(["62e90394-69f5-4237-9190-012177145e10"]),
+            ),
+            (
+                "/conditions/users/excludeGuestsOrExternalUsers",
+                json!({"guestOrExternalUserTypes": "b2bCollaborationGuest"}),
+            ),
         ] {
-            assert!(!targets_all_users(&with(pointer, value.clone())), "{pointer} {value}");
+            assert!(
+                !targets_all_users(&with(pointer, value.clone())),
+                "{pointer} {value}"
+            );
         }
-        assert!(!targets_all_apps(&with("/conditions/applications/excludeApplications", json!(["app"]))));
+        assert!(!targets_all_apps(&with(
+            "/conditions/applications/excludeApplications",
+            json!(["app"])
+        )));
         // Conditions that narrow sign-ins defeat universal coverage.
         let mut platforms = base.clone();
         platforms["conditions"]["platforms"] = json!({"includePlatforms": ["windows"]});
         let mut locations = base.clone();
-        locations["conditions"]["locations"] = json!({"includeLocations": ["All"], "excludeLocations": ["AllTrusted"]});
+        locations["conditions"]["locations"] =
+            json!({"includeLocations": ["All"], "excludeLocations": ["AllTrusted"]});
         let mut browsers = base.clone();
         browsers["conditions"]["clientAppTypes"] = json!(["browser"]);
         for p in [&platforms, &locations] {
             assert!(!targets_all_users(p));
             assert!(!covers_role(p, "62e90394-69f5-4237-9190-012177145e10"));
         }
-        assert!(!requires_mfa(&browsers), "MFA for browsers only leaves other clients open");
+        assert!(
+            !requires_mfa(&browsers),
+            "MFA for browsers only leaves other clients open"
+        );
         // Legacy-authentication blocks target client app types by design.
         let mut legacy = base.clone();
         legacy["conditions"]["clientAppTypes"] = json!(["exchangeActiveSync", "other"]);

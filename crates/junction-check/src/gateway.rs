@@ -251,6 +251,16 @@ pub fn check_policy() -> junction_policy::Policy {
     }
 }
 
+/// The check policy inside a host's policy: always read-only with check
+/// limits, but keeping the host's operation deny rules and tenant allow-list.
+pub fn check_policy_within(host: &junction_policy::Policy) -> junction_policy::Policy {
+    junction_policy::Policy {
+        deny: host.deny.clone(),
+        allow: host.allow.clone(),
+        ..check_policy()
+    }
+}
+
 pub struct LiveGateway {
     executor: Executor,
     target: LiveTarget,
@@ -265,9 +275,21 @@ impl LiveGateway {
         tokens: Arc<dyn TokenProvider>,
         guard: NetworkGuard,
     ) -> anyhow::Result<Self> {
+        Self::with_policy(target, tokens, guard, check_policy())
+    }
+
+    /// Use `policy` (normally [`check_policy_within`] a host policy). The mode
+    /// is forced to read-only whatever `policy` says.
+    pub fn with_policy(
+        target: LiveTarget,
+        tokens: Arc<dyn TokenProvider>,
+        guard: NetworkGuard,
+        mut policy: junction_policy::Policy,
+    ) -> anyhow::Result<Self> {
         target.endpoints.validate()?;
+        policy.agent = junction_policy::Agent::default();
         Ok(Self {
-            executor: Executor::new(catalog::registry()?, check_policy())?,
+            executor: Executor::new(catalog::registry()?, policy)?,
             target,
             tokens,
             cache: Mutex::new(BTreeMap::new()),

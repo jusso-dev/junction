@@ -106,6 +106,10 @@ impl junction_check::cli::Environment for Environment {
     }
     fn confirm_push(&self, context: &str, endpoint: &str, summary: &str) -> Result<()> {
         let target = self.live_target(context)?;
+        // The Logs Ingestion audience below is the public cloud's.
+        if target.endpoints.authority != "https://login.microsoftonline.com" {
+            bail!("pushing results supports the public cloud only");
+        }
         let operation = junction_check::push::operation();
         crate::approval_cli::confirm(&crate::approval_cli::Summary {
             operation: &operation,

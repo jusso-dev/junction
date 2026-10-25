@@ -97,6 +97,9 @@ enum Command {
         /// Let agents submit answers to manual checks (off by default).
         #[arg(long)]
         allow_attest: bool,
+        /// Let agents run checks against any saved context, not only the host's.
+        #[arg(long)]
+        allow_check_contexts: bool,
         /// Directory of per-tenant check history (shared with `junction check`).
         #[arg(long, default_value = ".junction/check-history")]
         check_history_dir: PathBuf,
@@ -452,6 +455,9 @@ enum McpCommand {
         /// Let agents submit answers to manual checks (off by default).
         #[arg(long)]
         allow_attest: bool,
+        /// Let agents run checks against any saved context, not only the host's.
+        #[arg(long)]
+        allow_check_contexts: bool,
         /// Directory of per-tenant check history (shared with `junction check`).
         #[arg(long, default_value = ".junction/check-history")]
         check_history_dir: PathBuf,
@@ -1084,6 +1090,7 @@ async fn run() -> Result<()> {
                     policy_file,
                     context_file,
                     allow_attest,
+                    allow_check_contexts,
                     check_history_dir,
                 },
         }
@@ -1092,6 +1099,7 @@ async fn run() -> Result<()> {
             policy_file,
             context_file,
             allow_attest,
+            allow_check_contexts,
             check_history_dir,
             ..
         } => {
@@ -1113,6 +1121,8 @@ async fn run() -> Result<()> {
                 context.clone(),
                 check_history_dir,
                 allow_attest,
+                allow_check_contexts,
+                policy.clone(),
             );
             let host = mcp_host::Host::new(
                 registry,

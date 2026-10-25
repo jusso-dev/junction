@@ -77,6 +77,10 @@ pub struct CheckTools {
     env: HostEnvironment,
     history: PathBuf,
     allow_attest: bool,
+    /// Agents may name other saved contexts (operator flag
+    /// `--allow-check-contexts`); otherwise only the host's own context.
+    allow_contexts: bool,
+    policy: junction_policy::Policy,
     runs: Mutex<BTreeMap<String, Background>>,
 }
 
@@ -105,6 +109,8 @@ impl CheckTools {
         fixed: Option<Vec<u8>>,
         history: PathBuf,
         allow_attest: bool,
+        allow_contexts: bool,
+        policy: junction_policy::Policy,
     ) -> Self {
         Self {
             env: HostEnvironment {
@@ -113,8 +119,33 @@ impl CheckTools {
             },
             history,
             allow_attest,
+            allow_contexts,
+            policy,
             runs: Mutex::new(BTreeMap::new()),
         }
+    }
+
+    /// May the agent assess `context`?
+    fn permit(&self, context: &str) -> Result<()> {
+        if context.is_empty()
+            || context.len() > 80
+            || context.starts_with('.')
+            || !context
+                .bytes()
+                .all(|b| b.is_ascii_alphanumeric() || matches!(b, b'-' | b'_' | b'.'))
+        {
+            return Err(fail("invalid_context", "Invalid context name."));
+        }
+        if context == HOST_CONTEXT && self.env.fixed.is_some() {
+            return Ok(());
+        }
+        if !self.allow_contexts {
+            return Err(fail(
+                "context_not_allowed",
+                "This host only assesses its own context. The operator can allow named contexts with --allow-check-contexts.",
+            ));
+        }
+        Ok(())
     }
 
     pub fn handles(name: &str) -> bool {
@@ -124,16 +155,23 @@ impl CheckTools {
     fn contexts(&self, args: &Value) -> Result<(Vec<String>, Targets)> {
         let mut contexts = strings(&args["contexts"]);
         let all = args["all_contexts"].as_bool().unwrap_or(false);
+        if all && !self.allow_contexts {
+            return Err(fail(
+                "context_not_allowed",
+                "all_contexts needs the operator flag --allow-check-contexts.",
+            ));
+        }
         if contexts.is_empty() && !all {
-            if self.env.fixed.is_none() && fixtures().is_none() {
+            if self.env.fixed.is_none() {
                 return Err(fail(
                     "context_required",
                     "Name contexts (see junction_context) or set all_contexts.",
                 ));
             }
-            if self.env.fixed.is_some() {
-                contexts.push(HOST_CONTEXT.into());
-            }
+            contexts.push(HOST_CONTEXT.into());
+        }
+        for context in &contexts {
+            self.permit(context)?;
         }
         Ok((
             contexts,
@@ -182,9 +220,13 @@ impl CheckTools {
                     .map_err(|e| fail("invalid_selection", e.to_string()))?;
                 let env = self.env.clone();
                 let history = self.history.clone();
+                let policy = self.policy.clone();
                 let progress = Arc::new(Progress::default());
+                // One id for polling, the report and history.
+                let run_id = junction_check::runner::new_run_id();
                 let run = {
                     let progress = progress.clone();
+                    let run_id = run_id.clone();
                     async move {
                         junction_check::cli::execute_run(
                             registry,
@@ -198,6 +240,8 @@ impl CheckTools {
                                 per_host: 4,
                                 history: Some((history.as_path(), 365)),
                                 progress: Some(progress),
+                                host_policy: Some(&policy),
+                                run_id: Some(run_id),
                             },
                             Some(&env),
                         )
@@ -211,7 +255,6 @@ impl CheckTools {
                     return Ok(serde_json::to_value(report)?);
                 }
                 let outcome: Outcome = Arc::new(Mutex::new(None));
-                let run_id = junction_check::runner::new_run_id();
                 {
                     let mut runs = self.runs.lock().expect("runs");
                     if runs
@@ -225,8 +268,18 @@ impl CheckTools {
                             "Four background check runs are already active.",
                         ));
                     }
+                    // Forget the oldest finished runs; running ones are never dropped.
                     while runs.len() >= MAX_BACKGROUND {
-                        let oldest = runs.keys().next().cloned().expect("non-empty");
+                        let Some(oldest) = runs
+                            .iter()
+                            .find(|(_, r)| r.outcome.lock().expect("outcome").is_some())
+                            .map(|(id, _)| id.clone())
+                        else {
+                            return Err(fail(
+                                "server_busy",
+                                "Too many background check runs are kept.",
+                            ));
+                        };
                         runs.remove(&oldest);
                     }
                     runs.insert(
@@ -328,6 +381,7 @@ impl CheckTools {
     }
 
     fn tenant(&self, context: &str) -> Result<String> {
+        self.permit(context)?;
         if let Some(dir) = fixtures() {
             return Ok(junction_check::testkit::case_settings(&dir.join(context))?
                 .tenant_id

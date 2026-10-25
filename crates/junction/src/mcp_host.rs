@@ -484,6 +484,8 @@ mod http_tests {
                 None,
                 directory.path().join("check-history"),
                 false,
+                false,
+                junction_policy::Policy::default(),
             ),
         )
         .unwrap();
@@ -594,6 +596,8 @@ mod http_tests {
                     None,
                     directory.path().join("check-history"),
                     false,
+                    false,
+                    junction_policy::Policy::default(),
                 ),
             )
             .unwrap();

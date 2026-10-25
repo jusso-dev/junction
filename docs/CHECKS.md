@@ -225,7 +225,10 @@ to `junction check run --format json`):
 | `junction_check_run_status` | `GET /v1/checks/runs/{id}?context=` | Progress and result of a background run, or a stored run from history. |
 | `junction_check_attestations` | `GET`/`POST /v1/checks/attestations` | Pending manual checks; submitting needs `--allow-attest`. |
 
-Checks run read-only regardless of the host's `--policy`. Errors are structured and secret-free.
+Checks run read-only regardless of the host's `--policy` mode; the host policy's `deny.operations`
+rules and `allow.tenants` list still apply. By default agents can only assess the host's own context
+(`--context` or `--context-file`); the operator allows other saved contexts with
+`--allow-check-contexts`. Errors are structured and secret-free.
 
 ## Pushing results to Sentinel
 
@@ -242,7 +245,9 @@ junction check run --all-contexts --push-sentinel \
 
 It is off unless the flag is set, writes only to your own workspace, and needs either
 `--approve-push` (confirmation on the controlling terminal) or `--push-policy` with a policy that
-allows `azure.monitor.logs_ingestion.upload` (see [APPROVALS.md](APPROVALS.md)). The only role
+allows `azure.monitor.logs_ingestion.upload` (see [APPROVALS.md](APPROVALS.md)). A `--push-policy`
+deny rule cannot be approved away. The report is written before the push, so a failed push (exit
+`2`) never loses it. The only role
 needed is Monitoring Metrics Publisher on the data collection rule. A Bicep template for the table,
 DCE and DCR, a sample workbook and two analytics rules are in
 [examples/sentinel](../examples/sentinel/).
