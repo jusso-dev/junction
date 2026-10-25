@@ -1,0 +1,19 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "devices_reporting": 4,
+      "max_days": 3,
+      "oldest_days": 2,
+      "percent_compliant": 100,
+      "stale": 0
+    },
+    "summary": "Security intelligence is no more than 3 days old on all 4 reporting devices (100% compliant)."
+  },
+  "id": "endpoint.av_definition_age",
+  "reason": null,
+  "status": "pass"
+}

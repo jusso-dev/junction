@@ -44,6 +44,8 @@ controls:
     title: External Remote Services
   - id: T1136
     title: Create Account
+  - id: T1189
+    title: Drive-by Compromise
   - id: T1190
     title: Exploit Public-Facing Application
   - id: T1203

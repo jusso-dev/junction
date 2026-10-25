@@ -1,0 +1,13 @@
+// Latest Microsoft Defender Antivirus state per device, from Defender Vulnerability Management.
+// AvMode (as in the device antivirus health API): 0 active, 1 passive, 2 disabled, 3 other,
+// 4 EDR in block mode, 5 passive audit. Used by endpoint.av_mode, endpoint.edr_block_mode and
+// endpoint.av_definition_age. One row per device, bounded.
+DeviceTvmInfoGathering
+| where Timestamp > ago(7d)
+| summarize arg_max(Timestamp, DeviceName, OSPlatform, AdditionalFields) by DeviceId
+| extend AvMode = tostring(AdditionalFields.AvMode),
+    AvSignatureVersion = tostring(AdditionalFields.AvSignatureVersion),
+    AvSignatureUpdateTime = todatetime(AdditionalFields.AvSignatureUpdateTime)
+| where isnotempty(AvMode) or isnotnull(AvSignatureUpdateTime)
+| project DeviceId, DeviceName, OSPlatform, AvMode, AvSignatureVersion, AvSignatureUpdateTime
+| take 10000

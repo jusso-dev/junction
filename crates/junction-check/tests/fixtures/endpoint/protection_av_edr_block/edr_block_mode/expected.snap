@@ -1,0 +1,18 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "devices_reporting": 4,
+      "edr_block_mode": 1,
+      "passive_without_edr_block": 0,
+      "percent_compliant": 100
+    },
+    "summary": "EDR in block mode is active on the 1 device where Defender Antivirus is passive (100% compliant)."
+  },
+  "id": "endpoint.edr_block_mode",
+  "reason": null,
+  "status": "pass"
+}

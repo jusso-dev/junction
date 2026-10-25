@@ -1,0 +1,26 @@
+{
+  "affected": {
+    "items": [
+      "mac-04.contoso.example",
+      "pc-02.contoso.example"
+    ],
+    "total": 2
+  },
+  "evidence": {
+    "data": {
+      "compliant": 2,
+      "configuration_ids": [
+        "scid-2003",
+        "scid-5092"
+      ],
+      "devices_assessed": 4,
+      "non_compliant": 2,
+      "percent_compliant": 50,
+      "truncated": false
+    },
+    "summary": "Tamper protection is off on 2 of 4 devices (50% compliant)."
+  },
+  "id": "endpoint.tamper_protection",
+  "reason": null,
+  "status": "fail"
+}

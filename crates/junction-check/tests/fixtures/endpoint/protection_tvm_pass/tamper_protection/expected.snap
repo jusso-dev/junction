@@ -1,0 +1,23 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "compliant": 4,
+      "configuration_ids": [
+        "scid-2003",
+        "scid-5092"
+      ],
+      "devices_assessed": 4,
+      "non_compliant": 0,
+      "percent_compliant": 100,
+      "truncated": false
+    },
+    "summary": "Tamper protection is on for all 4 assessed devices (100% compliant)."
+  },
+  "id": "endpoint.tamper_protection",
+  "reason": null,
+  "status": "pass"
+}

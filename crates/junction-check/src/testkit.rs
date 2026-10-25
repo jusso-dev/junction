@@ -459,7 +459,12 @@ fn domains(text: &str) -> Vec<String> {
         if parts.len() < 2 || parts.iter().any(|p| p.is_empty()) {
             continue;
         }
-        if REAL_TLDS.contains(&parts[parts.len() - 1]) {
+        // Check ids (`endpoint.cloud_protection`) are not hostnames.
+        let check_id = parts.len() == 2
+            && crate::model::Pack::ALL
+                .iter()
+                .any(|p| p.as_str() == parts[0]);
+        if !check_id && REAL_TLDS.contains(&parts[parts.len() - 1]) {
             out.push(lower);
         }
     }
