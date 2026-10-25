@@ -325,7 +325,11 @@ pub struct Target {
     pub label: Option<String>,
 }
 
-pub fn targets(contexts: &[String], args: &Targets, env: Option<&dyn Environment>) -> Result<Vec<Target>> {
+pub fn targets(
+    contexts: &[String],
+    args: &Targets,
+    env: Option<&dyn Environment>,
+) -> Result<Vec<Target>> {
     if let Some(path) = &args.tenants {
         let text = std::fs::read_to_string(path).context("reading the tenants file")?;
         let file: TenantsFile = toml::from_str(&text).context("invalid tenants file")?;
@@ -340,7 +344,10 @@ pub fn targets(contexts: &[String], args: &Targets, env: Option<&dyn Environment
                 let context = match (t.context, contexts) {
                     (Some(c), _) => c,
                     (None, [only]) => only.clone(),
-                    (None, _) => bail!("tenant {} needs a context (or pass exactly one --context)", t.id),
+                    (None, _) => bail!(
+                        "tenant {} needs a context (or pass exactly one --context)",
+                        t.id
+                    ),
                 };
                 Ok(Target {
                     context,
@@ -406,7 +413,11 @@ pub struct Planned {
 }
 
 /// Build gateways for every target.
-pub fn plan(targets: &[Target], args: &Targets, env: Option<&dyn Environment>) -> Result<Vec<Planned>> {
+pub fn plan(
+    targets: &[Target],
+    args: &Targets,
+    env: Option<&dyn Environment>,
+) -> Result<Vec<Planned>> {
     targets
         .iter()
         .map(|target| {
@@ -485,7 +496,9 @@ fn write_output(path: &Path, bytes: &[u8]) -> Result<()> {
     std::fs::create_dir_all(parent)?;
     let temp = parent.join(format!(
         ".{}.tmp",
-        path.file_name().and_then(|n| n.to_str()).unwrap_or("report")
+        path.file_name()
+            .and_then(|n| n.to_str())
+            .unwrap_or("report")
     ));
     std::fs::write(&temp, bytes)?;
     std::fs::rename(&temp, path)?;
@@ -496,7 +509,12 @@ fn report_options(args: &RunArgs) -> Result<ReportOptions> {
     let logo = match &args.logo {
         None => None,
         Some(path) => {
-            let mime = match path.extension().and_then(|e| e.to_str()).map(str::to_ascii_lowercase).as_deref() {
+            let mime = match path
+                .extension()
+                .and_then(|e| e.to_str())
+                .map(str::to_ascii_lowercase)
+                .as_deref()
+            {
                 Some("png") => "image/png",
                 Some("jpg" | "jpeg") => "image/jpeg",
                 Some("svg") => "image/svg+xml",
@@ -517,19 +535,31 @@ fn report_options(args: &RunArgs) -> Result<ReportOptions> {
 }
 
 /// Render a report in `format`.
-pub fn render(report: &RunReport, format: Format, options: &ReportOptions, show_passes: bool) -> Result<String> {
+pub fn render(
+    report: &RunReport,
+    format: Format,
+    options: &ReportOptions,
+    show_passes: bool,
+) -> Result<String> {
     Ok(match format {
         Format::Table => report::table::render(report, show_passes),
         Format::Json => serde_json::to_string_pretty(report)? + "\n",
         Format::Markdown => report::markdown::render(report, options),
         Format::Html => report::html::render(report, options),
-        Format::M365SecureJson => serde_json::to_string_pretty(&report::m365_secure::render(report))? + "\n",
+        Format::M365SecureJson => {
+            serde_json::to_string_pretty(&report::m365_secure::render(report))? + "\n"
+        }
     })
 }
 
 /// The exit code for a finished run.
 pub fn exit_code(report: &RunReport, args: &RunArgs) -> i32 {
-    if !report.tenants.is_empty() && report.tenants.iter().all(|t| t.status == TenantStatus::Failed) {
+    if !report.tenants.is_empty()
+        && report
+            .tenants
+            .iter()
+            .all(|t| t.status == TenantStatus::Failed)
+    {
         return exit::ERROR;
     }
     let threshold = args.fail_on.as_deref().and_then(Severity::parse);
@@ -588,10 +618,7 @@ pub async fn execute_run(
     registry.select(&selection)?;
     let resolved = targets(contexts, targets_args, env)?;
     let mut planned = plan(&resolved, targets_args, env)?;
-    let now = match &targets_args.fixtures {
-        Some(_) => Instant::parse(testkit::FIXTURE_NOW)?,
-        None => Instant::now(),
-    };
+    let now = Instant::now();
     if let Some((dir, _)) = history {
         for p in &mut planned {
             if let Some(store) = open_store(dir, &p.plan.tenant_id)? {
@@ -608,11 +635,15 @@ pub async fn execute_run(
         config: Arc::new(config),
         dns,
         now,
-        run_id: targets_args.fixtures.as_ref().map(|_| "fixture-run".to_owned()),
         progress,
         ..RunOptions::default()
     };
-    let mut report = runner::run(registry, planned.into_iter().map(|p| p.plan).collect(), &options).await?;
+    let mut report = runner::run(
+        registry,
+        planned.into_iter().map(|p| p.plan).collect(),
+        &options,
+    )
+    .await?;
     if let Some((dir, retention)) = history {
         for tenant in &mut report.tenants {
             if tenant.status == TenantStatus::Failed {
@@ -629,7 +660,12 @@ pub async fn execute_run(
                     tenant,
                 ));
             }
-            store.save_run(&report.run_id, &report.started_at, &report.finished_at, tenant)?;
+            store.save_run(
+                &report.run_id,
+                &report.started_at,
+                &report.finished_at,
+                tenant,
+            )?;
             store.prune(retention, now)?;
         }
     }
@@ -637,21 +673,30 @@ pub async fn execute_run(
 }
 
 /// Run a `junction check` command and return its exit code.
-pub async fn run(args: CheckArgs, contexts: Vec<String>, env: &dyn Environment, out: &mut dyn Write) -> Result<i32> {
+pub async fn run(
+    args: CheckArgs,
+    contexts: Vec<String>,
+    env: &dyn Environment,
+    out: &mut dyn Write,
+) -> Result<i32> {
     let registry = CheckRegistry::builtin();
     match args.command {
         CheckCommand::Run(args) => {
             let selection = args.filters.selection()?;
             let config = match &args.config {
-                Some(path) => CheckConfig::parse_toml(&std::fs::read_to_string(path).context("reading --config")?)?,
+                Some(path) => CheckConfig::parse_toml(
+                    &std::fs::read_to_string(path).context("reading --config")?,
+                )?,
                 None => CheckConfig::default(),
             };
             let options = report_options(&args)?;
-            if args.split && !matches!(args.format, Format::Markdown | Format::Html | Format::Json) {
+            if args.split && !matches!(args.format, Format::Markdown | Format::Html | Format::Json)
+            {
                 bail!("--split works with markdown, html or json");
             }
             let dns: Arc<dyn Resolver> = crate::dns::configured(&args.dns_servers)?;
-            let history = (!args.no_history).then_some((args.history.history_dir.as_path(), args.retention_days));
+            let history = (!args.no_history)
+                .then_some((args.history.history_dir.as_path(), args.retention_days));
             let push = push_plan(&args.push, env)?;
             let report = execute_run(
                 registry,
@@ -696,7 +741,14 @@ pub async fn run(args: CheckArgs, contexts: Vec<String>, env: &dyn Environment, 
         CheckCommand::List(args) => {
             let checks = registry.select(&args.filters.selection()?)?;
             let text = match args.format {
-                Format::Json => serde_json::to_string_pretty(&checks.iter().map(|c| describe(registry, c.id())).collect::<Vec<_>>())? + "\n",
+                Format::Json => {
+                    serde_json::to_string_pretty(
+                        &checks
+                            .iter()
+                            .map(|c| describe(registry, c.id()))
+                            .collect::<Vec<_>>(),
+                    )? + "\n"
+                }
                 Format::Markdown => report::coverage::checks_markdown(registry),
                 _ => list_table(registry, &checks),
             };
@@ -718,7 +770,9 @@ pub async fn run(args: CheckArgs, contexts: Vec<String>, env: &dyn Environment, 
             Ok(exit::OK)
         }
         CheckCommand::Explain { id } => {
-            let check = registry.get(&id).with_context(|| format!("unknown check id {id}"))?;
+            let check = registry
+                .get(&id)
+                .with_context(|| format!("unknown check id {id}"))?;
             out.write_all(explain(registry, check.as_ref()).as_bytes())?;
             Ok(exit::OK)
         }
@@ -726,15 +780,23 @@ pub async fn run(args: CheckArgs, contexts: Vec<String>, env: &dyn Environment, 
         CheckCommand::History(args) => {
             for target in targets(&contexts, &args.targets, Some(env))? {
                 let tenant = tenant_of(&target, &args.targets, env)?;
-                let Some(store) = open_store(&args.history.history_dir, &tenant)? else { continue };
-                writeln!(out, "{} ({tenant})", target.label.as_deref().unwrap_or(&target.context))?;
+                let Some(store) = open_store(&args.history.history_dir, &tenant)? else {
+                    continue;
+                };
+                writeln!(
+                    out,
+                    "{} ({tenant})",
+                    target.label.as_deref().unwrap_or(&target.context)
+                )?;
                 for run in store.runs(args.limit)? {
                     writeln!(
                         out,
                         "  {}  {}  score {}  fail {} warn {} unknown {}",
                         run.finished_at,
                         run.run_id,
-                        run.score.map(|s| format!("{s:.1}")).unwrap_or_else(|| "-".into()),
+                        run.score
+                            .map(|s| format!("{s:.1}"))
+                            .unwrap_or_else(|| "-".into()),
                         run.statuses.fail,
                         run.statuses.warn,
                         run.statuses.unknown
@@ -747,15 +809,23 @@ pub async fn run(args: CheckArgs, contexts: Vec<String>, env: &dyn Environment, 
             let mut diffs = vec![];
             for target in targets(&contexts, &args.targets, Some(env))? {
                 let tenant = tenant_of(&target, &args.targets, env)?;
-                let store = open_store(&args.history.history_dir, &tenant)?.context("invalid tenant id")?;
+                let store =
+                    open_store(&args.history.history_dir, &tenant)?.context("invalid tenant id")?;
                 let latest = store.latest()?.context("no stored runs for this tenant")?;
                 let previous = match args.since.as_deref() {
                     None => store.latest_before(&latest.finished_at)?,
-                    Some(s) if s.len() == 10 && s.as_bytes()[4] == b'-' => store.run_at_or_before_date(s)?,
+                    Some(s) if s.len() == 10 && s.as_bytes()[4] == b'-' => {
+                        store.run_at_or_before_date(s)?
+                    }
                     Some(run_id) => store.load_run(run_id)?,
                 }
                 .context("no earlier run to compare with")?;
-                let diff = crate::history::diff(&previous.run_id, &previous.finished_at, &previous.report, &latest.report);
+                let diff = crate::history::diff(
+                    &previous.run_id,
+                    &previous.finished_at,
+                    &previous.report,
+                    &latest.report,
+                );
                 diffs.push(json!({"tenant_id": tenant, "label": target.label, "latest_run_id": latest.run_id, "diff": diff}));
             }
             let text = match args.format {
@@ -768,7 +838,10 @@ pub async fn run(args: CheckArgs, contexts: Vec<String>, env: &dyn Environment, 
         CheckCommand::Docs { dir, check } => {
             let stale = crate::docs::sync(registry, &dir, check)?;
             if check && !stale.is_empty() {
-                bail!("generated docs are stale: {} (run `junction check docs`)", stale.join(", "));
+                bail!(
+                    "generated docs are stale: {} (run `junction check docs`)",
+                    stale.join(", ")
+                );
             }
             Ok(exit::OK)
         }
@@ -777,15 +850,22 @@ pub async fn run(args: CheckArgs, contexts: Vec<String>, env: &dyn Environment, 
                 bail!("{operation} is not in the check catalogue");
             }
             let mut input = String::new();
-            std::io::Read::read_to_string(&mut std::io::stdin().take(32 * 1024 * 1024), &mut input)?;
+            std::io::Read::read_to_string(
+                &mut std::io::stdin().take(32 * 1024 * 1024),
+                &mut input,
+            )?;
             let value: Value = serde_json::from_str(&input).context("stdin is not JSON")?;
             // Accept `junction execute` output ({"status", "body", ...}) or a bare body.
-            let (status, body) = match (value.get("status").and_then(Value::as_u64), value.get("body")) {
+            let (status, body) = match (
+                value.get("status").and_then(Value::as_u64),
+                value.get("body"),
+            ) {
                 (Some(status), Some(body)) => (status, body.clone()),
                 _ => (200, value),
             };
             let body = crate::scrub::Scrubber::new().scrub(&body);
-            let entry = json!({"operation": operation, "responses": [{"status": status, "body": body}]});
+            let entry =
+                json!({"operation": operation, "responses": [{"status": status, "body": body}]});
             out.write_all((serde_json::to_string_pretty(&entry)? + "\n").as_bytes())?;
             Ok(exit::OK)
         }
@@ -811,15 +891,26 @@ fn diff_text(entry: &Value) -> String {
     let list = |key: &str| {
         d[key]
             .as_array()
-            .map(|a| a.iter().filter_map(Value::as_str).collect::<Vec<_>>().join(", "))
+            .map(|a| {
+                a.iter()
+                    .filter_map(Value::as_str)
+                    .collect::<Vec<_>>()
+                    .join(", ")
+            })
             .filter(|s| !s.is_empty())
             .unwrap_or_else(|| "none".into())
     };
     format!(
         "{} since {}\n  score change: {}\n  new failures: {}\n  fixed: {}\n  added: {}\n  removed: {}\n  other changes: {}\n",
-        entry["label"].as_str().or(entry["tenant_id"].as_str()).unwrap_or("tenant"),
+        entry["label"]
+            .as_str()
+            .or(entry["tenant_id"].as_str())
+            .unwrap_or("tenant"),
         d["previous_finished_at"].as_str().unwrap_or("?"),
-        d["score_delta"].as_f64().map(|v| format!("{v:+.1}")).unwrap_or_else(|| "n/a".into()),
+        d["score_delta"]
+            .as_f64()
+            .map(|v| format!("{v:+.1}"))
+            .unwrap_or_else(|| "n/a".into()),
         list("new_failures"),
         list("fixed"),
         list("added"),
@@ -859,18 +950,45 @@ fn list_table(registry: &CheckRegistry, checks: &[Arc<dyn crate::check::Check>])
     let mut text = String::new();
     for check in checks {
         let m = check.meta();
-        let permissions: Vec<&str> = m.requires.apis.iter().flat_map(|a| a.permissions.iter().copied()).collect::<std::collections::BTreeSet<_>>().into_iter().collect();
+        let permissions: Vec<&str> = m
+            .requires
+            .apis
+            .iter()
+            .flat_map(|a| a.permissions.iter().copied())
+            .collect::<std::collections::BTreeSet<_>>()
+            .into_iter()
+            .collect();
         let tags = registry.tags(m.id);
-        let e8: Vec<String> = tags.essential_eight.iter().map(|t| t.strategy.clone()).collect();
+        let e8: Vec<String> = tags
+            .essential_eight
+            .iter()
+            .map(|t| t.strategy.clone())
+            .collect();
         text.push_str(&format!(
             "{:<42} {:<8} {:<9} {}\n    {}\n    permissions: {}{}\n",
             m.id,
             m.severity.as_str(),
-            if m.kind == crate::model::CheckKind::Manual { "manual" } else { "automated" },
-            if e8.is_empty() { String::new() } else { format!("E8: {}", e8.join(", ")) },
+            if m.kind == crate::model::CheckKind::Manual {
+                "manual"
+            } else {
+                "automated"
+            },
+            if e8.is_empty() {
+                String::new()
+            } else {
+                format!("E8: {}", e8.join(", "))
+            },
             m.title,
-            if permissions.is_empty() { "none (attested)".to_owned() } else { permissions.join(", ") },
-            if m.requires.licences.is_empty() { String::new() } else { format!("\n    licences: {}", m.requires.licences.join(", ")) },
+            if permissions.is_empty() {
+                "none (attested)".to_owned()
+            } else {
+                permissions.join(", ")
+            },
+            if m.requires.licences.is_empty() {
+                String::new()
+            } else {
+                format!("\n    licences: {}", m.requires.licences.join(", "))
+            },
         ));
     }
     text
@@ -878,7 +996,13 @@ fn list_table(registry: &CheckRegistry, checks: &[Arc<dyn crate::check::Check>])
 
 fn explain(registry: &CheckRegistry, check: &dyn crate::check::Check) -> String {
     let m = check.meta();
-    let mut text = format!("{} ({})\n{}\n\nWhy: {}\n", m.id, m.severity.as_str(), m.title, m.description);
+    let mut text = format!(
+        "{} ({})\n{}\n\nWhy: {}\n",
+        m.id,
+        m.severity.as_str(),
+        m.title,
+        m.description
+    );
     if let Some(manual) = m.manual {
         text.push_str(&format!(
             "\nManual check: {}\nWhy manual: {}\nAnswer with: junction check attest {} --answer yes|no|partial|not_applicable --note \"...\"\n",
@@ -888,18 +1012,28 @@ fn explain(registry: &CheckRegistry, check: &dyn crate::check::Check) -> String 
     if !m.requires.apis.is_empty() {
         text.push_str("\nReads (read-only):\n");
         for api in m.requires.apis {
-            text.push_str(&format!("  {}  needs {}\n", api.operation, api.permissions.join(" or ")));
+            text.push_str(&format!(
+                "  {}  needs {}\n",
+                api.operation,
+                api.permissions.join(" or ")
+            ));
         }
     }
     if !m.requires.licences.is_empty() {
         text.push_str(&format!("Licences: {}\n", m.requires.licences.join(", ")));
     }
-    text.push_str(&format!("\nTo fix a failure (suggestion only):\n  {}\n", m.remediation));
+    text.push_str(&format!(
+        "\nTo fix a failure (suggestion only):\n  {}\n",
+        m.remediation
+    ));
     for link in m.links {
         text.push_str(&format!("  {link}\n"));
     }
     let tags = registry.tags(m.id);
-    text.push_str(&format!("\nTags: {}\n", serde_json::to_string(&tags).unwrap_or_default()));
+    text.push_str(&format!(
+        "\nTags: {}\n",
+        serde_json::to_string(&tags).unwrap_or_default()
+    ));
     text
 }
 
@@ -910,10 +1044,7 @@ async fn attest_command(
     env: &dyn Environment,
     out: &mut dyn Write,
 ) -> Result<i32> {
-    let now = match &args.targets.fixtures {
-        Some(_) => Instant::parse(testkit::FIXTURE_NOW)?,
-        None => Instant::now(),
-    };
+    let now = Instant::now();
     let author = args
         .author
         .clone()
@@ -926,18 +1057,35 @@ async fn attest_command(
         if args.pending {
             let stored = store.attestations()?;
             let pending = attest::pending(registry, &stored, now);
-            writeln!(out, "{} ({tenant}): {} pending", target.label.as_deref().unwrap_or(&target.context), pending.len())?;
+            writeln!(
+                out,
+                "{} ({tenant}): {} pending",
+                target.label.as_deref().unwrap_or(&target.context),
+                pending.len()
+            )?;
             let interactive = std::io::stdin().is_terminal() && std::io::stdout().is_terminal();
             for item in pending {
-                writeln!(out, "\n{} [{}]\n  {}\n  {}", item.check_id, item.status.as_str(), item.question, item.guidance)?;
+                writeln!(
+                    out,
+                    "\n{} [{}]\n  {}\n  {}",
+                    item.check_id,
+                    item.status.as_str(),
+                    item.question,
+                    item.guidance
+                )?;
                 if !interactive {
                     continue;
                 }
-                write!(out, "  Answer (yes/no/partial/not_applicable, blank to skip): ")?;
+                write!(
+                    out,
+                    "  Answer (yes/no/partial/not_applicable, blank to skip): "
+                )?;
                 out.flush()?;
                 let mut answer = String::new();
                 std::io::stdin().read_line(&mut answer)?;
-                let Some(answer) = Answer::parse(answer.trim()) else { continue };
+                let Some(answer) = Answer::parse(answer.trim()) else {
+                    continue;
+                };
                 write!(out, "  Evidence note or link: ")?;
                 out.flush()?;
                 let mut note = String::new();
@@ -949,14 +1097,22 @@ async fn attest_command(
             continue;
         }
         let id = args.id.as_deref().context("give a check id or --pending")?;
-        let check = registry.get(id).with_context(|| format!("unknown check id {id}"))?;
+        let check = registry
+            .get(id)
+            .with_context(|| format!("unknown check id {id}"))?;
         if check.meta().manual.is_none() {
             bail!("{id} is automated; only manual checks take attestations");
         }
-        let answer = Answer::parse(args.answer.as_deref().unwrap_or_default()).context("invalid answer")?;
+        let answer =
+            Answer::parse(args.answer.as_deref().unwrap_or_default()).context("invalid answer")?;
         let a = attest::new(answer, &args.note, &author, now, args.expires_days)?;
         store.put_attestation(id, &a)?;
-        writeln!(out, "Recorded {id} = {} for {tenant}; expires {}.", answer.as_str(), a.expires_at)?;
+        writeln!(
+            out,
+            "Recorded {id} = {} for {tenant}; expires {}.",
+            answer.as_str(),
+            a.expires_at
+        )?;
     }
     Ok(exit::OK)
 }
@@ -977,7 +1133,10 @@ fn push_plan(args: &PushArgs, env: &dyn Environment) -> Result<Option<PushPlan>>
         args.dcr.as_deref().unwrap_or_default(),
         args.stream.as_deref().unwrap_or_default(),
     )?;
-    let context = args.push_context.clone().context("--push-context names the context whose credential sends the rows")?;
+    let context = args
+        .push_context
+        .clone()
+        .context("--push-context names the context whose credential sends the rows")?;
     let policy = match (&args.push_policy, args.approve_push) {
         (Some(path), _) => junction_policy::Policy::parse(&std::fs::read_to_string(path)?)?,
         (None, true) => {
@@ -990,16 +1149,29 @@ fn push_plan(args: &PushArgs, env: &dyn Environment) -> Result<Option<PushPlan>>
         (None, false) => junction_policy::Policy::default(),
     };
     if !crate::push::policy_allows(&policy) {
-        bail!("pushing to Sentinel writes to your workspace: pass --approve-push to confirm on this terminal, or --push-policy with a policy that allows azure.monitor.logs_ingestion.upload");
+        bail!(
+            "pushing to Sentinel writes to your workspace: pass --approve-push to confirm on this terminal, or --push-policy with a policy that allows azure.monitor.logs_ingestion.upload"
+        );
     }
-    Ok(Some(PushPlan { target, context, policy }))
+    Ok(Some(PushPlan {
+        target,
+        context,
+        policy,
+    }))
 }
 
 impl PushPlan {
     async fn send(self, report: &RunReport, env: &dyn Environment) -> Result<()> {
         let live = env.live_target(&self.context)?;
-        let sender = crate::push::ExecutorSender::new(&self.target, live, env.tokens(), self.policy)?;
-        crate::push::push(&self.target, report, &sender, junction_watch::backoff::Backoff::default()).await?;
+        let sender =
+            crate::push::ExecutorSender::new(&self.target, live, env.tokens(), self.policy)?;
+        crate::push::push(
+            &self.target,
+            report,
+            &sender,
+            junction_watch::backoff::Backoff::default(),
+        )
+        .await?;
         Ok(())
     }
 }

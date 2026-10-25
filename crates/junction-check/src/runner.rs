@@ -106,9 +106,10 @@ pub async fn run(
 ) -> Result<RunReport> {
     let checks = registry.select(&options.selection)?;
     if let Some(progress) = &options.progress {
-        progress
-            .total
-            .fetch_add(checks.len() * plans.len(), std::sync::atomic::Ordering::SeqCst);
+        progress.total.fetch_add(
+            checks.len() * plans.len(),
+            std::sync::atomic::Ordering::SeqCst,
+        );
     }
     let started = std::time::Instant::now();
     let mut tenants: Vec<(usize, TenantReport)> =
@@ -150,21 +151,24 @@ fn failed(plan_id: String, label: Option<String>, reason: Reason) -> TenantRepor
     }
 }
 
-async fn run_tenant(
-    registry: &CheckRegistry,
-    checks: &[Arc<dyn Check>],
+/// Boxed so the run future's `Send` proof stops here (hosts spawn runs).
+fn run_tenant<'a>(
+    registry: &'a CheckRegistry,
+    checks: &'a [Arc<dyn Check>],
     plan: TenantPlan,
-    options: &RunOptions,
-) -> TenantReport {
-    let report = assess_tenant(registry, checks, plan, options).await;
-    if report.status == TenantStatus::Failed
-        && let Some(progress) = &options.progress
-    {
-        progress
-            .done
-            .fetch_add(checks.len(), std::sync::atomic::Ordering::SeqCst);
-    }
-    report
+    options: &'a RunOptions,
+) -> crate::gateway::BoxFut<'a, TenantReport> {
+    Box::pin(async move {
+        let report = assess_tenant(registry, checks, plan, options).await;
+        if report.status == TenantStatus::Failed
+            && let Some(progress) = &options.progress
+        {
+            progress
+                .done
+                .fetch_add(checks.len(), std::sync::atomic::Ordering::SeqCst);
+        }
+        report
+    })
 }
 
 async fn assess_tenant(
@@ -215,14 +219,25 @@ async fn assess_tenant(
         dns: options.dns.clone(),
         now: options.now,
     });
-    let mut results: Vec<CheckResult> = futures_util::stream::iter(checks.iter())
-        .map(|check| async {
-            let result = evaluate(registry, check.as_ref(), &ctx, options.check_timeout).await;
-            if let Some(progress) = &options.progress {
-                progress.done.fetch_add(1, std::sync::atomic::Ordering::SeqCst);
-            }
-            result
+    let ctx = &ctx;
+    // Futures are built eagerly so no closure lives in the run future's state:
+    // closures over `dyn Check` defeat the `Send` proof hosts need to spawn runs.
+    let pending: Vec<crate::gateway::BoxFut<'_, CheckResult>> = checks
+        .iter()
+        .map(|check| {
+            let check = check.clone();
+            Box::pin(async move {
+                let result = evaluate(registry, check.as_ref(), ctx, options.check_timeout).await;
+                if let Some(progress) = &options.progress {
+                    progress
+                        .done
+                        .fetch_add(1, std::sync::atomic::Ordering::SeqCst);
+                }
+                result
+            }) as crate::gateway::BoxFut<'_, CheckResult>
         })
+        .collect();
+    let mut results: Vec<CheckResult> = futures_util::stream::iter(pending)
         .buffer_unordered(options.check_concurrency.max(1))
         .collect()
         .await;

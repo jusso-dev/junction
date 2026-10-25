@@ -59,7 +59,10 @@ impl junction_check::cli::Environment for HostEnvironment {
         crate::check_host::Environment::new(self.contexts.clone()).tokens()
     }
     fn confirm_push(&self, _: &str, _: &str, _: &str) -> Result<()> {
-        Err(fail("push_disabled", "Pushing results is a CLI-only operator action."))
+        Err(fail(
+            "push_disabled",
+            "Pushing results is a CLI-only operator action.",
+        ))
     }
 }
 
@@ -97,7 +100,12 @@ fn fixtures() -> Option<PathBuf> {
 }
 
 impl CheckTools {
-    pub fn new(contexts: PathBuf, fixed: Option<Vec<u8>>, history: PathBuf, allow_attest: bool) -> Self {
+    pub fn new(
+        contexts: PathBuf,
+        fixed: Option<Vec<u8>>,
+        history: PathBuf,
+        allow_attest: bool,
+    ) -> Self {
         Self {
             env: HostEnvironment {
                 contexts,
@@ -197,15 +205,25 @@ impl CheckTools {
                     }
                 };
                 if !args["background"].as_bool().unwrap_or(false) {
-                    let report = run.await.map_err(|e| fail("check_run_failed", format!("{e:#}")))?;
+                    let report = run
+                        .await
+                        .map_err(|e| fail("check_run_failed", format!("{e:#}")))?;
                     return Ok(serde_json::to_value(report)?);
                 }
                 let outcome: Outcome = Arc::new(Mutex::new(None));
                 let run_id = junction_check::runner::new_run_id();
                 {
                     let mut runs = self.runs.lock().expect("runs");
-                    if runs.values().filter(|r| r.outcome.lock().expect("outcome").is_none()).count() >= 4 {
-                        return Err(fail("server_busy", "Four background check runs are already active."));
+                    if runs
+                        .values()
+                        .filter(|r| r.outcome.lock().expect("outcome").is_none())
+                        .count()
+                        >= 4
+                    {
+                        return Err(fail(
+                            "server_busy",
+                            "Four background check runs are already active.",
+                        ));
                     }
                     while runs.len() >= MAX_BACKGROUND {
                         let oldest = runs.keys().next().cloned().expect("non-empty");
@@ -230,19 +248,30 @@ impl CheckTools {
                 if let Some(run) = self.runs.lock().expect("runs").get(run_id) {
                     let (done, total) = run.progress.snapshot();
                     return Ok(match &*run.outcome.lock().expect("outcome") {
-                        None => json!({"run_id": run_id, "status": "running", "progress": {"done": done, "total": total}}),
-                        Some(Ok(report)) => json!({"run_id": run_id, "status": "complete", "report": report}),
-                        Some(Err(reason)) => json!({"run_id": run_id, "status": "failed", "reason": reason}),
+                        None => {
+                            json!({"run_id": run_id, "status": "running", "progress": {"done": done, "total": total}})
+                        }
+                        Some(Ok(report)) => {
+                            json!({"run_id": run_id, "status": "complete", "report": report})
+                        }
+                        Some(Err(reason)) => {
+                            json!({"run_id": run_id, "status": "failed", "reason": reason})
+                        }
                     });
                 }
                 let Some(context) = args["context"].as_str() else {
-                    return Err(fail("not_found", "No such background run; give a context to look in its history."));
+                    return Err(fail(
+                        "not_found",
+                        "No such background run; give a context to look in its history.",
+                    ));
                 };
                 let tenant = self.tenant(context)?;
                 let store = junction_check::store::Store::open(&self.history, &tenant)?;
                 match store.load_run(run_id)? {
-                    Some(stored) => Ok(json!({"run_id": run_id, "status": "complete", "source": "history",
-                        "finished_at": stored.finished_at, "tenant": stored.report})),
+                    Some(stored) => Ok(
+                        json!({"run_id": run_id, "status": "complete", "source": "history",
+                        "finished_at": stored.finished_at, "tenant": stored.report}),
+                    ),
                     None => Err(fail("not_found", "No such run in this context's history.")),
                 }
             }
@@ -250,7 +279,12 @@ impl CheckTools {
                 let context = match args["context"].as_str() {
                     Some(c) => c.to_owned(),
                     None if self.env.fixed.is_some() => HOST_CONTEXT.into(),
-                    None => return Err(fail("context_required", "Name the context to read answers for.")),
+                    None => {
+                        return Err(fail(
+                            "context_required",
+                            "Name the context to read answers for.",
+                        ));
+                    }
                 };
                 let tenant = self.tenant(&context)?;
                 let store = junction_check::store::Store::open(&self.history, &tenant)?;
@@ -268,7 +302,12 @@ impl CheckTools {
                         .filter(|c| c.meta().manual.is_some())
                         .ok_or_else(|| fail("invalid_check", "Not a manual check."))?;
                     let answer = Answer::parse(args["answer"].as_str().unwrap_or_default())
-                        .ok_or_else(|| fail("invalid_answer", "Answer yes, no, partial or not_applicable."))?;
+                        .ok_or_else(|| {
+                            fail(
+                                "invalid_answer",
+                                "Answer yes, no, partial or not_applicable.",
+                            )
+                        })?;
                     let attestation = junction_check::attest::new(
                         answer,
                         args["note"].as_str().unwrap_or_default(),
@@ -277,7 +316,9 @@ impl CheckTools {
                         junction_check::attest::DEFAULT_EXPIRY_DAYS,
                     )?;
                     store.put_attestation(check.id(), &attestation)?;
-                    return Ok(json!({"status": "recorded", "check": check.id(), "attestation": attestation}));
+                    return Ok(
+                        json!({"status": "recorded", "check": check.id(), "attestation": attestation}),
+                    );
                 }
                 let stored = store.attestations()?;
                 Ok(json!({"pending": junction_check::attest::pending(registry, &stored, now)}))

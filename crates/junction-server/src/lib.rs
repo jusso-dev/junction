@@ -136,7 +136,12 @@ pub fn openapi() -> Value {
         json!({"type":"object","properties":{"operation":{"type":"string"},"required_permissions":{}},"required":["operation","required_permissions"]}),
     );
     let text = |name: &str, description: &str| {
-        let mut p = parameter(name, "query", false, json!({"type":"string","maxLength":2048}));
+        let mut p = parameter(
+            name,
+            "query",
+            false,
+            json!({"type":"string","maxLength":2048}),
+        );
         p["description"] = json!(description);
         p
     };
@@ -158,7 +163,10 @@ pub fn openapi() -> Value {
     );
     paths["/v1/checks/runs/{id}"]["get"] = make(
         "junction_check_run_status",
-        json!([id.clone(), text("context", "Context whose history holds a finished run")]),
+        json!([
+            id.clone(),
+            text("context", "Context whose history holds a finished run")
+        ]),
         None,
         json!({"type":"object","properties":{"status":{"type":"string"}},"required":["status"]}),
     );

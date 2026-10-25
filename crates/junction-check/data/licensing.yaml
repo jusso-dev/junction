@@ -32,8 +32,8 @@ features:
     title: Microsoft Defender for Office 365 Plan 2
     service_plans: [THREAT_INTELLIGENCE, THREAT_INTELLIGENCE_GOV]
   defender_xdr_hunting:
-    title: Microsoft Defender XDR advanced hunting
-    service_plans: [WINDEFATP, MDE_SMB, THREAT_INTELLIGENCE, ATA, ADALLOM_S_STANDALONE]
+    title: Microsoft Defender XDR advanced hunting (Defender for Business has none)
+    service_plans: [WINDEFATP, THREAT_INTELLIGENCE, ATA, ADALLOM_S_STANDALONE]
   defender_identity:
     title: Microsoft Defender for Identity
     service_plans: [ATA]

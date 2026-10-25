@@ -132,7 +132,10 @@ mod tests {
         });
         let target = live_target(&serde_json::to_vec(&cloud).unwrap()).unwrap();
         assert_eq!(target.tenant_id, "00000000-0000-4000-8000-000000000001");
-        assert_eq!(target.endpoints.authority, "https://login.microsoftonline.com");
+        assert_eq!(
+            target.endpoints.authority,
+            "https://login.microsoftonline.com"
+        );
         let explicit = serde_json::json!({
             "endpoint": "https://graph.microsoft.com/v1.0",
             "token_request": {"tenant": "00000000-0000-4000-8000-000000000002",
@@ -140,7 +143,9 @@ mod tests {
                 "scopes": [], "credential_profile": "checks", "flow": "client_credentials"}
         });
         assert_eq!(
-            live_target(&serde_json::to_vec(&explicit).unwrap()).unwrap().tenant_id,
+            live_target(&serde_json::to_vec(&explicit).unwrap())
+                .unwrap()
+                .tenant_id,
             "00000000-0000-4000-8000-000000000002"
         );
     }

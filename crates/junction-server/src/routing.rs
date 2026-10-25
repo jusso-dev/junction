@@ -87,7 +87,12 @@ pub fn route(method: &str, target: &str, body: &[u8]) -> Result<Route, HttpError
                 } else if let Some(id) = path.strip_prefix("/v1/permissions/") {
                     ("/v1/permissions/{id}", "GET", "junction_permissions", id)
                 } else if let Some(id) = path.strip_prefix("/v1/checks/runs/") {
-                    ("/v1/checks/runs/{id}", "GET", "junction_check_run_status", id)
+                    (
+                        "/v1/checks/runs/{id}",
+                        "GET",
+                        "junction_check_run_status",
+                        id,
+                    )
                 } else {
                     return Err(error(404, "Route not found"));
                 };
@@ -189,7 +194,12 @@ pub fn route(method: &str, target: &str, body: &[u8]) -> Result<Route, HttpError
             // Comma-separated query values become the tool's arrays.
             let list = |name: &str| -> Option<Value> {
                 args[name].as_str().map(|value| {
-                    json!(value.split(',').filter(|v| !v.is_empty()).collect::<Vec<_>>())
+                    json!(
+                        value
+                            .split(',')
+                            .filter(|v| !v.is_empty())
+                            .collect::<Vec<_>>()
+                    )
                 })
             };
             let mut arguments = json!({});
@@ -201,7 +211,11 @@ pub fn route(method: &str, target: &str, body: &[u8]) -> Result<Route, HttpError
                 }
             } else {
                 arguments = args.clone();
-                arguments["action"] = json!(if expected == "POST" { "submit" } else { "pending" });
+                arguments["action"] = json!(if expected == "POST" {
+                    "submit"
+                } else {
+                    "pending"
+                });
             }
             let name = tool.expect("check route");
             let schema = &contract["components"]["schemas"][name];

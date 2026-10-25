@@ -200,6 +200,17 @@ are marked `attested` in every output format. Over MCP and HTTP, agents can read
 attestations but cannot submit them unless the operator starts the host with `--allow-attest`.
 
 <!-- generated:manual-checks:start (junction check docs) -->
+| Check | Question | Why manual |
+|---|---|---|
+| `identity.break_glass_monitored` | Does every sign-in by an emergency access (break-glass) account raise an alert that someone responds to? | Alert rules can live in Azure Monitor, Sentinel, Defender XDR or a third-party SIEM; no single API shows whether break-glass sign-ins reach a person. |
+| `endpoint.air_level` | Is Automated Investigation turned on, and is every Defender for Endpoint device group (including Ungrouped devices) set to Full or Semi automation? | Microsoft publishes no API (Defender for Endpoint, Defender XDR or Microsoft Graph) that reads the device group automation level or the Automated Investigation toggle. |
+| `email.preset_policies` | Is the Standard or Strict preset security policy turned on and applied to all recipients, for Exchange Online Protection and (when licensed) Defender for Office 365? | This setting is only exposed by Exchange Online PowerShell (or its admin API), which is not in Junction's read-only operation catalogue. |
+| `email.external_sender_tag` | Is external sender identification (the External tag in Outlook) turned on? | This setting is only exposed by Exchange Online PowerShell (or its admin API), which is not in Junction's read-only operation catalogue. |
+| `email.auto_forward_blocked` | Does the outbound spam policy block automatic forwarding to external recipients, with no mail flow rule that forwards externally? | This setting is only exposed by Exchange Online PowerShell (or its admin API), which is not in Junction's read-only operation catalogue. |
+| `email.mailbox_audit` | Is mailbox auditing on by default for the organisation (AuditDisabled is False), with no mailbox bypassing it? | This setting is only exposed by Exchange Online PowerShell (or its admin API), which is not in Junction's read-only operation catalogue. |
+| `backup.offline_copy` | Is at least one copy of your important data, software and settings held offline, or in storage that cannot be changed or deleted during its retention period (immutable), separate from production credentials? | Offline media and third-party storage are not visible to Microsoft APIs. |
+| `backup.restore_tested` | Was a restore of data, applications and settings from backup tested, to a common point in time, within the last six months? | Restore exercises are not recorded in any Microsoft API. |
+| `backup.admin_separation` | Are backups administered by dedicated accounts that are not used for production administration, and can production administrators not modify or delete backups? | Backup product roles and third-party consoles are outside Microsoft APIs, and separation is an organisational control. |
 <!-- generated:manual-checks:end -->
 
 ## MCP and HTTP
@@ -259,4 +270,50 @@ and PowerShell 7 for the Exchange runner contract test. The daily release workfl
 ## Check catalogue
 
 <!-- generated:checks:start (junction check docs) -->
+| Id | Title | Pack | Severity | Kind | Licences | Permissions |
+|---|---|---|---|---|---|---|
+| `identity.baseline` | Security Defaults or a Conditional Access baseline is enforced | identity | critical | automated | none | `Policy.Read.All` |
+| `identity.break_glass` | An emergency access account is excluded from Conditional Access | identity | medium | automated | `entra_id_p1` | `GroupMember.Read.All`, `Policy.Read.All`, `RoleManagement.Read.Directory` |
+| `identity.break_glass_monitored` | Break-glass account sign-ins raise an alert | identity | medium | manual | none | none |
+| `identity.global_admin_count` | Between two and four Global Administrators | identity | high | automated | none | `RoleManagement.Read.Directory` |
+| `identity.legacy_auth_blocked` | Legacy authentication is blocked | identity | high | automated | none | `Policy.Read.All` |
+| `identity.mfa_admins` | Every privileged role holder is MFA capable | identity | critical | automated | none | `AuditLog.Read.All`, `GroupMember.Read.All`, `RoleManagement.Read.Directory`, `UserAuthenticationMethod.Read.All` |
+| `identity.mfa_coverage` | Enabled users are registered for MFA | identity | high | automated | `entra_id_p1` | `AuditLog.Read.All`, `User.Read.All` |
+| `identity.phishing_resistant_admins` | Admins use phishing-resistant MFA, enforced by Conditional Access | identity | high | automated | `entra_id_p1` | `AuditLog.Read.All`, `GroupMember.Read.All`, `Policy.Read.All`, `RoleManagement.Read.Directory` |
+| `identity.pim_used` | Privileged roles are eligible through PIM, not permanent | identity | high | automated | `entra_id_p2` | `RoleAssignmentSchedule.Read.Directory`, `RoleEligibilitySchedule.Read.Directory` |
+| `identity.separate_admin_accounts` | Admin accounts have no mailbox or Office apps | identity | medium | automated | none | `GroupMember.Read.All`, `LicenseAssignment.Read.All`, `RoleManagement.Read.Directory`, `User.Read.All` |
+| `endpoint.air_level` | Automated investigation and remediation runs at Full or Semi automation | endpoint | medium | manual | `defender_endpoint_p2` | none |
+| `endpoint.av_definition_age` | Antivirus security intelligence is no more than three days old | endpoint | high | automated | `defender_endpoint`, `defender_vulnerability_management`, `defender_xdr_hunting` | `AdvancedHunting.Read.All`, `ThreatHunting.Read.All` |
+| `endpoint.av_mode` | Defender Antivirus is active, or another antivirus is declared | endpoint | high | automated | `defender_endpoint`, `defender_vulnerability_management`, `defender_xdr_hunting` | `AdvancedHunting.Read.All`, `ThreatHunting.Read.All` |
+| `endpoint.cloud_protection` | Cloud-delivered protection is on for every onboarded device | endpoint | high | automated | `defender_endpoint`, `defender_vulnerability_management` | `Vulnerability.Read.All` |
+| `endpoint.edr_block_mode` | EDR in block mode covers devices where Defender Antivirus is passive | endpoint | medium | automated | `defender_endpoint_p2`, `defender_vulnerability_management`, `defender_xdr_hunting` | `AdvancedHunting.Read.All`, `ThreatHunting.Read.All` |
+| `endpoint.linux_macos_health` | Linux and macOS Defender sensors are active | endpoint | medium | automated | `defender_endpoint` | `Machine.Read.All` |
+| `endpoint.network_protection` | Network protection is on in block mode | endpoint | medium | automated | `defender_endpoint`, `defender_vulnerability_management`, `defender_xdr_hunting` | `AdvancedHunting.Read.All`, `ThreatHunting.Read.All`, `Vulnerability.Read.All` |
+| `endpoint.onboarding_coverage` | Every active device is onboarded to Defender for Endpoint | endpoint | high | automated | `defender_endpoint` | `Device.Read.All`, `DeviceManagementManagedDevices.Read.All`, `Machine.Read.All` |
+| `endpoint.realtime_protection` | Real-time protection is on for every onboarded device | endpoint | high | automated | `defender_endpoint`, `defender_vulnerability_management` | `Vulnerability.Read.All` |
+| `endpoint.servers_covered` | Azure VMs and Arc servers are onboarded to Defender for Endpoint | endpoint | high | automated | `defender_endpoint` | `Machine.Read.All`, `Reader` |
+| `endpoint.stale_sensors` | Defender for Endpoint sensors are active and reporting | endpoint | medium | automated | `defender_endpoint` | `Machine.Read.All` |
+| `endpoint.tamper_protection` | Tamper protection is on for every onboarded device | endpoint | high | automated | `defender_endpoint`, `defender_vulnerability_management` | `Vulnerability.Read.All` |
+| `endpoint.unsupported_os` | Onboarded devices run a supported operating system | endpoint | high | automated | `defender_endpoint` | `Machine.Read.All` |
+| `email.auto_forward_blocked` | Automatic forwarding to external recipients is blocked | email | high | manual | `exchange_online` | none |
+| `email.dkim` | DKIM selector CNAMEs are published for every Exchange Online domain | email | medium | automated | `exchange_online` | `Domain.Read.All` |
+| `email.dmarc` | Every mail domain enforces DMARC with reporting | email | high | automated | `exchange_online` | `Domain.Read.All` |
+| `email.external_sender_tag` | Mail from outside the organisation is tagged External in Outlook | email | medium | manual | `exchange_online` | none |
+| `email.mailbox_audit` | Mailbox auditing is on by default for every mailbox | email | high | manual | `exchange_online` | none |
+| `email.preset_policies` | Standard or Strict preset security policy applies to all recipients | email | high | manual | `exchange_online` | none |
+| `email.spf` | Every mail domain publishes one strict SPF record | email | high | automated | `exchange_online` | `Domain.Read.All` |
+| `backup.admin_separation` | Backup administrator accounts are separate from production administrators | backup | medium | manual | none | none |
+| `backup.azure_vaults` | Azure Backup vaults are immutable, soft-delete protected and cover critical VMs | backup | high | automated | none | `Reader` |
+| `backup.m365_backup` | Microsoft 365 Backup protects Exchange, OneDrive and SharePoint | backup | high | automated | none | `BackupRestore-Configuration.Read.All` |
+| `backup.offline_copy` | An offline or immutable copy of backups exists | backup | high | manual | none | none |
+| `backup.restore_tested` | A test restore was done in the last six months | backup | high | manual | none | none |
+| `backup.third_party_app` | A third-party Microsoft 365 backup app has consent | backup | info | automated | none | `Application.Read.All` |
+| `sentinel.automation` | High severity incidents are routed to a person automatically | sentinel | low | automated | none | `Microsoft Sentinel Reader`, `Reader` |
+| `sentinel.connectors` | Entra ID, Defender XDR, Office 365 and Azure Activity data reach Sentinel | sentinel | high | automated | none | `Log Analytics Reader`, `Microsoft Sentinel Reader`, `Reader` |
+| `sentinel.health_auditing` | Sentinel health and audit monitoring is enabled | sentinel | medium | automated | none | `Log Analytics Reader`, `Microsoft Sentinel Reader`, `Reader` |
+| `sentinel.incidents_stale` | Open Sentinel incidents are assigned and worked within 48 hours | sentinel | medium | automated | none | `Microsoft Sentinel Reader`, `Reader` |
+| `sentinel.ingestion_cost` | Sentinel ingestion cost is known and noisy tables use cheaper log plans | sentinel | low | automated | none | `Log Analytics Reader`, `Microsoft Sentinel Reader`, `Reader` |
+| `sentinel.retention` | Sentinel workspaces keep data for at least 90 days | sentinel | medium | automated | none | `Log Analytics Reader`, `Microsoft Sentinel Reader`, `Reader` |
+| `sentinel.rules_enabled` | At least ten analytics rules are enabled in Sentinel | sentinel | high | automated | none | `Log Analytics Reader`, `Microsoft Sentinel Reader`, `Reader` |
+| `sentinel.workspace` | Microsoft Sentinel is onboarded to a Log Analytics workspace | sentinel | high | automated | none | `Microsoft Sentinel Reader`, `Reader` |
 <!-- generated:checks:end -->

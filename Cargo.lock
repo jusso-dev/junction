@@ -1473,6 +1473,7 @@ dependencies = [
  "anyhow",
  "clap",
  "getrandom 0.4.3",
+ "jsonschema",
  "junction-auth",
  "junction-check",
  "junction-core",

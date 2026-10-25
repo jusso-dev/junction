@@ -18,14 +18,22 @@ pub fn sections(registry: &CheckRegistry) -> Vec<(&'static str, &'static str, St
             continue;
         }
         permissions.push_str(&format!("### {} (`{}`)\n\n", pack.title(), pack.as_str()));
-        permissions.push_str(&coverage::permissions_markdown(&coverage::permissions(registry, &checks)));
+        permissions.push_str(&coverage::permissions_markdown(&coverage::permissions(
+            registry, &checks,
+        )));
         permissions.push('\n');
     }
     let all: Vec<Arc<dyn Check>> = registry.all().to_vec();
     permissions.push_str("### Every pack\n\n");
-    permissions.push_str(&coverage::permissions_markdown(&coverage::permissions(registry, &all)));
+    permissions.push_str(&coverage::permissions_markdown(&coverage::permissions(
+        registry, &all,
+    )));
     let mut manual = String::from("| Check | Question | Why manual |\n|---|---|---|\n");
-    for check in registry.all().iter().filter(|c| c.meta().kind == CheckKind::Manual) {
+    for check in registry
+        .all()
+        .iter()
+        .filter(|c| c.meta().kind == CheckKind::Manual)
+    {
         let m = check.meta();
         let spec = m.manual.expect("manual checks have a question");
         manual.push_str(&format!(
@@ -39,7 +47,11 @@ pub fn sections(registry: &CheckRegistry) -> Vec<(&'static str, &'static str, St
         ("CHECKS.md", "checks", coverage::checks_markdown(registry)),
         ("CHECKS.md", "manual-checks", manual),
         ("CHECKS-PERMISSIONS.md", "permissions", permissions),
-        ("ESSENTIAL-EIGHT-COVERAGE.md", "coverage", coverage::essential_eight_matrix(registry)),
+        (
+            "ESSENTIAL-EIGHT-COVERAGE.md",
+            "coverage",
+            coverage::essential_eight_matrix(registry),
+        ),
     ]
 }
 
@@ -75,9 +87,11 @@ pub fn sync(registry: &CheckRegistry, dir: &Path, check: bool) -> Result<Vec<Str
     for (file, name, content) in sections(registry) {
         let current = match files.get(file) {
             Some(text) => text.clone(),
-            None => std::fs::read_to_string(dir.join(file)).with_context(|| format!("reading docs/{file}"))?,
+            None => std::fs::read_to_string(dir.join(file))
+                .with_context(|| format!("reading docs/{file}"))?,
         };
-        let updated = replace_section(&current, name, &content).with_context(|| format!("docs/{file}"))?;
+        let updated =
+            replace_section(&current, name, &content).with_context(|| format!("docs/{file}"))?;
         files.insert(file, updated);
     }
     for (file, text) in files {
@@ -100,7 +114,10 @@ mod tests {
     fn sections_replace_between_markers() {
         let text = "intro\n<!-- generated:x:start (junction check docs) -->\nold\n<!-- generated:x:end -->\nouter\n";
         let out = replace_section(text, "x", "new\n").unwrap();
-        assert_eq!(out, "intro\n<!-- generated:x:start (junction check docs) -->\nnew\n<!-- generated:x:end -->\nouter\n");
+        assert_eq!(
+            out,
+            "intro\n<!-- generated:x:start (junction check docs) -->\nnew\n<!-- generated:x:end -->\nouter\n"
+        );
         assert!(replace_section("none", "x", "").is_err());
     }
 
@@ -108,6 +125,9 @@ mod tests {
     fn committed_docs_are_up_to_date() {
         let dir = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../docs");
         let stale = sync(CheckRegistry::builtin(), &dir, true).unwrap();
-        assert!(stale.is_empty(), "stale generated docs: {stale:?}; run `junction check docs`");
+        assert!(
+            stale.is_empty(),
+            "stale generated docs: {stale:?}; run `junction check docs`"
+        );
     }
 }
