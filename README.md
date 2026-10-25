@@ -128,6 +128,19 @@ junction watch probe              # live capability discovery
 junction watch run                # collect every 15 minutes, dashboard on 127.0.0.1:8787
 ```
 
+## Security posture checks
+
+`junction check` runs read-only security posture checks against one or many tenants and reports a score, the quick wins to fix first, and findings mapped to the ASD Essential Eight, the ISM, CIS benchmarks, NIST CSF 2.0 and MITRE ATT&CK. Packs cover identity (MFA, phishing-resistant admins, legacy authentication, Conditional Access baseline, admins, PIM), Defender for Endpoint coverage and protection settings, attack surface reduction rules, email (SPF, DKIM, DMARC and Exchange Online settings), Intune hardening and patching, Microsoft Sentinel, backups, applications and consent, collaboration and Azure. Every call runs under Junction's read-only policy; missing licences and permissions are reported as such, never as a pass or fail. Results come as a terminal table, JSON, Markdown or a self-contained HTML report, with history, drift and attested answers for controls no API exposes.
+
+```sh
+junction check run --context contoso --fail-on high
+junction check run --all-contexts --format html --output posture.html
+junction check permissions          # least-privilege read permissions to grant
+junction check list --tag e8:ml1
+```
+
+See [docs/CHECKS.md](docs/CHECKS.md), [docs/CHECKS-PERMISSIONS.md](docs/CHECKS-PERMISSIONS.md), [docs/ESSENTIAL-EIGHT-COVERAGE.md](docs/ESSENTIAL-EIGHT-COVERAGE.md) and [docs/WRITING-A-CHECK.md](docs/WRITING-A-CHECK.md). Results indicate alignment; they are not a formal Essential Eight, IRAP or CIS assessment.
+
 ## Disclaimer and terms of use
 
 Junction does not represent Microsoft. Microsoft has not reviewed, approved or endorsed it, and Microsoft provides no support for it. It is a consolidation tool: it reads Microsoft's public API definitions and documentation and sends the requests you choose, with credentials you supply. It does not grant access, bypass licensing or change what any service allows.
