@@ -6,6 +6,7 @@
 //! with evidence, remediation and framework tags ([`model`]). Missing licences
 //! give `not_applicable` and missing permissions give `unknown` with the reason;
 //! never a false pass or fail. See `docs/CHECKS.md`.
+pub mod attest;
 pub mod catalog;
 pub mod check;
 pub mod config;
@@ -17,10 +18,13 @@ pub mod licensing;
 pub mod model;
 pub mod outcome;
 pub mod packs;
+pub mod push;
 pub mod registry;
+pub mod report;
 pub mod runner;
 pub mod score;
 pub mod scrub;
+pub mod store;
 pub mod tags;
 pub mod testkit;
 
