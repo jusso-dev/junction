@@ -1,0 +1,37 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "assessed": 3,
+      "by_platform": {
+        "Windows11": {
+          "limited_support": 0,
+          "machines": 1,
+          "unsupported": 0
+        },
+        "WindowsServer2022": {
+          "limited_support": 0,
+          "machines": 1,
+          "unsupported": 0
+        },
+        "macOS": {
+          "limited_support": 0,
+          "machines": 1,
+          "unsupported": 0
+        }
+      },
+      "limited_support": 0,
+      "limited_support_notes": [],
+      "not_assessed": 1,
+      "support_data_reviewed": "2026-10-25",
+      "unsupported": 0
+    },
+    "summary": "All 3 assessed machines run a supported operating system."
+  },
+  "id": "endpoint.unsupported_os",
+  "reason": null,
+  "status": "pass"
+}

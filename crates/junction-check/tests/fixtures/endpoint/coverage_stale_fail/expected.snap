@@ -1,0 +1,48 @@
+{
+  "affected": {
+    "items": [
+      "lnx-001",
+      "mac-001",
+      "ws-002.contoso.example",
+      "ws-003.contoso.example"
+    ],
+    "total": 4
+  },
+  "evidence": {
+    "data": {
+      "active": 1,
+      "by_platform": {
+        "Linux": {
+          "active": 0,
+          "impaired_communication": 0,
+          "inactive": 1,
+          "machines": 1,
+          "no_sensor_data": 0
+        },
+        "Windows": {
+          "active": 1,
+          "impaired_communication": 1,
+          "inactive": 0,
+          "machines": 3,
+          "no_sensor_data": 1
+        },
+        "macOS": {
+          "active": 0,
+          "impaired_communication": 0,
+          "inactive": 1,
+          "machines": 1,
+          "no_sensor_data": 0
+        }
+      },
+      "impaired_communication": 1,
+      "inactive": 2,
+      "machines": 5,
+      "max_days": 7,
+      "no_sensor_data": 1
+    },
+    "summary": "2 of 5 onboarded machines report impaired communication or no sensor data; 2 inactive or not seen for 7 days."
+  },
+  "id": "endpoint.stale_sensors",
+  "reason": null,
+  "status": "fail"
+}

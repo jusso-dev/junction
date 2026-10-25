@@ -1,0 +1,12 @@
+{
+    "operation": "defender.endpoint.machines.list",
+    "responses": [
+        {
+            "status": 403,
+            "error": {
+                "code": "Forbidden",
+                "message": "The application does not have any of the required application permissions to access the resource."
+            }
+        }
+    ]
+}

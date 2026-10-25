@@ -1,1 +1,27 @@
-{}
+endpoint.onboarding_coverage:
+  ism: [ISM-1341, ISM-1034, ISM-1417]
+  cis_v8: ["1.1", "10.1"]
+  nist_csf: [ID.AM-01, DE.CM-09]
+  mitre: [T1562.001]
+endpoint.stale_sensors:
+  ism: [ISM-1341, ISM-1034, ISM-1417]
+  cis_v8: ["1.1", "10.1"]
+  nist_csf: [DE.CM-09]
+  mitre: [T1562.001]
+endpoint.unsupported_os:
+  essential_eight:
+    - strategy: patch-operating-systems
+      levels: [1, 2, 3]
+  ism: [ISM-1501]
+  cis_v8: ["1.1", "2.2"]
+  nist_csf: [ID.RA-01, PR.PS-02]
+endpoint.linux_macos_health:
+  ism: [ISM-1341, ISM-1034, ISM-1417]
+  cis_v8: ["10.1"]
+  nist_csf: [DE.CM-09]
+  mitre: [T1562.001]
+endpoint.servers_covered:
+  ism: [ISM-1034, ISM-1417]
+  cis_v8: ["1.1", "10.1"]
+  nist_csf: [ID.AM-01, DE.CM-09]
+  mitre: [T1562.001]
