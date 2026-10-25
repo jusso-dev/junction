@@ -1,0 +1,26 @@
+{
+  "affected": {
+    "items": [
+      "pc-02.contoso.example",
+      "pc-03.contoso.example",
+      "srv-05.contoso.example"
+    ],
+    "total": 3
+  },
+  "evidence": {
+    "data": {
+      "active": 2,
+      "devices_reporting": 5,
+      "disabled": 1,
+      "edr_block_mode": 1,
+      "other": 0,
+      "passive": 1,
+      "percent_active": 40,
+      "third_party_av": null
+    },
+    "summary": "Defender Antivirus is passive or disabled on 3 of 5 devices (40% active). Confirm another antivirus protects them and set third_party_av."
+  },
+  "id": "endpoint.av_mode",
+  "reason": null,
+  "status": "warn"
+}

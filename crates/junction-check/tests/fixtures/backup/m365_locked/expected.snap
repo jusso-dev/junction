@@ -1,0 +1,16 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "disable_reason": "invalidBillingProfile",
+      "service_status": "protectionChangeLocked"
+    },
+    "summary": "Microsoft 365 Backup is protectionChangeLocked (invalidBillingProfile): protection policies are deactivated until the billing profile or service app is fixed."
+  },
+  "id": "backup.m365_backup",
+  "reason": null,
+  "status": "fail"
+}

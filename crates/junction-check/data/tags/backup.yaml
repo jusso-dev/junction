@@ -1,0 +1,61 @@
+# Essential Eight "Regular backups": ML1 to ML3 share ISM-1511 (backups performed and retained),
+# ISM-1811 (retained securely), ISM-1814 (unprivileged users cannot modify or delete) and
+# ISM-1515 (restore tested). ML2 adds ISM-1705 and ISM-1707 (privileged accounts other than
+# backup administrators); ML3 adds ISM-1706 and ISM-1708 (backup administrators cannot modify or
+# delete during retention). Levels below are the ones whose requirements the check gives evidence for.
+backup.m365_backup:
+  essential_eight:
+    - strategy: regular-backups
+      levels: [1, 2, 3]
+  ism: [ISM-1511, ISM-1811]
+  cis_v8: ["11.2"]
+  nist_csf: [PR.DS-11]
+  mitre: [T1490, T1486]
+
+backup.azure_vaults:
+  essential_eight:
+    - strategy: regular-backups
+      levels: [1, 2, 3]
+  # Soft delete and immutability stop deletion by unprivileged and privileged accounts (ISM-1814,
+  # ISM-1707); locked immutability also binds backup administrators (ISM-1708, ISM-2151).
+  ism: [ISM-1511, ISM-1811, ISM-1814, ISM-1707, ISM-1708, ISM-2151]
+  cis_v8: ["11.2", "11.3"]
+  nist_csf: [PR.DS-11]
+  mitre: [T1490, T1486]
+
+backup.third_party_app:
+  # Signal only: a consented backup app suggests backups are performed (ISM-1511).
+  essential_eight:
+    - strategy: regular-backups
+      levels: [1, 2, 3]
+  ism: [ISM-1511]
+  cis_v8: ["11.2"]
+  nist_csf: [PR.DS-11]
+  mitre: [T1490]
+
+backup.offline_copy:
+  essential_eight:
+    - strategy: regular-backups
+      levels: [1, 2, 3]
+  ism: [ISM-1811, ISM-1814, ISM-2151]
+  cis_v8: ["11.3", "11.4"]
+  nist_csf: [PR.DS-11]
+  mitre: [T1490, T1486]
+
+backup.restore_tested:
+  essential_eight:
+    - strategy: regular-backups
+      levels: [1, 2, 3]
+  ism: [ISM-1515, ISM-1810]
+  cis_v8: ["11.5"]
+  nist_csf: [PR.DS-11, RC.RP-03]
+  mitre: [T1486]
+
+backup.admin_separation:
+  essential_eight:
+    - strategy: regular-backups
+      levels: [2, 3]
+  ism: [ISM-1705, ISM-1706, ISM-1707, ISM-1708]
+  cis_v8: ["11.3"]
+  nist_csf: [PR.AA-05]
+  mitre: [T1490]

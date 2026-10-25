@@ -1,0 +1,15 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "allow_invites_from": "everyone"
+    },
+    "summary": "Anyone, including guests, can invite guests."
+  },
+  "id": "collaboration.guest_invites_restricted",
+  "reason": null,
+  "status": "fail"
+}

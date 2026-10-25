@@ -1,0 +1,84 @@
+{
+    "operation": "defender.endpoint.machines.list",
+    "responses": [
+        {
+            "status": 200,
+            "body": {
+                "value": [
+                    {
+                        "id": "000000000000000000000000000000000000002c",
+                        "computerDnsName": "vm-app-01.contoso.example",
+                        "aadDeviceId": null,
+                        "osPlatform": "WindowsServer2022",
+                        "osBuild": 20348,
+                        "version": null,
+                        "healthStatus": "Active",
+                        "onboardingStatus": "Onboarded",
+                        "lastSeen": "2026-10-24T10:00:00Z",
+                        "firstSeen": "2026-01-01T00:00:00Z",
+                        "vmMetadata": {
+                            "vmId": "vm-guid-01",
+                            "cloudProvider": "Azure",
+                            "resourceId": "/subscriptions/11111111-1111-4111-8111-111111111111/resourceGroups/rg-servers/providers/Microsoft.Compute/virtualMachines/vm-app-01",
+                            "subscriptionId": "11111111-1111-4111-8111-111111111111"
+                        }
+                    },
+                    {
+                        "id": "000000000000000000000000000000000000002d",
+                        "computerDnsName": "web01",
+                        "aadDeviceId": null,
+                        "osPlatform": "Ubuntu",
+                        "osBuild": null,
+                        "version": "22.4",
+                        "healthStatus": "Active",
+                        "onboardingStatus": "Onboarded",
+                        "lastSeen": "2026-10-24T10:00:00Z",
+                        "firstSeen": "2026-01-01T00:00:00Z",
+                        "vmMetadata": {
+                            "vmId": "VM-GUID-02",
+                            "cloudProvider": "Azure",
+                            "resourceId": null,
+                            "subscriptionId": "11111111-1111-4111-8111-111111111111"
+                        }
+                    },
+                    {
+                        "id": "000000000000000000000000000000000000002e",
+                        "computerDnsName": "arc-001.contoso.example",
+                        "aadDeviceId": null,
+                        "osPlatform": "WindowsServer2019",
+                        "osBuild": 17763,
+                        "version": null,
+                        "healthStatus": "Active",
+                        "onboardingStatus": "Onboarded",
+                        "lastSeen": "2026-10-24T10:00:00Z",
+                        "firstSeen": "2026-01-01T00:00:00Z"
+                    },
+                    {
+                        "id": "000000000000000000000000000000000000002f",
+                        "computerDnsName": "onprem-srv-01.contoso.example",
+                        "aadDeviceId": null,
+                        "osPlatform": "WindowsServer2019",
+                        "osBuild": 17763,
+                        "version": null,
+                        "healthStatus": "Active",
+                        "onboardingStatus": "Onboarded",
+                        "lastSeen": "2026-10-24T10:00:00Z",
+                        "firstSeen": "2026-01-01T00:00:00Z"
+                    },
+                    {
+                        "id": "0000000000000000000000000000000000000030",
+                        "computerDnsName": "ws-001.contoso.example",
+                        "aadDeviceId": "00000000-0000-4000-8000-000000000001",
+                        "osPlatform": "Windows11",
+                        "osBuild": 26200,
+                        "version": null,
+                        "healthStatus": "Active",
+                        "onboardingStatus": "Onboarded",
+                        "lastSeen": "2026-10-24T10:00:00Z",
+                        "firstSeen": "2026-01-01T00:00:00Z"
+                    }
+                ]
+            }
+        }
+    ]
+}

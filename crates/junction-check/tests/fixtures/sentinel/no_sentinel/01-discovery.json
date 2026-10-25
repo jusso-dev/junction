@@ -1,0 +1,88 @@
+[
+  {
+    "operation": "azure.resource_graph.resources.post",
+    "responses": [
+      {
+        "status": 200,
+        "body": {
+          "totalRecords": 2,
+          "count": 2,
+          "data": [
+            {
+              "id": "/subscriptions/00000000-0000-4000-8000-0000000000a1/resourceGroups/rg-security/providers/Microsoft.OperationalInsights/workspaces/law-sentinel-01",
+              "name": "law-sentinel-01",
+              "subscriptionId": "00000000-0000-4000-8000-0000000000a1",
+              "resourceGroup": "rg-security",
+              "customerId": "00000000-0000-4000-8000-0000000000c1",
+              "retentionInDays": 90
+            },
+            {
+              "id": "/subscriptions/00000000-0000-4000-8000-0000000000a1/resourceGroups/rg-security/providers/Microsoft.OperationalInsights/workspaces/law-apps-01",
+              "name": "law-apps-01",
+              "subscriptionId": "00000000-0000-4000-8000-0000000000a1",
+              "resourceGroup": "rg-security",
+              "customerId": "00000000-0000-4000-8000-0000000000c2",
+              "retentionInDays": 30
+            }
+          ],
+          "resultTruncated": "false"
+        }
+      }
+    ]
+  },
+  {
+    "operation": "azure.resource_graph.resources.post",
+    "match": {
+      "body": {
+        "query": "resourcecontainers\n| where type =~ 'microsoft.resources/subscriptions'\n| summarize subscriptions = count()\n"
+      }
+    },
+    "responses": [
+      {
+        "status": 200,
+        "body": {
+          "totalRecords": 1,
+          "count": 1,
+          "data": [
+            {
+              "subscriptions": 2
+            }
+          ],
+          "resultTruncated": "false"
+        }
+      }
+    ]
+  },
+  {
+    "operation": "sentinel.securityinsights.sentinel_onboarding_states.list",
+    "match": {
+      "parameters": {
+        "workspaceName": "law-sentinel-01"
+      }
+    },
+    "responses": [
+      {
+        "status": 200,
+        "body": {
+          "value": []
+        }
+      }
+    ]
+  },
+  {
+    "operation": "sentinel.securityinsights.sentinel_onboarding_states.list",
+    "match": {
+      "parameters": {
+        "workspaceName": "law-apps-01"
+      }
+    },
+    "responses": [
+      {
+        "status": 200,
+        "body": {
+          "value": []
+        }
+      }
+    ]
+  }
+]

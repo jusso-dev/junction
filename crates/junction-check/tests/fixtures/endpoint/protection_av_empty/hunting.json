@@ -1,0 +1,36 @@
+{
+    "operation": "defender.xdr.advancedhunting.run",
+    "responses": [
+        {
+            "body": {
+                "Schema": [
+                    {
+                        "Name": "DeviceId",
+                        "Type": "String"
+                    },
+                    {
+                        "Name": "DeviceName",
+                        "Type": "String"
+                    },
+                    {
+                        "Name": "OSPlatform",
+                        "Type": "String"
+                    },
+                    {
+                        "Name": "AvMode",
+                        "Type": "String"
+                    },
+                    {
+                        "Name": "AvSignatureVersion",
+                        "Type": "String"
+                    },
+                    {
+                        "Name": "AvSignatureUpdateTime",
+                        "Type": "DateTime"
+                    }
+                ],
+                "Results": []
+            }
+        }
+    ]
+}

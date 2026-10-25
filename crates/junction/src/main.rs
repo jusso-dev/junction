@@ -4,6 +4,8 @@ mod approval_store;
 mod auth_cli;
 mod body_continuation;
 mod browser_login;
+mod check_host;
+mod check_tools;
 mod context_store;
 mod credential_lock;
 mod input;
@@ -33,9 +35,9 @@ struct Cli {
     /// Trusted TOML file correcting operation risks for all registry consumers.
     #[arg(long, global = true)]
     risk_overrides: Option<PathBuf>,
-    /// Select a named local execution context.
-    #[arg(long, global = true)]
-    context: Option<String>,
+    /// Select a named local execution context (`check` accepts several).
+    #[arg(long, global = true, action = clap::ArgAction::Append)]
+    context: Vec<String>,
     #[arg(long, global = true, default_value = ".junction/contexts")]
     contexts_directory: PathBuf,
     /// Private directory for resumable long-running operation handles.
@@ -66,6 +68,9 @@ struct Cli {
 enum Command {
     /// Microsoft 365 security watchdog: licence-aware audit collection and coverage.
     Watch(junction_watch::cli::WatchArgs),
+    /// Read-only security posture checks (identity, endpoint, ASR, email, Intune,
+    /// Sentinel, backups) with Essential Eight, ISM, CIS and ATT&CK mappings.
+    Check(junction_check::cli::CheckArgs),
     /// Explore the API catalog in an interactive Ratatui terminal interface.
     Tui {
         #[arg(long)]
@@ -89,6 +94,15 @@ enum Command {
         policy_file: Option<PathBuf>,
         #[arg(long)]
         context_file: Option<PathBuf>,
+        /// Let agents submit answers to manual checks (off by default).
+        #[arg(long)]
+        allow_attest: bool,
+        /// Let agents run checks against any saved context, not only the host's.
+        #[arg(long)]
+        allow_check_contexts: bool,
+        /// Directory of per-tenant check history (shared with `junction check`).
+        #[arg(long, default_value = ".junction/check-history")]
+        check_history_dir: PathBuf,
     },
     /// Export Junction's own local HTTP API contract without loading a registry.
     Openapi {
@@ -438,6 +452,15 @@ enum McpCommand {
         policy_file: Option<PathBuf>,
         #[arg(long)]
         context_file: Option<PathBuf>,
+        /// Let agents submit answers to manual checks (off by default).
+        #[arg(long)]
+        allow_attest: bool,
+        /// Let agents run checks against any saved context, not only the host's.
+        #[arg(long)]
+        allow_check_contexts: bool,
+        /// Directory of per-tenant check history (shared with `junction check`).
+        #[arg(long, default_value = ".junction/check-history")]
+        check_history_dir: PathBuf,
     },
 }
 #[derive(Subcommand)]
@@ -690,6 +713,14 @@ fn context_token_request(bytes: &[u8]) -> Result<junction_auth::TokenRequest> {
     request.validate()?;
     Ok(request)
 }
+/// Commands other than `check` take at most one named context.
+fn one_context(contexts: &[String]) -> Result<Option<&str>> {
+    match contexts {
+        [] => Ok(None),
+        [one] => Ok(Some(one.as_str())),
+        _ => anyhow::bail!("select at most one named context"),
+    }
+}
 fn parse_input(input: &str) -> Result<serde_json::Value> {
     if input.len() > 16 * 1024 * 1024 {
         anyhow::bail!("input size limit exceeded");
@@ -750,6 +781,23 @@ async fn run() -> Result<()> {
     if let Command::Watch(args) = cli.command {
         let result = junction_watch::cli::run(args).await?;
         return output_options.emit(&result);
+    }
+    if let Command::Check(args) = cli.command {
+        let env = check_host::Environment::new(cli.contexts_directory.clone());
+        let mut stdout = std::io::stdout().lock();
+        let code = match junction_check::cli::run(args, cli.context, &env, &mut stdout).await {
+            Ok(code) => code,
+            Err(error) => {
+                eprintln!(
+                    "{}",
+                    serde_json::json!({"error":"check_failed","message":format!("{error:#}")})
+                );
+                junction_check::cli::exit::ERROR
+            }
+        };
+        use std::io::Write as _;
+        stdout.flush()?;
+        std::process::exit(code);
     }
     if let Command::Openapi { output } = &cli.command {
         let contract = junction_server::openapi();
@@ -1015,7 +1063,7 @@ async fn run() -> Result<()> {
             allow_preview,
             context_file,
         } => {
-            let bytes = match (context_file, cli.context.as_deref()) {
+            let bytes = match (context_file, one_context(&cli.context)?) {
                 (Some(file), None) => Some(context_store::read_file(&file)?),
                 (None, Some(name)) => Some(context_store::read(&cli.contexts_directory, name)?),
                 (None, None) => None,
@@ -1041,19 +1089,25 @@ async fn run() -> Result<()> {
                     policy,
                     policy_file,
                     context_file,
+                    allow_attest,
+                    allow_check_contexts,
+                    check_history_dir,
                 },
         }
         | Command::Serve {
             policy,
             policy_file,
             context_file,
+            allow_attest,
+            allow_check_contexts,
+            check_history_dir,
             ..
         } => {
             let policy = match policy_file {
                 Some(path) => junction_policy::Policy::parse(&std::fs::read_to_string(path)?)?,
                 None => junction_policy::Policy::parse(&format!("[agent]\nmode = '{policy}'\n"))?,
             };
-            let context = match (context_file, cli.context.as_deref()) {
+            let context = match (context_file, one_context(&cli.context)?) {
                 (Some(file), None) => Some(context_store::read_file(&file)?),
                 (None, Some(name)) => Some(context_store::read(&cli.contexts_directory, name)?),
                 (None, None) => None,
@@ -1062,6 +1116,14 @@ async fn run() -> Result<()> {
             if let Some(bytes) = &context {
                 validated_context(bytes)?;
             }
+            let checks = check_tools::CheckTools::new(
+                cli.contexts_directory.clone(),
+                context.clone(),
+                check_history_dir,
+                allow_attest,
+                allow_check_contexts,
+                policy.clone(),
+            );
             let host = mcp_host::Host::new(
                 registry,
                 policy,
@@ -1069,6 +1131,7 @@ async fn run() -> Result<()> {
                 cli.contexts_directory,
                 cli.operations_directory,
                 cli.approvals_directory,
+                checks,
             )?;
             if let Some(config) = http_server {
                 junction_server::serve(std::sync::Arc::new(host), config).await?;
@@ -1092,7 +1155,7 @@ async fn run() -> Result<()> {
                 None => junction_policy::Policy::default(),
             };
             let mut plan = junction_runtime::batch::BatchPlan::build(request, &policy.limits)?;
-            let bytes = match (context_file, cli.context.as_deref()) {
+            let bytes = match (context_file, one_context(&cli.context)?) {
                 (Some(file), None) => context_store::read_file(&file)?,
                 (None, Some(name)) => context_store::read(&cli.contexts_directory, name)?,
                 _ => anyhow::bail!("select exactly one named context or context file"),
@@ -1273,7 +1336,7 @@ async fn run() -> Result<()> {
             {
                 anyhow::bail!("wait requires a declared LRO and valid timeout/poll bounds");
             }
-            let bytes = match (context_file, cli.context.as_deref()) {
+            let bytes = match (context_file, one_context(&cli.context)?) {
                 (Some(file), None) => context_store::read_file(&file)?,
                 (None, Some(name)) => context_store::read(&cli.contexts_directory, name)?,
                 _ => anyhow::bail!("select exactly one named context or context file"),
@@ -1557,7 +1620,7 @@ async fn run() -> Result<()> {
                     parse_input(&input::load(input.as_deref(), input_file.as_deref())?)?;
                 let selected =
                     registry.resolve(&operation, api_version.as_deref(), allow_preview)?;
-                let bytes = match (context_file, cli.context.as_deref()) {
+                let bytes = match (context_file, one_context(&cli.context)?) {
                     (Some(file), None) => context_store::read_file(&file)?,
                     (None, Some(name)) => context_store::read(&cli.contexts_directory, name)?,
                     _ => anyhow::bail!("select exactly one named context or context file"),
@@ -1654,7 +1717,7 @@ async fn run() -> Result<()> {
                     stored.handle.api_version(),
                     stored.handle.allows_preview(),
                 )?;
-                let bytes = match (context_file, cli.context.as_deref()) {
+                let bytes = match (context_file, one_context(&cli.context)?) {
                     (Some(file), None) => context_store::read_file(&file)?,
                     (None, Some(name)) => context_store::read(&cli.contexts_directory, name)?,
                     _ => anyhow::bail!("select exactly one named context or context file"),
@@ -1719,7 +1782,7 @@ async fn run() -> Result<()> {
                     stored.handle.api_version(),
                     stored.handle.allows_preview(),
                 )?;
-                let bytes = match (context_file, cli.context.as_deref()) {
+                let bytes = match (context_file, one_context(&cli.context)?) {
                     (Some(file), None) => context_store::read_file(&file)?,
                     (None, Some(name)) => context_store::read(&cli.contexts_directory, name)?,
                     _ => anyhow::bail!("select exactly one named context or context file"),
@@ -1863,6 +1926,7 @@ async fn run() -> Result<()> {
         | Command::Schema { .. }
         | Command::Sources { .. }
         | Command::Context { .. }
+        | Command::Check(_)
         | Command::Watch(_) => unreachable!(),
     };
     output_options.emit(&output)?;

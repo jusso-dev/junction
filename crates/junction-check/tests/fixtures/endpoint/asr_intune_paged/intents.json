@@ -1,0 +1,10 @@
+{
+    "operation": "graph.device_management.intents.list",
+    "responses": [
+        {
+            "body": {
+                "value": []
+            }
+        }
+    ]
+}

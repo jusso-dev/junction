@@ -1,0 +1,17 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "global_admins_added": true,
+      "registering_users_added": "none",
+      "selected_principals": 0
+    },
+    "summary": "Users who join a device to Entra ID are not added as local administrators."
+  },
+  "id": "intune.local_admin",
+  "reason": null,
+  "status": "pass"
+}

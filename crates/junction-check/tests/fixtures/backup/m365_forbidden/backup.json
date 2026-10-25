@@ -1,0 +1,14 @@
+[
+  {
+    "operation": "graph.solutions.backup_restore.get",
+    "responses": [
+      {
+        "status": 403,
+        "error": {
+          "code": "Forbidden",
+          "message": "Missing role permissions on the request."
+        }
+      }
+    ]
+  }
+]

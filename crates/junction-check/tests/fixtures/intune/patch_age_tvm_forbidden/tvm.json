@@ -1,0 +1,12 @@
+{
+    "operation": "defender.endpoint.vulnerabilities.list_machines_vulnerabilities",
+    "responses": [
+        {
+            "status": 403,
+            "error": {
+                "code": "Forbidden",
+                "message": "Application is not authorized to perform this operation."
+            }
+        }
+    ]
+}

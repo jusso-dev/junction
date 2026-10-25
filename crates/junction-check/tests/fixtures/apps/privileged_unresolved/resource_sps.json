@@ -1,0 +1,32 @@
+[
+    {
+        "operation": "graph.service_principals.list",
+        "responses": [
+            {
+                "body": {
+                    "value": []
+                }
+            }
+        ],
+        "match": {
+            "parameters": {
+                "$filter": "appId eq '00000003-0000-0000-c000-000000000000'"
+            }
+        }
+    },
+    {
+        "operation": "graph.service_principals.list",
+        "responses": [
+            {
+                "body": {
+                    "value": []
+                }
+            }
+        ],
+        "match": {
+            "parameters": {
+                "$filter": "appId eq '00000002-0000-0ff1-ce00-000000000000'"
+            }
+        }
+    }
+]

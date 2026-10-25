@@ -1,0 +1,32 @@
+{
+    "operation": "graph.device_management.configuration_policies.list",
+    "responses": [
+        {
+            "body": {
+                "value": [
+                    {
+                        "id": "00000000-0000-4000-8000-000000000199",
+                        "name": "Windows - BitLocker",
+                        "platforms": "windows10",
+                        "isAssigned": true,
+                        "templateReference": {
+                            "templateFamily": "endpointSecurityDiskEncryption"
+                        },
+                        "settings": [
+                            {
+                                "id": "0",
+                                "settingInstance": {
+                                    "settingDefinitionId": "device_vendor_msft_bitlocker_requiredeviceencryption",
+                                    "choiceSettingValue": {
+                                        "value": "device_vendor_msft_bitlocker_requiredeviceencryption_1",
+                                        "children": []
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    ]
+}

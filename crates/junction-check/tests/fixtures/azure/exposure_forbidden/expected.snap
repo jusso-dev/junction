@@ -1,0 +1,19 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": null,
+    "summary": "azure.resource_graph.resources.post was refused (HTTP 403 AuthorizationFailed). Grant Reader (read-only) and re-run."
+  },
+  "id": "azure.public_network_exposure",
+  "reason": {
+    "code": "missing_permission",
+    "detail": "azure.resource_graph.resources.post was refused (HTTP 403 AuthorizationFailed). Grant Reader (read-only) and re-run.",
+    "missing_permissions": [
+      "Reader"
+    ]
+  },
+  "status": "unknown"
+}

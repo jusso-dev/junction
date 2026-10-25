@@ -1,0 +1,11 @@
+{
+    "operation": "graph.policies.default_app_management_policy.get",
+    "responses": [
+        {
+            "body": {
+                "isEnabled": false,
+                "applicationRestrictions": {}
+            }
+        }
+    ]
+}

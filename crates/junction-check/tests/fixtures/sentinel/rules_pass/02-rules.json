@@ -1,0 +1,183 @@
+[
+  {
+    "operation": "sentinel.securityinsights.alert_rules.list",
+    "match": {
+      "parameters": {
+        "workspaceName": "law-sentinel-01"
+      }
+    },
+    "responses": [
+      {
+        "status": 200,
+        "body": {
+          "value": [
+            {
+              "id": "/subscriptions/00000000-0000-4000-8000-0000000000a1/resourceGroups/rg-security/providers/Microsoft.OperationalInsights/workspaces/law-sentinel-01/providers/Microsoft.SecurityInsights/alertRules/rule-01",
+              "name": "rule-01",
+              "type": "Microsoft.SecurityInsights/alertRules",
+              "kind": "Scheduled",
+              "properties": {
+                "displayName": "Synthetic Scheduled rule 1",
+                "enabled": true
+              }
+            },
+            {
+              "id": "/subscriptions/00000000-0000-4000-8000-0000000000a1/resourceGroups/rg-security/providers/Microsoft.OperationalInsights/workspaces/law-sentinel-01/providers/Microsoft.SecurityInsights/alertRules/rule-02",
+              "name": "rule-02",
+              "type": "Microsoft.SecurityInsights/alertRules",
+              "kind": "Scheduled",
+              "properties": {
+                "displayName": "Synthetic Scheduled rule 2",
+                "enabled": true
+              }
+            },
+            {
+              "id": "/subscriptions/00000000-0000-4000-8000-0000000000a1/resourceGroups/rg-security/providers/Microsoft.OperationalInsights/workspaces/law-sentinel-01/providers/Microsoft.SecurityInsights/alertRules/rule-03",
+              "name": "rule-03",
+              "type": "Microsoft.SecurityInsights/alertRules",
+              "kind": "Scheduled",
+              "properties": {
+                "displayName": "Synthetic Scheduled rule 3",
+                "enabled": true
+              }
+            },
+            {
+              "id": "/subscriptions/00000000-0000-4000-8000-0000000000a1/resourceGroups/rg-security/providers/Microsoft.OperationalInsights/workspaces/law-sentinel-01/providers/Microsoft.SecurityInsights/alertRules/rule-04",
+              "name": "rule-04",
+              "type": "Microsoft.SecurityInsights/alertRules",
+              "kind": "Scheduled",
+              "properties": {
+                "displayName": "Synthetic Scheduled rule 4",
+                "enabled": true
+              }
+            },
+            {
+              "id": "/subscriptions/00000000-0000-4000-8000-0000000000a1/resourceGroups/rg-security/providers/Microsoft.OperationalInsights/workspaces/law-sentinel-01/providers/Microsoft.SecurityInsights/alertRules/rule-05",
+              "name": "rule-05",
+              "type": "Microsoft.SecurityInsights/alertRules",
+              "kind": "Scheduled",
+              "properties": {
+                "displayName": "Synthetic Scheduled rule 5",
+                "enabled": true
+              }
+            },
+            {
+              "id": "/subscriptions/00000000-0000-4000-8000-0000000000a1/resourceGroups/rg-security/providers/Microsoft.OperationalInsights/workspaces/law-sentinel-01/providers/Microsoft.SecurityInsights/alertRules/rule-06",
+              "name": "rule-06",
+              "type": "Microsoft.SecurityInsights/alertRules",
+              "kind": "Scheduled",
+              "properties": {
+                "displayName": "Synthetic Scheduled rule 6",
+                "enabled": true
+              }
+            },
+            {
+              "id": "/subscriptions/00000000-0000-4000-8000-0000000000a1/resourceGroups/rg-security/providers/Microsoft.OperationalInsights/workspaces/law-sentinel-01/providers/Microsoft.SecurityInsights/alertRules/rule-07",
+              "name": "rule-07",
+              "type": "Microsoft.SecurityInsights/alertRules",
+              "kind": "Scheduled",
+              "properties": {
+                "displayName": "Synthetic Scheduled rule 7",
+                "enabled": false
+              }
+            }
+          ],
+          "nextLink": "fixture:alert-rules-2"
+        }
+      }
+    ]
+  },
+  {
+    "url": "fixture:alert-rules-2",
+    "responses": [
+      {
+        "status": 200,
+        "body": {
+          "value": [
+            {
+              "id": "/subscriptions/00000000-0000-4000-8000-0000000000a1/resourceGroups/rg-security/providers/Microsoft.OperationalInsights/workspaces/law-sentinel-01/providers/Microsoft.SecurityInsights/alertRules/rule-08",
+              "name": "rule-08",
+              "type": "Microsoft.SecurityInsights/alertRules",
+              "kind": "NRT",
+              "properties": {
+                "displayName": "Synthetic NRT rule 8",
+                "enabled": true
+              }
+            },
+            {
+              "id": "/subscriptions/00000000-0000-4000-8000-0000000000a1/resourceGroups/rg-security/providers/Microsoft.OperationalInsights/workspaces/law-sentinel-01/providers/Microsoft.SecurityInsights/alertRules/rule-09",
+              "name": "rule-09",
+              "type": "Microsoft.SecurityInsights/alertRules",
+              "kind": "NRT",
+              "properties": {
+                "displayName": "Synthetic NRT rule 9",
+                "enabled": true
+              }
+            },
+            {
+              "id": "/subscriptions/00000000-0000-4000-8000-0000000000a1/resourceGroups/rg-security/providers/Microsoft.OperationalInsights/workspaces/law-sentinel-01/providers/Microsoft.SecurityInsights/alertRules/rule-10",
+              "name": "rule-10",
+              "type": "Microsoft.SecurityInsights/alertRules",
+              "kind": "NRT",
+              "properties": {
+                "displayName": "Synthetic NRT rule 10",
+                "enabled": true
+              }
+            },
+            {
+              "id": "/subscriptions/00000000-0000-4000-8000-0000000000a1/resourceGroups/rg-security/providers/Microsoft.OperationalInsights/workspaces/law-sentinel-01/providers/Microsoft.SecurityInsights/alertRules/rule-11",
+              "name": "rule-11",
+              "type": "Microsoft.SecurityInsights/alertRules",
+              "kind": "Fusion",
+              "properties": {
+                "displayName": "Advanced Multistage Attack Detection",
+                "enabled": true
+              }
+            },
+            {
+              "id": "/subscriptions/00000000-0000-4000-8000-0000000000a1/resourceGroups/rg-security/providers/Microsoft.OperationalInsights/workspaces/law-sentinel-01/providers/Microsoft.SecurityInsights/alertRules/rule-12",
+              "name": "rule-12",
+              "type": "Microsoft.SecurityInsights/alertRules",
+              "kind": "MicrosoftSecurityIncidentCreation",
+              "properties": {
+                "displayName": "Synthetic MicrosoftSecurityIncidentCreation rule 12",
+                "enabled": true
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "operation": "azure.log_analytics_query.query.execute",
+    "match": {
+      "parameters": {
+        "workspaceId": "00000000-0000-4000-8000-0000000000c1"
+      }
+    },
+    "responses": [
+      {
+        "status": 200,
+        "body": {
+          "tables": [
+            {
+              "name": "PrimaryResult",
+              "columns": [
+                {
+                  "name": "RuleName",
+                  "type": "string"
+                },
+                {
+                  "name": "LastFailure",
+                  "type": "datetime"
+                }
+              ],
+              "rows": []
+            }
+          ]
+        }
+      }
+    ]
+  }
+]

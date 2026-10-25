@@ -1,0 +1,130 @@
+[
+    {
+        "operation": "defender.cloud.pricings.list",
+        "responses": [
+            {
+                "body": {
+                    "value": [
+                        {
+                            "id": "/subscriptions/00000000-0000-4000-8000-000000005001/providers/Microsoft.Security/pricings/VirtualMachines",
+                            "name": "VirtualMachines",
+                            "type": "Microsoft.Security/pricings",
+                            "properties": {
+                                "pricingTier": "Standard"
+                            }
+                        },
+                        {
+                            "id": "/subscriptions/00000000-0000-4000-8000-000000005001/providers/Microsoft.Security/pricings/StorageAccounts",
+                            "name": "StorageAccounts",
+                            "type": "Microsoft.Security/pricings",
+                            "properties": {
+                                "pricingTier": "Free"
+                            }
+                        },
+                        {
+                            "id": "/subscriptions/00000000-0000-4000-8000-000000005001/providers/Microsoft.Security/pricings/SqlServers",
+                            "name": "SqlServers",
+                            "type": "Microsoft.Security/pricings",
+                            "properties": {
+                                "pricingTier": "Free"
+                            }
+                        },
+                        {
+                            "id": "/subscriptions/00000000-0000-4000-8000-000000005001/providers/Microsoft.Security/pricings/KeyVaults",
+                            "name": "KeyVaults",
+                            "type": "Microsoft.Security/pricings",
+                            "properties": {
+                                "pricingTier": "Standard"
+                            }
+                        },
+                        {
+                            "id": "/subscriptions/00000000-0000-4000-8000-000000005001/providers/Microsoft.Security/pricings/Containers",
+                            "name": "Containers",
+                            "type": "Microsoft.Security/pricings",
+                            "properties": {
+                                "pricingTier": "Free"
+                            }
+                        },
+                        {
+                            "id": "/subscriptions/00000000-0000-4000-8000-000000005001/providers/Microsoft.Security/pricings/Arm",
+                            "name": "Arm",
+                            "type": "Microsoft.Security/pricings",
+                            "properties": {
+                                "pricingTier": "Standard"
+                            }
+                        }
+                    ]
+                }
+            }
+        ],
+        "match": {
+            "parameters": {
+                "scopeId": "subscriptions/00000000-0000-4000-8000-000000005001"
+            }
+        }
+    },
+    {
+        "operation": "defender.cloud.pricings.list",
+        "responses": [
+            {
+                "body": {
+                    "value": [
+                        {
+                            "id": "/subscriptions/00000000-0000-4000-8000-000000005002/providers/Microsoft.Security/pricings/VirtualMachines",
+                            "name": "VirtualMachines",
+                            "type": "Microsoft.Security/pricings",
+                            "properties": {
+                                "pricingTier": "Free"
+                            }
+                        },
+                        {
+                            "id": "/subscriptions/00000000-0000-4000-8000-000000005002/providers/Microsoft.Security/pricings/StorageAccounts",
+                            "name": "StorageAccounts",
+                            "type": "Microsoft.Security/pricings",
+                            "properties": {
+                                "pricingTier": "Standard"
+                            }
+                        },
+                        {
+                            "id": "/subscriptions/00000000-0000-4000-8000-000000005002/providers/Microsoft.Security/pricings/SqlServers",
+                            "name": "SqlServers",
+                            "type": "Microsoft.Security/pricings",
+                            "properties": {
+                                "pricingTier": "Free"
+                            }
+                        },
+                        {
+                            "id": "/subscriptions/00000000-0000-4000-8000-000000005002/providers/Microsoft.Security/pricings/KeyVaults",
+                            "name": "KeyVaults",
+                            "type": "Microsoft.Security/pricings",
+                            "properties": {
+                                "pricingTier": "Free"
+                            }
+                        },
+                        {
+                            "id": "/subscriptions/00000000-0000-4000-8000-000000005002/providers/Microsoft.Security/pricings/Containers",
+                            "name": "Containers",
+                            "type": "Microsoft.Security/pricings",
+                            "properties": {
+                                "pricingTier": "Free"
+                            }
+                        },
+                        {
+                            "id": "/subscriptions/00000000-0000-4000-8000-000000005002/providers/Microsoft.Security/pricings/Arm",
+                            "name": "Arm",
+                            "type": "Microsoft.Security/pricings",
+                            "properties": {
+                                "pricingTier": "Standard"
+                            }
+                        }
+                    ]
+                }
+            }
+        ],
+        "match": {
+            "parameters": {
+                "scopeId": "subscriptions/00000000-0000-4000-8000-000000005002"
+            }
+        }
+    }
+]

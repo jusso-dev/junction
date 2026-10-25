@@ -1,0 +1,24 @@
+{
+  "affected": {
+    "items": [
+      "pc-02.contoso.example"
+    ],
+    "total": 1
+  },
+  "evidence": {
+    "data": {
+      "compliant": 2,
+      "configuration_ids": [
+        "scid-96"
+      ],
+      "devices_assessed": 3,
+      "non_compliant": 1,
+      "percent_compliant": 66,
+      "truncated": false
+    },
+    "summary": "Network protection is off on 1 of 3 devices (66% compliant)."
+  },
+  "id": "endpoint.network_protection",
+  "reason": null,
+  "status": "fail"
+}

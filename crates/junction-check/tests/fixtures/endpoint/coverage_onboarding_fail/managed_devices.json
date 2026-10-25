@@ -1,0 +1,33 @@
+{
+    "operation": "graph.device_management.managed_devices.list",
+    "responses": [
+        {
+            "status": 200,
+            "body": {
+                "value": [
+                    {
+                        "id": "md-ws-003",
+                        "deviceName": "WS-003",
+                        "azureADDeviceId": "00000000-0000-4000-8000-000000000003",
+                        "operatingSystem": "Windows",
+                        "lastSyncDateTime": "2026-10-22T00:00:00Z"
+                    },
+                    {
+                        "id": "md-mac-001",
+                        "deviceName": "MAC-001",
+                        "azureADDeviceId": "00000000-0000-4000-8000-000000000004",
+                        "operatingSystem": "macOS",
+                        "lastSyncDateTime": "2026-10-22T00:00:00Z"
+                    },
+                    {
+                        "id": "md-iphone-001",
+                        "deviceName": "IPHONE-001",
+                        "azureADDeviceId": "00000000-0000-4000-8000-000000000010",
+                        "operatingSystem": "iOS",
+                        "lastSyncDateTime": "2026-10-22T00:00:00Z"
+                    }
+                ]
+            }
+        }
+    ]
+}

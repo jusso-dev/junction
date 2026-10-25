@@ -1,0 +1,17 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "m365_group_creation_allowed_group": "00000000-0000-4000-8000-000000000f02",
+      "m365_group_creation_open": false,
+      "users_can_create_security_groups": false
+    },
+    "summary": "Security and Microsoft 365 group creation are restricted."
+  },
+  "id": "collaboration.group_creation_restricted",
+  "reason": null,
+  "status": "pass"
+}

@@ -1,0 +1,30 @@
+{
+  "affected": {
+    "items": [
+      "kv-legacy",
+      "kv-test"
+    ],
+    "total": 2
+  },
+  "evidence": {
+    "data": {
+      "access_policy_model": [
+        "kv-legacy"
+      ],
+      "no_purge_protection": [
+        "kv-legacy"
+      ],
+      "public_network": [
+        "kv-legacy"
+      ],
+      "soft_delete_off": [
+        "kv-test"
+      ],
+      "vaults": 3
+    },
+    "summary": "Of 3 key vault(s): 1 use access policies, 1 lack purge protection, 1 are open to public networks."
+  },
+  "id": "azure.key_vault_protection",
+  "reason": null,
+  "status": "fail"
+}

@@ -1,0 +1,49 @@
+{
+  "affected": {
+    "items": [
+      "IPHONE-001",
+      "WS-004",
+      "WS-005"
+    ],
+    "total": 3
+  },
+  "evidence": {
+    "data": {
+      "active_days": 30,
+      "by_platform": {
+        "Linux": {
+          "devices": 1,
+          "missing": 0,
+          "onboarded": 1
+        },
+        "Windows": {
+          "devices": 5,
+          "missing": 2,
+          "onboarded": 3
+        },
+        "iOS": {
+          "devices": 1,
+          "missing": 1,
+          "onboarded": 0
+        },
+        "macOS": {
+          "devices": 1,
+          "missing": 0,
+          "onboarded": 1
+        }
+      },
+      "devices": 8,
+      "discovered_not_onboarded": 1,
+      "matched_by": {
+        "device_id": 4,
+        "name": 1
+      },
+      "missing": 3,
+      "onboarded": 5
+    },
+    "summary": "3 of 8 active devices have no onboarded Defender for Endpoint record (2 on Windows, macOS or Linux)."
+  },
+  "id": "endpoint.onboarding_coverage",
+  "reason": null,
+  "status": "fail"
+}

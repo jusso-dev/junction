@@ -1,0 +1,98 @@
+# Third-party Microsoft 365 backup products, for `backup.third_party_app`.
+#
+# `apps`: multi-tenant application (client) ids. Only ids published by the vendor are listed,
+# each with the page it came from. Microsoft 365 App Certification pages are publisher
+# attestations: the vendor supplies the app id to Microsoft. Do not add ids seen only in a
+# tenant, a blog or a community list.
+#
+# `patterns`: fallback matching for products whose app id is not published or is created per
+# tenant (for example Veeam Backup for Microsoft 365, which uses an app registration the
+# customer creates). Case-insensitive substrings of the service principal's display name, or
+# of its publisher (`publisherName` or `verifiedPublisher.displayName`). Publisher patterns are
+# only listed for vendors whose Microsoft 365 apps are all backup products; vendors with other
+# Microsoft 365 apps match on the product name only. `source` (optional) is the vendor page
+# that names the product or its Entra application.
+apps:
+  - app_id: 4d69a8e1-9c38-4b33-b76f-9d59b5ae051b
+    vendor: AvePoint
+    product: Cloud Backup for Microsoft 365
+    source: https://learn.microsoft.com/microsoft-365-app-certification/saas/avepoint-inc-cloud-backup-for-microsoft-365
+  - app_id: d03c17c3-8fe0-4ce6-b060-d3e318817798
+    vendor: Veritas Technologies
+    product: NetBackup SaaS Protection
+    source: https://learn.microsoft.com/microsoft-365-app-certification/saas/veritas-technologies-llc-netbackup-saas-protection
+
+patterns:
+  - vendor: Veeam
+    product: Veeam Backup for Microsoft 365 / Veeam Data Cloud for Microsoft 365
+    display_name: ["veeam backup", "veeam data cloud"]
+    publisher: ["veeam"]
+    source: https://helpcenter.veeam.com/docs/vdc/userguide/m365_permissions.html
+  - vendor: AvePoint
+    product: Cloud Backup for Microsoft 365
+    display_name: ["avepoint cloud backup", "avepoint backup"]
+    source: https://www.avepoint.com/products/cloud/backup/microsoft-office-365-backup
+  - vendor: Veritas Technologies
+    product: NetBackup SaaS Protection
+    display_name: ["netbackup saas protection"]
+    source: https://www.veritas.com/alta/saas-protection
+  - vendor: Keepit
+    product: Keepit for Microsoft 365
+    display_name: ["keepit"]
+    publisher: ["keepit"]
+    source: https://www.keepit.com/help/platform-category/capabilities-required-to-back-up-microsoft-365-workloads
+  - vendor: Kaseya
+    product: Datto SaaS Protection, Spanning Backup for Microsoft 365
+    display_name: ["datto saas protection", "backupify", "spanning backup"]
+    source: https://www.kaseya.com/products/microsoft-365-backup/
+  - vendor: Druva
+    product: Druva inSync for Microsoft 365
+    display_name: ["druva"]
+    publisher: ["druva"]
+    source: https://help.druva.com/en/articles/8367759-configure-druva-insync-for-microsoft-365
+  - vendor: Acronis
+    product: Acronis Cyber Protect Cloud (Microsoft 365 backup)
+    display_name: ["acronis"]
+    source: https://www.acronis.com/en/products/cloud/cyber-protect/m365-backup/
+  - vendor: Afi
+    product: Afi Backup for Microsoft 365
+    display_name: ["afi backup", "afi.ai"]
+    source: https://afi.ai/docs/o365/backup-and-recovery/overview/
+  - vendor: Barracuda Networks
+    product: Barracuda Cloud-to-Cloud Backup
+    display_name: ["barracuda cloud-to-cloud backup", "barracuda cloud to cloud backup", "barracuda backup"]
+    source: https://documentation.campus.barracuda.com/wiki/spaces/BCCB/pages/3244044
+  - vendor: Commvault
+    product: Commvault Cloud for Microsoft 365 (formerly Metallic)
+    display_name: ["commvault", "metallic backup"]
+    source: https://documentation.commvault.com/saas/backup_and_recovery_for_microsoft_365_apps.html
+  - vendor: Dropsuite
+    product: Dropsuite Microsoft 365 Backup
+    display_name: ["dropsuite"]
+    publisher: ["dropsuite"]
+  - vendor: CloudAlly
+    product: CloudAlly Microsoft 365 Backup
+    display_name: ["cloudally"]
+    publisher: ["cloudally"]
+  - vendor: Cohesity
+    product: Cohesity Microsoft 365 backup
+    display_name: ["cohesity"]
+    publisher: ["cohesity"]
+  - vendor: Rubrik
+    product: Rubrik Microsoft 365 Protection
+    display_name: ["rubrik"]
+    publisher: ["rubrik"]
+  - vendor: HYCU
+    product: HYCU for Microsoft 365
+    display_name: ["hycu"]
+    publisher: ["hycu"]
+  - vendor: SkyKick
+    product: SkyKick Cloud Backup
+    display_name: ["skykick cloud backup", "skykick backup"]
+  - vendor: Redstor
+    product: Redstor Backup for Microsoft 365
+    display_name: ["redstor"]
+    publisher: ["redstor"]
+  - vendor: Synology
+    product: Active Backup for Microsoft 365
+    display_name: ["active backup for microsoft 365", "active backup for office 365"]

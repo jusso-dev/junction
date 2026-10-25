@@ -1,0 +1,21 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "not_found": [],
+      "sentinel_workspaces": 0,
+      "unreadable": [],
+      "workspaces": []
+    },
+    "summary": "No Azure subscriptions are readable, so Sentinel workspaces cannot be found. Grant Reader on the subscriptions that hold the Sentinel workspace and re-run."
+  },
+  "id": "sentinel.workspace",
+  "reason": {
+    "code": "no_subscriptions",
+    "detail": "No Azure subscriptions are readable, so Sentinel workspaces cannot be found. Grant Reader on the subscriptions that hold the Sentinel workspace and re-run."
+  },
+  "status": "unknown"
+}

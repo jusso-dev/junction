@@ -1,0 +1,46 @@
+[
+    {
+        "operation": "graph.service_principals.app_role_assigned_to.list",
+        "responses": [
+            {
+                "body": {
+                    "value": [
+                        {
+                            "id": "g0",
+                            "principalId": "00000000-0000-4000-8000-000000000c01",
+                            "resourceId": "00000000-0000-4000-8000-000000000b01",
+                            "appRoleId": "00000000-0000-4000-8000-000000000a02"
+                        }
+                    ]
+                }
+            }
+        ],
+        "match": {
+            "parameters": {
+                "servicePrincipal-id": "00000000-0000-4000-8000-000000000b01"
+            }
+        }
+    },
+    {
+        "operation": "graph.service_principals.app_role_assigned_to.list",
+        "responses": [
+            {
+                "body": {
+                    "value": [
+                        {
+                            "id": "x0",
+                            "principalId": "00000000-0000-4000-8000-000000000c03",
+                            "resourceId": "00000000-0000-4000-8000-000000000b02",
+                            "appRoleId": "00000000-0000-4000-8000-000000000a04"
+                        }
+                    ]
+                }
+            }
+        ],
+        "match": {
+            "parameters": {
+                "servicePrincipal-id": "00000000-0000-4000-8000-000000000b02"
+            }
+        }
+    }
+]

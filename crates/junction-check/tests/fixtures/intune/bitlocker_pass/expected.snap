@@ -1,0 +1,20 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "encrypted": 2,
+      "missing_key": 0,
+      "not_encrypted": 0,
+      "recovery_keys": 2,
+      "stale_left_out": 0,
+      "windows_devices": 2
+    },
+    "summary": "All 2 encrypted Windows devices have a BitLocker recovery key in Entra ID."
+  },
+  "id": "intune.bitlocker_escrow",
+  "reason": null,
+  "status": "pass"
+}

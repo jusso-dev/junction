@@ -1,0 +1,83 @@
+[
+    {
+        "operation": "graph.role_management.directory.role_assignments.list",
+        "responses": [
+            {
+                "body": {
+                    "value": [
+                        {
+                            "id": "ra-1",
+                            "principalId": "00000000-0000-4000-8000-000000000001",
+                            "roleDefinitionId": "62e90394-69f5-4237-9190-012177145e10",
+                            "directoryScopeId": "/",
+                            "principal": {
+                                "@odata.type": "#microsoft.graph.user",
+                                "id": "00000000-0000-4000-8000-000000000001",
+                                "displayName": "Admin1",
+                                "userPrincipalName": "admin1@contoso.example"
+                            }
+                        },
+                        {
+                            "id": "ra-2",
+                            "principalId": "00000000-0000-4000-8000-000000000002",
+                            "roleDefinitionId": "62e90394-69f5-4237-9190-012177145e10",
+                            "directoryScopeId": "/",
+                            "principal": {
+                                "@odata.type": "#microsoft.graph.user",
+                                "id": "00000000-0000-4000-8000-000000000002",
+                                "displayName": "Admin2",
+                                "userPrincipalName": "admin2@contoso.example"
+                            }
+                        }
+                    ],
+                    "@odata.nextLink": "fixture:role-assignments-2"
+                }
+            }
+        ]
+    },
+    {
+        "url": "fixture:role-assignments-2",
+        "responses": [
+            {
+                "body": {
+                    "value": [
+                        {
+                            "id": "ra-3",
+                            "principalId": "00000000-0000-4000-9000-000000000001",
+                            "roleDefinitionId": "194ae4cb-b126-40b2-bd5b-6091b380977d",
+                            "directoryScopeId": "/",
+                            "principal": {
+                                "@odata.type": "#microsoft.graph.group",
+                                "id": "00000000-0000-4000-9000-000000000001",
+                                "displayName": "Security Admins"
+                            }
+                        },
+                        {
+                            "id": "ra-4",
+                            "principalId": "00000000-0000-4000-8000-000000000005",
+                            "roleDefinitionId": "4a5d8f65-41da-4de4-8968-e035b65339cf",
+                            "directoryScopeId": "/",
+                            "principal": {
+                                "@odata.type": "#microsoft.graph.user",
+                                "id": "00000000-0000-4000-8000-000000000005",
+                                "displayName": "User5",
+                                "userPrincipalName": "user5@contoso.example"
+                            }
+                        },
+                        {
+                            "id": "ra-5",
+                            "principalId": "00000000-0000-4000-a000-000000000001",
+                            "roleDefinitionId": "29232cdf-9323-42fd-ade2-1d097af3e4de",
+                            "directoryScopeId": "/",
+                            "principal": {
+                                "@odata.type": "#microsoft.graph.servicePrincipal",
+                                "id": "00000000-0000-4000-a000-000000000001",
+                                "displayName": "Automation App"
+                            }
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+]

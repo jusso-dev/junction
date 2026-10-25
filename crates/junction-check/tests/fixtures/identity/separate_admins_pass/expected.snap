@@ -1,0 +1,17 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "admins": 3,
+      "with_mailbox": 0,
+      "with_office_apps": 0
+    },
+    "summary": "None of 3 enabled privileged accounts has a mailbox or Office apps licence."
+  },
+  "id": "identity.separate_admin_accounts",
+  "reason": null,
+  "status": "pass"
+}

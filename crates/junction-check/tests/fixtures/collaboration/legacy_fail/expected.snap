@@ -1,0 +1,15 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "legacy_auth_protocols_enabled": true
+    },
+    "summary": "SharePoint accepts legacy authentication protocols."
+  },
+  "id": "collaboration.sharepoint_legacy_auth_blocked",
+  "reason": null,
+  "status": "fail"
+}

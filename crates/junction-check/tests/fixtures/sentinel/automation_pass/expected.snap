@@ -1,0 +1,24 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "workspaces": [
+        {
+          "automation_rules": 3,
+          "enabled_incident_rules": 3,
+          "routing_rules": [
+            "Assign High to on-call"
+          ],
+          "workspace": "law-sentinel-01"
+        }
+      ]
+    },
+    "summary": "An enabled automation rule assigns an owner or runs a playbook for High severity incidents."
+  },
+  "id": "sentinel.automation",
+  "reason": null,
+  "status": "pass"
+}

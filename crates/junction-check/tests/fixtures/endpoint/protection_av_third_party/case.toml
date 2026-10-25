@@ -1,0 +1,5 @@
+[config.checks."endpoint.av_mode"]
+third_party_av = true
+
+[config.checks."endpoint.av_definition_age"]
+max_days = 30

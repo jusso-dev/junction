@@ -1,0 +1,2 @@
+[config.checks."identity.break_glass"]
+accounts = ["admin1@contoso.example"]

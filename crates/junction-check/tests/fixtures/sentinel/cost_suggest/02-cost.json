@@ -1,0 +1,111 @@
+[
+  {
+    "operation": "azure.log_analytics_query.query.execute",
+    "match": {
+      "parameters": {
+        "workspaceId": "00000000-0000-4000-8000-0000000000c1"
+      }
+    },
+    "responses": [
+      {
+        "status": 200,
+        "body": {
+          "tables": [
+            {
+              "name": "PrimaryResult",
+              "columns": [
+                {
+                  "name": "DataType",
+                  "type": "string"
+                },
+                {
+                  "name": "BillableGB",
+                  "type": "real"
+                }
+              ],
+              "rows": [
+                [
+                  "CommonSecurityLog",
+                  120.5
+                ],
+                [
+                  "SigninLogs",
+                  20.25
+                ],
+                [
+                  "FirewallLogs_CL",
+                  5.0
+                ],
+                [
+                  "Syslog",
+                  0.4
+                ]
+              ]
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "operation": "azure.log_analytics.tables.list_by_workspace",
+    "match": {
+      "parameters": {
+        "workspaceName": "law-sentinel-01"
+      }
+    },
+    "responses": [
+      {
+        "status": 200,
+        "body": {
+          "value": [
+            {
+              "id": "/subscriptions/00000000-0000-4000-8000-0000000000a1/resourceGroups/rg-security/providers/Microsoft.OperationalInsights/workspaces/law-sentinel-01/tables/CommonSecurityLog",
+              "name": "CommonSecurityLog",
+              "properties": {
+                "plan": "Analytics",
+                "retentionInDays": 90,
+                "totalRetentionInDays": 90,
+                "retentionInDaysAsDefault": true,
+                "totalRetentionInDaysAsDefault": true
+              }
+            },
+            {
+              "id": "/subscriptions/00000000-0000-4000-8000-0000000000a1/resourceGroups/rg-security/providers/Microsoft.OperationalInsights/workspaces/law-sentinel-01/tables/SigninLogs",
+              "name": "SigninLogs",
+              "properties": {
+                "plan": "Analytics",
+                "retentionInDays": 90,
+                "totalRetentionInDays": 90,
+                "retentionInDaysAsDefault": true,
+                "totalRetentionInDaysAsDefault": true
+              }
+            },
+            {
+              "id": "/subscriptions/00000000-0000-4000-8000-0000000000a1/resourceGroups/rg-security/providers/Microsoft.OperationalInsights/workspaces/law-sentinel-01/tables/FirewallLogs_CL",
+              "name": "FirewallLogs_CL",
+              "properties": {
+                "plan": "Basic",
+                "retentionInDays": 30,
+                "totalRetentionInDays": 90,
+                "retentionInDaysAsDefault": true,
+                "totalRetentionInDaysAsDefault": true
+              }
+            },
+            {
+              "id": "/subscriptions/00000000-0000-4000-8000-0000000000a1/resourceGroups/rg-security/providers/Microsoft.OperationalInsights/workspaces/law-sentinel-01/tables/Syslog",
+              "name": "Syslog",
+              "properties": {
+                "plan": "Analytics",
+                "retentionInDays": 90,
+                "totalRetentionInDays": 90,
+                "retentionInDaysAsDefault": true,
+                "totalRetentionInDaysAsDefault": true
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+]

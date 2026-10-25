@@ -1,0 +1,19 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": null,
+    "summary": "graph.identity.conditional_access.policies.list was refused (HTTP 403 Authorization_RequestDenied). Grant Policy.Read.All (read-only) and re-run."
+  },
+  "id": "identity.baseline",
+  "reason": {
+    "code": "missing_permission",
+    "detail": "graph.identity.conditional_access.policies.list was refused (HTTP 403 Authorization_RequestDenied). Grant Policy.Read.All (read-only) and re-run.",
+    "missing_permissions": [
+      "Policy.Read.All"
+    ]
+  },
+  "status": "unknown"
+}

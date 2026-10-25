@@ -1,0 +1,4 @@
+[[attestations]]
+check = "endpoint.air_level"
+answer = "yes"
+note = "All device groups set to Full."

@@ -1,0 +1,16 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "enabled": false,
+      "reviewers": 0
+    },
+    "summary": "The admin consent workflow is off."
+  },
+  "id": "apps.admin_consent_workflow",
+  "reason": null,
+  "status": "fail"
+}

@@ -2,9 +2,16 @@ name: Rust
 on: [push, pull_request]
 permissions:
   contents: read
+env:
+  # Check tests replay fixtures only; any live Microsoft call or DNS lookup fails.
+  JUNCTION_CHECK_OFFLINE: "1"
+# Runner labels are repository variables so CI can move to self-hosted runners
+# without editing this file (see docs/CHECKS.md, "CI and self-hosted runners"):
+#   CI_RUNNER_LINUX    JSON label or label list, e.g. '["self-hosted","linux","x64"]'
+#   CI_NATIVE_RUNNERS  JSON list of runner labels for the macOS/Windows test matrix
 jobs:
   check:
-    runs-on: ubuntu-latest
+    runs-on: ${{ fromJSON(vars.CI_RUNNER_LINUX || '"ubuntu-latest"') }}
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
@@ -23,11 +30,22 @@ jobs:
         run: bash scripts/tests/verify-public-repository.sh
       - name: Verify automatic patch version allocation
         run: bash scripts/tests/next-patch-version.sh
+  check-fixtures:
+    # Fixture-only security check tests with the network guard on.
+    runs-on: ${{ fromJSON(vars.CI_RUNNER_LINUX || '"ubuntu-latest"') }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Fixtures are synthetic
+        run: bash scripts/tests/verify-check-fixtures.sh
+      - run: cargo test -p junction-check --locked
+      - name: Generated check docs are current
+        run: cargo run -q -p junction --locked -- check docs --check
   native-tests:
     strategy:
       fail-fast: false
       matrix:
-        runner: [macos-latest, windows-latest]
+        runner: ${{ fromJSON(vars.CI_NATIVE_RUNNERS || '["macos-latest","windows-latest"]') }}
     runs-on: ${{ matrix.runner }}
     steps:
       - uses: actions/checkout@v4

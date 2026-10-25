@@ -1,0 +1,17 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "permission_grant_policies": [
+        "ManagePermissionGrantsForSelf.microsoft-user-default-legacy"
+      ]
+    },
+    "summary": "Users can consent to applications (ManagePermissionGrantsForSelf.microsoft-user-default-legacy)."
+  },
+  "id": "apps.user_consent_restricted",
+  "reason": null,
+  "status": "fail"
+}

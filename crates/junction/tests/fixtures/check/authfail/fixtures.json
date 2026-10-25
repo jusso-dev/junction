@@ -1,0 +1,14 @@
+[
+ {
+  "operation": "graph.subscribed_skus.list",
+  "responses": [
+   {
+    "status": 401,
+    "error": {
+     "code": "InvalidAuthenticationToken",
+     "message": "Access token has expired"
+    }
+   }
+  ]
+ }
+]

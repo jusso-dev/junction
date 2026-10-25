@@ -1,0 +1,24 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "audit_mode": 0,
+      "block_events_seen": 0,
+      "compliant": 3,
+      "configuration_ids": [
+        "scid-96"
+      ],
+      "devices_assessed": 3,
+      "non_compliant": 0,
+      "percent_compliant": 100,
+      "truncated": false
+    },
+    "summary": "Network protection is on for all 3 assessed devices, but no device logged block or audit events in the last 30 days, so block mode (rather than audit) is not confirmed. Check the policy sets Enabled (block mode)."
+  },
+  "id": "endpoint.network_protection",
+  "reason": null,
+  "status": "warn"
+}

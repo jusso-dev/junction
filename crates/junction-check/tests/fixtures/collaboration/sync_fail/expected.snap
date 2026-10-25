@@ -1,0 +1,15 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "unmanaged_sync_restricted": false
+    },
+    "summary": "Unmanaged devices can sync OneDrive and SharePoint files."
+  },
+  "id": "collaboration.unmanaged_sync_restricted",
+  "reason": null,
+  "status": "fail"
+}

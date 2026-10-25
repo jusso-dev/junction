@@ -1,0 +1,51 @@
+{
+    "operation": "defender.endpoint.machines.list_software_inventory_by_machine",
+    "responses": [
+        {
+            "body": {
+                "value": [
+                    {
+                        "id": "WIN-01-edge",
+                        "deviceId": "m-win-01",
+                        "deviceName": "win-01.contoso.example",
+                        "osPlatform": "Windows11",
+                        "softwareVendor": "microsoft",
+                        "softwareName": "edge",
+                        "softwareVersion": "141.0.3537.71",
+                        "numberOfWeaknesses": 0
+                    },
+                    {
+                        "id": "WIN-02-edge",
+                        "deviceId": "m-win-02",
+                        "deviceName": "win-02.contoso.example",
+                        "osPlatform": "Windows11",
+                        "softwareVendor": "microsoft",
+                        "softwareName": "edge",
+                        "softwareVersion": "140.0.3485.94",
+                        "numberOfWeaknesses": 0
+                    },
+                    {
+                        "id": "WIN-01-chrome",
+                        "deviceId": "m-win-01",
+                        "deviceName": "win-01.contoso.example",
+                        "osPlatform": "Windows11",
+                        "softwareVendor": "google",
+                        "softwareName": "chrome",
+                        "softwareVersion": "141.0.7390.108",
+                        "numberOfWeaknesses": 0
+                    },
+                    {
+                        "id": "WIN-01-7-zip",
+                        "deviceId": "m-win-01",
+                        "deviceName": "win-01.contoso.example",
+                        "osPlatform": "Windows11",
+                        "softwareVendor": "7-zip",
+                        "softwareName": "7-zip",
+                        "softwareVersion": "24.08",
+                        "numberOfWeaknesses": 2
+                    }
+                ]
+            }
+        }
+    ]
+}

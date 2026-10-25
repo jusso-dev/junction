@@ -1,0 +1,16 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": null,
+    "summary": "Needs a person's answer: Is Automated Investigation turned on, and is every Defender for Endpoint device group (including Ungrouped devices) set to Full or Semi automation? Run `junction check attest endpoint.air_level`."
+  },
+  "id": "endpoint.air_level",
+  "reason": {
+    "code": "not_attested",
+    "detail": "Needs a person's answer: Is Automated Investigation turned on, and is every Defender for Endpoint device group (including Ungrouped devices) set to Full or Semi automation? Run `junction check attest endpoint.air_level`."
+  },
+  "status": "unknown"
+}

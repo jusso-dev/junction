@@ -1,0 +1,16 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": null,
+    "summary": "[packs.sentinel] workspaces has 1 value(s) that are not Log Analytics workspace resource ids (/subscriptions/<id>/resourceGroups/<group>/providers/Microsoft.OperationalInsights/workspaces/<name>): law-sentinel-01."
+  },
+  "id": "sentinel.workspace",
+  "reason": {
+    "code": "invalid_config",
+    "detail": "[packs.sentinel] workspaces has 1 value(s) that are not Log Analytics workspace resource ids (/subscriptions/<id>/resourceGroups/<group>/providers/Microsoft.OperationalInsights/workspaces/<name>): law-sentinel-01."
+  },
+  "status": "unknown"
+}

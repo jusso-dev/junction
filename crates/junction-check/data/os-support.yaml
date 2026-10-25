@@ -1,0 +1,61 @@
+# Operating system support used by `endpoint.unsupported_os`. Keys under `windows` are Defender for
+# Endpoint `osPlatform` values (matched case-insensitively); builds are the machine's `osBuild`.
+#
+# A rule may set:
+#   unsupported:   the whole platform no longer receives security updates (fail).
+#   builds:        the only builds that still receive updates; any other build is unsupported (fail).
+#   min_build:     builds below this are unsupported (fail).
+#   limited:       why a supported build is only serviced for some editions or with paid
+#                  Extended Security Updates (warn).
+#   limited_below: `limited` applies only below this build; without it, to every build.
+# Platforms not listed here (Linux distributions, mobile, unknown values) are not assessed.
+#
+# Review this file at least every six months and whenever a Windows release reaches end of servicing.
+review_date: "2026-10-25"
+sources:
+  - https://learn.microsoft.com/windows/release-health/windows11-release-information
+  - https://learn.microsoft.com/windows/release-health/release-information
+  - https://learn.microsoft.com/lifecycle/products/windows-10-enterprise-and-education
+  - https://learn.microsoft.com/lifecycle/products/windows-10-enterprise-ltsc-2019
+  - https://learn.microsoft.com/lifecycle/products/windows-10-enterprise-ltsc-2021
+  - https://learn.microsoft.com/windows/whats-new/extended-security-updates
+  - https://learn.microsoft.com/windows-server/get-started/windows-server-release-info
+  - https://learn.microsoft.com/lifecycle/products/windows-server-2012-r2
+  - https://learn.microsoft.com/lifecycle/products/windows-server-2016
+  - https://learn.microsoft.com/defender-endpoint/microsoft-defender-endpoint-mac
+windows:
+  Windows11:
+    # 21H2 (22000) and 22H2 (22621) are out of servicing for every edition.
+    min_build: 22631
+    limited: >-
+      Windows 11 23H2 (22631) and 24H2 (26100) are serviced only for Enterprise, Education and LTSC
+      editions; Home and Pro need 25H2 (26200) or later.
+    limited_below: 26200
+  Windows10:
+    # 1809 / LTSC 2019 (17763), 21H2 / LTSC 2021 (19044) and 22H2 (19045). LTSB 2016 (14393) ended
+    # 13-10-2026; every other Windows 10 build is out of servicing.
+    builds: [17763, 19044, 19045]
+    limited: >-
+      Windows 10 reached end of support on 14-10-2025. Only LTSC editions and devices enrolled in
+      Extended Security Updates still receive security updates.
+  Windows8.1:
+    unsupported: Windows 8.1 reached end of support on 10-01-2023.
+  Windows8:
+    unsupported: Windows 8 reached end of support on 12-01-2016.
+  Windows7:
+    unsupported: Windows 7 Extended Security Updates ended on 10-01-2023.
+  WindowsServer2008R2:
+    unsupported: Windows Server 2008 R2 Extended Security Updates ended on 09-01-2024.
+  WindowsServer2012:
+    unsupported: Windows Server 2012 Extended Security Updates ended on 13-10-2026.
+  WindowsServer2012R2:
+    unsupported: Windows Server 2012 R2 Extended Security Updates ended on 13-10-2026.
+  # Extended support ends 12-01-2027.
+  WindowsServer2016: {}
+  WindowsServer2019: {}
+  WindowsServer2022: {}
+  WindowsServer2025: {}
+macos:
+  # Defender for Endpoint on macOS supports the three most recent major releases (27, 26 and 15).
+  min_major: 15
+  note: Defender for Endpoint on macOS supports only the three most recent major macOS releases.

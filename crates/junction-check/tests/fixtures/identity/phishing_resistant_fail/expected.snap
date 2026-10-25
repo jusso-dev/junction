@@ -1,0 +1,23 @@
+{
+  "affected": {
+    "items": [
+      "admin2@contoso.example"
+    ],
+    "total": 1
+  },
+  "evidence": {
+    "data": {
+      "admins": 2,
+      "admins_with_phishing_resistant_method": 1,
+      "enforcing_policies": [
+        "Admins require phishing-resistant MFA"
+      ],
+      "report_only_policies": [],
+      "uncovered_roles": []
+    },
+    "summary": "1 of 2 admins has a phishing-resistant method; Conditional Access requires a phishing-resistant strength for every privileged role."
+  },
+  "id": "identity.phishing_resistant_admins",
+  "reason": null,
+  "status": "fail"
+}

@@ -1,0 +1,37 @@
+[
+    {
+        "operation": "graph.information_protection.bitlocker.recovery_keys.list",
+        "responses": [
+            {
+                "body": {
+                    "value": [
+                        {
+                            "id": "k-1",
+                            "createdDateTime": "2026-09-01T00:00:00Z",
+                            "deviceId": "00000000-0000-4000-8000-000000000001",
+                            "volumeType": "1"
+                        }
+                    ],
+                    "@odata.nextLink": "fixture:keys-2"
+                }
+            }
+        ]
+    },
+    {
+        "url": "fixture:keys-2",
+        "responses": [
+            {
+                "body": {
+                    "value": [
+                        {
+                            "id": "k-2",
+                            "createdDateTime": "2026-09-01T00:00:00Z",
+                            "deviceId": "00000000-0000-4000-8000-000000000002",
+                            "volumeType": "1"
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+]

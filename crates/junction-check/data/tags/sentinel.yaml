@@ -1,0 +1,71 @@
+# Essential Eight: ML2 and ML3 require MFA, privileged access and other security events to be
+# centrally logged, protected and analysed in a timely manner (ISM-1683, ISM-1509, ISM-1650,
+# ISM-1228, ISM-1906, ISM-1815 and related requirements). Sentinel provides that facility.
+sentinel.workspace:
+  essential_eight:
+    - strategy: mfa
+      levels: [2, 3]
+    - strategy: restrict-admin-privileges
+      levels: [2, 3]
+  ism: [ISM-1405, ISM-0120, ISM-1228]
+  cis_v8: ["8.2", "8.9"]
+  nist_csf: [DE.CM-01, DE.AE-02]
+
+sentinel.connectors:
+  essential_eight:
+    - strategy: mfa
+      levels: [2, 3]
+    - strategy: restrict-admin-privileges
+      levels: [2, 3]
+  ism: [ISM-1405, ISM-1683, ISM-1509, ISM-1650, ISM-1987]
+  cis_v8: ["8.2", "8.5", "8.9", "8.12"]
+  nist_csf: [DE.CM-01, DE.CM-09]
+  mitre: [T1562.008]
+
+sentinel.rules_enabled:
+  essential_eight:
+    - strategy: mfa
+      levels: [2, 3]
+    - strategy: restrict-admin-privileges
+      levels: [2, 3]
+    - strategy: application-control
+      levels: [2, 3]
+    - strategy: user-application-hardening
+      levels: [2, 3]
+  ism: [ISM-1228, ISM-0120, ISM-1906, ISM-1987]
+  cis_v8: ["8.11"]
+  nist_csf: [DE.AE-02, DE.CM-01]
+
+sentinel.incidents_stale:
+  essential_eight:
+    - strategy: mfa
+      levels: [2, 3]
+    - strategy: restrict-admin-privileges
+      levels: [2, 3]
+    - strategy: application-control
+      levels: [2, 3]
+    - strategy: user-application-hardening
+      levels: [2, 3]
+  ism: [ISM-1228, ISM-1819, ISM-0123]
+  cis_v8: ["8.11", "17.4"]
+  nist_csf: [RS.MA-01, RS.MA-02]
+
+sentinel.ingestion_cost:
+  ism: [ISM-1405]
+  cis_v8: ["8.3"]
+
+sentinel.retention:
+  ism: [ISM-1988, ISM-1989]
+  cis_v8: ["8.3", "8.10"]
+  nist_csf: [PR.PS-04]
+
+sentinel.health_auditing:
+  ism: [ISM-1985, ISM-1815, ISM-0580]
+  cis_v8: ["8.2", "8.11"]
+  nist_csf: [DE.CM-09]
+  mitre: [T1562.008]
+
+sentinel.automation:
+  ism: [ISM-1819, ISM-0123, ISM-1228]
+  cis_v8: ["8.11", "17.4"]
+  nist_csf: [RS.MA-01]

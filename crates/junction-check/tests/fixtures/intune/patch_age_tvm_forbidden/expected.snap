@@ -1,0 +1,19 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": null,
+    "summary": "defender.endpoint.vulnerabilities.list_machines_vulnerabilities was refused (HTTP 403 Forbidden). Grant Vulnerability.Read.All (read-only) and re-run."
+  },
+  "id": "intune.patch_age",
+  "reason": {
+    "code": "missing_permission",
+    "detail": "defender.endpoint.vulnerabilities.list_machines_vulnerabilities was refused (HTTP 403 Forbidden). Grant Vulnerability.Read.All (read-only) and re-run.",
+    "missing_permissions": [
+      "Vulnerability.Read.All"
+    ]
+  },
+  "status": "unknown"
+}

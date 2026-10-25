@@ -1,0 +1,43 @@
+# Defender Vulnerability Management secure configuration ids (`ConfigurationId`, `scid-N`) that the
+# endpoint protection checks read from the secure configuration assessment
+# (GET /api/machines/SecureConfigurationsAssessmentByMachine, or the
+# DeviceTvmSecureConfigurationAssessment advanced hunting table).
+#
+# Sources:
+# - Microsoft's "Endpoint Agent Health Status Report" hunting query, which names each id (for example
+#   scid-2003 = TamperProtectionWin, scid-2016 = CloudProtectionWin):
+#   https://github.com/Azure/Azure-Sentinel/blob/master/Hunting%20Queries/Microsoft%20365%20Defender/General%20queries/Endpoint%20Agent%20Health%20Status%20Report.yaml
+# - Any id can be confirmed in a tenant against the DeviceTvmSecureConfigurationAssessmentKB table
+#   (ConfigurationId to ConfigurationName):
+#   https://learn.microsoft.com/defender-xdr/advanced-hunting-devicetvmsecureconfigurationassessmentkb-table
+#
+# A device is compliant for a setting when every applicable id listed for it is compliant.
+settings:
+  tamper_protection:
+    title: Tamper protection
+    source: https://github.com/Azure/Azure-Sentinel/blob/master/Hunting%20Queries/Microsoft%20365%20Defender/General%20queries/Endpoint%20Agent%20Health%20Status%20Report.yaml
+    ids:
+      - {id: scid-2003, platform: windows, name: TamperProtectionWin}
+      - {id: scid-5092, platform: macos, name: TamperProtectionMac}
+  realtime_protection:
+    title: Real-time protection
+    source: https://github.com/Azure/Azure-Sentinel/blob/master/Hunting%20Queries/Microsoft%20365%20Defender/General%20queries/Endpoint%20Agent%20Health%20Status%20Report.yaml
+    ids:
+      - {id: scid-2012, platform: windows, name: RealtimeProtectionWin}
+      - {id: scid-5090, platform: macos, name: RealtimeProtectionMac}
+      - {id: scid-6090, platform: linux, name: RealtimeProtectionLin}
+  cloud_protection:
+    title: Cloud-delivered protection
+    source: https://github.com/Azure/Azure-Sentinel/blob/master/Hunting%20Queries/Microsoft%20365%20Defender/General%20queries/Endpoint%20Agent%20Health%20Status%20Report.yaml
+    ids:
+      - {id: scid-2016, platform: windows, name: CloudProtectionWin}
+      - {id: scid-5094, platform: macos, name: CloudProtectionMac}
+      - {id: scid-6094, platform: linux, name: CloudProtectionLin}
+  network_protection:
+    # Compliant in both audit and block mode; the check tells them apart with audit events.
+    # Not in the Microsoft query above; recommendation "Turn on network protection" in the
+    # DeviceTvmSecureConfigurationAssessmentKB table.
+    title: Network protection
+    source: https://learn.microsoft.com/defender-xdr/advanced-hunting-devicetvmsecureconfigurationassessmentkb-table
+    ids:
+      - {id: scid-96, platform: windows, name: NetworkProtection}

@@ -1,0 +1,17 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "current_secrets": 1,
+      "long_lived": 0,
+      "max_days": 365
+    },
+    "summary": "1 current client secrets, none valid for more than 365 days."
+  },
+  "id": "apps.secret_lifetime",
+  "reason": null,
+  "status": "pass"
+}

@@ -1,0 +1,15 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "security_defaults": false
+    },
+    "summary": "Security Defaults are off and the tenant has no Entra ID P1 for Conditional Access, so no baseline protects sign-ins."
+  },
+  "id": "identity.baseline",
+  "reason": null,
+  "status": "fail"
+}

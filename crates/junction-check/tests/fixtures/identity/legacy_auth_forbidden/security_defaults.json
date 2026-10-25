@@ -1,0 +1,14 @@
+[
+    {
+        "operation": "graph.policies.identity_security_defaults_enforcement_policy.get",
+        "responses": [
+            {
+                "status": 403,
+                "error": {
+                    "code": "Authorization_RequestDenied",
+                    "message": "Insufficient privileges to complete the operation."
+                }
+            }
+        ]
+    }
+]

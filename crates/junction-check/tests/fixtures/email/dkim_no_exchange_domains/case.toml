@@ -1,0 +1,4 @@
+licences = ["exchange_online"]
+
+[dns."fabrikam.example"]
+mx = ["mx.fabrikam.example"]

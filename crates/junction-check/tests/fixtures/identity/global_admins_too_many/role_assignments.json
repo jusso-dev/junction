@@ -1,0 +1,77 @@
+{
+    "operation": "graph.role_management.directory.role_assignments.list",
+    "responses": [
+        {
+            "body": {
+                "value": [
+                    {
+                        "id": "ra-1",
+                        "principalId": "00000000-0000-4000-8000-000000000001",
+                        "roleDefinitionId": "62e90394-69f5-4237-9190-012177145e10",
+                        "principal": {
+                            "@odata.type": "#microsoft.graph.user",
+                            "id": "00000000-0000-4000-8000-000000000001",
+                            "displayName": "Admin 1",
+                            "userPrincipalName": "admin1@contoso.example"
+                        }
+                    },
+                    {
+                        "id": "ra-2",
+                        "principalId": "00000000-0000-4000-8000-000000000002",
+                        "roleDefinitionId": "62e90394-69f5-4237-9190-012177145e10",
+                        "principal": {
+                            "@odata.type": "#microsoft.graph.user",
+                            "id": "00000000-0000-4000-8000-000000000002",
+                            "displayName": "Admin 2",
+                            "userPrincipalName": "admin2@contoso.example"
+                        }
+                    },
+                    {
+                        "id": "ra-3",
+                        "principalId": "00000000-0000-4000-8000-000000000003",
+                        "roleDefinitionId": "62e90394-69f5-4237-9190-012177145e10",
+                        "principal": {
+                            "@odata.type": "#microsoft.graph.user",
+                            "id": "00000000-0000-4000-8000-000000000003",
+                            "displayName": "Admin 3",
+                            "userPrincipalName": "admin3@contoso.example"
+                        }
+                    },
+                    {
+                        "id": "ra-4",
+                        "principalId": "00000000-0000-4000-8000-000000000004",
+                        "roleDefinitionId": "62e90394-69f5-4237-9190-012177145e10",
+                        "principal": {
+                            "@odata.type": "#microsoft.graph.user",
+                            "id": "00000000-0000-4000-8000-000000000004",
+                            "displayName": "Admin 4",
+                            "userPrincipalName": "admin4@contoso.example"
+                        }
+                    },
+                    {
+                        "id": "ra-5",
+                        "principalId": "00000000-0000-4000-8000-000000000005",
+                        "roleDefinitionId": "62e90394-69f5-4237-9190-012177145e10",
+                        "principal": {
+                            "@odata.type": "#microsoft.graph.user",
+                            "id": "00000000-0000-4000-8000-000000000005",
+                            "displayName": "Admin 5",
+                            "userPrincipalName": "admin5@contoso.example"
+                        }
+                    },
+                    {
+                        "id": "ra-6",
+                        "principalId": "00000000-0000-4000-8000-000000000006",
+                        "roleDefinitionId": "62e90394-69f5-4237-9190-012177145e10",
+                        "principal": {
+                            "@odata.type": "#microsoft.graph.user",
+                            "id": "00000000-0000-4000-8000-000000000006",
+                            "displayName": "Admin 6",
+                            "userPrincipalName": "admin6@contoso.example"
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}

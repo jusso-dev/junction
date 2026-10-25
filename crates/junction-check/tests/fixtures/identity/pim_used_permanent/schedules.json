@@ -1,0 +1,148 @@
+[
+    {
+        "operation": "graph.role_management.directory.role_assignment_schedules.list",
+        "responses": [
+            {
+                "body": {
+                    "value": [
+                        {
+                            "id": "sched-1",
+                            "principalId": "00000000-0000-4000-8000-000000000008",
+                            "roleDefinitionId": "62e90394-69f5-4237-9190-012177145e10",
+                            "directoryScopeId": "/",
+                            "assignmentType": "Assigned",
+                            "memberType": "Direct",
+                            "scheduleInfo": {
+                                "startDateTime": "2026-01-01T00:00:00Z",
+                                "expiration": {
+                                    "type": "noExpiration"
+                                }
+                            },
+                            "principal": {
+                                "@odata.type": "#microsoft.graph.user",
+                                "id": "00000000-0000-4000-8000-000000000008",
+                                "userPrincipalName": "breakglass1@contoso.example"
+                            }
+                        },
+                        {
+                            "id": "sched-2",
+                            "principalId": "00000000-0000-4000-8000-000000000009",
+                            "roleDefinitionId": "62e90394-69f5-4237-9190-012177145e10",
+                            "directoryScopeId": "/",
+                            "assignmentType": "Assigned",
+                            "memberType": "Direct",
+                            "scheduleInfo": {
+                                "startDateTime": "2026-01-01T00:00:00Z",
+                                "expiration": {
+                                    "type": "noExpiration"
+                                }
+                            },
+                            "principal": {
+                                "@odata.type": "#microsoft.graph.user",
+                                "id": "00000000-0000-4000-8000-000000000009",
+                                "userPrincipalName": "breakglass2@contoso.example"
+                            }
+                        },
+                        {
+                            "id": "sched-3",
+                            "principalId": "00000000-0000-4000-8000-000000000002",
+                            "roleDefinitionId": "62e90394-69f5-4237-9190-012177145e10",
+                            "directoryScopeId": "/",
+                            "assignmentType": "Activated",
+                            "memberType": "Direct",
+                            "scheduleInfo": {
+                                "startDateTime": "2026-01-01T00:00:00Z",
+                                "expiration": {
+                                    "type": "afterDateTime",
+                                    "endDateTime": "2026-12-31T00:00:00Z"
+                                }
+                            },
+                            "principal": {
+                                "@odata.type": "#microsoft.graph.user",
+                                "id": "00000000-0000-4000-8000-000000000002",
+                                "userPrincipalName": "admin2@contoso.example"
+                            }
+                        },
+                        {
+                            "id": "sched-4",
+                            "principalId": "00000000-0000-4000-8000-000000000004",
+                            "roleDefinitionId": "29232cdf-9323-42fd-ade2-1d097af3e4de",
+                            "directoryScopeId": "/",
+                            "assignmentType": "Assigned",
+                            "memberType": "Direct",
+                            "scheduleInfo": {
+                                "startDateTime": "2026-01-01T00:00:00Z",
+                                "expiration": {
+                                    "type": "afterDateTime",
+                                    "endDateTime": "2026-12-31T00:00:00Z"
+                                }
+                            },
+                            "principal": {
+                                "@odata.type": "#microsoft.graph.user",
+                                "id": "00000000-0000-4000-8000-000000000004",
+                                "userPrincipalName": "admin4@contoso.example"
+                            }
+                        },
+                        {
+                            "id": "sched-5",
+                            "principalId": "00000000-0000-4000-8000-000000000005",
+                            "roleDefinitionId": "4a5d8f65-41da-4de4-8968-e035b65339cf",
+                            "directoryScopeId": "/",
+                            "assignmentType": "Assigned",
+                            "memberType": "Direct",
+                            "scheduleInfo": {
+                                "startDateTime": "2026-01-01T00:00:00Z",
+                                "expiration": {
+                                    "type": "noExpiration"
+                                }
+                            },
+                            "principal": {
+                                "@odata.type": "#microsoft.graph.user",
+                                "id": "00000000-0000-4000-8000-000000000005",
+                                "userPrincipalName": "user5@contoso.example"
+                            }
+                        },
+                        {
+                            "id": "sched-6",
+                            "principalId": "00000000-0000-4000-8000-000000000001",
+                            "roleDefinitionId": "62e90394-69f5-4237-9190-012177145e10",
+                            "directoryScopeId": "/",
+                            "assignmentType": "Assigned",
+                            "memberType": "Direct",
+                            "scheduleInfo": {
+                                "startDateTime": "2026-01-01T00:00:00Z",
+                                "expiration": {
+                                    "type": "noExpiration"
+                                }
+                            },
+                            "principal": {
+                                "@odata.type": "#microsoft.graph.user",
+                                "id": "00000000-0000-4000-8000-000000000001",
+                                "userPrincipalName": "admin1@contoso.example"
+                            }
+                        },
+                        {
+                            "id": "sched-7",
+                            "principalId": "00000000-0000-4000-8000-000000000006",
+                            "roleDefinitionId": "29232cdf-9323-42fd-ade2-1d097af3e4de",
+                            "directoryScopeId": "/",
+                            "assignmentType": "Assigned",
+                            "memberType": "Direct",
+                            "scheduleInfo": {
+                                "startDateTime": "2026-01-01T00:00:00Z",
+                                "expiration": {
+                                    "type": "noExpiration"
+                                }
+                            },
+                            "principal": {
+                                "@odata.type": "#microsoft.graph.user",
+                                "id": "00000000-0000-4000-8000-000000000006",
+                                "userPrincipalName": "admin6@contoso.example"
+                            }
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+]

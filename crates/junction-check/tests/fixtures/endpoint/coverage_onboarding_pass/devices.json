@@ -1,0 +1,68 @@
+{
+    "operation": "graph.devices.list",
+    "responses": [
+        {
+            "status": 200,
+            "body": {
+                "value": [
+                    {
+                        "id": "obj-0001",
+                        "deviceId": "00000000-0000-4000-8000-000000000001",
+                        "displayName": "WS-001",
+                        "operatingSystem": "Windows",
+                        "accountEnabled": true,
+                        "approximateLastSignInDateTime": "2026-10-20T00:00:00Z"
+                    },
+                    {
+                        "id": "obj-0002",
+                        "deviceId": "00000000-0000-4000-8000-000000000002",
+                        "displayName": "WS-002",
+                        "operatingSystem": "Windows",
+                        "accountEnabled": true,
+                        "approximateLastSignInDateTime": "2026-10-20T00:00:00Z"
+                    },
+                    {
+                        "id": "obj-0003",
+                        "deviceId": "00000000-0000-4000-8000-000000000003",
+                        "displayName": "WS-OLD-003",
+                        "operatingSystem": "Windows",
+                        "accountEnabled": true,
+                        "approximateLastSignInDateTime": "2026-10-20T00:00:00Z"
+                    },
+                    {
+                        "id": "obj-0004",
+                        "deviceId": "00000000-0000-4000-8000-000000000004",
+                        "displayName": "MAC-001",
+                        "operatingSystem": "MacMDM",
+                        "accountEnabled": true,
+                        "approximateLastSignInDateTime": "2026-10-20T00:00:00Z"
+                    },
+                    {
+                        "id": "obj-0005",
+                        "deviceId": "00000000-0000-4000-8000-000000000005",
+                        "displayName": "lnx-001",
+                        "operatingSystem": "Linux",
+                        "accountEnabled": true,
+                        "approximateLastSignInDateTime": "2026-10-20T00:00:00Z"
+                    },
+                    {
+                        "id": "obj-0006",
+                        "deviceId": "00000000-0000-4000-8000-000000000006",
+                        "displayName": "WS-STALE",
+                        "operatingSystem": "Windows",
+                        "accountEnabled": true,
+                        "approximateLastSignInDateTime": "2026-01-01T00:00:00Z"
+                    },
+                    {
+                        "id": "obj-0007",
+                        "deviceId": "00000000-0000-4000-8000-000000000007",
+                        "displayName": "WS-DISABLED",
+                        "operatingSystem": "Windows",
+                        "accountEnabled": false,
+                        "approximateLastSignInDateTime": "2026-10-20T00:00:00Z"
+                    }
+                ]
+            }
+        }
+    ]
+}

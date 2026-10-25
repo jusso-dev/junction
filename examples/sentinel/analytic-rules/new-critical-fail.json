@@ -1,0 +1,68 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "description": "A critical Junction check fails in a tenant's latest run and did not fail in the previous run. Resource API version: Microsoft.SecurityInsights 2023-02-01 (stable)."
+  },
+  "parameters": {
+    "workspace": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of the Sentinel-enabled Log Analytics workspace."
+      }
+    },
+    "ruleId": {
+      "type": "string",
+      "defaultValue": "[newGuid()]",
+      "metadata": {
+        "description": "Rule id (a GUID). Reuse it to update the rule."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/providers/alertRules",
+      "apiVersion": "2023-02-01",
+      "name": "[concat(parameters('workspace'), '/Microsoft.SecurityInsights/', parameters('ruleId'))]",
+      "kind": "Scheduled",
+      "properties": {
+        "displayName": "Junction check: new critical failure",
+        "description": "A critical Junction check fails in a tenant's latest run and did not fail in the previous run.",
+        "severity": "High",
+        "enabled": true,
+        "query": "// Alert on critical checks that fail in a tenant's latest run but did not fail in its previous run.\nlet runs = JunctionCheck_CL\n| summarize by EntraTenantId, RunId, TimeGenerated;\nlet latest = runs\n| summarize arg_max(TimeGenerated, RunId) by EntraTenantId\n| where TimeGenerated > ago(1d);\nlet previous = runs\n| join kind=inner (latest | project EntraTenantId, LatestTime = TimeGenerated) on EntraTenantId\n| where TimeGenerated < LatestTime\n| summarize arg_max(TimeGenerated, RunId) by EntraTenantId\n| project EntraTenantId, RunId;\nlet previousFails = JunctionCheck_CL\n| join kind=inner previous on EntraTenantId, RunId\n| where Status == \"fail\"\n| project EntraTenantId, CheckId;\nJunctionCheck_CL\n| join kind=inner (latest | project EntraTenantId, RunId) on EntraTenantId, RunId\n| where Status == \"fail\" and Severity == \"critical\"\n| join kind=leftanti previousFails on EntraTenantId, CheckId\n| project TimeGenerated, EntraTenantId, Tenant = iff(isempty(TenantLabel), EntraTenantId, TenantLabel), CheckId, Pack, Severity, Tags, Summary, RunId",
+        "queryFrequency": "P1D",
+        "queryPeriod": "P14D",
+        "triggerOperator": "GreaterThan",
+        "triggerThreshold": 0,
+        "suppressionDuration": "PT5H",
+        "suppressionEnabled": false,
+        "tactics": [],
+        "techniques": [],
+        "eventGroupingSettings": {
+          "aggregationKind": "AlertPerResult"
+        },
+        "customDetails": {
+          "Tenant": "Tenant",
+          "CheckId": "CheckId",
+          "Pack": "Pack"
+        },
+        "alertDetailsOverride": {
+          "alertDisplayNameFormat": "New critical failure {{CheckId}} in {{Tenant}}"
+        },
+        "incidentConfiguration": {
+          "createIncident": true,
+          "groupingConfiguration": {
+            "enabled": false,
+            "reopenClosedIncident": false,
+            "lookbackDuration": "PT5H",
+            "matchingMethod": "AllEntities",
+            "groupByEntities": [],
+            "groupByAlertDetails": [],
+            "groupByCustomDetails": []
+          }
+        }
+      }
+    }
+  ]
+}

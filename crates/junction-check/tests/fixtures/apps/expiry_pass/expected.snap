@@ -1,0 +1,17 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "expired": 0,
+      "expiring": 0,
+      "warn_days": 30
+    },
+    "summary": "No expired or soon-expiring app credentials."
+  },
+  "id": "apps.credential_expiry",
+  "reason": null,
+  "status": "pass"
+}

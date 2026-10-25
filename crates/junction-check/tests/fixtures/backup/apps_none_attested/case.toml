@@ -1,0 +1,4 @@
+[[attestations]]
+check = "backup.third_party_app"
+answer = "yes"
+note = "Fabrikam Backup protects Exchange, OneDrive and SharePoint."

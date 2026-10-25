@@ -1,0 +1,53 @@
+{
+  "affected": {
+    "items": [
+      "lnx-002",
+      "mac-001"
+    ],
+    "total": 2
+  },
+  "evidence": {
+    "data": {
+      "active": 3,
+      "by_os": {
+        "RedHatEnterpriseLinux 9.4": {
+          "active": 1,
+          "impaired_communication": 0,
+          "inactive": 0,
+          "machines": 1,
+          "no_sensor_data": 0
+        },
+        "Ubuntu 22.4": {
+          "active": 1,
+          "impaired_communication": 0,
+          "inactive": 1,
+          "machines": 2,
+          "no_sensor_data": 0
+        },
+        "macOS 15": {
+          "active": 0,
+          "impaired_communication": 0,
+          "inactive": 0,
+          "machines": 1,
+          "no_sensor_data": 1
+        },
+        "macOS 26": {
+          "active": 1,
+          "impaired_communication": 0,
+          "inactive": 0,
+          "machines": 1,
+          "no_sensor_data": 0
+        }
+      },
+      "impaired_communication": 0,
+      "inactive": 1,
+      "machines": 5,
+      "max_days": 7,
+      "no_sensor_data": 1
+    },
+    "summary": "2 of 5 Linux and macOS machines are not active or not seen for 7 days."
+  },
+  "id": "endpoint.linux_macos_health",
+  "reason": null,
+  "status": "warn"
+}

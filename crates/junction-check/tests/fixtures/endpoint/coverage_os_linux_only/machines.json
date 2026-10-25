@@ -1,0 +1,36 @@
+{
+    "operation": "defender.endpoint.machines.list",
+    "responses": [
+        {
+            "status": 200,
+            "body": {
+                "value": [
+                    {
+                        "id": "0000000000000000000000000000000000000023",
+                        "computerDnsName": "lnx-001",
+                        "aadDeviceId": null,
+                        "osPlatform": "Ubuntu",
+                        "osBuild": null,
+                        "version": "22.4",
+                        "healthStatus": "Active",
+                        "onboardingStatus": "Onboarded",
+                        "lastSeen": "2026-10-24T10:00:00Z",
+                        "firstSeen": "2026-01-01T00:00:00Z"
+                    },
+                    {
+                        "id": "0000000000000000000000000000000000000024",
+                        "computerDnsName": "lnx-002",
+                        "aadDeviceId": null,
+                        "osPlatform": "RedHatEnterpriseLinux",
+                        "osBuild": null,
+                        "version": "9.4",
+                        "healthStatus": "Active",
+                        "onboardingStatus": "Onboarded",
+                        "lastSeen": "2026-10-24T10:00:00Z",
+                        "firstSeen": "2026-01-01T00:00:00Z"
+                    }
+                ]
+            }
+        }
+    ]
+}

@@ -1,0 +1,8 @@
+// Network protection audit and block events per device over the last 30 days. A device that logs
+// audit events runs network protection in audit mode. Used by endpoint.network_protection.
+DeviceEvents
+| where Timestamp > ago(30d)
+| where ActionType in ("ExploitGuardNetworkProtectionAudited", "ExploitGuardNetworkProtectionBlocked")
+| summarize Audited = countif(ActionType == "ExploitGuardNetworkProtectionAudited"),
+    Blocked = countif(ActionType == "ExploitGuardNetworkProtectionBlocked") by DeviceId, DeviceName
+| take 10000

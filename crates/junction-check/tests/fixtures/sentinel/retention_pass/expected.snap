@@ -1,0 +1,23 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "min_days": 90,
+      "workspaces": [
+        {
+          "retention_days": 90,
+          "short_tables": 0,
+          "tables": 3,
+          "workspace": "law-sentinel-01"
+        }
+      ]
+    },
+    "summary": "Every Sentinel workspace and table keeps data for at least 90 days."
+  },
+  "id": "sentinel.retention",
+  "reason": null,
+  "status": "pass"
+}

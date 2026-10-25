@@ -1,0 +1,74 @@
+[
+    {
+        "operation": "graph.users.authentication.methods.list",
+        "match": {
+            "parameters": {
+                "user-id": "00000000-0000-4000-8000-000000000001"
+            }
+        },
+        "responses": [
+            {
+                "body": {
+                    "value": [
+                        {
+                            "@odata.type": "#microsoft.graph.passwordAuthenticationMethod",
+                            "id": "password-1"
+                        },
+                        {
+                            "@odata.type": "#microsoft.graph.microsoftAuthenticatorAuthenticationMethod",
+                            "id": "microsoftAuthenticator-1"
+                        }
+                    ]
+                }
+            }
+        ]
+    },
+    {
+        "operation": "graph.users.authentication.methods.list",
+        "match": {
+            "parameters": {
+                "user-id": "00000000-0000-4000-8000-000000000002"
+            }
+        },
+        "responses": [
+            {
+                "body": {
+                    "value": [
+                        {
+                            "@odata.type": "#microsoft.graph.passwordAuthenticationMethod",
+                            "id": "password-1"
+                        },
+                        {
+                            "@odata.type": "#microsoft.graph.emailAuthenticationMethod",
+                            "id": "email-2"
+                        }
+                    ]
+                }
+            }
+        ]
+    },
+    {
+        "operation": "graph.users.authentication.methods.list",
+        "match": {
+            "parameters": {
+                "user-id": "00000000-0000-4000-8000-000000000003"
+            }
+        },
+        "responses": [
+            {
+                "body": {
+                    "value": [
+                        {
+                            "@odata.type": "#microsoft.graph.passwordAuthenticationMethod",
+                            "id": "password-1"
+                        },
+                        {
+                            "@odata.type": "#microsoft.graph.fido2AuthenticationMethod",
+                            "id": "fido2-3"
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+]

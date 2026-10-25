@@ -1,0 +1,45 @@
+[
+    {
+        "operation": "defender.endpoint.machines.list_software_inventory_by_machine",
+        "responses": [
+            {
+                "body": {
+                    "value": [
+                        {
+                            "id": "WIN-02-edge",
+                            "deviceId": "m-win-02",
+                            "deviceName": "win-02.contoso.example",
+                            "osPlatform": "Windows11",
+                            "softwareVendor": "microsoft",
+                            "softwareName": "edge",
+                            "softwareVersion": "138.0.3351.65",
+                            "numberOfWeaknesses": 20
+                        }
+                    ],
+                    "@odata.nextLink": "fixture:inventory-2"
+                }
+            }
+        ]
+    },
+    {
+        "url": "fixture:inventory-2",
+        "responses": [
+            {
+                "body": {
+                    "value": [
+                        {
+                            "id": "WIN-01-edge",
+                            "deviceId": "m-win-01",
+                            "deviceName": "win-01.contoso.example",
+                            "osPlatform": "Windows11",
+                            "softwareVendor": "microsoft",
+                            "softwareName": "edge",
+                            "softwareVersion": "141.0.3537.71",
+                            "numberOfWeaknesses": 0
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+]

@@ -1,0 +1,34 @@
+[package]
+name = "junction-check"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "Read-only security posture checks for Microsoft 365, Entra ID, Defender, Intune and Sentinel"
+
+[dependencies]
+junction-auth = { path = "../junction-auth" }
+junction-core = { path = "../junction-core" }
+junction-http = { path = "../junction-http" }
+junction-policy = { path = "../junction-policy" }
+junction-registry = { path = "../junction-registry" }
+junction-runtime = { path = "../junction-runtime" }
+junction-watch = { path = "../junction-watch" }
+serde.workspace = true
+serde_json.workspace = true
+anyhow.workspace = true
+clap.workspace = true
+serde-saphyr = "1"
+tokio = { version = "1", features = ["macros", "rt-multi-thread", "time", "sync", "net"] }
+futures-util = "0.3"
+rusqlite = { version = "0.37", features = ["bundled"] }
+sha2 = "0.10"
+url = "2"
+toml = "0.8"
+regex = "1"
+getrandom = "0.4"
+
+[dev-dependencies]
+jsonschema = { version = "0.58", default-features = false }
+tempfile = "3"

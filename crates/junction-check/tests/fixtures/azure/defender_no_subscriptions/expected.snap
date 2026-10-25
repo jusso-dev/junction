@@ -1,0 +1,16 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": null,
+    "summary": "No Azure subscriptions are readable. Grant Reader at the root management group to assess Azure."
+  },
+  "id": "azure.defender_plans",
+  "reason": {
+    "code": "no_subscriptions",
+    "detail": "No Azure subscriptions are readable. Grant Reader at the root management group to assess Azure."
+  },
+  "status": "not_applicable"
+}

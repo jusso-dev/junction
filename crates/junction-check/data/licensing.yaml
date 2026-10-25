@@ -1,0 +1,51 @@
+# Licence features detected from Microsoft Graph `subscribedSkus`. A feature is present when any
+# SKU with capabilityStatus Enabled or Warning has one of its service plans provisioned. Service plan
+# names come from Microsoft's "Product names and service plan identifiers for licensing" reference
+# (https://learn.microsoft.com/entra/identity/users/licensing-service-plan-reference), ported from
+# M365-Secure controls/sku-feature-map.json and controls/licensing-overlay.json.
+#
+# Checks declare the features they need. A missing feature gives `not_applicable` without calling
+# the API; an unreadable licence list (no permission) means every check is attempted instead.
+features:
+  entra_id_p1:
+    title: Microsoft Entra ID P1 (Conditional Access)
+    service_plans: [AAD_PREMIUM, AAD_PREMIUM_P2, AAD_PREMIUM_FACULTY, AAD_PREMIUM_P1_GOV]
+  entra_id_p2:
+    title: Microsoft Entra ID P2 (Identity Protection, PIM)
+    service_plans: [AAD_PREMIUM_P2]
+  intune:
+    title: Microsoft Intune Plan 1
+    service_plans: [INTUNE_A, INTUNE_EDU, INTUNE_SMBIZ, INTUNE_A_VL, INTUNE_P1_GOV]
+  defender_endpoint:
+    title: Microsoft Defender for Endpoint (Plan 1, Plan 2 or Defender for Business)
+    service_plans: [WINDEFATP, MDE_SMB, MDE_LITE, DEFENDER_ENDPOINT_P1, MDATP_XPLAT]
+  defender_endpoint_p2:
+    title: Defender for Endpoint with EDR and automated investigation (Plan 2 or Defender for Business)
+    service_plans: [WINDEFATP, MDE_SMB]
+  defender_vulnerability_management:
+    title: Defender Vulnerability Management (TVM data)
+    service_plans: [WINDEFATP, MDE_SMB, TVM_PREMIUM_1, TVM_PREMIUM_2]
+  defender_office_p1:
+    title: Microsoft Defender for Office 365 Plan 1
+    service_plans: [ATP_ENTERPRISE, THREAT_INTELLIGENCE, ATP_ENTERPRISE_GOV]
+  defender_office_p2:
+    title: Microsoft Defender for Office 365 Plan 2
+    service_plans: [THREAT_INTELLIGENCE, THREAT_INTELLIGENCE_GOV]
+  defender_xdr_hunting:
+    title: Microsoft Defender XDR advanced hunting (Defender for Business has none)
+    service_plans: [WINDEFATP, THREAT_INTELLIGENCE, ATA, ADALLOM_S_STANDALONE]
+  defender_identity:
+    title: Microsoft Defender for Identity
+    service_plans: [ATA]
+  exchange_online:
+    title: Exchange Online
+    service_plans: [EXCHANGE_S_STANDARD, EXCHANGE_S_ENTERPRISE, EXCHANGE_S_DESKLESS, EXCHANGE_S_ESSENTIALS, EXCHANGE_S_STANDARD_GOV, EXCHANGE_S_ENTERPRISE_GOV]
+  sharepoint_online:
+    title: SharePoint Online
+    service_plans: [SHAREPOINTSTANDARD, SHAREPOINTENTERPRISE, SHAREPOINTDESKLESS, SHAREPOINTWAC, SHAREPOINTSTANDARD_EDU, SHAREPOINTENTERPRISE_EDU]
+  office_apps:
+    title: Microsoft 365 Apps (desktop Office)
+    service_plans: [OFFICESUBSCRIPTION, OFFICE_BUSINESS, OFFICESUBSCRIPTION_GOV]
+  windows_enterprise:
+    title: Windows Enterprise (Windows Update for Business reports, LAPS policy CSP)
+    service_plans: [WIN10_PRO_ENT_SUB, WIN10_ENT_A3_1, WIN10_ENT_A5_1, WIN10_VDA_E3, WIN10_VDA_E5]

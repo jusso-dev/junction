@@ -1,0 +1,70 @@
+[
+  {
+    "operation": "sentinel.securityinsights.alert_rules.list",
+    "match": {
+      "parameters": {
+        "workspaceName": "law-sentinel-01"
+      }
+    },
+    "responses": [
+      {
+        "status": 200,
+        "body": {
+          "value": [
+            {
+              "id": "/subscriptions/00000000-0000-4000-8000-0000000000a1/resourceGroups/rg-security/providers/Microsoft.OperationalInsights/workspaces/law-sentinel-01/providers/Microsoft.SecurityInsights/alertRules/rule-01",
+              "name": "rule-01",
+              "type": "Microsoft.SecurityInsights/alertRules",
+              "kind": "Scheduled",
+              "properties": {
+                "displayName": "Synthetic Scheduled rule 1",
+                "enabled": false
+              }
+            },
+            {
+              "id": "/subscriptions/00000000-0000-4000-8000-0000000000a1/resourceGroups/rg-security/providers/Microsoft.OperationalInsights/workspaces/law-sentinel-01/providers/Microsoft.SecurityInsights/alertRules/rule-02",
+              "name": "rule-02",
+              "type": "Microsoft.SecurityInsights/alertRules",
+              "kind": "Fusion",
+              "properties": {
+                "displayName": "Synthetic Fusion rule 2",
+                "enabled": false
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "operation": "azure.log_analytics_query.query.execute",
+    "match": {
+      "parameters": {
+        "workspaceId": "00000000-0000-4000-8000-0000000000c1"
+      }
+    },
+    "responses": [
+      {
+        "status": 200,
+        "body": {
+          "tables": [
+            {
+              "name": "PrimaryResult",
+              "columns": [
+                {
+                  "name": "RuleName",
+                  "type": "string"
+                },
+                {
+                  "name": "LastFailure",
+                  "type": "datetime"
+                }
+              ],
+              "rows": []
+            }
+          ]
+        }
+      }
+    ]
+  }
+]

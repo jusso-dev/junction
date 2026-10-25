@@ -1,0 +1,84 @@
+{
+    "operation": "defender.endpoint.machines.list",
+    "responses": [
+        {
+            "status": 200,
+            "body": {
+                "value": [
+                    {
+                        "id": "0000000000000000000000000000000000000025",
+                        "computerDnsName": "lnx-001",
+                        "aadDeviceId": null,
+                        "osPlatform": "Ubuntu",
+                        "osBuild": null,
+                        "version": "22.4",
+                        "healthStatus": "Active",
+                        "onboardingStatus": "Onboarded",
+                        "lastSeen": "2026-10-24T10:00:00Z",
+                        "firstSeen": "2026-01-01T00:00:00Z"
+                    },
+                    {
+                        "id": "0000000000000000000000000000000000000026",
+                        "computerDnsName": "lnx-002",
+                        "aadDeviceId": null,
+                        "osPlatform": "Ubuntu",
+                        "osBuild": null,
+                        "version": "22.4",
+                        "healthStatus": "Active",
+                        "onboardingStatus": "Onboarded",
+                        "lastSeen": "2026-10-24T10:00:00Z",
+                        "firstSeen": "2026-01-01T00:00:00Z"
+                    },
+                    {
+                        "id": "0000000000000000000000000000000000000027",
+                        "computerDnsName": "lnx-003",
+                        "aadDeviceId": null,
+                        "osPlatform": "RedHatEnterpriseLinux",
+                        "osBuild": null,
+                        "version": "9.4",
+                        "healthStatus": "Active",
+                        "onboardingStatus": "Onboarded",
+                        "lastSeen": "2026-10-24T10:00:00Z",
+                        "firstSeen": "2026-01-01T00:00:00Z"
+                    },
+                    {
+                        "id": "0000000000000000000000000000000000000028",
+                        "computerDnsName": "mac-001",
+                        "aadDeviceId": "00000000-0000-4000-8000-000000000004",
+                        "osPlatform": "macOS",
+                        "osBuild": null,
+                        "version": "15.2",
+                        "healthStatus": "Active",
+                        "onboardingStatus": "Onboarded",
+                        "lastSeen": "2026-10-24T10:00:00Z",
+                        "firstSeen": "2026-01-01T00:00:00Z"
+                    },
+                    {
+                        "id": "0000000000000000000000000000000000000029",
+                        "computerDnsName": "mac-002",
+                        "aadDeviceId": "00000000-0000-4000-8000-000000000005",
+                        "osPlatform": "macOS",
+                        "osBuild": null,
+                        "version": "26.0",
+                        "healthStatus": "Active",
+                        "onboardingStatus": "Onboarded",
+                        "lastSeen": "2026-10-24T10:00:00Z",
+                        "firstSeen": "2026-01-01T00:00:00Z"
+                    },
+                    {
+                        "id": "000000000000000000000000000000000000002a",
+                        "computerDnsName": "ws-001.contoso.example",
+                        "aadDeviceId": "00000000-0000-4000-8000-000000000001",
+                        "osPlatform": "Windows11",
+                        "osBuild": 26200,
+                        "version": null,
+                        "healthStatus": "Inactive",
+                        "onboardingStatus": "Onboarded",
+                        "lastSeen": "2026-10-24T10:00:00Z",
+                        "firstSeen": "2026-01-01T00:00:00Z"
+                    }
+                ]
+            }
+        }
+    ]
+}

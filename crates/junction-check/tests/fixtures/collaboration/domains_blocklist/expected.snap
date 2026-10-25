@@ -1,0 +1,16 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "allowed_domains": 0,
+      "mode": "blockList"
+    },
+    "summary": "Block list only; an allow list is the restrictive option."
+  },
+  "id": "collaboration.sharing_domain_restriction",
+  "reason": null,
+  "status": "warn"
+}

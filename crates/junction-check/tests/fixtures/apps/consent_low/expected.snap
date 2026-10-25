@@ -1,0 +1,18 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "permission_grant_policies": [
+        "ManagePermissionGrantsForSelf.microsoft-user-default-low",
+        "ManagePermissionGrantsForOwnedResource.microsoft-dynamically-managed-permissions-for-team"
+      ]
+    },
+    "summary": "User consent is limited to verified publishers requesting low-impact permissions."
+  },
+  "id": "apps.user_consent_restricted",
+  "reason": null,
+  "status": "pass"
+}

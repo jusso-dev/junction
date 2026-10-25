@@ -1,0 +1,16 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": null,
+    "summary": "The Microsoft Graph application roles could not be resolved, so requested permissions cannot be named."
+  },
+  "id": "apps.privileged_app_secrets",
+  "reason": {
+    "code": "roles_unresolved",
+    "detail": "The Microsoft Graph application roles could not be resolved, so requested permissions cannot be named."
+  },
+  "status": "unknown"
+}

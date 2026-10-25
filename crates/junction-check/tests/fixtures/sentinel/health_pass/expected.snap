@@ -1,0 +1,22 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "days": 30,
+      "workspaces": [
+        {
+          "sentinel_audit": true,
+          "sentinel_health": true,
+          "workspace": "law-sentinel-01"
+        }
+      ]
+    },
+    "summary": "SentinelHealth and SentinelAudit both have data in the last 30 days."
+  },
+  "id": "sentinel.health_auditing",
+  "reason": null,
+  "status": "pass"
+}

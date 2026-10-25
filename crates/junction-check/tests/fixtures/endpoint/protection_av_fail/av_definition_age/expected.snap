@@ -1,0 +1,22 @@
+{
+  "affected": {
+    "items": [
+      "mac-04.contoso.example",
+      "pc-03.contoso.example"
+    ],
+    "total": 2
+  },
+  "evidence": {
+    "data": {
+      "devices_reporting": 5,
+      "max_days": 3,
+      "oldest_days": 14,
+      "percent_compliant": 60,
+      "stale": 2
+    },
+    "summary": "Security intelligence is older than 3 days on 2 of 5 devices (60% compliant)."
+  },
+  "id": "endpoint.av_definition_age",
+  "reason": null,
+  "status": "fail"
+}

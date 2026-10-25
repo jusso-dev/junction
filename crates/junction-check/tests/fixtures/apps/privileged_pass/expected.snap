@@ -1,0 +1,16 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "privileged_apps": 1,
+      "with_secrets": 0
+    },
+    "summary": "None of 1 privileged app registrations use a client secret."
+  },
+  "id": "apps.privileged_app_secrets",
+  "reason": null,
+  "status": "pass"
+}
