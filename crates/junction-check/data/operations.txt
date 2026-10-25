@@ -27,6 +27,9 @@ graph.role_management.directory.role_assignment_schedules.list
 graph.role_management.directory.role_definitions.list
 graph.directory.on_premises_synchronization.list
 graph.groups.list
+graph.groups.transitive_members.list
+graph.users.transitive_member_of.list
+graph.users.authentication.methods.list
 graph.group_settings.list
 
 # Applications and consent

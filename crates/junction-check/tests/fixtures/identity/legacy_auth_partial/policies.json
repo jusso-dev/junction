@@ -1,0 +1,40 @@
+[
+    {
+        "operation": "graph.identity.conditional_access.policies.list",
+        "responses": [
+            {
+                "body": {
+                    "value": [
+                        {
+                            "id": "00000000-0000-4000-b000-000000000003",
+                            "displayName": "Block legacy authentication",
+                            "state": "enabled",
+                            "conditions": {
+                                "users": {
+                                    "includeGroups": [
+                                        "00000000-0000-4000-9000-000000000001"
+                                    ]
+                                },
+                                "applications": {
+                                    "includeApplications": [
+                                        "All"
+                                    ]
+                                },
+                                "clientAppTypes": [
+                                    "exchangeActiveSync",
+                                    "other"
+                                ]
+                            },
+                            "grantControls": {
+                                "operator": "OR",
+                                "builtInControls": [
+                                    "block"
+                                ]
+                            }
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+]

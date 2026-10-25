@@ -1,0 +1,15 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "security_defaults": true
+    },
+    "summary": "Security Defaults are on, which block legacy authentication."
+  },
+  "id": "identity.legacy_auth_blocked",
+  "reason": null,
+  "status": "pass"
+}

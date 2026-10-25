@@ -1,0 +1,3 @@
+[config.checks."identity.mfa_coverage"]
+user_percent = 70
+exclude = ["sync@contoso.example"]

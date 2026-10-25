@@ -1,0 +1,30 @@
+[
+    {
+        "operation": "graph.groups.transitive_members.list",
+        "match": {
+            "parameters": {
+                "group-id": "00000000-0000-4000-9000-000000000001"
+            }
+        },
+        "responses": [
+            {
+                "body": {
+                    "value": [
+                        {
+                            "@odata.type": "#microsoft.graph.user",
+                            "id": "00000000-0000-4000-8000-000000000003",
+                            "userPrincipalName": "admin3@contoso.example",
+                            "displayName": "Admin3"
+                        },
+                        {
+                            "@odata.type": "#microsoft.graph.user",
+                            "id": "00000000-0000-4000-8000-000000000001",
+                            "userPrincipalName": "admin1@contoso.example",
+                            "displayName": "Admin1"
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+]

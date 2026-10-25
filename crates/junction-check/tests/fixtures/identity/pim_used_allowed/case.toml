@@ -1,0 +1,2 @@
+[config.checks."identity.pim_used"]
+allow_permanent = ["admin1@contoso.example", "admin6@contoso.example"]

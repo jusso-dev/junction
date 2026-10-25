@@ -1,0 +1,19 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": null,
+    "summary": "graph.reports.authentication_methods.user_registration_details.list was refused (HTTP 403 Authorization_RequestDenied). Grant AuditLog.Read.All (read-only) and re-run."
+  },
+  "id": "identity.mfa_coverage",
+  "reason": {
+    "code": "missing_permission",
+    "detail": "graph.reports.authentication_methods.user_registration_details.list was refused (HTTP 403 Authorization_RequestDenied). Grant AuditLog.Read.All (read-only) and re-run.",
+    "missing_permissions": [
+      "AuditLog.Read.All"
+    ]
+  },
+  "status": "unknown"
+}

@@ -1,0 +1,12 @@
+{
+    "operation": "graph.policies.identity_security_defaults_enforcement_policy.get",
+    "responses": [
+        {
+            "body": {
+                "id": "00000000-0000-0000-0000-000000000005",
+                "displayName": "Security Defaults",
+                "isEnabled": true
+            }
+        }
+    ]
+}

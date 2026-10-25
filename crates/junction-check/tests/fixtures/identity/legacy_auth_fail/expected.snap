@@ -1,0 +1,18 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "blocking_policies": [],
+      "partial_policies": [],
+      "report_only_policies": [],
+      "security_defaults": false
+    },
+    "summary": "Security Defaults are off and no enabled Conditional Access policy blocks legacy authentication."
+  },
+  "id": "identity.legacy_auth_blocked",
+  "reason": null,
+  "status": "fail"
+}
