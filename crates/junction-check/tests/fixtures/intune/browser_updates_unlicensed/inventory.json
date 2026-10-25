@@ -1,0 +1,10 @@
+{
+    "operation": "defender.endpoint.machines.list_software_inventory_by_machine",
+    "responses": [
+        {
+            "body": {
+                "value": []
+            }
+        }
+    ]
+}

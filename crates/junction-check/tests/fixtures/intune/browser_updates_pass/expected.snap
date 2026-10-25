@@ -1,0 +1,32 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "behind": [],
+      "browsers": {
+        "chrome": {
+          "behind": 0,
+          "installs": 1,
+          "minimum": null,
+          "newest": "141.0.7390.108"
+        },
+        "edge": {
+          "behind": 0,
+          "installs": 2,
+          "minimum": null,
+          "newest": "141.0.3537.71"
+        }
+      },
+      "inventory_truncated": false,
+      "max_major_behind": 1,
+      "with_known_weaknesses": 0
+    },
+    "summary": "All 3 Edge and Chrome installs are current."
+  },
+  "id": "intune.browser_updates",
+  "reason": null,
+  "status": "pass"
+}

@@ -1,0 +1,32 @@
+{
+  "affected": {
+    "items": [
+      "Slow"
+    ],
+    "total": 1
+  },
+  "evidence": {
+    "data": {
+      "autopatch": false,
+      "max_quality_deferral_days": 7,
+      "rings": [
+        {
+          "assigned_to": "all devices or users",
+          "name": "Slow",
+          "quality_deferral_days": 30,
+          "quality_paused": false
+        },
+        {
+          "assigned_to": "unassigned",
+          "name": "Unassigned",
+          "quality_deferral_days": 0,
+          "quality_paused": false
+        }
+      ]
+    },
+    "summary": "No assigned update ring installs quality updates within 7 days (Slow defer longer or are paused)."
+  },
+  "id": "intune.update_rings",
+  "reason": null,
+  "status": "fail"
+}

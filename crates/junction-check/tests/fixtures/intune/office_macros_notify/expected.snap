@@ -1,0 +1,27 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "internet_macros_blocked": [
+        "excel",
+        "powerpoint",
+        "word"
+      ],
+      "policies": [
+        "Office macro security"
+      ],
+      "vba_notification": {
+        "excel": 4,
+        "powerpoint": 4,
+        "word": 2
+      }
+    },
+    "summary": "Internet macros are blocked, but VBA macro notification still allows untrusted macros (word: disabled with notification)."
+  },
+  "id": "intune.office_macros",
+  "reason": null,
+  "status": "warn"
+}

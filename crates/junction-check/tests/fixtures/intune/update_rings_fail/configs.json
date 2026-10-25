@@ -1,0 +1,36 @@
+{
+    "operation": "graph.device_management.device_configurations.list",
+    "responses": [
+        {
+            "body": {
+                "value": [
+                    {
+                        "@odata.type": "#microsoft.graph.windowsUpdateForBusinessConfiguration",
+                        "id": "r-slow",
+                        "displayName": "Slow",
+                        "qualityUpdatesDeferralPeriodInDays": 30,
+                        "featureUpdatesDeferralPeriodInDays": 0,
+                        "qualityUpdatesPaused": false,
+                        "assignments": [
+                            {
+                                "id": "a1",
+                                "target": {
+                                    "@odata.type": "#microsoft.graph.allDevicesAssignmentTarget"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "@odata.type": "#microsoft.graph.windowsUpdateForBusinessConfiguration",
+                        "id": "r-unassigned",
+                        "displayName": "Unassigned",
+                        "qualityUpdatesDeferralPeriodInDays": 0,
+                        "featureUpdatesDeferralPeriodInDays": 0,
+                        "qualityUpdatesPaused": false,
+                        "assignments": []
+                    }
+                ]
+            }
+        }
+    ]
+}

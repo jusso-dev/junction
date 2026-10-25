@@ -1,0 +1,51 @@
+[
+    {
+        "operation": "graph.device_management.device_compliance_policies.list",
+        "responses": [
+            {
+                "body": {
+                    "value": [
+                        {
+                            "@odata.type": "#microsoft.graph.windows10CompliancePolicy",
+                            "id": "cp-windows-compliance",
+                            "displayName": "Windows compliance",
+                            "assignments": [
+                                {
+                                    "id": "a1",
+                                    "target": {
+                                        "@odata.type": "#microsoft.graph.allDevicesAssignmentTarget"
+                                    }
+                                }
+                            ]
+                        }
+                    ],
+                    "@odata.nextLink": "fixture:compliance-2"
+                }
+            }
+        ]
+    },
+    {
+        "url": "fixture:compliance-2",
+        "responses": [
+            {
+                "body": {
+                    "value": [
+                        {
+                            "@odata.type": "#microsoft.graph.macOSCompliancePolicy",
+                            "id": "cp-macos-compliance",
+                            "displayName": "macOS compliance",
+                            "assignments": [
+                                {
+                                    "id": "a1",
+                                    "target": {
+                                        "@odata.type": "#microsoft.graph.allDevicesAssignmentTarget"
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+]

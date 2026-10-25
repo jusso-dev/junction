@@ -1,0 +1,16 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": null,
+    "summary": "The tenant has no Microsoft Intune licence, so this cannot be read from Intune. If Group Policy or another device manager enforces it, record that with `junction check attest intune.office_macros`."
+  },
+  "id": "intune.office_macros",
+  "reason": {
+    "code": "licence_required",
+    "detail": "The tenant has no Microsoft Intune licence, so this cannot be read from Intune. If Group Policy or another device manager enforces it, record that with `junction check attest intune.office_macros`."
+  },
+  "status": "not_applicable"
+}
