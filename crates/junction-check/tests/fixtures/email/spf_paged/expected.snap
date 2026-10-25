@@ -1,0 +1,39 @@
+{
+  "affected": {
+    "items": [
+      "fabrikam.example"
+    ],
+    "total": 1
+  },
+  "evidence": {
+    "data": {
+      "assessed": 2,
+      "domains": [
+        {
+          "detail": "ends -all, 2 of 10 DNS lookups",
+          "domain": "contoso.example",
+          "record": "v=spf1 include:spf.protection.outlook.com -all",
+          "result": "pass",
+          "role": "exchange"
+        },
+        {
+          "detail": "no SPF record",
+          "domain": "fabrikam.example",
+          "result": "fail",
+          "role": "exchange"
+        }
+      ],
+      "failed": 1,
+      "max_lookups": 10,
+      "passed": 1,
+      "required_include": "spf.protection.outlook.com",
+      "skipped": 0,
+      "unresolved": 0,
+      "warned": 0
+    },
+    "summary": "SPF fails for 1 of 2 domains: fabrikam.example (no SPF record)."
+  },
+  "id": "email.spf",
+  "reason": null,
+  "status": "fail"
+}

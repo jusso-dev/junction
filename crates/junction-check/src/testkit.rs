@@ -666,6 +666,9 @@ mod tests {
 ///
 /// [dns."_dmarc.contoso.example"]
 /// txt = ["v=DMARC1; p=reject"]
+///
+/// [dns."fabrikam.example"]
+/// fail = ["txt"]               # lookups of these types fail (timeout)
 /// ```
 #[derive(Debug, Clone, Default, Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -705,6 +708,9 @@ pub struct CaseDns {
     pub cname: Vec<String>,
     #[serde(default)]
     pub mx: Vec<String>,
+    /// Record types (`txt`, `cname`, `mx`) whose lookups fail.
+    #[serde(default)]
+    pub fail: Vec<String>,
 }
 
 /// Default fixed clock for fixture runs.
@@ -735,6 +741,15 @@ pub fn case_context(
                 let refs: Vec<&str> = values.iter().map(String::as_str).collect();
                 dns = dns.with(name, kind, &refs);
             }
+        }
+        for kind in &records.fail {
+            let kind = match kind.as_str() {
+                "txt" => RecordType::Txt,
+                "cname" => RecordType::Cname,
+                "mx" => RecordType::Mx,
+                other => bail!("{}/case.toml: unknown DNS type {other}", dir.display()),
+            };
+            dns = dns.failing(name, kind);
         }
     }
     let mut attestations = std::collections::BTreeMap::new();

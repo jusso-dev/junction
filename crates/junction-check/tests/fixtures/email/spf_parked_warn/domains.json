@@ -1,0 +1,26 @@
+{
+    "operation": "graph.domains.list",
+    "responses": [
+        {
+            "body": {
+                "value": [
+                    {
+                        "id": "contoso.example",
+                        "isVerified": true,
+                        "isInitial": false,
+                        "supportedServices": [
+                            "Email",
+                            "OfficeCommunicationsOnline"
+                        ]
+                    },
+                    {
+                        "id": "fabrikam.example",
+                        "isVerified": true,
+                        "isInitial": false,
+                        "supportedServices": []
+                    }
+                ]
+            }
+        }
+    ]
+}
