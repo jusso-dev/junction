@@ -186,7 +186,8 @@ mod tests {
     #[test]
     fn defender_for_endpoint_listings_page() {
         let executor =
-            junction_runtime::Executor::new(registry().unwrap(), crate::gateway::check_policy()).unwrap();
+            junction_runtime::Executor::new(registry().unwrap(), crate::gateway::check_policy())
+                .unwrap();
         let endpoints = MicrosoftCloud::Public.endpoints().unwrap();
         let op = versions("defender.endpoint.machines.list")[0];
         assert!(op.pageable.is_some());

@@ -135,26 +135,52 @@ permission for each. The generated tables follow: one per pack, then the union f
 | `Microsoft Sentinel Reader` | Azure RBAC role | `sentinel.automation`, `sentinel.connectors`, `sentinel.health_auditing`, `sentinel.incidents_stale`, `sentinel.ingestion_cost`, `sentinel.retention`, `sentinel.rules_enabled`, `sentinel.workspace` | `sentinel.securityinsights.alert_rules.list`, `sentinel.securityinsights.automation_rules.list`, `sentinel.securityinsights.data_connectors.list`, `sentinel.securityinsights.incidents.list`, `sentinel.securityinsights.sentinel_onboarding_states.list` |
 | `Reader` | Azure RBAC role | `sentinel.automation`, `sentinel.connectors`, `sentinel.health_auditing`, `sentinel.incidents_stale`, `sentinel.ingestion_cost`, `sentinel.retention`, `sentinel.rules_enabled`, `sentinel.workspace` | `azure.resource_graph.resources.post` |
 
+### Applications and consent (`apps`)
+
+| Permission | Type | Checks | Operations |
+|---|---|---|---|
+| `Application.Read.All` | Microsoft Graph application | `apps.assignment_required`, `apps.credential_expiry`, `apps.high_privilege_permissions`, `apps.multi_tenant_apps`, `apps.privileged_app_secrets`, `apps.secret_lifetime`, `apps.sp_password_credentials` | `graph.applications.list`, `graph.service_principals.app_role_assigned_to.list`, `graph.service_principals.list` |
+| `DelegatedPermissionGrant.Read.All` | Microsoft Graph application | `apps.high_privilege_permissions` | `graph.oauth2permission_grants.list` |
+| `Policy.Read.All` | Microsoft Graph application | `apps.admin_consent_workflow`, `apps.app_management_policy`, `apps.user_consent_restricted`, `apps.users_cannot_register_apps` | `graph.policies.admin_consent_request_policy.get`, `graph.policies.authorization_policy.get`, `graph.policies.default_app_management_policy.get` |
+
+### Collaboration (`collaboration`)
+
+| Permission | Type | Checks | Operations |
+|---|---|---|---|
+| `GroupSettings.Read.All` | Microsoft Graph application | `collaboration.group_creation_restricted` | `graph.group_settings.list` |
+| `Policy.Read.All` | Microsoft Graph application | `collaboration.email_verified_join_blocked`, `collaboration.group_creation_restricted`, `collaboration.guest_access_restricted`, `collaboration.guest_invites_restricted` | `graph.policies.authorization_policy.get` |
+| `SharePointTenantSettings.Read.All` | Microsoft Graph application | `collaboration.external_resharing_blocked`, `collaboration.idle_session_signout`, `collaboration.sharepoint_external_sharing`, `collaboration.sharepoint_legacy_auth_blocked`, `collaboration.sharing_domain_restriction`, `collaboration.unmanaged_sync_restricted` | `graph.admin.sharepoint.settings.get` |
+
+### Azure (`azure`)
+
+| Permission | Type | Checks | Operations |
+|---|---|---|---|
+| `Reader` | Azure RBAC role | `azure.defender_plans`, `azure.key_vault_protection`, `azure.public_network_exposure` | `azure.resource_graph.resources.post` |
+| `Security Reader` | Azure RBAC role | `azure.defender_plans` | `defender.cloud.pricings.list` |
+
 ### Every pack
 
 | Permission | Type | Checks | Operations |
 |---|---|---|---|
-| `Application.Read.All` | Microsoft Graph application | `backup.third_party_app` | `graph.service_principals.list` |
+| `Application.Read.All` | Microsoft Graph application | `apps.assignment_required`, `apps.credential_expiry`, `apps.high_privilege_permissions`, `apps.multi_tenant_apps`, `apps.privileged_app_secrets`, `apps.secret_lifetime`, `apps.sp_password_credentials`, `backup.third_party_app` | `graph.applications.list`, `graph.service_principals.app_role_assigned_to.list`, `graph.service_principals.list` |
 | `AuditLog.Read.All` | Microsoft Graph application | `identity.mfa_admins`, `identity.mfa_coverage`, `identity.phishing_resistant_admins` | `graph.reports.authentication_methods.user_registration_details.list` |
 | `BackupRestore-Configuration.Read.All` | Microsoft Graph application | `backup.m365_backup` | `graph.solutions.backup_restore.exchange_protection_policies.list`, `graph.solutions.backup_restore.get`, `graph.solutions.backup_restore.one_drive_for_business_protection_policies.list`, `graph.solutions.backup_restore.share_point_protection_policies.list` |
 | `BitlockerKey.ReadBasic.All` | Microsoft Graph application | `intune.bitlocker_escrow` | `graph.information_protection.bitlocker.recovery_keys.list` |
+| `DelegatedPermissionGrant.Read.All` | Microsoft Graph application | `apps.high_privilege_permissions` | `graph.oauth2permission_grants.list` |
 | `Device.Read.All` | Microsoft Graph application | `endpoint.onboarding_coverage` | `graph.devices.list` |
 | `DeviceLocalCredential.ReadBasic.All` | Microsoft Graph application | `intune.laps` | `graph.directory.device_local_credentials.list` |
 | `DeviceManagementConfiguration.Read.All` | Microsoft Graph application | `endpoint.asr_quick_wins`, `endpoint.asr_rule_state`, `intune.compliance_policy`, `intune.laps`, `intune.local_admin`, `intune.office_macros`, `intune.update_rings` | `graph.device_management.compliance_policies.list`, `graph.device_management.configuration_policies.list`, `graph.device_management.configuration_policies.settings.list`, `graph.device_management.device_compliance_policies.list`, `graph.device_management.device_configurations.list`, `graph.device_management.get`, `graph.device_management.intents.list`, `graph.device_management.intents.settings.list`, `graph.device_management.windows_feature_update_profiles.list`, `graph.device_management.windows_quality_update_profiles.list` |
 | `DeviceManagementManagedDevices.Read.All` | Microsoft Graph application | `endpoint.onboarding_coverage`, `intune.bitlocker_escrow`, `intune.compliance_policy`, `intune.laps`, `intune.patch_age` | `graph.device_management.managed_devices.list` |
 | `Domain.Read.All` | Microsoft Graph application | `email.dkim`, `email.dmarc`, `email.spf` | `graph.domains.list` |
 | `GroupMember.Read.All` | Microsoft Graph application | `identity.break_glass`, `identity.mfa_admins`, `identity.phishing_resistant_admins`, `identity.separate_admin_accounts` | `graph.groups.transitive_members.list`, `graph.users.transitive_member_of.list` |
+| `GroupSettings.Read.All` | Microsoft Graph application | `collaboration.group_creation_restricted` | `graph.group_settings.list` |
 | `LicenseAssignment.Read.All` | Microsoft Graph application | `identity.separate_admin_accounts` | `graph.subscribed_skus.list` |
-| `Policy.Read.All` | Microsoft Graph application | `identity.baseline`, `identity.break_glass`, `identity.legacy_auth_blocked`, `identity.phishing_resistant_admins`, `intune.compliance_policy` | `graph.identity.conditional_access.policies.list`, `graph.policies.authentication_strength_policies.list`, `graph.policies.identity_security_defaults_enforcement_policy.get` |
+| `Policy.Read.All` | Microsoft Graph application | `apps.admin_consent_workflow`, `apps.app_management_policy`, `apps.user_consent_restricted`, `apps.users_cannot_register_apps`, `collaboration.email_verified_join_blocked`, `collaboration.group_creation_restricted`, `collaboration.guest_access_restricted`, `collaboration.guest_invites_restricted`, `identity.baseline`, `identity.break_glass`, `identity.legacy_auth_blocked`, `identity.phishing_resistant_admins`, `intune.compliance_policy` | `graph.identity.conditional_access.policies.list`, `graph.policies.admin_consent_request_policy.get`, `graph.policies.authentication_strength_policies.list`, `graph.policies.authorization_policy.get`, `graph.policies.default_app_management_policy.get`, `graph.policies.identity_security_defaults_enforcement_policy.get` |
 | `Policy.Read.DeviceConfiguration` | Microsoft Graph application | `intune.local_admin` | `graph.policies.device_registration_policy.get` |
 | `RoleAssignmentSchedule.Read.Directory` | Microsoft Graph application | `identity.pim_used` | `graph.role_management.directory.role_assignment_schedules.list` |
 | `RoleEligibilitySchedule.Read.Directory` | Microsoft Graph application | `identity.pim_used` | `graph.role_management.directory.role_eligibility_schedules.list` |
 | `RoleManagement.Read.Directory` | Microsoft Graph application | `identity.break_glass`, `identity.global_admin_count`, `identity.mfa_admins`, `identity.phishing_resistant_admins`, `identity.separate_admin_accounts` | `graph.role_management.directory.role_assignments.list` |
+| `SharePointTenantSettings.Read.All` | Microsoft Graph application | `collaboration.external_resharing_blocked`, `collaboration.idle_session_signout`, `collaboration.sharepoint_external_sharing`, `collaboration.sharepoint_legacy_auth_blocked`, `collaboration.sharing_domain_restriction`, `collaboration.unmanaged_sync_restricted` | `graph.admin.sharepoint.settings.get` |
 | `ThreatHunting.Read.All` | Microsoft Graph application | `endpoint.asr_audit_noise`, `endpoint.asr_quick_wins`, `endpoint.asr_rule_state`, `endpoint.av_definition_age`, `endpoint.av_mode`, `endpoint.edr_block_mode`, `endpoint.network_protection` | `graph.security.run_hunting_query` |
 | `User.Read.All` | Microsoft Graph application | `identity.mfa_coverage`, `identity.separate_admin_accounts` | `graph.users.list` |
 | `UserAuthenticationMethod.Read.All` | Microsoft Graph application | `identity.mfa_admins` | `graph.users.authentication.methods.list` |
@@ -164,5 +190,6 @@ permission for each. The generated tables follow: one per pack, then the union f
 | `AdvancedHunting.Read.All` | Defender XDR application | `endpoint.asr_audit_noise`, `endpoint.asr_quick_wins`, `endpoint.asr_rule_state`, `endpoint.av_definition_age`, `endpoint.av_mode`, `endpoint.edr_block_mode`, `endpoint.network_protection` | `defender.xdr.advancedhunting.run` |
 | `Log Analytics Reader` | Azure RBAC role | `sentinel.connectors`, `sentinel.health_auditing`, `sentinel.ingestion_cost`, `sentinel.retention`, `sentinel.rules_enabled` | `azure.log_analytics.tables.list_by_workspace`, `azure.log_analytics_query.query.execute` |
 | `Microsoft Sentinel Reader` | Azure RBAC role | `sentinel.automation`, `sentinel.connectors`, `sentinel.health_auditing`, `sentinel.incidents_stale`, `sentinel.ingestion_cost`, `sentinel.retention`, `sentinel.rules_enabled`, `sentinel.workspace` | `sentinel.securityinsights.alert_rules.list`, `sentinel.securityinsights.automation_rules.list`, `sentinel.securityinsights.data_connectors.list`, `sentinel.securityinsights.incidents.list`, `sentinel.securityinsights.sentinel_onboarding_states.list` |
-| `Reader` | Azure RBAC role | `backup.azure_vaults`, `endpoint.servers_covered`, `sentinel.automation`, `sentinel.connectors`, `sentinel.health_auditing`, `sentinel.incidents_stale`, `sentinel.ingestion_cost`, `sentinel.retention`, `sentinel.rules_enabled`, `sentinel.workspace` | `azure.arc.machines.list_by_subscription`, `azure.resource_graph.resources.post` |
+| `Reader` | Azure RBAC role | `azure.defender_plans`, `azure.key_vault_protection`, `azure.public_network_exposure`, `backup.azure_vaults`, `endpoint.servers_covered`, `sentinel.automation`, `sentinel.connectors`, `sentinel.health_auditing`, `sentinel.incidents_stale`, `sentinel.ingestion_cost`, `sentinel.retention`, `sentinel.rules_enabled`, `sentinel.workspace` | `azure.arc.machines.list_by_subscription`, `azure.resource_graph.resources.post` |
+| `Security Reader` | Azure RBAC role | `azure.defender_plans` | `defender.cloud.pricings.list` |
 <!-- generated:permissions:end -->

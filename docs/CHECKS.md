@@ -327,4 +327,28 @@ and PowerShell 7 for the Exchange runner contract test. The daily release workfl
 | `sentinel.retention` | Sentinel workspaces keep data for at least 90 days | sentinel | medium | automated | none | `Log Analytics Reader`, `Microsoft Sentinel Reader`, `Reader` |
 | `sentinel.rules_enabled` | At least ten analytics rules are enabled in Sentinel | sentinel | high | automated | none | `Log Analytics Reader`, `Microsoft Sentinel Reader`, `Reader` |
 | `sentinel.workspace` | Microsoft Sentinel is onboarded to a Log Analytics workspace | sentinel | high | automated | none | `Microsoft Sentinel Reader`, `Reader` |
+| `apps.admin_consent_workflow` | The admin consent workflow is on with at least one reviewer | apps | medium | automated | none | `Policy.Read.All` |
+| `apps.app_management_policy` | The tenant app management policy blocks or caps client secrets | apps | medium | automated | none | `Policy.Read.All` |
+| `apps.assignment_required` | Third-party enterprise applications require user assignment | apps | low | automated | none | `Application.Read.All` |
+| `apps.credential_expiry` | No app registration has an expired or soon-expiring secret or certificate | apps | medium | automated | none | `Application.Read.All` |
+| `apps.high_privilege_permissions` | Third-party applications hold no unreviewed high-impact permissions | apps | high | automated | none | `Application.Read.All`, `DelegatedPermissionGrant.Read.All` |
+| `apps.multi_tenant_apps` | App registrations are single-tenant unless they need to be multi-tenant | apps | low | automated | none | `Application.Read.All` |
+| `apps.privileged_app_secrets` | App registrations with high-impact application permissions do not use client secrets | apps | high | automated | none | `Application.Read.All` |
+| `apps.secret_lifetime` | App registration client secrets are valid for a year or less | apps | low | automated | none | `Application.Read.All` |
+| `apps.sp_password_credentials` | Third-party service principals carry no client secrets of their own | apps | medium | automated | none | `Application.Read.All` |
+| `apps.user_consent_restricted` | Users cannot consent to applications (or only to verified publishers for low-impact permissions) | apps | critical | automated | none | `Policy.Read.All` |
+| `apps.users_cannot_register_apps` | Non-admin users cannot register applications | apps | medium | automated | none | `Policy.Read.All` |
+| `collaboration.email_verified_join_blocked` | Email-verified users cannot self-join the organisation | collaboration | medium | automated | none | `Policy.Read.All` |
+| `collaboration.external_resharing_blocked` | Guests cannot reshare items they do not own | collaboration | medium | automated | `sharepoint_online` | `SharePointTenantSettings.Read.All` |
+| `collaboration.group_creation_restricted` | Users cannot create security groups, and Microsoft 365 group creation is limited | collaboration | low | automated | none | `GroupSettings.Read.All`, `Policy.Read.All` |
+| `collaboration.guest_access_restricted` | Guest users have the most restricted directory access | collaboration | medium | automated | none | `Policy.Read.All` |
+| `collaboration.guest_invites_restricted` | Only admins and Guest Inviters can invite guests | collaboration | medium | automated | none | `Policy.Read.All` |
+| `collaboration.idle_session_signout` | Idle SharePoint sessions on unmanaged devices sign out within 3 hours | collaboration | medium | automated | `sharepoint_online` | `SharePointTenantSettings.Read.All` |
+| `collaboration.sharepoint_external_sharing` | SharePoint external sharing is 'New and existing guests' or stricter | collaboration | high | automated | `sharepoint_online` | `SharePointTenantSettings.Read.All` |
+| `collaboration.sharepoint_legacy_auth_blocked` | SharePoint requires modern authentication | collaboration | high | automated | `sharepoint_online` | `SharePointTenantSettings.Read.All` |
+| `collaboration.sharing_domain_restriction` | SharePoint external sharing is limited to an allow list of domains | collaboration | medium | automated | `sharepoint_online` | `SharePointTenantSettings.Read.All` |
+| `collaboration.unmanaged_sync_restricted` | OneDrive sync is restricted to managed devices | collaboration | medium | automated | `sharepoint_online` | `SharePointTenantSettings.Read.All` |
+| `azure.defender_plans` | Defender for Cloud plans are on wherever matching resources exist | azure | high | automated | none | `Reader`, `Security Reader` |
+| `azure.key_vault_protection` | Key vaults use Azure RBAC, purge protection and restricted networking | azure | high | automated | none | `Reader` |
+| `azure.public_network_exposure` | Storage and PaaS data services are closed to anonymous and public network access | azure | high | automated | none | `Reader` |
 <!-- generated:checks:end -->
