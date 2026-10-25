@@ -1,0 +1,33 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "critical_tag": "criticality=critical",
+      "critical_vms": 2,
+      "critical_vms_unprotected": 0,
+      "require_locked": true,
+      "vaults": [
+        {
+          "immutability": "Locked",
+          "kind": "recovery_services_vault",
+          "name": "rsv-contoso-1",
+          "soft_delete": "AlwaysON"
+        },
+        {
+          "immutability": "Locked",
+          "kind": "backup_vault",
+          "name": "bv-contoso-1",
+          "soft_delete": "AlwaysOn"
+        }
+      ],
+      "virtual_machines": 3
+    },
+    "summary": "2 vaults with always-on soft delete and locked immutability. Critical virtual machines protected: 2 of 2."
+  },
+  "id": "backup.azure_vaults",
+  "reason": null,
+  "status": "pass"
+}

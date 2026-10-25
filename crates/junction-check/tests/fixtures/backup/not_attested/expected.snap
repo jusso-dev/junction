@@ -1,0 +1,16 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": null,
+    "summary": "Needs a person's answer: Is at least one copy of your important data, software and settings held offline, or in storage that cannot be changed or deleted during its retention period (immutable), separate from production credentials? Run `junction check attest backup.offline_copy`."
+  },
+  "id": "backup.offline_copy",
+  "reason": {
+    "code": "not_attested",
+    "detail": "Needs a person's answer: Is at least one copy of your important data, software and settings held offline, or in storage that cannot be changed or deleted during its retention period (immutable), separate from production credentials? Run `junction check attest backup.offline_copy`."
+  },
+  "status": "unknown"
+}

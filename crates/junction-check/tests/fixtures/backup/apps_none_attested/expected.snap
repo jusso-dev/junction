@@ -1,0 +1,18 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "disabled_matches": 0,
+      "matches": 0,
+      "products": [],
+      "service_principals": 1
+    },
+    "summary": "Attested 'yes' by fixture on 2026-10-25."
+  },
+  "id": "backup.third_party_app",
+  "reason": null,
+  "status": "pass"
+}

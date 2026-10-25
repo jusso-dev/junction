@@ -1,0 +1,4 @@
+[[attestations]]
+check = "backup.offline_copy"
+answer = "yes"
+note = "Recorded by the backup owner."

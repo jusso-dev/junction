@@ -1,0 +1,4 @@
+[config.checks."backup.azure_vaults"]
+critical_tag = "tier"
+critical_value = "gold"
+require_locked = false

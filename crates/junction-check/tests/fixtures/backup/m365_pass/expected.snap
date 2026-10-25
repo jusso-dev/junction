@@ -1,0 +1,27 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "exchange": {
+        "active": 1,
+        "policies": 1
+      },
+      "onedrive": {
+        "active": 1,
+        "policies": 1
+      },
+      "service_status": "enabled",
+      "sharepoint": {
+        "active": 1,
+        "policies": 2
+      }
+    },
+    "summary": "Active Microsoft 365 Backup protection policies cover Exchange, OneDrive and SharePoint."
+  },
+  "id": "backup.m365_backup",
+  "reason": null,
+  "status": "pass"
+}

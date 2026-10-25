@@ -1,0 +1,67 @@
+[
+  {
+    "operation": "graph.service_principals.list",
+    "responses": [
+      {
+        "status": 200,
+        "body": {
+          "value": [
+            {
+              "id": "00000000-0000-4000-8000-000000000001",
+              "appId": "00000000-0000-4000-9000-000000000001",
+              "displayName": "Contoso Portal",
+              "publisherName": "Contoso",
+              "verifiedPublisher": {
+                "displayName": null
+              },
+              "accountEnabled": true
+            },
+            {
+              "id": "00000000-0000-4000-8000-000000000002",
+              "appId": "00000000-0000-4000-9000-000000000002",
+              "displayName": "Contoso HR",
+              "publisherName": "Contoso",
+              "verifiedPublisher": {
+                "displayName": null
+              },
+              "accountEnabled": true
+            }
+          ],
+          "@odata.nextLink": "fixture:service-principals-2"
+        }
+      }
+    ]
+  },
+  {
+    "url": "fixture:service-principals-2",
+    "responses": [
+      {
+        "status": 200,
+        "body": {
+          "value": [
+            {
+              "id": "00000000-0000-4000-8000-000000000003",
+              "appId": "00000000-0000-4000-9000-000000000003",
+              "displayName": "Veeam Backup for Microsoft 365",
+              "publisherName": "Contoso",
+              "verifiedPublisher": {
+                "displayName": null
+              },
+              "accountEnabled": true
+            },
+            {
+              "id": "00000000-0000-4000-8000-000000000004",
+              "appId": "00000000-0000-4000-9000-000000000004",
+              "displayName": "Keepit Disabled",
+              "publisherName": "Keepit",
+              "verifiedPublisher": {
+                "displayName": null
+              },
+              "accountEnabled": false
+            }
+          ]
+        }
+      }
+    ]
+  }
+]
