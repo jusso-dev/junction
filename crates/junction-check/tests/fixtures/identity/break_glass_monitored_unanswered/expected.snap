@@ -1,0 +1,16 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": null,
+    "summary": "Needs a person's answer: Does every sign-in by an emergency access (break-glass) account raise an alert that someone responds to? Run `junction check attest identity.break_glass_monitored`."
+  },
+  "id": "identity.break_glass_monitored",
+  "reason": {
+    "code": "not_attested",
+    "detail": "Needs a person's answer: Does every sign-in by an emergency access (break-glass) account raise an alert that someone responds to? Run `junction check attest identity.break_glass_monitored`."
+  },
+  "status": "unknown"
+}

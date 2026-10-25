@@ -1,0 +1,49 @@
+[
+    {
+        "operation": "graph.role_management.directory.role_assignments.list",
+        "responses": [
+            {
+                "body": {
+                    "value": [
+                        {
+                            "id": "ra-1",
+                            "principalId": "00000000-0000-4000-8000-000000000001",
+                            "roleDefinitionId": "62e90394-69f5-4237-9190-012177145e10",
+                            "directoryScopeId": "/",
+                            "principal": {
+                                "@odata.type": "#microsoft.graph.user",
+                                "id": "00000000-0000-4000-8000-000000000001",
+                                "displayName": "Admin1",
+                                "userPrincipalName": "admin1@contoso.example"
+                            }
+                        },
+                        {
+                            "id": "ra-2",
+                            "principalId": "00000000-0000-4000-8000-000000000008",
+                            "roleDefinitionId": "62e90394-69f5-4237-9190-012177145e10",
+                            "directoryScopeId": "/",
+                            "principal": {
+                                "@odata.type": "#microsoft.graph.user",
+                                "id": "00000000-0000-4000-8000-000000000008",
+                                "displayName": "Breakglass1",
+                                "userPrincipalName": "breakglass1@contoso.example"
+                            }
+                        },
+                        {
+                            "id": "ra-3",
+                            "principalId": "00000000-0000-4000-8000-000000000003",
+                            "roleDefinitionId": "194ae4cb-b126-40b2-bd5b-6091b380977d",
+                            "directoryScopeId": "/",
+                            "principal": {
+                                "@odata.type": "#microsoft.graph.user",
+                                "id": "00000000-0000-4000-8000-000000000003",
+                                "displayName": "Admin3",
+                                "userPrincipalName": "admin3@contoso.example"
+                            }
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+]

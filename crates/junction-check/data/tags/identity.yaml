@@ -1,3 +1,48 @@
+identity.mfa_coverage:
+  essential_eight:
+    - strategy: mfa
+      levels: [1, 2, 3]
+  ism: [ISM-1504, ISM-0974, ISM-1173]
+  cis_m365: ["5.2.3.4"]
+  cis_v8: ["6.3", "6.5"]
+  nist_csf: [PR.AA-03]
+  mitre: [T1078.004, T1110, T1110.003]
+identity.mfa_admins:
+  essential_eight:
+    - strategy: mfa
+      levels: [1, 2, 3]
+  ism: [ISM-1504, ISM-1173]
+  cis_m365: ["5.2.3.4", "5.2.2.1"]
+  cis_v8: ["6.5"]
+  nist_csf: [PR.AA-03]
+  mitre: [T1078.004, T1110]
+identity.phishing_resistant_admins:
+  essential_eight:
+    - strategy: mfa
+      levels: [2, 3]
+  ism: [ISM-1872, ISM-1682, ISM-1173]
+  cis_m365: ["5.2.2.5"]
+  cis_v8: ["6.5"]
+  nist_csf: [PR.AA-03]
+  mitre: [T1078.004, T1566.002, T1621, T1556]
+identity.legacy_auth_blocked:
+  essential_eight:
+    - strategy: mfa
+      levels: [1, 2, 3]
+  ism: [ISM-1504]
+  cis_m365: ["5.2.2.3"]
+  cis_v8: ["6.3"]
+  nist_csf: [PR.AA-03]
+  mitre: [T1078.004, T1110, T1110.003]
+identity.baseline:
+  essential_eight:
+    - strategy: mfa
+      levels: [1, 2, 3]
+  ism: [ISM-1504, ISM-0974, ISM-1173]
+  cis_m365: ["5.2.2.1", "5.2.2.2", "5.2.2.3", "5.2.2.7"]
+  cis_v8: ["6.3", "6.4", "6.5"]
+  nist_csf: [PR.AA-03, PR.AA-05]
+  mitre: [T1078.004, T1110, T1556]
 identity.global_admin_count:
   essential_eight:
     - strategy: restrict-admin-privileges
@@ -5,4 +50,35 @@ identity.global_admin_count:
   ism: [ISM-1507, ISM-1508]
   cis_m365: ["1.1.3"]
   cis_v8: ["5.4"]
+  mitre: [T1078.004, T1098]
+identity.separate_admin_accounts:
+  essential_eight:
+    - strategy: restrict-admin-privileges
+      levels: [1, 2, 3]
+  ism: [ISM-0445, ISM-1175]
+  cis_m365: ["1.1.1", "1.1.4"]
+  cis_v8: ["5.4"]
+  nist_csf: [PR.AA-05]
+  mitre: [T1078.004, T1566]
+identity.break_glass:
+  cis_m365: ["1.1.2"]
+  nist_csf: [PR.IR-03]
+  mitre: [T1078.004]
+identity.break_glass_monitored:
+  essential_eight:
+    - strategy: restrict-admin-privileges
+      levels: [2, 3]
+  ism: [ISM-1509]
+  cis_m365: ["1.1.2"]
+  cis_v8: ["8.11"]
+  nist_csf: [DE.CM-03]
+  mitre: [T1078.004]
+identity.pim_used:
+  essential_eight:
+    - strategy: restrict-admin-privileges
+      levels: [3]
+  ism: [ISM-1649, ISM-1508]
+  cis_m365: ["5.3.1"]
+  cis_v8: ["5.4", "6.1", "6.2"]
+  nist_csf: [PR.AA-05]
   mitre: [T1078.004, T1098]

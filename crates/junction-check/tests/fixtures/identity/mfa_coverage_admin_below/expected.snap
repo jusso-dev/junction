@@ -1,0 +1,32 @@
+{
+  "affected": {
+    "items": [
+      "admin1@contoso.example"
+    ],
+    "total": 1
+  },
+  "evidence": {
+    "data": {
+      "admin_percent_min": 100.0,
+      "admins": 1,
+      "admins_mfa_capable": 0,
+      "admins_percent": 0.0,
+      "excluded": 0,
+      "not_capable": [
+        "admin1@contoso.example"
+      ],
+      "not_capable_admins": [
+        "admin1@contoso.example"
+      ],
+      "not_in_report": 0,
+      "user_percent_min": 50.0,
+      "users": 4,
+      "users_mfa_capable": 3,
+      "users_percent": 75.0
+    },
+    "summary": "75% of 4 enabled member users MFA capable (minimum 50%); 0 of 1 admin (0%, minimum 100%)."
+  },
+  "id": "identity.mfa_coverage",
+  "reason": null,
+  "status": "fail"
+}
