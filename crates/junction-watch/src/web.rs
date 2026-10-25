@@ -37,12 +37,31 @@ pub struct AppState<U> {
     pub throttle: LoginThrottle,
 }
 
+#[path = "web_investigation.rs"]
+mod investigation;
+
 const SESSION_COOKIE: &str = "jw_session";
 const LOGIN_CSRF_COOKIE: &str = "jw_login_csrf";
 
 pub fn router<U: Upstream + 'static>(state: Arc<AppState<U>>) -> Router {
     Router::new()
         .route("/", get(overview::<U>))
+        .route("/reports", get(investigation::reports::<U>))
+        .route(
+            "/settings",
+            get(investigation::settings::<U>).post(investigation::save_settings::<U>),
+        )
+        .route("/actions/suppress", post(investigation::suppress::<U>))
+        .route("/alerts", get(investigation::alerts::<U>))
+        .route(
+            "/alerts/:id",
+            get(investigation::alert::<U>).post(investigation::update::<U>),
+        )
+        .route("/activity", get(investigation::activity::<U>))
+        .route("/evidence/:id", get(investigation::evidence::<U>))
+        .route("/changes", get(investigation::changes::<U>))
+        .route("/snapshots/:id", get(investigation::snapshot::<U>))
+        .route("/actions/baseline", post(investigation::baseline::<U>))
         .route("/coverage", get(coverage::<U>))
         .route("/collectors", get(collectors::<U>))
         .route("/login", get(login_page::<U>).post(login::<U>))
@@ -50,6 +69,7 @@ pub fn router<U: Upstream + 'static>(state: Arc<AppState<U>>) -> Router {
         .route("/actions/probe", post(action_probe::<U>))
         .route("/actions/subscribe", post(action_subscribe::<U>))
         .route("/assets/app.css", get(css))
+        .layer(axum::extract::DefaultBodyLimit::max(65536))
         .layer(middleware::from_fn_with_state(state.clone(), guard::<U>))
         .with_state(state)
 }
@@ -60,6 +80,10 @@ async fn guard<U: Upstream + 'static>(
     request: Request,
     next: Next,
 ) -> Response {
+    static REQUESTS: tokio::sync::Semaphore = tokio::sync::Semaphore::const_new(32);
+    let Ok(_permit) = REQUESTS.try_acquire() else {
+        return (StatusCode::TOO_MANY_REQUESTS, "Request limit reached").into_response();
+    };
     let headers = request.headers();
     let host = headers
         .get(header::HOST)
@@ -165,7 +189,7 @@ fn layout(title: &str, session: Option<&Session>, active: &str, body: Markup) ->
                     span.brand { "Junction · M365 Security" }
                     @if let Some(s) = session {
                         nav aria-label="Main" {
-                            @for (href, label) in [("/", "Overview"), ("/coverage", "Coverage"), ("/collectors", "Collectors")] {
+                            @for (href, label) in [("/", "Overview"), ("/alerts", "Alerts"), ("/activity", "Activity"), ("/changes", "Changes"), ("/coverage", "Coverage"), ("/collectors", "Collectors"), ("/reports", "Reports"), ("/settings", "Settings")] {
                                 a href=(href) aria-current=[(active == href).then_some("page")] { (label) }
                             }
                         }
@@ -237,6 +261,11 @@ async fn overview<U: Upstream + 'static>(
             let last = store.last_success(&id).ok().flatten();
             (id, last)
         })
+        .chain(
+            crate::graph::SOURCES
+                .into_iter()
+                .map(|id| (id.to_owned(), store.last_success(id).ok().flatten())),
+        )
         .collect();
     let last_ok = collectors
         .iter()
@@ -294,7 +323,7 @@ async fn overview<U: Upstream + 'static>(
             div.card { h2 { "Active users seen (30 days)" } p.big { (users) } }
             div.card { h2 { "SharePoint sites seen (30 days)" } p.big { (sites) } }
             div.card { h2 { "Recorded collection gaps" } p.big { (gaps.len()) } }
-            div.card { h2 { "Active alerts" } p.big.muted { "Not yet enabled" } p.small { "Detections arrive in the next release. Until then this page reports collection health only." } }
+            div.card { h2 { "Active alerts" } p { a href="/alerts" { "Review security alerts" } } p.small { "Deterministic rules evaluate collected evidence. Missing sources remain monitoring gaps." } }
         }
         h2 { "Collectors" }
         table {
@@ -382,7 +411,7 @@ async fn coverage<U: Upstream + 'static>(
                         td.small { (c.reason.remedy()) @if let Some(d) = &c.detail { br; span.muted { (d) } } }
                         td { code { (c.required_permission) } }
                         td.small { (c.licence_note) }
-                        td { @if c.source.starts_with("o365:") { (when(state.store.last_success(&c.source).ok().flatten().and_then(|r| r.finished_at).as_deref())) } @else { span.muted { "probe only" } } }
+                        td { @if spec.is_some_and(|s|s.collected) { (when(state.store.last_success(&c.source).ok().flatten().and_then(|r| r.finished_at).as_deref())) } @else if c.source.starts_with("snapshot:") { (when(Some(&c.checked_at))) } @else { span.muted { "probe only" } } }
                         td.small {
                             @if spec.is_some_and(|s| s.collected) {
                                 @let (ops, events) = state.store.observed_coverage(&c.source, month).unwrap_or((0, 0));
@@ -678,7 +707,7 @@ const CSS: &str = r#"
 a{color:var(--accent)}a:focus-visible,button:focus-visible,input:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
 .skip{position:absolute;left:-999px}.skip:focus{left:1rem;top:1rem;background:var(--card);padding:.5rem;z-index:9}
 .top{display:flex;flex-wrap:wrap;gap:1rem;align-items:center;padding:.75rem 1.25rem;border-bottom:1px solid var(--line);background:var(--card)}
-.brand{font-weight:700}.top nav{display:flex;gap:1rem;flex:1}.top nav a{text-decoration:none;padding:.25rem 0}.top nav a[aria-current=page]{font-weight:700;border-bottom:2px solid var(--accent)}
+.brand{font-weight:700}.top nav{display:flex;flex-wrap:wrap;gap:1rem;flex:1}.top nav a{text-decoration:none;padding:.25rem 0}.top nav a[aria-current=page]{font-weight:700;border-bottom:2px solid var(--accent)}
 .logout{display:flex;gap:.5rem;align-items:center}.who{color:var(--muted);font-size:.875rem}
 main{max-width:1200px;margin:0 auto;padding:1.5rem 1.25rem}h1{margin:.25rem 0 .5rem}h2{font-size:1.1rem;margin:1.75rem 0 .5rem}
 .lede{color:var(--muted);margin-top:0}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem}
@@ -690,7 +719,8 @@ th,td{text-align:left;vertical-align:top;padding:.5rem .75rem;border-bottom:1px 
 .badge.ok{color:var(--ok);background:var(--okbg)}.badge.warn{color:var(--warn);background:var(--warnbg)}.badge.bad{color:var(--bad);background:var(--badbg)}.badge.muted{color:var(--muted);background:var(--line)}
 .callout{padding:.75rem 1rem;border-radius:8px;margin:1rem 0}.callout.bad{background:var(--badbg);color:var(--bad)}.callout.warn{background:var(--warnbg);color:var(--warn)}
 button{font:inherit;padding:.45rem .9rem;border-radius:6px;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer}
-form{margin:.5rem 0}.login{display:grid;gap:.5rem;max-width:22rem}.login input{font:inherit;padding:.5rem;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--ink)}
+pre{white-space:pre-wrap;overflow-wrap:anywhere;max-width:100%} select,textarea,input{font:inherit;max-width:100%;padding:.4rem;border:1px solid var(--line);background:var(--card);color:var(--ink)} textarea{display:block;width:100%;min-height:6rem} label{display:inline-block;margin:.5rem .5rem .5rem 0} select:focus-visible,textarea:focus-visible{outline:3px solid var(--accent)} form{margin:.5rem 0}.login{display:grid;gap:.5rem;max-width:22rem}.login input{font:inherit;padding:.5rem;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--ink)}
 .inline{display:flex;flex-wrap:wrap;gap:.5rem;list-style:none;padding:0}footer{max-width:1200px;margin:2rem auto;padding:0 1.25rem;color:var(--muted);font-size:.85rem}
+@media print{.top,.logout,form,footer{display:none}section{break-inside:avoid}}
 @media (max-width:720px){table{display:block;overflow-x:auto}}
 "#;

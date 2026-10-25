@@ -40,7 +40,7 @@ pub enum WatchCommand {
         /// Print the app registration `requiredResourceAccess` JSON instead.
         #[arg(long)]
         manifest: bool,
-        /// Include optional permissions (Policy.Read.All, Exchange runner).
+        /// Include the optional Exchange runner permission.
         #[arg(long)]
         include_optional: bool,
     },
@@ -70,6 +70,26 @@ pub enum WatchCommand {
     Validate,
     /// Verify the hash-chained operator audit trail.
     VerifyTrail,
+    /// Show versioned detection rules and their coverage requirements.
+    Rules,
+    /// Process pending events without contacting Microsoft.
+    Detect,
+    /// Import a read-only configuration snapshot from the optional runner.
+    ImportSnapshot { file: PathBuf },
+    /// Approve a reviewed complete initial snapshot as the baseline.
+    ApproveBaseline { id: String },
+    /// Generate a privacy-minimised security report.
+    Report {
+        #[arg(value_parser=["daily","weekly"])]
+        period: String,
+    },
+    /// Apply configured retention, preserving evidence for open incidents.
+    Retain,
+    /// Re-list available Management Activity content without rewinding checkpoints.
+    Backfill {
+        #[arg(long, default_value_t = 6)]
+        days: u64,
+    },
     /// Manage dashboard accounts. Passwords are read from standard input.
     User {
         #[command(subcommand)]
@@ -124,7 +144,7 @@ async fn dispatch(args: WatchArgs) -> Result<Value> {
             catalog::required_resource_access(include_optional)
         } else {
             json!({
-                "note": "All permissions are read-only application permissions. The watchdog never reads email or file contents and makes no tenant changes except starting the audit feed subscription when you ask it to.",
+                "note": "Default application permissions are read-only. Optional Exchange.ManageAsApp access must be restricted with separately assigned, scoped read-only Exchange roles. The watchdog never reads email or file contents and makes no tenant changes except starting the audit feed subscription when you ask it to.",
                 "permissions": catalog::PERMISSIONS.iter().filter(|p| include_optional || !p.optional).collect::<Vec<_>>(),
                 "exchange_runner_roles": ["View-Only Configuration", "View-Only Recipients"],
             })
@@ -172,6 +192,43 @@ async fn dispatch(args: WatchArgs) -> Result<Value> {
                     Some(id) => json!({"status": "broken", "first_bad_entry": id}),
                 }),
                 WatchCommand::User { command } => user(&store, command),
+                WatchCommand::Rules => Ok(serde_json::to_value(crate::rules::registry())?),
+                WatchCommand::Detect => Ok(
+                    json!({"new_alerts":crate::incidents::detect(&store, &rule_settings(&config,&store)?)?}),
+                ),
+                WatchCommand::ImportSnapshot { file } => {
+                    let snapshot = crate::drift::read_snapshot(&file)?;
+                    store.audit("cli", "snapshot_import", &snapshot.resource_type, "{}")?;
+                    let (id, changes) = store.import_snapshot(&snapshot)?;
+                    Ok(
+                        json!({"snapshot_id":id,"changes":changes,"baseline":"Review the complete snapshot, then run approve-baseline with this ID."}),
+                    )
+                }
+                WatchCommand::ApproveBaseline { id } => {
+                    store.approve_baseline(&id, "cli")?;
+                    Ok(json!({"approved":id}))
+                }
+                WatchCommand::Report { period } => store.report(&period, Instant::now()),
+                WatchCommand::Retain => store.retain(Instant::now(), "cli"),
+                WatchCommand::Backfill { days } => {
+                    if !(1..=6).contains(&days) {
+                        bail!("backfill supports 1 to 6 days within the API availability window");
+                    }
+                    store.audit(
+                        "cli",
+                        "backfill",
+                        "audit_feeds",
+                        &json!({"days":days}).to_string(),
+                    )?;
+                    let up = live(&config)?;
+                    let options = CollectOptions {
+                        overlap: Duration::from_secs(days * 86400),
+                        ..Default::default()
+                    };
+                    Ok(serde_json::to_value(
+                        activity::collect_all(&up, &store, &config.content_types, &options).await,
+                    )?)
+                }
                 WatchCommand::Init { .. } | WatchCommand::Permissions { .. } => unreachable!(),
             }
         }
@@ -227,6 +284,15 @@ async fn collect_once(
     store: &Store,
     config: &WatchConfig,
 ) -> Result<Value> {
+    let now = Instant::now();
+    if store
+        .meta("last_retention")?
+        .and_then(|s| Instant::parse(&s).ok())
+        .is_none_or(|t| now.since(t) > Duration::from_secs(86400))
+    {
+        store.retain(now, "scheduler")?;
+        store.put_meta("last_retention", &now.to_rfc3339())?;
+    }
     let probe = match probe::probe_if_due(up, store).await {
         None => json!("not due"),
         Some(Ok(r)) => {
@@ -236,7 +302,42 @@ async fn collect_once(
     };
     let feeds =
         activity::collect_all(up, store, &config.content_types, &CollectOptions::default()).await;
-    Ok(json!({"collected_at": Instant::now().to_rfc3339(), "probe": probe, "feeds": feeds}))
+    let mut graph = vec![];
+    for source in crate::graph::SOURCES {
+        graph.push(
+            match crate::graph::collect(up, store, source, Instant::now(), Default::default()).await
+            {
+                Ok(v) => v,
+                Err(_) => {
+                    json!({"source":source,"status":"failed","reason":"local store unavailable"})
+                }
+            },
+        );
+    }
+    let settings = rule_settings(config, store)?;
+    let snapshot_collection = crate::drift::collect_sharepoint(up, store).await;
+    if let Some(directory) = &config.snapshot_directory {
+        crate::drift::import_directory(store, directory)?;
+    }
+    let snapshot_events = store.reconcile_snapshot_events().map(|_| json!("ok")).unwrap_or_else(|_| json!({"status":"failed","reason":"snapshot event reconciliation failed; retry pending"}));
+    // A failed detector must not prevent delivery of already queued incidents.
+    let alerts = crate::incidents::detect(store, &settings)
+        .map(|n| json!(n))
+        .unwrap_or_else(
+            |_| json!({"status":"failed","reason":"detection failed; pending events retained"}),
+        );
+    store.escalate(Instant::now())?;
+    let notification_config = if store.meta("operational_settings")?.is_some() {
+        store.operational_settings()?.notifications
+    } else {
+        config.notifications.clone()
+    };
+    let notifications =
+        crate::notify::deliver(store, &notification_config, &settings.internal_domains).await?;
+    store.scheduled_reports(Instant::now())?;
+    Ok(
+        json!({"collected_at": Instant::now().to_rfc3339(), "probe": probe, "feeds": feeds, "graph":graph, "new_alerts":alerts, "snapshots":snapshot_collection.ok(), "snapshot_events":snapshot_events, "notifications":notifications}),
+    )
 }
 
 fn log(value: Value) {
@@ -265,7 +366,12 @@ async fn run_daemon(config: WatchConfig, store: Store, with_web: bool) -> Result
     loop {
         // Wall-clock scheduling: monotonic timers stop while a laptop sleeps, so a
         // short tick plus a wall-clock comparison resumes promptly after wake.
-        let due = last_run.is_none_or(|t| Instant::now().since(t) >= interval);
+        let effective_interval = if store.meta("operational_settings")?.is_some() {
+            Duration::from_secs(store.operational_settings()?.poll_minutes * 60)
+        } else {
+            interval
+        };
+        let due = last_run.is_none_or(|t| Instant::now().since(t) >= effective_interval);
         if due {
             last_run = Some(Instant::now());
             match collect_once(up.as_ref(), &store, &config).await {
@@ -347,6 +453,14 @@ async fn validate(config: &WatchConfig) -> Result<Value> {
         let outcome = activity::collect(&up, &scratch, ct, Instant::now(), &options).await?;
         collection.push(outcome);
     }
+    let mut graph_collection = vec![];
+    for source in crate::graph::SOURCES {
+        scratch.advance_checkpoint(source, Instant::now().minus(Duration::from_secs(3600)))?;
+        graph_collection.push(
+            crate::graph::collect(&up, &scratch, source, Instant::now(), Default::default())
+                .await?,
+        );
+    }
     let mut operations: Vec<String> = scratch
         .events(&crate::store::EventQuery {
             limit: 500,
@@ -365,6 +479,7 @@ async fn validate(config: &WatchConfig) -> Result<Value> {
         "runnable_detections": report.runnable_detections,
         "blocked_detections": report.blocked_detections,
         "sample_collection": collection,
+        "graph_sample_collection": graph_collection,
         "observed_event_types": operations,
     }))
 }
@@ -409,4 +524,21 @@ fn read_password() -> Result<String> {
         line.trim_end_matches(['\r', '\n']).to_owned()
     };
     Ok(password)
+}
+
+fn rule_settings(config: &WatchConfig, store: &Store) -> Result<crate::rules::RuleSettings> {
+    let mut settings = config.rules.clone();
+    if store.meta("operational_settings")?.is_some() {
+        let operational = store.operational_settings()?;
+        settings.bulk_threshold = operational.bulk_threshold;
+        settings.approved_external_domains = operational.approved_external_domains;
+        settings.sensitive_sites = operational.sensitive_sites;
+    }
+    settings.internal_domains.push(config.tenant_domain.clone());
+    if let Some(domains) = store.meta("verified_domains")? {
+        settings
+            .internal_domains
+            .extend(serde_json::from_str::<Vec<String>>(&domains)?);
+    }
+    Ok(settings)
 }

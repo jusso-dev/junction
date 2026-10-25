@@ -119,7 +119,7 @@ Development status: prerelease. The catalog, CLI, Rust crates, MCP server, local
 
 ## M365 security watchdog
 
-`junction watch` adds continuous, read-only Microsoft 365 audit collection for small organisations on free or donated plans. Every data source is checked with a live probe and reported as available, needing a permission or licence, or not enabled. Collection survives throttling, laptop sleep and duplicate delivery, and a loopback dashboard shows coverage and gaps. It is in Phase 1: collection and coverage work, and detections and alerts come next. See [docs/WATCH.md](docs/WATCH.md).
+`junction watch` adds continuous, read-only Microsoft 365 audit collection for small organisations on free or donated plans. Every data source is checked with a live probe and reported as available, needing a permission or licence, or not enabled. Collection survives throttling, laptop sleep and duplicate delivery, and a loopback dashboard shows coverage and gaps. It includes deterministic detections, incident investigation, approved configuration snapshots and operational reports. Live tenant and independent email validation are still required before production use. See [docs/WATCH.md](docs/WATCH.md).
 
 ```sh
 junction watch init --tenant-id <guid> --domain club.org.au --client-id <guid>

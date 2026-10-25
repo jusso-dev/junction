@@ -70,7 +70,9 @@ fn record(
         source: spec.id.to_owned(),
         state: reason.state(),
         reason,
-        http_status: error.and_then(|e| e.status),
+        http_status: error
+            .and_then(|e| e.status)
+            .or_else(|| (reason == Reason::Ok).then_some(200)),
         error_code: error.and_then(|e| e.code.clone()),
         detail: detail.or_else(|| error.and_then(|e| e.message.clone())),
         required_permission: spec.permission.to_owned(),
@@ -324,6 +326,21 @@ pub fn detection_coverage(records: &[CapabilityRecord]) -> (Vec<String>, Vec<Str
             *status.entry(d).or_default() |= usable;
         }
     }
+    // Audit/configuration correlation needs both independent inputs, not either.
+    let snapshot_ready = records
+        .iter()
+        .any(|r| r.source == "snapshot:inbox_rules" && r.state.usable());
+    if let Some(ready) = status.get_mut("M365-EXO-006") {
+        *ready &= snapshot_ready;
+    }
+    // The sharing-settings probe alone is not a comparison baseline.
+    let sharing_audit = records
+        .iter()
+        .any(|r| r.source == "o365:Audit.SharePoint" && r.state.usable());
+    let sharing_snapshot = records
+        .iter()
+        .any(|r| r.source == "snapshot:sharepoint_settings" && r.state.usable());
+    status.insert("M365-SPO-006", sharing_audit || sharing_snapshot);
     let runnable = status
         .iter()
         .filter(|(_, ok)| **ok)

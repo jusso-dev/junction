@@ -12,7 +12,19 @@ pub mod cli;
 pub mod clock;
 pub mod config;
 pub mod event;
+pub mod graph;
 pub mod probe;
 pub mod store;
 pub mod upstream;
 pub mod web;
+
+pub mod incidents;
+pub mod rules;
+
+pub mod notify;
+
+pub mod drift;
+
+pub mod evidence;
+
+pub mod operations;

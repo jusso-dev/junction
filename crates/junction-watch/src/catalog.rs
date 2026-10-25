@@ -1,7 +1,7 @@
 //! What the watchdog reads, which permission each source needs, and why.
 //!
-//! Every permission is an application permission (app role) with read-only
-//! scope. Nothing here can change tenant configuration or read mail or files.
+//! Default application permissions are read-only. The optional Exchange runner's
+//! effective access depends on its separately assigned, scoped Exchange roles.
 use crate::upstream::Api;
 use serde::Serialize;
 use serde_json::{Value, json};
@@ -52,42 +52,6 @@ pub const PERMISSIONS: &[Permission] = &[
         cannot: "Cannot change licences, domains or billing.",
     },
     Permission {
-        name: "RoleManagement.Read.Directory",
-        resource: "Microsoft Graph",
-        resource_app_id: GRAPH_APP_ID,
-        app_role_id: "483bed4a-2ad3-4361-a73b-c83ccdbdc53c",
-        optional: true,
-        why: "Not used until detections ship (Phase 2); leave it out until then. Reads who holds admin roles, to baseline Global Administrators and spot new privileged assignments.",
-        cannot: "Cannot assign or remove roles.",
-    },
-    Permission {
-        name: "Application.Read.All",
-        resource: "Microsoft Graph",
-        resource_app_id: GRAPH_APP_ID,
-        app_role_id: "9a5d68dd-52b0-4cc2-bd40-abcf44ac3a30",
-        optional: true,
-        why: "Not used until detections ship (Phase 2); leave it out until then. Reads app registrations, enterprise apps and their granted permissions, to spot malicious OAuth consent and new app credentials.",
-        cannot: "Cannot create apps, add credentials or grant consent.",
-    },
-    Permission {
-        name: "User.ReadBasic.All",
-        resource: "Microsoft Graph",
-        resource_app_id: GRAPH_APP_ID,
-        app_role_id: "97235f07-e226-4f63-ace3-39588e11d3a1",
-        optional: true,
-        why: "Not used until detections ship (Phase 2); leave it out until then. Lists users by name and email address so inbox rules can be checked per mailbox.",
-        cannot: "Cannot read profiles beyond basic fields, or change users.",
-    },
-    Permission {
-        name: "MailboxSettings.Read",
-        resource: "Microsoft Graph",
-        resource_app_id: GRAPH_APP_ID,
-        app_role_id: "40f97065-369a-49f4-947c-6a255697ae91",
-        optional: true,
-        why: "Not used until detections ship (Phase 2); leave it out until then. Reads inbox rules and mailbox settings to baseline forwarding and hidden-mail rules.",
-        cannot: "Cannot read, send or delete email.",
-    },
-    Permission {
         name: "SharePointTenantSettings.Read.All",
         resource: "Microsoft Graph",
         resource_app_id: GRAPH_APP_ID,
@@ -95,15 +59,6 @@ pub const PERMISSIONS: &[Permission] = &[
         optional: false,
         why: "Reads tenant-wide SharePoint and OneDrive sharing settings to detect weakened external sharing.",
         cannot: "Cannot read sites or files, or change sharing settings.",
-    },
-    Permission {
-        name: "Policy.Read.All",
-        resource: "Microsoft Graph",
-        resource_app_id: GRAPH_APP_ID,
-        app_role_id: "246dd0d5-5bd0-4def-940b-0421030a5b68",
-        optional: true,
-        why: "Reads security defaults, authorisation and Conditional Access policies to detect weakened identity protection.",
-        cannot: "Cannot change any policy.",
     },
     Permission {
         name: "Exchange.ManageAsApp",
@@ -134,7 +89,7 @@ pub struct SourceSpec {
 }
 
 const MGMT_DOCS: &str = "https://learn.microsoft.com/en-us/office/office-365-management-api/office-365-management-activity-api-reference";
-const AUDIT_LICENCE: &str = "Purview Audit (Standard): included in Microsoft 365 Business Basic, Standard and Premium and Office 365 E1/E3, including nonprofit editions of those plans. Auditing is OFF by default on Business plans and must be turned on. 180-day searchable retention; the API keeps content for 7 days.";
+const AUDIT_LICENCE: &str = "Purview Audit (Standard): included in Microsoft 365 Business Basic, Standard and Premium and Office 365 E1/E3, nonprofit grant entitlements must be confirmed by actual probes. Auditing is OFF by default on Business plans and must be turned on. 180-day searchable retention; the API keeps content for 7 days.";
 
 pub const CONTENT_TYPES: [&str; 4] = [
     "Audit.AzureActiveDirectory",
@@ -211,7 +166,7 @@ pub const SOURCES: &[SourceSpec] = &[
         title: "Entra ID directory audit log (Graph)",
         api: Api::Graph,
         permission: "AuditLog.Read.All",
-        licence_note: "Available on Entra ID Free with 7-day retention; P1/P2 keep 30 days.",
+        licence_note: "Probe actual Graph directory-audit access. Entra directory retention is typically 7 days on Free and 30 days with P1/P2; API availability is not inferred from this retention.",
         docs_url: "https://learn.microsoft.com/en-us/graph/api/directoryaudit-list?view=graph-rest-1.0",
         detections: &[
             "M365-ID-001",
@@ -221,7 +176,7 @@ pub const SOURCES: &[SourceSpec] = &[
             "M365-ID-005",
             "M365-ID-006",
         ],
-        collected: false,
+        collected: true,
     },
     SourceSpec {
         id: "graph:signIns",
@@ -231,7 +186,7 @@ pub const SOURCES: &[SourceSpec] = &[
         licence_note: "Requires Entra ID P1 or P2 for API access. Sign-ins visible in the admin portal on Free do NOT mean the API is available.",
         docs_url: "https://learn.microsoft.com/en-us/graph/api/signin-list?view=graph-rest-1.0",
         detections: &["M365-ID-007"],
-        collected: false,
+        collected: true,
     },
     SourceSpec {
         id: "graph:organization",
@@ -261,7 +216,7 @@ pub const SOURCES: &[SourceSpec] = &[
         licence_note: "All plans with SharePoint Online.",
         docs_url: "https://learn.microsoft.com/en-us/graph/api/sharepointsettings-get?view=graph-rest-1.0",
         detections: &["M365-SPO-006"],
-        collected: false,
+        collected: true,
     },
 ];
 

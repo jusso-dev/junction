@@ -14,7 +14,7 @@ use std::{
     sync::{Arc, Mutex, MutexGuard},
 };
 
-const SCHEMA_VERSION: i64 = 1;
+const SCHEMA_VERSION: i64 = 2;
 
 const MIGRATION_1: &str = r#"
 CREATE TABLE meta (key TEXT PRIMARY KEY, value TEXT NOT NULL);
@@ -215,6 +215,8 @@ pub struct EventQuery {
     pub actor: Option<String>,
     pub operation: Option<String>,
     pub source: Option<String>,
+    pub site: Option<String>,
+    pub target: Option<String>,
     pub since: Option<String>,
     pub until: Option<String>,
     pub limit: u32,
@@ -280,6 +282,9 @@ impl Store {
                 "INSERT INTO meta(key, value) VALUES ('tenant_id', ?1)",
                 [tenant_id.to_ascii_lowercase()],
             )?;
+        }
+        if version < 2 {
+            tx.execute_batch(crate::incidents::MIGRATION)?;
             tx.execute_batch(&format!("PRAGMA user_version = {SCHEMA_VERSION}"))?;
         }
         tx.commit()?;
@@ -304,7 +309,7 @@ impl Store {
         &self.tenant_id
     }
 
-    fn db(&self) -> Result<MutexGuard<'_, Connection>> {
+    pub(crate) fn db(&self) -> Result<MutexGuard<'_, Connection>> {
         self.conn
             .lock()
             .map_err(|_| anyhow::anyhow!("store lock poisoned"))
@@ -449,9 +454,50 @@ impl Store {
         content_expiration: Option<&str>,
         events: &[SecurityEvent],
     ) -> Result<InsertCounts> {
+        self.ingest_content_with_raw(
+            content_id,
+            content_type,
+            content_created,
+            content_expiration,
+            events,
+            &[],
+        )
+    }
+
+    #[allow(clippy::too_many_arguments)]
+    pub fn ingest_content_with_raw(
+        &self,
+        content_id: &str,
+        content_type: &str,
+        content_created: &str,
+        content_expiration: Option<&str>,
+        events: &[SecurityEvent],
+        raw: &[serde_json::Value],
+    ) -> Result<InsertCounts> {
+        let key = crate::evidence::EvidenceKey::environment()?;
+        let mut sealed = vec![];
+        if let Some(key) = &key {
+            for record in raw {
+                let bytes = serde_json::to_vec(record)?;
+                let digest = crate::event::sha256_hex(&bytes);
+                if let Some(event) = events.iter().find(|e| e.raw_sha256 == digest) {
+                    let (nonce, ciphertext) = key.seal(self.tenant_id(), &event.id, &bytes)?;
+                    sealed.push((event.id.clone(), nonce, ciphertext, digest));
+                }
+            }
+        }
         let mut db = self.db()?;
         let tx = db.transaction()?;
         let counts = insert_events(&tx, &self.tenant_id, events)?;
+        if let Some(key) = &key {
+            for (id, nonce, ciphertext, digest) in sealed {
+                tx.execute("INSERT OR IGNORE INTO evidence(event_id,key_id,nonce,ciphertext,sha256) VALUES(?1,?2,?3,?4,?5)", params![id,key.id,nonce,ciphertext,digest])?;
+                tx.execute(
+                    "UPDATE events SET raw_evidence_reference=?1 WHERE id=?2",
+                    params![format!("sqlite:evidence/{id}"), id],
+                )?;
+            }
+        }
         tx.execute(
             "INSERT OR IGNORE INTO processed_content(content_id, content_type, content_created,
                 content_expiration, processed_at, record_count) VALUES (?1, ?2, ?3, ?4, ?5, ?6)",
@@ -464,6 +510,7 @@ impl Store {
                 events.len() as i64
             ],
         )?;
+        crate::operations::enforce_budget(&tx)?;
         tx.commit()?;
         Ok(counts)
     }
@@ -472,6 +519,7 @@ impl Store {
         let mut db = self.db()?;
         let tx = db.transaction()?;
         let counts = insert_events(&tx, &self.tenant_id, events)?;
+        crate::operations::enforce_budget(&tx)?;
         tx.commit()?;
         Ok(counts)
     }
@@ -496,6 +544,16 @@ impl Store {
         }
         if let Some(v) = &query.source {
             push(" AND source = ?", v.clone(), &mut args);
+        }
+        if let Some(v) = &query.site {
+            push(
+                " AND json_extract(metadata, '$.SiteUrl') = ?",
+                v.clone(),
+                &mut args,
+            );
+        }
+        if let Some(v) = &query.target {
+            push(" AND target_id = ?", v.clone(), &mut args);
         }
         if let Some(v) = &query.since {
             push(" AND timestamp >= ?", v.clone(), &mut args);
@@ -830,7 +888,7 @@ fn insert_events(
     Ok(counts)
 }
 
-fn row_to_event(r: &rusqlite::Row<'_>) -> rusqlite::Result<SecurityEvent> {
+pub(crate) fn row_to_event(r: &rusqlite::Row<'_>) -> rusqlite::Result<SecurityEvent> {
     let metadata: String = r.get(16)?;
     Ok(SecurityEvent {
         id: r.get(0)?,
@@ -1198,5 +1256,37 @@ mod tests {
             )
             .unwrap();
         assert_eq!(store.gaps().unwrap().len(), 1);
+    }
+}
+
+#[cfg(test)]
+mod migration_tests {
+    use super::*;
+    #[test]
+    fn upgrades_phase_one_database_without_rebinding_or_losing_state() {
+        let dir = tempfile::tempdir().unwrap();
+        let path = dir.path().join("watch.db");
+        let tenant = "11111111-1111-4111-8111-111111111111";
+        let db = Connection::open(&path).unwrap();
+        db.execute_batch(MIGRATION_1).unwrap();
+        db.execute(
+            "INSERT INTO meta(key,value) VALUES('tenant_id',?1)",
+            [tenant],
+        )
+        .unwrap();
+        db.execute(
+            "INSERT INTO meta(key,value) VALUES('existing','preserved')",
+            [],
+        )
+        .unwrap();
+        db.execute_batch("PRAGMA user_version=1").unwrap();
+        drop(db);
+        let store = Store::open(&path, tenant).unwrap();
+        assert_eq!(
+            store.meta("existing").unwrap().as_deref(),
+            Some("preserved")
+        );
+        assert!(store.alerts(None, None, None, 10).unwrap().is_empty());
+        assert!(Store::open(&path, "22222222-2222-4222-8222-222222222222").is_err());
     }
 }

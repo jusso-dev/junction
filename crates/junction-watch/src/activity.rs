@@ -119,6 +119,15 @@ pub async fn collect(
         max_delay_seconds: None,
         error: None,
     };
+    if store
+        .meta(&format!("retry_after:{source}"))?
+        .and_then(|v| Instant::parse(&v).ok())
+        .is_some_and(|until| until > now)
+    {
+        outcome.status = RunStatus::Skipped;
+        outcome.error = Some("Server Retry-After interval still active".into());
+        return Ok(outcome);
+    }
     if let Some(cap) = store.capability(&source)?
         && cap.state.is_settled_negative()
     {
@@ -326,12 +335,13 @@ async fn collect_windows(
                             None => outcome.unparseable_records += 1,
                         }
                     }
-                    let c = store.ingest_content(
+                    let c = store.ingest_content_with_raw(
                         &item.id,
                         content_type,
                         &item.created,
                         item.expiration.as_deref(),
                         &events,
+                        &records,
                     )?;
                     store.delete_meta(&blob_failure_key(&item.id))?;
                     counts.new += c.new;
@@ -412,6 +422,12 @@ async fn collect_windows(
     match &failure {
         None => store.put_capability(&capability(spec, Reason::Ok, None))?,
         Some(e) => {
+            if let Some(delay) = e.retry_after {
+                store.put_meta(
+                    &format!("retry_after:{source}"),
+                    &now.plus(delay).to_rfc3339(),
+                )?;
+            }
             outcome.status = RunStatus::Failed;
             outcome.error = Some(e.summary());
             let reason = classify(e, None);

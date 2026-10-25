@@ -574,3 +574,70 @@ async fn dashboard_reports_a_feed_that_failed_to_start() {
         "coverage re-probed before reporting"
     );
 }
+
+#[tokio::test]
+async fn investigations_enforce_roles_csrf_and_escape_untrusted_evidence() {
+    let store = store_with_users();
+    let raw = json!({"Id":"malicious","CreationTime":"2026-10-25T00:00:00Z","Operation":"Set-Mailbox","ResultStatus":"Success","ObjectId":"<script>alert(1)</script>","Parameters":[{"Name":"ForwardingSmtpAddress","Value":"evil@outside.example"}]});
+    let event = junction_watch::event::from_management_record(
+        TENANT,
+        "Audit.Exchange",
+        &raw,
+        junction_watch::clock::Instant::now(),
+    )
+    .unwrap();
+    store.insert_events(std::slice::from_ref(&event)).unwrap();
+    junction_watch::incidents::detect(&store, &Default::default()).unwrap();
+    let id = store.alerts(None, None, None, 5).unwrap()[0].id.clone();
+    let app = app(store.clone(), None);
+    let (viewer, _) = login(&app, "viewer").await;
+    for path in [
+        "/alerts".to_string(),
+        format!("/alerts/{id}"),
+        "/activity".into(),
+        "/changes".into(),
+        format!("/evidence/{}", event.id),
+    ] {
+        assert_eq!(send(&app, get(&path, None)).await.0, StatusCode::SEE_OTHER);
+        assert_eq!(
+            send(&app, get(&path, Some(&viewer))).await.0,
+            StatusCode::FORBIDDEN
+        );
+    }
+    let (admin, csrf) = login(&app, "admin").await;
+    let (status, _, body) = send(&app, get(&format!("/alerts/{id}"), Some(&admin))).await;
+    assert_eq!(status, StatusCode::OK);
+    assert!(body.contains("&lt;script&gt;"));
+    assert!(!body.contains("<script>"));
+    let (status, _, body) = send(&app, get(&format!("/evidence/{}", event.id), Some(&admin))).await;
+    assert_eq!(status, StatusCode::OK);
+    assert!(!body.contains("<script>"));
+    assert_eq!(
+        send(
+            &app,
+            post(
+                &format!("/alerts/{id}"),
+                Some(&admin),
+                "csrf=bad&status=ACKNOWLEDGED&disposition=&assignee=&note=review"
+            )
+        )
+        .await
+        .0,
+        StatusCode::FORBIDDEN
+    );
+    assert_eq!(
+        send(
+            &app,
+            post(
+                &format!("/alerts/{id}"),
+                Some(&admin),
+                &format!("csrf={csrf}&status=ACKNOWLEDGED&disposition=&assignee=admin&note=review")
+            )
+        )
+        .await
+        .0,
+        StatusCode::SEE_OTHER
+    );
+    assert_eq!(store.alert(&id).unwrap().unwrap().status, "ACKNOWLEDGED");
+    assert!(store.verify_audit_trail().unwrap().is_none());
+}

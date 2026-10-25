@@ -29,6 +29,12 @@ pub struct WatchConfig {
     pub max_requests_per_minute: usize,
     #[serde(default)]
     pub web: WebConfig,
+    #[serde(default)]
+    pub notifications: crate::notify::NotificationConfig,
+    #[serde(default)]
+    pub rules: crate::rules::RuleSettings,
+    #[serde(default)]
+    pub snapshot_directory: Option<PathBuf>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -133,6 +139,12 @@ impl WatchConfig {
         }
         if !(1..=24).contains(&self.web.session_hours) {
             bail!("session_hours must be between 1 and 24");
+        }
+        self.notifications.validate(&self.tenant_domain)?;
+        if !(2..=10_000).contains(&self.rules.bulk_threshold)
+            || !(2..=100).contains(&self.rules.baseline_multiplier)
+        {
+            bail!("invalid detection thresholds");
         }
         Ok(())
     }

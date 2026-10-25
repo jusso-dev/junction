@@ -85,11 +85,46 @@ fn sanitise_at(value: &Value, depth: usize) -> Value {
         Value::Object(map) => Value::Object(
             map.iter()
                 .take(MAX_KEYS)
-                .map(|(k, v)| (clean(k, 128), sanitise_at(v, depth + 1)))
+                .map(|(k, v)| {
+                    let field = map
+                        .get("Name")
+                        .or_else(|| map.get("displayName"))
+                        .and_then(Value::as_str);
+                    let redact = sensitive_field(k)
+                        || (matches!(
+                            k.as_str(),
+                            "Value" | "NewValue" | "OldValue" | "newValue" | "oldValue"
+                        ) && field.is_some_and(sensitive_field));
+                    (
+                        clean(k, 128),
+                        if redact {
+                            Value::String("[redacted]".into())
+                        } else {
+                            sanitise_at(v, depth + 1)
+                        },
+                    )
+                })
                 .collect(),
         ),
         other => other.clone(),
     }
+}
+
+fn sensitive_field(name: &str) -> bool {
+    let folded: String = name
+        .chars()
+        .filter(|c| c.is_ascii_alphanumeric())
+        .flat_map(char::to_lowercase)
+        .collect();
+    [
+        "password",
+        "clientsecret",
+        "secrettext",
+        "accesstoken",
+        "refreshtoken",
+        "privatekey",
+    ]
+    .contains(&folded.as_str())
 }
 
 /// Strip control characters (including bidi overrides) and bound length.

@@ -126,9 +126,9 @@ async fn free_tenant_probe_distinguishes_every_state() {
     );
     assert!(
         report
-            .blocked_detections
+            .runnable_detections
             .contains(&"M365-ID-001".to_string()),
-        "the Graph directory audit probe succeeds, but it is not collected in this release, so it must not claim identity coverage while the unified Entra feed is disabled"
+        "Graph directory audits now have a collector independent of the unified feed"
     );
     assert_eq!(
         store.capabilities().unwrap().len(),
@@ -277,8 +277,16 @@ async fn subscription_start_is_audited_rate_limited_and_validated() {
 #[tokio::test]
 async fn enrichment_alone_never_claims_detection_coverage() {
     // Organisation and SharePoint settings probes succeed, every audit feed is off.
+    // The new Graph audit collectors must also be unavailable.
     let store = Store::in_memory(TENANT).unwrap();
     let m = Mock::new();
+    m.route(
+        Api::Graph,
+        "GET",
+        "/v1.0/auditLogs/",
+        None,
+        vec![err(403, "Authorization_RequestDenied")],
+    );
     m.route(
         Api::Graph,
         "GET",

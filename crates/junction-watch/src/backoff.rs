@@ -55,6 +55,9 @@ impl Backoff {
         loop {
             match call().await {
                 Ok(value) => return Ok(value),
+                // Long server delays belong to the persistent collector schedule;
+                // never shorten Retry-After just to fit an in-process retry budget.
+                Err(error) if error.retry_after.is_some_and(|d| d > self.cap) => return Err(error),
                 Err(error) if error.is_transient() && attempt + 1 < self.attempts => {
                     let delay = self.delay(attempt, &error);
                     if !delay.is_zero() {
