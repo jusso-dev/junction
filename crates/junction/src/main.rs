@@ -64,6 +64,8 @@ struct Cli {
 }
 #[derive(Subcommand)]
 enum Command {
+    /// Microsoft 365 security watchdog: licence-aware audit collection and coverage.
+    Watch(junction_watch::cli::WatchArgs),
     /// Explore the API catalog in an interactive Ratatui terminal interface.
     Tui {
         #[arg(long)]
@@ -745,6 +747,10 @@ async fn run() -> Result<()> {
         compact: cli.json,
         quiet: cli.quiet,
     };
+    if let Command::Watch(args) = cli.command {
+        let result = junction_watch::cli::run(args).await?;
+        return output_options.emit(&result);
+    }
     if let Command::Openapi { output } = &cli.command {
         let contract = junction_server::openapi();
         if let Some(path) = output {
@@ -1856,7 +1862,8 @@ async fn run() -> Result<()> {
         | Command::Import { .. }
         | Command::Schema { .. }
         | Command::Sources { .. }
-        | Command::Context { .. } => unreachable!(),
+        | Command::Context { .. }
+        | Command::Watch(_) => unreachable!(),
     };
     output_options.emit(&output)?;
     Ok(())
@@ -1995,6 +2002,11 @@ async fn async_main() {
         // Only explicitly safe structured errors are exposed; parser errors may contain secrets.
         if let Some(busy) = error.downcast_ref::<credential_lock::CredentialBusy>() {
             eprintln!("{}", busy.response());
+        } else if let Some(watch) = error.downcast_ref::<junction_watch::cli::WatchError>() {
+            eprintln!(
+                "{}",
+                serde_json::json!({"error":"watch_failed","message":watch.to_string()})
+            );
         } else if let Some(server) = error.downcast_ref::<junction_server::ServerError>() {
             eprintln!(
                 "{}",

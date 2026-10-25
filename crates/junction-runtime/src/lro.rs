@@ -924,6 +924,7 @@ mod tests {
             token: &token,
         };
         let response = junction_http::HttpResponse {
+            next_page_uri: None,
             continuation_token: None,
             status: 201,
             body: json!({"properties":{"provisioningState":"Accepted"}}),
@@ -1000,6 +1001,7 @@ mod tests {
             token: &token,
         };
         let response = junction_http::HttpResponse {
+            next_page_uri: None,
             continuation_token: None,
             status: 201,
             body: json!({"properties":{"provisioningState":"Accepted"},"private":"body-secret"}),

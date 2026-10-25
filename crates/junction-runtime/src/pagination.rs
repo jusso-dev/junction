@@ -472,6 +472,7 @@ mod tests {
                 .unwrap();
         pages.begin_page(&origin).unwrap();
         let response = junction_http::HttpResponse {
+            next_page_uri: None,
             status: 200,
             body: json!({"items":[1],"metadata":{"resume/key~value":"https://evil.example/?injected=yes&x=1"}}),
             continuation_token: None,
@@ -490,6 +491,7 @@ mod tests {
         assert_eq!(pairs["cursor"], "https://evil.example/?injected=yes&x=1");
         pages.begin_page(&next).unwrap();
         let final_response = junction_http::HttpResponse {
+            next_page_uri: None,
             body: json!({"items":[2],"metadata":{}}),
             ..response
         };
@@ -520,6 +522,7 @@ mod tests {
             let origin = pages.origin.clone();
             pages.begin_page(&origin).unwrap();
             let response = junction_http::HttpResponse {
+                next_page_uri: None,
                 status: 200,
                 body,
                 continuation_token: None,
@@ -547,6 +550,7 @@ mod tests {
             let origin = pages.origin.clone();
             pages.begin_page(&origin).unwrap();
             let response = junction_http::HttpResponse {
+                next_page_uri: None,
                 status: 200,
                 body: json!({"items":[1,2],"more":link,"value":[99],"nextLink":"https://ignored.example"}),
                 continuation_token: None,
@@ -563,6 +567,7 @@ mod tests {
                 assert_eq!(next.path(), "/second");
                 pages.begin_page(&next).unwrap();
                 let last = junction_http::HttpResponse {
+                    next_page_uri: None,
                     body: json!({"items":[3],"more":null}),
                     ..response
                 };
@@ -575,6 +580,7 @@ mod tests {
         let origin = named_pages.origin.clone();
         named_pages.begin_page(&origin).unwrap();
         let named_response = junction_http::HttpResponse {
+            next_page_uri: None,
             status: 200,
             body: json!({"items":[1],"more":"/second"}),
             continuation_token: None,
@@ -592,6 +598,7 @@ mod tests {
         let origin = pages.origin.clone();
         pages.begin_page(&origin).unwrap();
         let response = junction_http::HttpResponse {
+            next_page_uri: None,
             status: 200,
             body: json!({"items":[1,2],"more":"https://ignored.example"}),
             continuation_token: None,
@@ -626,6 +633,7 @@ mod tests {
                 let origin = pages.origin.clone();
                 pages.begin_page(&origin).unwrap();
                 let response = junction_http::HttpResponse {
+                    next_page_uri: None,
                     continuation_token: None,
                     status: 200,
                     body: json!({"value":[1],name:value,"nextLink":next_link}),
@@ -654,6 +662,7 @@ mod tests {
             let origin = pages.origin.clone();
             pages.begin_page(&origin).unwrap();
             let response = junction_http::HttpResponse {
+                next_page_uri: None,
                 continuation_token: None,
                 status: 200,
                 body: json!({"value":[1],name:"ignored"}),
@@ -683,6 +692,7 @@ mod tests {
             .operations
             .remove(0);
         let response = junction_http::HttpResponse {
+            next_page_uri: None,
             continuation_token: Some(junction_auth::Secret::new("page-two".into()).unwrap()),
             status: 200,
             body: json!({"value":[1],"nextLink":"/other"}),
@@ -727,6 +737,7 @@ mod tests {
             );
             pages.begin_page(&next).unwrap();
             let last = junction_http::HttpResponse {
+                next_page_uri: None,
                 continuation_token: None,
                 status: 200,
                 body: json!({"value":[2]}),

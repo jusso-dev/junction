@@ -117,6 +117,17 @@ Cloud contexts resolve endpoints and token audiences for `graph`, `arm`, `defend
 
 Development status: prerelease. The catalog, CLI, Rust crates, MCP server, local HTTP API and TUI are implemented and tested on Linux, macOS and Windows. Representative read-only calls have been verified against a live tenant. Write operations, sovereign clouds and most credential flows have not yet been exercised against live services. Evaluate carefully before relying on it for production automation, and see the [disclaimer](DISCLAIMER.md).
 
+## M365 security watchdog
+
+`junction watch` adds continuous, read-only Microsoft 365 audit collection for small organisations on free or donated plans. Every data source is checked with a live probe and reported as available, needing a permission or licence, or not enabled. Collection survives throttling, laptop sleep and duplicate delivery, and a loopback dashboard shows coverage and gaps. It is in Phase 1: collection and coverage work, and detections and alerts come next. See [docs/WATCH.md](docs/WATCH.md).
+
+```sh
+junction watch init --tenant-id <guid> --domain club.org.au --client-id <guid>
+junction watch permissions        # what each read-only permission is for
+junction watch probe              # live capability discovery
+junction watch run                # collect every 15 minutes, dashboard on 127.0.0.1:8787
+```
+
 ## Disclaimer and terms of use
 
 Junction does not represent Microsoft. Microsoft has not reviewed, approved or endorsed it, and Microsoft provides no support for it. It is a consolidation tool: it reads Microsoft's public API definitions and documentation and sends the requests you choose, with credentials you supply. It does not grant access, bypass licensing or change what any service allows.
