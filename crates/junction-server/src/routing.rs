@@ -100,7 +100,12 @@ pub fn route(method: &str, target: &str, body: &[u8]) -> Result<Route, HttpError
                 || id.len() > 512
                 || !id
                     .bytes()
-                    .all(|byte| byte.is_ascii_alphanumeric() || b"._".contains(&byte))
+                    // Run ids also contain `-`; operation ids never do.
+                    .all(|byte| {
+                        byte.is_ascii_alphanumeric()
+                            || b"._".contains(&byte)
+                            || (byte == b'-' && template == "/v1/checks/runs/{id}")
+                    })
             {
                 return Err(error(400, "Invalid operation identifier"));
             }
