@@ -6,10 +6,10 @@
       "receipt": {
         "bytes": 49561,
         "path": "specification/monitor/data-plane/OperationalInsights/stable/v1/OperationalInsights.json",
-        "revision": "93a8c9c0b8871fcd7e73813246246d647227dc3c",
+        "revision": "ccb1d2651ed7faf231a8ee81d4e1f0e10089ce9d",
         "sha256": "a204fb911757d795a636de7e47bc9285f672744bd0c037db8191272c95654235",
         "source": "azure-log-analytics-query",
-        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/93a8c9c0b8871fcd7e73813246246d647227dc3c/specification/monitor/data-plane/OperationalInsights/stable/v1/OperationalInsights.json"
+        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/ccb1d2651ed7faf231a8ee81d4e1f0e10089ce9d/specification/monitor/data-plane/OperationalInsights/stable/v1/OperationalInsights.json"
       },
       "status": "imported"
     }
@@ -21,11 +21,11 @@
         "blob_sha": "47bffb5f2a7f4ddd3de28a32aa9590023ee71121",
         "bytes": 49561,
         "path": "specification/monitor/data-plane/OperationalInsights/stable/v1/OperationalInsights.json",
-        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/93a8c9c0b8871fcd7e73813246246d647227dc3c/specification/monitor/data-plane/OperationalInsights/stable/v1/OperationalInsights.json"
+        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/ccb1d2651ed7faf231a8ee81d4e1f0e10089ce9d/specification/monitor/data-plane/OperationalInsights/stable/v1/OperationalInsights.json"
       }
     ],
-    "revision": "93a8c9c0b8871fcd7e73813246246d647227dc3c",
+    "revision": "ccb1d2651ed7faf231a8ee81d4e1f0e10089ce9d",
     "source": "azure-log-analytics-query",
-    "tree_sha": "93a8c9c0b8871fcd7e73813246246d647227dc3c"
+    "tree_sha": "ccb1d2651ed7faf231a8ee81d4e1f0e10089ce9d"
   }
 }
