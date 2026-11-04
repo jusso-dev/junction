@@ -2,26 +2,6 @@
   "documents": [
     {
       "receipt": {
-        "bytes": 2312,
-        "path": "power-platform/analytics/advisor-chat",
-        "sha256": "598656780475ae952c5b4be7a8cf1b108c8447d344ac13115bd3ff1413d5055f",
-        "source": "power-platform",
-        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/analytics/advisor-chat"
-      },
-      "status": "imported"
-    },
-    {
-      "receipt": {
-        "bytes": 4592,
-        "path": "power-platform/analytics/advisor-chat/send-advisor-chat-message",
-        "sha256": "dc9986ca86aa5b1856f114776e5bad08c0326cc6ff92fbbdd7e9e671c7873c25",
-        "source": "power-platform",
-        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/analytics/advisor-chat/send-advisor-chat-message"
-      },
-      "status": "imported"
-    },
-    {
-      "receipt": {
         "bytes": 2703,
         "path": "power-platform/analytics/recommendations",
         "sha256": "cd4ff78b53eb8e710a961a122704ae0748b46880140a1a36835d5abb5903bd69",
@@ -477,6 +457,46 @@
         "sha256": "b0396e41c3134ce75e287f6d4d69c938d543607abab45e9be0cec3f02f03de58",
         "source": "power-platform",
         "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/copilotstudio/bots/set-connector-consent-bypass"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 2495,
+        "path": "power-platform/copilotstudio/licensing-reports",
+        "sha256": "597e479387b66e36121f394f83de73deb3830831ed44866b612a2363fe33c3fd",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/copilotstudio/licensing-reports"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 3992,
+        "path": "power-platform/copilotstudio/licensing-reports/download-licensing-report-file",
+        "sha256": "3e379cc8d315c5fd4ab47c94e2ad79618d2eb49795aee29c15f07b04ae41d70a",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/copilotstudio/licensing-reports/download-licensing-report-file"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 5823,
+        "path": "power-platform/copilotstudio/licensing-reports/generate-licensing-report",
+        "sha256": "faf4bb6234763cc7d25c99f1fb88da5fe1e430af2239f5f8bbda4f23e48e660b",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/copilotstudio/licensing-reports/generate-licensing-report"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 4976,
+        "path": "power-platform/copilotstudio/licensing-reports/get-licensing-report-operation",
+        "sha256": "be1f4bdf7542bbea90fb78c1192f628ac7c3291ae575e1f34a752b9d851a5971",
+        "source": "power-platform",
+        "upstream": "https://learn.microsoft.com/en-us/rest/api/power-platform/copilotstudio/licensing-reports/get-licensing-report-operation"
       },
       "status": "imported"
     },
@@ -2711,7 +2731,7 @@
       "status": "imported"
     }
   ],
-  "imported": 271,
+  "imported": 273,
   "kind": "documentation",
-  "revision": "f3ebe541775d5ef399fa5ffae30fffe9563064123a34d1e8c1828c8a1882461f"
+  "revision": "8eb24d0a72fc067b7ba316b77f3d3945043efdd2539cbad4e8ef0d7c72480b20"
 }

@@ -5,10 +5,10 @@
       "receipt": {
         "bytes": 52428,
         "path": "common/definitions.json",
-        "revision": "505f86c93a1d81549de910892f192ad5cc374358",
+        "revision": "6f817cbcb53a40cd140ace4e049c54942ad7c9ae",
         "sha256": "a0282e20b2d78f95d5d6876b1cc814c10c636cfeef4e1dc6a29fee7ce3fe6ff5",
         "source": "fabric",
-        "upstream": "https://raw.githubusercontent.com/microsoft/fabric-rest-api-specs/505f86c93a1d81549de910892f192ad5cc374358/common/definitions.json"
+        "upstream": "https://raw.githubusercontent.com/microsoft/fabric-rest-api-specs/6f817cbcb53a40cd140ace4e049c54942ad7c9ae/common/definitions.json"
       },
       "status": "dependency"
     },
@@ -16,10 +16,10 @@
       "receipt": {
         "bytes": 14360,
         "path": "common/spark_definitions.json",
-        "revision": "505f86c93a1d81549de910892f192ad5cc374358",
+        "revision": "6f817cbcb53a40cd140ace4e049c54942ad7c9ae",
         "sha256": "67807ffd489805e338b13a2830a958eca8fb210081acd09e43b7692be9b29f8e",
         "source": "fabric",
-        "upstream": "https://raw.githubusercontent.com/microsoft/fabric-rest-api-specs/505f86c93a1d81549de910892f192ad5cc374358/common/spark_definitions.json"
+        "upstream": "https://raw.githubusercontent.com/microsoft/fabric-rest-api-specs/6f817cbcb53a40cd140ace4e049c54942ad7c9ae/common/spark_definitions.json"
       },
       "status": "dependency"
     },
@@ -27,10 +27,10 @@
       "receipt": {
         "bytes": 31261,
         "path": "lakehouse/definitions.json",
-        "revision": "505f86c93a1d81549de910892f192ad5cc374358",
+        "revision": "6f817cbcb53a40cd140ace4e049c54942ad7c9ae",
         "sha256": "90c32e9d09179277eb0c3019fe367fe56462d4374f44d4857fb595cc202421f4",
         "source": "fabric",
-        "upstream": "https://raw.githubusercontent.com/microsoft/fabric-rest-api-specs/505f86c93a1d81549de910892f192ad5cc374358/lakehouse/definitions.json"
+        "upstream": "https://raw.githubusercontent.com/microsoft/fabric-rest-api-specs/6f817cbcb53a40cd140ace4e049c54942ad7c9ae/lakehouse/definitions.json"
       },
       "status": "dependency"
     },
@@ -38,10 +38,10 @@
       "receipt": {
         "bytes": 18690,
         "path": "common/job_scheduling.json",
-        "revision": "505f86c93a1d81549de910892f192ad5cc374358",
+        "revision": "6f817cbcb53a40cd140ace4e049c54942ad7c9ae",
         "sha256": "b3718bab14bb5a3c53e40c8000752f168967466dc3d9d1c83333936cbf119948",
         "source": "fabric",
-        "upstream": "https://raw.githubusercontent.com/microsoft/fabric-rest-api-specs/505f86c93a1d81549de910892f192ad5cc374358/common/job_scheduling.json"
+        "upstream": "https://raw.githubusercontent.com/microsoft/fabric-rest-api-specs/6f817cbcb53a40cd140ace4e049c54942ad7c9ae/common/job_scheduling.json"
       },
       "status": "dependency"
     }
@@ -51,10 +51,10 @@
       "receipt": {
         "bytes": 85814,
         "path": "lakehouse/swagger.json",
-        "revision": "505f86c93a1d81549de910892f192ad5cc374358",
+        "revision": "6f817cbcb53a40cd140ace4e049c54942ad7c9ae",
         "sha256": "b11e13c0f0c5399cad39aa1d08a1fe2c86760bb1f0e72f235f49f258f84752e3",
         "source": "fabric",
-        "upstream": "https://raw.githubusercontent.com/microsoft/fabric-rest-api-specs/505f86c93a1d81549de910892f192ad5cc374358/lakehouse/swagger.json"
+        "upstream": "https://raw.githubusercontent.com/microsoft/fabric-rest-api-specs/6f817cbcb53a40cd140ace4e049c54942ad7c9ae/lakehouse/swagger.json"
       },
       "status": "imported"
     }
@@ -66,11 +66,11 @@
         "blob_sha": "3e1c17266ed25c0ce0d003f8a8dd62f2c1dbb43e",
         "bytes": 85814,
         "path": "lakehouse/swagger.json",
-        "upstream": "https://raw.githubusercontent.com/microsoft/fabric-rest-api-specs/505f86c93a1d81549de910892f192ad5cc374358/lakehouse/swagger.json"
+        "upstream": "https://raw.githubusercontent.com/microsoft/fabric-rest-api-specs/6f817cbcb53a40cd140ace4e049c54942ad7c9ae/lakehouse/swagger.json"
       }
     ],
-    "revision": "505f86c93a1d81549de910892f192ad5cc374358",
+    "revision": "6f817cbcb53a40cd140ace4e049c54942ad7c9ae",
     "source": "fabric",
-    "tree_sha": "505f86c93a1d81549de910892f192ad5cc374358"
+    "tree_sha": "6f817cbcb53a40cd140ace4e049c54942ad7c9ae"
   }
 }
