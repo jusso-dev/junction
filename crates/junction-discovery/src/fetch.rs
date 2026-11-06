@@ -31,6 +31,17 @@ impl FetchFailure {
             http_status: None,
         }
     }
+    fn is_transient(&self) -> bool {
+        match self.kind {
+            FetchFailureKind::Transport
+            | FetchFailureKind::Timeout
+            | FetchFailureKind::ResponseRead => true,
+            FetchFailureKind::HttpStatus => self
+                .http_status
+                .is_some_and(|status| status == 429 || (500..600).contains(&status)),
+            FetchFailureKind::SizeLimit => false,
+        }
+    }
     fn transport(error: reqwest::Error, fallback: FetchFailureKind) -> Self {
         Self::new(if error.is_timeout() {
             FetchFailureKind::Timeout
@@ -78,7 +89,11 @@ pub struct OfficialFetcher {
     client: reqwest::Client,
     max_bytes: usize,
     api_token: Option<reqwest::header::HeaderValue>,
+    retry_delay: Duration,
 }
+/// Each request is tried at most this many times. Only transient failures
+/// (transport errors, timeouts, 429 and 5xx) are retried.
+const DOWNLOAD_ATTEMPTS: u32 = 3;
 impl OfficialFetcher {
     pub fn new(max_bytes: usize) -> Result<Self> {
         if max_bytes == 0 || max_bytes > 128 * 1024 * 1024 {
@@ -109,6 +124,7 @@ impl OfficialFetcher {
             client,
             max_bytes,
             api_token,
+            retry_delay: Duration::from_secs(2),
         })
     }
     /// Resolve latest default-branch commit when revision is absent, then download
@@ -237,7 +253,22 @@ impl OfficialFetcher {
         let bytes = walker.finish()?;
         inventory(source, &owner, &repository, &revision, &bytes)
     }
+    /// Downloads are idempotent GETs of immutable content, so a dropped
+    /// connection or a brief upstream outage is retried with backoff rather
+    /// than failing a whole catalog refresh.
     async fn download(&self, url: Url, max_bytes: usize) -> Result<Vec<u8>> {
+        let mut attempt = 1;
+        loop {
+            match self.download_once(url.clone(), max_bytes).await {
+                Err(failure) if attempt < DOWNLOAD_ATTEMPTS && failure.is_transient() => {
+                    tokio::time::sleep(self.retry_delay * attempt).await;
+                    attempt += 1;
+                }
+                result => return Ok(result?),
+            }
+        }
+    }
+    async fn download_once(&self, url: Url, max_bytes: usize) -> Result<Vec<u8>, FetchFailure> {
         let api = url.host_str() == Some("api.github.com");
         let mut request = self.client.get(url);
         if let (true, Some(token)) = (api, &self.api_token) {
@@ -251,14 +282,13 @@ impl OfficialFetcher {
             return Err(FetchFailure {
                 kind: FetchFailureKind::HttpStatus,
                 http_status: Some(response.status().as_u16()),
-            }
-            .into());
+            });
         }
         if response
             .content_length()
             .is_some_and(|len| len > max_bytes as u64)
         {
-            return Err(FetchFailure::new(FetchFailureKind::SizeLimit).into());
+            return Err(FetchFailure::new(FetchFailureKind::SizeLimit));
         }
         let mut bytes = Vec::new();
         while let Some(chunk) = response
@@ -267,7 +297,7 @@ impl OfficialFetcher {
             .map_err(|error| FetchFailure::transport(error, FetchFailureKind::ResponseRead))?
         {
             if bytes.len().saturating_add(chunk.len()) > max_bytes {
-                return Err(FetchFailure::new(FetchFailureKind::SizeLimit).into());
+                return Err(FetchFailure::new(FetchFailureKind::SizeLimit));
             }
             bytes.extend_from_slice(&chunk);
         }
@@ -1009,6 +1039,10 @@ mod tests {
 #[cfg(test)]
 mod transport_tests {
     use super::*;
+    use std::sync::{
+        Arc,
+        atomic::{AtomicUsize, Ordering},
+    };
     use tokio::{
         io::{AsyncReadExt, AsyncWriteExt},
         net::TcpListener,
@@ -1051,6 +1085,7 @@ mod transport_tests {
             api_token: Some(reqwest::header::HeaderValue::from_static(
                 "Bearer private-api-token",
             )),
+            retry_delay: Duration::ZERO,
         }
     }
     #[tokio::test]
@@ -1092,6 +1127,54 @@ mod transport_tests {
             assert!(!error.to_string().contains("secret-echo"));
             task.await.unwrap();
         }
+    }
+    /// Serve one canned response per connection, in order; `None` drops the
+    /// connection without answering. The counter reports connections accepted.
+    async fn sequence(responses: &[Option<&str>]) -> (Url, Arc<AtomicUsize>) {
+        let listener = TcpListener::bind("127.0.0.1:0").await.unwrap();
+        let url = Url::parse(&format!(
+            "http://{}/spec.yaml",
+            listener.local_addr().unwrap()
+        ))
+        .unwrap();
+        let responses: Vec<_> = responses.iter().map(|r| r.map(str::to_owned)).collect();
+        let accepted = Arc::new(AtomicUsize::new(0));
+        let counter = accepted.clone();
+        tokio::spawn(async move {
+            for response in responses {
+                let (mut stream, _) = listener.accept().await.unwrap();
+                counter.fetch_add(1, Ordering::SeqCst);
+                let mut buffer = [0; 1024];
+                let _ = stream.read(&mut buffer).await.unwrap();
+                if let Some(response) = response {
+                    let _ = stream.write_all(response.as_bytes()).await;
+                }
+            }
+        });
+        (url, accepted)
+    }
+    #[tokio::test]
+    async fn transient_failures_are_retried() {
+        let (url, accepted) = sequence(&[
+            None,
+            Some("HTTP/1.1 503 Service Unavailable\r\nContent-Length: 0\r\nConnection: close\r\n\r\n"),
+            Some("HTTP/1.1 200 OK\r\nContent-Length: 3\r\nConnection: close\r\n\r\nabc"),
+        ])
+        .await;
+        assert_eq!(fetcher().download(url, 10).await.unwrap(), b"abc");
+        assert_eq!(accepted.load(Ordering::SeqCst), 3);
+    }
+    #[tokio::test]
+    async fn persistent_transient_failures_stop_after_bounded_attempts() {
+        let unavailable =
+            "HTTP/1.1 502 Bad Gateway\r\nContent-Length: 0\r\nConnection: close\r\n\r\n";
+        let (url, accepted) = sequence(&[Some(unavailable); 4]).await;
+        let error = fetcher().download(url, 10).await.unwrap_err();
+        assert_eq!(
+            serde_json::to_value(error.downcast_ref::<FetchFailure>().unwrap()).unwrap(),
+            serde_json::json!({"kind":"http_status","http_status":502})
+        );
+        assert_eq!(accepted.load(Ordering::SeqCst), 3);
     }
 }
 
