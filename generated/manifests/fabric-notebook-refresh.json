@@ -1,14 +1,14 @@
 {
-  "bytes": 275905,
+  "bytes": 280909,
   "dependencies": [
     {
       "receipt": {
-        "bytes": 52428,
+        "bytes": 52685,
         "path": "common/definitions.json",
-        "revision": "6f817cbcb53a40cd140ace4e049c54942ad7c9ae",
-        "sha256": "a0282e20b2d78f95d5d6876b1cc814c10c636cfeef4e1dc6a29fee7ce3fe6ff5",
+        "revision": "3f8600f9cbe3105b91015db31a6cd96915eeebd4",
+        "sha256": "9b98d96172ac074eccd926ec29e8896077ea9f0f93642733536ab33af34babd4",
         "source": "fabric",
-        "upstream": "https://raw.githubusercontent.com/microsoft/fabric-rest-api-specs/6f817cbcb53a40cd140ace4e049c54942ad7c9ae/common/definitions.json"
+        "upstream": "https://raw.githubusercontent.com/microsoft/fabric-rest-api-specs/3f8600f9cbe3105b91015db31a6cd96915eeebd4/common/definitions.json"
       },
       "status": "dependency"
     },
@@ -16,10 +16,10 @@
       "receipt": {
         "bytes": 14360,
         "path": "common/spark_definitions.json",
-        "revision": "6f817cbcb53a40cd140ace4e049c54942ad7c9ae",
+        "revision": "3f8600f9cbe3105b91015db31a6cd96915eeebd4",
         "sha256": "67807ffd489805e338b13a2830a958eca8fb210081acd09e43b7692be9b29f8e",
         "source": "fabric",
-        "upstream": "https://raw.githubusercontent.com/microsoft/fabric-rest-api-specs/6f817cbcb53a40cd140ace4e049c54942ad7c9ae/common/spark_definitions.json"
+        "upstream": "https://raw.githubusercontent.com/microsoft/fabric-rest-api-specs/3f8600f9cbe3105b91015db31a6cd96915eeebd4/common/spark_definitions.json"
       },
       "status": "dependency"
     },
@@ -27,10 +27,10 @@
       "receipt": {
         "bytes": 31511,
         "path": "notebook/definitions.json",
-        "revision": "6f817cbcb53a40cd140ace4e049c54942ad7c9ae",
+        "revision": "3f8600f9cbe3105b91015db31a6cd96915eeebd4",
         "sha256": "ca9771788844257425328cf7086ce7cc17844b2bdc7be1624c3c27581b48fd20",
         "source": "fabric",
-        "upstream": "https://raw.githubusercontent.com/microsoft/fabric-rest-api-specs/6f817cbcb53a40cd140ace4e049c54942ad7c9ae/notebook/definitions.json"
+        "upstream": "https://raw.githubusercontent.com/microsoft/fabric-rest-api-specs/3f8600f9cbe3105b91015db31a6cd96915eeebd4/notebook/definitions.json"
       },
       "status": "dependency"
     },
@@ -38,21 +38,21 @@
       "receipt": {
         "bytes": 18690,
         "path": "common/job_scheduling.json",
-        "revision": "6f817cbcb53a40cd140ace4e049c54942ad7c9ae",
+        "revision": "3f8600f9cbe3105b91015db31a6cd96915eeebd4",
         "sha256": "b3718bab14bb5a3c53e40c8000752f168967466dc3d9d1c83333936cbf119948",
         "source": "fabric",
-        "upstream": "https://raw.githubusercontent.com/microsoft/fabric-rest-api-specs/6f817cbcb53a40cd140ace4e049c54942ad7c9ae/common/job_scheduling.json"
+        "upstream": "https://raw.githubusercontent.com/microsoft/fabric-rest-api-specs/3f8600f9cbe3105b91015db31a6cd96915eeebd4/common/job_scheduling.json"
       },
       "status": "dependency"
     },
     {
       "receipt": {
-        "bytes": 111826,
+        "bytes": 116573,
         "path": "platform/definitions/platform.json",
-        "revision": "6f817cbcb53a40cd140ace4e049c54942ad7c9ae",
-        "sha256": "b7de076122df501b3fa201c964aa61f9ebdcc31da7f447c91a92a1356f0de9b7",
+        "revision": "3f8600f9cbe3105b91015db31a6cd96915eeebd4",
+        "sha256": "fe72405e5a7d07fba172704562d293d9ef4d6c118b6f761c8304d1f971e89573",
         "source": "fabric",
-        "upstream": "https://raw.githubusercontent.com/microsoft/fabric-rest-api-specs/6f817cbcb53a40cd140ace4e049c54942ad7c9ae/platform/definitions/platform.json"
+        "upstream": "https://raw.githubusercontent.com/microsoft/fabric-rest-api-specs/3f8600f9cbe3105b91015db31a6cd96915eeebd4/platform/definitions/platform.json"
       },
       "status": "dependency"
     }
@@ -62,10 +62,10 @@
       "receipt": {
         "bytes": 47090,
         "path": "notebook/swagger.json",
-        "revision": "6f817cbcb53a40cd140ace4e049c54942ad7c9ae",
+        "revision": "3f8600f9cbe3105b91015db31a6cd96915eeebd4",
         "sha256": "1c33c971557f53e423140010bf2398208b3fc682bed67463ef5c0edf1723ae33",
         "source": "fabric",
-        "upstream": "https://raw.githubusercontent.com/microsoft/fabric-rest-api-specs/6f817cbcb53a40cd140ace4e049c54942ad7c9ae/notebook/swagger.json"
+        "upstream": "https://raw.githubusercontent.com/microsoft/fabric-rest-api-specs/3f8600f9cbe3105b91015db31a6cd96915eeebd4/notebook/swagger.json"
       },
       "status": "imported"
     }
@@ -77,11 +77,11 @@
         "blob_sha": "47c14ff60ee52c20e5a7f6ffc5af8500b299b09c",
         "bytes": 47090,
         "path": "notebook/swagger.json",
-        "upstream": "https://raw.githubusercontent.com/microsoft/fabric-rest-api-specs/6f817cbcb53a40cd140ace4e049c54942ad7c9ae/notebook/swagger.json"
+        "upstream": "https://raw.githubusercontent.com/microsoft/fabric-rest-api-specs/3f8600f9cbe3105b91015db31a6cd96915eeebd4/notebook/swagger.json"
       }
     ],
-    "revision": "6f817cbcb53a40cd140ace4e049c54942ad7c9ae",
+    "revision": "3f8600f9cbe3105b91015db31a6cd96915eeebd4",
     "source": "fabric",
-    "tree_sha": "6f817cbcb53a40cd140ace4e049c54942ad7c9ae"
+    "tree_sha": "3f8600f9cbe3105b91015db31a6cd96915eeebd4"
   }
 }
