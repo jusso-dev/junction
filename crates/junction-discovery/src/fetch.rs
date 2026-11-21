@@ -123,7 +123,7 @@ impl OfficialFetcher {
         let revision = self.resolve_revision(&owner, &repository, revision).await?;
         let url = raw_url(&owner, &repository, &revision, path)?;
         let bytes = self.download(url.clone(), self.max_bytes).await?;
-        let sha256 = format!("{:x}", Sha256::digest(&bytes));
+        let sha256 = crate::hex(&Sha256::digest(&bytes));
         Ok(FetchedDocument {
             receipt: FetchReceipt {
                 source: source.id.clone(),

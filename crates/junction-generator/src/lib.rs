@@ -21,7 +21,10 @@ pub fn generate(schemas: &BTreeMap<String, CanonicalSchema>) -> Result<RustModul
     let types: BTreeMap<_, _> = schemas
         .keys()
         .map(|reference| {
-            let digest = format!("{:x}", Sha256::digest(reference.as_bytes()));
+            let digest: String = Sha256::digest(reference.as_bytes())
+                .iter()
+                .map(|b| format!("{b:02x}"))
+                .collect();
             let mut name = readable_name(reference);
             if !used.insert(name.clone()) {
                 name = format!("{name}{}", &digest[..8]);

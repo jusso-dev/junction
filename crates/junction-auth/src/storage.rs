@@ -371,7 +371,10 @@ fn account(request: &TokenRequest) -> Result<String> {
         key.flow,
     ))
     .map_err(|_| anyhow::anyhow!("credential context encoding failed"))?;
-    Ok(format!("{:x}", Sha256::digest(bytes)))
+    Ok(Sha256::digest(bytes)
+        .iter()
+        .map(|b| format!("{b:02x}"))
+        .collect())
 }
 
 /// Stable opaque identifier for coordinating processes using this acquisition context.
