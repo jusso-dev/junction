@@ -87,7 +87,7 @@ jobs:
           echo "commit=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
       - name: Stage catalog bundle
         run: tar -czf endpoint-catalogs.tar.gz generated
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: endpoint-catalogs
           path: endpoint-catalogs.tar.gz
@@ -147,7 +147,7 @@ jobs:
           Compress-Archive -Path "dist/$name/*" -DestinationPath "dist/$name.zip"
           $digest = (Get-FileHash "dist/$name.zip" -Algorithm SHA256).Hash.ToLowerInvariant()
           "$digest  $name.zip" | Set-Content -Encoding ascii "dist/$name.zip.sha256"
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: junction-${{ matrix.platform }}
           path: |
