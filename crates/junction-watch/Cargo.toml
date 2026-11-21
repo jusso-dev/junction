@@ -19,7 +19,7 @@ clap.workspace = true
 tokio = { version = "1", features = ["macros", "rt-multi-thread", "time", "signal", "net", "sync", "process", "io-util"] }
 url = "2"
 toml = "0.8"
-rusqlite = { version = "0.41", features = ["bundled", "fallible_uint"] }
+rusqlite = { version = "0.43", features = ["bundled", "fallible_uint"] }
 sha2 = "0.10"
 ring = "0.17.14"
 base64 = "0.22"
