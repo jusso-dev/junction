@@ -6,7 +6,7 @@ use crate::{clock::Instant, event::sha256_hex, store::Store};
 use anyhow::{Result, bail};
 use argon2::{
     Argon2,
-    password_hash::{PasswordHash, PasswordHasher, PasswordVerifier, SaltString},
+    password_hash::{PasswordHasher, PasswordVerifier, phc::PasswordHash},
 };
 use base64::{Engine, engine::general_purpose::URL_SAFE_NO_PAD};
 use rusqlite::{OptionalExtension, params};
@@ -82,10 +82,8 @@ fn hash_password(password: &str) -> Result<String> {
     }
     let mut salt = [0u8; 16];
     getrandom::fill(&mut salt).map_err(|_| anyhow::anyhow!("randomness unavailable"))?;
-    let salt =
-        SaltString::encode_b64(&salt).map_err(|_| anyhow::anyhow!("salt encoding failed"))?;
     Ok(Argon2::default()
-        .hash_password(password.as_bytes(), &salt)
+        .hash_password_with_salt(password.as_bytes(), &salt)
         .map_err(|_| anyhow::anyhow!("password hashing failed"))?
         .to_string())
 }

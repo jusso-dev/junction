@@ -13,7 +13,7 @@ jobs:
   check:
     runs-on: ${{ fromJSON(vars.CI_RUNNER_LINUX || '"ubuntu-latest"') }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: dtolnay/rust-toolchain@stable
         with:
           components: rustfmt, clippy
@@ -34,7 +34,7 @@ jobs:
     # Fixture-only security check tests with the network guard on.
     runs-on: ${{ fromJSON(vars.CI_RUNNER_LINUX || '"ubuntu-latest"') }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: dtolnay/rust-toolchain@stable
       - name: Fixtures are synthetic
         run: bash scripts/tests/verify-check-fixtures.sh
@@ -48,6 +48,6 @@ jobs:
         runner: ${{ fromJSON(vars.CI_NATIVE_RUNNERS || '["macos-latest","windows-latest"]') }}
     runs-on: ${{ matrix.runner }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: dtolnay/rust-toolchain@stable
       - run: cargo test --workspace --locked

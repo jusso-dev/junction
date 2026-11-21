@@ -7,7 +7,7 @@ license.workspace = true
 repository.workspace = true
 [dependencies]
 zeroize = "1"
-base64 = "0.22"
+base64 = "0.23"
 junction-core = { path = "../junction-core" }
 junction-auth = { path = "../junction-auth" }
 junction-policy = { path = "../junction-policy" }
