@@ -1,0 +1,18 @@
+{
+  "affected": {
+    "items": [
+      "Legacy Sync (00000000-0000-4000-8000-000000000d04) (1 secret(s))"
+    ],
+    "total": 1
+  },
+  "evidence": {
+    "data": {
+      "service_principals": 4,
+      "with_secrets": 1
+    },
+    "summary": "1 third-party service principals carry client secrets."
+  },
+  "id": "apps.sp_password_credentials",
+  "reason": null,
+  "status": "warn"
+}

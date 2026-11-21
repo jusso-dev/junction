@@ -1,0 +1,19 @@
+{
+  "affected": {
+    "items": [
+      "Payroll Sync (secret expires 2026-11-10)"
+    ],
+    "total": 1
+  },
+  "evidence": {
+    "data": {
+      "expired": 0,
+      "expiring": 1,
+      "warn_days": 30
+    },
+    "summary": "1 app credentials expire within 30 days."
+  },
+  "id": "apps.credential_expiry",
+  "reason": null,
+  "status": "warn"
+}

@@ -28,6 +28,17 @@ pub fn tools() -> Value {
     execute["continuation"] = json!({"type":"string","pattern":"^[0-9a-f]{64}$"});
     // Single-use approval an operator recorded with `junction approvals issue`.
     execute["approval_id"] = json!({"type":"string","pattern":"^[0-9a-f]{32}$"});
+    let context_name = json!({"type":"string","pattern":"^[A-Za-z0-9_-][A-Za-z0-9._-]{0,79}$"});
+    let names = |pattern: &str| json!({"type":"array","maxItems":100,"items":{"type":"string","pattern":pattern}});
+    let check_filters = json!({
+        "packs":{"type":"array","maxItems":16,"items":{"type":"string","enum":["identity","endpoint","intune","email","backup","sentinel","apps","collaboration","azure"]}},
+        "checks":names("^[a-z][a-z0-9_]*\\.[a-z][a-z0-9_]*$"),
+        "exclude":names("^[a-z][a-z0-9_]*\\.[a-z][a-z0-9_]*$"),
+        "tags":names("^[A-Za-z0-9:._-]{1,64}$")});
+    let mut check_run = check_filters.clone();
+    check_run["contexts"] = names("^[A-Za-z0-9_-][A-Za-z0-9._-]{0,79}$");
+    check_run["all_contexts"] = json!({"type":"boolean"});
+    check_run["background"] = json!({"type":"boolean"});
     let definitions = [
         (
             "junction_search",
@@ -79,6 +90,39 @@ pub fn tools() -> Value {
                 json!(["action"]),
             ),
             true,
+        ),
+        (
+            "junction_check_list",
+            "List read-only security posture checks with severity, framework tags (Essential Eight, ISM, CIS, ATT&CK) and the permissions each needs.",
+            schema(check_filters.clone(), json!([])),
+            true,
+        ),
+        (
+            "junction_check_run",
+            "Run read-only security posture checks against operator-configured contexts. Returns the result (docs/check-result.schema.json), or with background=true a run id to poll with junction_check_run_status.",
+            schema(check_run, json!([])),
+            true,
+        ),
+        (
+            "junction_check_run_status",
+            "Progress and result of a background check run, or a stored run from history (give the context).",
+            schema(
+                json!({"run_id":{"type":"string","pattern":"^[A-Za-z0-9._-]{1,128}$"},"context":context_name.clone()}),
+                json!(["run_id"]),
+            ),
+            true,
+        ),
+        (
+            "junction_check_attestations",
+            "List manual checks awaiting a person's answer. Submitting an answer is refused unless the operator started the host with --allow-attest.",
+            schema(
+                json!({"action":{"type":"string","enum":["pending","submit"]},"context":context_name,
+                "check":{"type":"string","pattern":"^[a-z][a-z0-9_]*\\.[a-z][a-z0-9_]*$"},
+                "answer":{"type":"string","enum":["yes","no","partial","not_applicable"]},
+                "note":{"type":"string","maxLength":2000}}),
+                json!(["action"]),
+            ),
+            false,
         ),
     ];
     Value::Array(

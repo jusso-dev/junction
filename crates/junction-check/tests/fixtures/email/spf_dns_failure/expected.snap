@@ -1,0 +1,42 @@
+{
+  "affected": {
+    "items": [
+      "fabrikam.example"
+    ],
+    "total": 1
+  },
+  "evidence": {
+    "data": {
+      "assessed": 2,
+      "domains": [
+        {
+          "detail": "ends -all, 2 of 10 DNS lookups",
+          "domain": "contoso.example",
+          "record": "v=spf1 include:spf.protection.outlook.com -all",
+          "result": "pass",
+          "role": "exchange"
+        },
+        {
+          "detail": "TXT lookup for fabrikam.example failed: timed out (fixture)",
+          "domain": "fabrikam.example",
+          "result": "unresolved",
+          "role": "exchange"
+        }
+      ],
+      "failed": 0,
+      "max_lookups": 10,
+      "passed": 1,
+      "required_include": "spf.protection.outlook.com",
+      "skipped": 0,
+      "unresolved": 1,
+      "warned": 0
+    },
+    "summary": "SPF could not be confirmed for 1 of 2 domains: fabrikam.example (TXT lookup for fabrikam.example failed: timed out (fixture))."
+  },
+  "id": "email.spf",
+  "reason": {
+    "code": "dns_lookup_failed",
+    "detail": "SPF could not be confirmed for 1 of 2 domains: fabrikam.example (TXT lookup for fabrikam.example failed: timed out (fixture))."
+  },
+  "status": "unknown"
+}

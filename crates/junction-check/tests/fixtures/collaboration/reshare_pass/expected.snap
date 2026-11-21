@@ -1,0 +1,15 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "resharing_by_external_users": false
+    },
+    "summary": "Guests cannot reshare items."
+  },
+  "id": "collaboration.external_resharing_blocked",
+  "reason": null,
+  "status": "pass"
+}

@@ -1,0 +1,38 @@
+{
+    "operation": "graph.applications.list",
+    "responses": [
+        {
+            "body": {
+                "value": [
+                    {
+                        "id": "00000000-0000-4000-8000-000000000101",
+                        "appId": "00000000-0000-4000-8000-000000000201",
+                        "displayName": "Payroll Sync",
+                        "signInAudience": "AzureADMyOrg",
+                        "passwordCredentials": [],
+                        "keyCredentials": [],
+                        "requiredResourceAccess": []
+                    },
+                    {
+                        "id": "00000000-0000-4000-8000-000000000102",
+                        "appId": "00000000-0000-4000-8000-000000000202",
+                        "displayName": "Partner Portal",
+                        "signInAudience": "AzureADMultipleOrgs",
+                        "passwordCredentials": [],
+                        "keyCredentials": [],
+                        "requiredResourceAccess": []
+                    },
+                    {
+                        "id": "00000000-0000-4000-8000-000000000103",
+                        "appId": "00000000-0000-4000-8000-000000000203",
+                        "displayName": "Consumer App",
+                        "signInAudience": "AzureADandPersonalMicrosoftAccount",
+                        "passwordCredentials": [],
+                        "keyCredentials": [],
+                        "requiredResourceAccess": []
+                    }
+                ]
+            }
+        }
+    ]
+}

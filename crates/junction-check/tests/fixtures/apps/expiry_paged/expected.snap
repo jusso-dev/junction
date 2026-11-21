@@ -1,0 +1,19 @@
+{
+  "affected": {
+    "items": [
+      "HR Portal (certificate expired 2025-01-01)"
+    ],
+    "total": 1
+  },
+  "evidence": {
+    "data": {
+      "expired": 1,
+      "expiring": 0,
+      "warn_days": 30
+    },
+    "summary": "1 expired and 0 soon-expiring app credentials."
+  },
+  "id": "apps.credential_expiry",
+  "reason": null,
+  "status": "fail"
+}

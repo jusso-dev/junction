@@ -11,9 +11,9 @@ permissions:
   contents: read
 jobs:
   rustsec:
-    runs-on: ubuntu-latest
+    runs-on: ${{ fromJSON(vars.CI_RUNNER_LINUX || '"ubuntu-latest"') }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: dtolnay/rust-toolchain@stable
       - run: cargo install cargo-audit --version 0.22.2 --locked
       - run: cargo audit

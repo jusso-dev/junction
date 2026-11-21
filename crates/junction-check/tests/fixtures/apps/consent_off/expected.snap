@@ -1,0 +1,15 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "permission_grant_policies": []
+    },
+    "summary": "User consent to applications is turned off."
+  },
+  "id": "apps.user_consent_restricted",
+  "reason": null,
+  "status": "pass"
+}

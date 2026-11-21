@@ -1,0 +1,16 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "high_impact": 0,
+      "service_principals": 3
+    },
+    "summary": "No third-party application holds high-impact permissions."
+  },
+  "id": "apps.high_privilege_permissions",
+  "reason": null,
+  "status": "pass"
+}

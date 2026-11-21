@@ -1,0 +1,33 @@
+{
+  "affected": {
+    "items": [
+      "law-sentinel-01/Synthetic Scheduled rule 3"
+    ],
+    "total": 1
+  },
+  "evidence": {
+    "data": {
+      "disabled": 0,
+      "enabled_nrt": 0,
+      "enabled_scheduled": 11,
+      "enabled_total": 12,
+      "failing_rules": [
+        "law-sentinel-01/Synthetic Scheduled rule 3"
+      ],
+      "fusion_enabled": true,
+      "min": 10,
+      "rule_health_read": true,
+      "workspaces": [
+        {
+          "enabled": 12,
+          "rules": 12,
+          "workspace": "law-sentinel-01"
+        }
+      ]
+    },
+    "summary": "12 analytics rules enabled (11 Scheduled, 0 NRT, Fusion on), but 1 rule failed on the latest run."
+  },
+  "id": "sentinel.rules_enabled",
+  "reason": null,
+  "status": "warn"
+}

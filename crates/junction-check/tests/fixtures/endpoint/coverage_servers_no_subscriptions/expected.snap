@@ -1,0 +1,16 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": null,
+    "summary": "No Azure subscriptions are visible to the app. Grant Reader on the subscriptions that hold servers, or set `[packs.endpoint] subscriptions = []` if the organisation has none."
+  },
+  "id": "endpoint.servers_covered",
+  "reason": {
+    "code": "no_subscriptions",
+    "detail": "No Azure subscriptions are visible to the app. Grant Reader on the subscriptions that hold servers, or set `[packs.endpoint] subscriptions = []` if the organisation has none."
+  },
+  "status": "unknown"
+}

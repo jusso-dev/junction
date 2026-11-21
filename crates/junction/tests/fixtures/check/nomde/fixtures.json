@@ -1,0 +1,54 @@
+[
+ {
+  "operation": "graph.subscribed_skus.list",
+  "responses": [
+   {
+    "body": {
+     "value": [
+      {
+       "skuPartNumber": "SPB",
+       "capabilityStatus": "Enabled",
+       "servicePlans": [
+        {
+         "servicePlanName": "AAD_PREMIUM",
+         "provisioningStatus": "Success"
+        }
+       ]
+      }
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "operation": "graph.role_management.directory.role_assignments.list",
+  "responses": [
+   {
+    "body": {
+     "value": [
+      {
+       "id": "ra-1",
+       "principalId": "00000000-0000-4000-8000-000000000101",
+       "roleDefinitionId": "62e90394-69f5-4237-9190-012177145e10",
+       "principal": {
+        "@odata.type": "#microsoft.graph.user",
+        "id": "00000000-0000-4000-8000-000000000101",
+        "userPrincipalName": "admin1@contoso.example"
+       }
+      },
+      {
+       "id": "ra-2",
+       "principalId": "00000000-0000-4000-8000-000000000102",
+       "roleDefinitionId": "62e90394-69f5-4237-9190-012177145e10",
+       "principal": {
+        "@odata.type": "#microsoft.graph.user",
+        "id": "00000000-0000-4000-8000-000000000102",
+        "userPrincipalName": "admin2@contoso.example"
+       }
+      }
+     ]
+    }
+   }
+  ]
+ }
+]

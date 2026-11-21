@@ -1,0 +1,19 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": null,
+    "summary": "graph.policies.admin_consent_request_policy.get was refused (HTTP 403 Authorization_RequestDenied). Grant Policy.Read.All (read-only) and re-run."
+  },
+  "id": "apps.admin_consent_workflow",
+  "reason": {
+    "code": "missing_permission",
+    "detail": "graph.policies.admin_consent_request_policy.get was refused (HTTP 403 Authorization_RequestDenied). Grant Policy.Read.All (read-only) and re-run.",
+    "missing_permissions": [
+      "Policy.Read.All"
+    ]
+  },
+  "status": "unknown"
+}

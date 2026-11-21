@@ -1,0 +1,45 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "assessed": 3,
+      "domains": [
+        {
+          "detail": "ends -all, 2 of 10 DNS lookups",
+          "domain": "contoso.example",
+          "record": "v=spf1 include:spf.protection.outlook.com -all",
+          "result": "pass",
+          "role": "exchange"
+        },
+        {
+          "detail": "ends ~all, 3 of 10 DNS lookups",
+          "domain": "fabrikam.example",
+          "record": "v=spf1 redirect=_spf.fabrikam.example",
+          "result": "pass",
+          "role": "exchange"
+        },
+        {
+          "detail": "no mail; publishes v=spf1 -all",
+          "domain": "parked.example.org",
+          "record": "v=spf1 -all",
+          "result": "pass",
+          "role": "parked"
+        }
+      ],
+      "failed": 0,
+      "max_lookups": 10,
+      "passed": 3,
+      "required_include": "spf.protection.outlook.com",
+      "skipped": 0,
+      "unresolved": 0,
+      "warned": 0
+    },
+    "summary": "SPF passes for all 3 domains."
+  },
+  "id": "email.spf",
+  "reason": null,
+  "status": "pass"
+}

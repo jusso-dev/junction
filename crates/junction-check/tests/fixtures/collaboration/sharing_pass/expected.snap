@@ -1,0 +1,15 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "sharing_capability": "externalusersharingonly"
+    },
+    "summary": "SharePoint sharing: New and existing guests."
+  },
+  "id": "collaboration.sharepoint_external_sharing",
+  "reason": null,
+  "status": "pass"
+}

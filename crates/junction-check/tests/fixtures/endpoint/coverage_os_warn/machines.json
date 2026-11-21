@@ -1,0 +1,60 @@
+{
+    "operation": "defender.endpoint.machines.list",
+    "responses": [
+        {
+            "status": 200,
+            "body": {
+                "value": [
+                    {
+                        "id": "000000000000000000000000000000000000001f",
+                        "computerDnsName": "ws-001.contoso.example",
+                        "aadDeviceId": "00000000-0000-4000-8000-000000000001",
+                        "osPlatform": "Windows11",
+                        "osBuild": 26200,
+                        "version": null,
+                        "healthStatus": "Active",
+                        "onboardingStatus": "Onboarded",
+                        "lastSeen": "2026-10-24T10:00:00Z",
+                        "firstSeen": "2026-01-01T00:00:00Z"
+                    },
+                    {
+                        "id": "0000000000000000000000000000000000000020",
+                        "computerDnsName": "ws-002.contoso.example",
+                        "aadDeviceId": "00000000-0000-4000-8000-000000000002",
+                        "osPlatform": "Windows10",
+                        "osBuild": 19045,
+                        "version": null,
+                        "healthStatus": "Active",
+                        "onboardingStatus": "Onboarded",
+                        "lastSeen": "2026-10-24T10:00:00Z",
+                        "firstSeen": "2026-01-01T00:00:00Z"
+                    },
+                    {
+                        "id": "0000000000000000000000000000000000000021",
+                        "computerDnsName": "ws-003.contoso.example",
+                        "aadDeviceId": "00000000-0000-4000-8000-000000000003",
+                        "osPlatform": "Windows11",
+                        "osBuild": 26100,
+                        "version": null,
+                        "healthStatus": "Active",
+                        "onboardingStatus": "Onboarded",
+                        "lastSeen": "2026-10-24T10:00:00Z",
+                        "firstSeen": "2026-01-01T00:00:00Z"
+                    },
+                    {
+                        "id": "0000000000000000000000000000000000000022",
+                        "computerDnsName": "ws-004.contoso.example",
+                        "aadDeviceId": "00000000-0000-4000-8000-000000000005",
+                        "osPlatform": "Windows11",
+                        "osBuild": 26100,
+                        "version": null,
+                        "healthStatus": "Active",
+                        "onboardingStatus": "Onboarded",
+                        "lastSeen": "2026-10-24T10:00:00Z",
+                        "firstSeen": "2026-01-01T00:00:00Z"
+                    }
+                ]
+            }
+        }
+    ]
+}

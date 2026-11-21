@@ -1,0 +1,76 @@
+[
+  {
+    "operation": "azure.log_analytics.tables.list_by_workspace",
+    "match": {
+      "parameters": {
+        "workspaceName": "law-sentinel-01"
+      }
+    },
+    "responses": [
+      {
+        "status": 200,
+        "body": {
+          "value": [
+            {
+              "id": "/subscriptions/00000000-0000-4000-8000-0000000000a1/resourceGroups/rg-security/providers/Microsoft.OperationalInsights/workspaces/law-sentinel-01/tables/SigninLogs",
+              "name": "SigninLogs",
+              "properties": {
+                "plan": "Analytics",
+                "retentionInDays": 30,
+                "totalRetentionInDays": 30,
+                "retentionInDaysAsDefault": true,
+                "totalRetentionInDaysAsDefault": true
+              }
+            },
+            {
+              "id": "/subscriptions/00000000-0000-4000-8000-0000000000a1/resourceGroups/rg-security/providers/Microsoft.OperationalInsights/workspaces/law-sentinel-01/tables/SecurityEvent",
+              "name": "SecurityEvent",
+              "properties": {
+                "plan": "Analytics",
+                "retentionInDays": 30,
+                "totalRetentionInDays": 30,
+                "retentionInDaysAsDefault": false,
+                "totalRetentionInDaysAsDefault": false
+              }
+            }
+          ],
+          "nextLink": "fixture:tables-2"
+        }
+      }
+    ]
+  },
+  {
+    "url": "fixture:tables-2",
+    "responses": [
+      {
+        "status": 200,
+        "body": {
+          "value": [
+            {
+              "id": "/subscriptions/00000000-0000-4000-8000-0000000000a1/resourceGroups/rg-security/providers/Microsoft.OperationalInsights/workspaces/law-sentinel-01/tables/Syslog",
+              "name": "Syslog",
+              "properties": {
+                "plan": "Basic",
+                "retentionInDays": 30,
+                "totalRetentionInDays": 30,
+                "retentionInDaysAsDefault": true,
+                "totalRetentionInDaysAsDefault": true
+              }
+            },
+            {
+              "id": "/subscriptions/00000000-0000-4000-8000-0000000000a1/resourceGroups/rg-security/providers/Microsoft.OperationalInsights/workspaces/law-sentinel-01/tables/AuditLogs",
+              "name": "AuditLogs",
+              "properties": {
+                "plan": "Analytics",
+                "retentionInDays": 365,
+                "totalRetentionInDays": 365,
+                "retentionInDaysAsDefault": false,
+                "totalRetentionInDaysAsDefault": false
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+]

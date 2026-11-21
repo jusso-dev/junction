@@ -1,0 +1,51 @@
+[
+  {
+    "operation": "graph.solutions.backup_restore.get",
+    "responses": [
+      {
+        "status": 200,
+        "body": {
+          "id": "backupRestore",
+          "serviceStatus": {
+            "status": "enabled",
+            "disableReason": "none",
+            "backupServiceConsumer": "firstparty"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "operation": "graph.solutions.backup_restore.exchange_protection_policies.list",
+    "responses": [
+      {
+        "status": 200,
+        "body": {
+          "value": []
+        }
+      }
+    ]
+  },
+  {
+    "operation": "graph.solutions.backup_restore.share_point_protection_policies.list",
+    "responses": [
+      {
+        "status": 200,
+        "body": {
+          "value": []
+        }
+      }
+    ]
+  },
+  {
+    "operation": "graph.solutions.backup_restore.one_drive_for_business_protection_policies.list",
+    "responses": [
+      {
+        "status": 200,
+        "body": {
+          "value": []
+        }
+      }
+    ]
+  }
+]

@@ -1,0 +1,26 @@
+# ASR rules evidence Essential Eight maturity levels 2 and 3 only: the ISM controls they meet
+# (ISM-1667 to ISM-1670 for user application hardening, ISM-1673 for Office macros) carry no ML1 tag.
+endpoint.asr_rule_state:
+  essential_eight:
+    - strategy: user-application-hardening
+      levels: [2, 3]
+    - strategy: office-macros
+      levels: [2, 3]
+  ism: [ISM-1667, ISM-1668, ISM-1669, ISM-1670, ISM-1673]
+  cis_v8: ["10.5"]
+  nist_csf: [PR.PS-01]
+  mitre: [T1204, T1204.002, T1566, T1566.001, T1003.001, T1059.005]
+endpoint.asr_quick_wins:
+  essential_eight:
+    - strategy: user-application-hardening
+      levels: [2, 3]
+    - strategy: office-macros
+      levels: [2, 3]
+  ism: [ISM-1667, ISM-1673]
+  cis_v8: ["10.5"]
+  nist_csf: [PR.PS-01]
+  mitre: [T1204, T1204.002, T1566, T1566.001, T1003.001, T1059.005]
+endpoint.asr_audit_noise:
+  cis_v8: ["10.5"]
+  nist_csf: [PR.PS-01]
+  mitre: [T1204, T1566, T1003.001]

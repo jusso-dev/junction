@@ -1,0 +1,36 @@
+{
+  "affected": {
+    "items": [
+      "rsv-contoso-2",
+      "vm-db-01"
+    ],
+    "total": 2
+  },
+  "evidence": {
+    "data": {
+      "critical_tag": "criticality=critical",
+      "critical_vms": 2,
+      "critical_vms_unprotected": 1,
+      "require_locked": true,
+      "vaults": [
+        {
+          "immutability": "Locked",
+          "kind": "recovery_services_vault",
+          "name": "rsv-contoso-1",
+          "soft_delete": "AlwaysON"
+        },
+        {
+          "immutability": "Disabled",
+          "kind": "recovery_services_vault",
+          "name": "rsv-contoso-2",
+          "soft_delete": "Disabled"
+        }
+      ],
+      "virtual_machines": 4
+    },
+    "summary": "Vaults with soft delete or immutability turned off: 1 of 2; critical virtual machines without Azure Backup: 1 of 2."
+  },
+  "id": "backup.azure_vaults",
+  "reason": null,
+  "status": "fail"
+}

@@ -1,0 +1,38 @@
+{
+  "affected": {
+    "items": [
+      "admin1@contoso.example",
+      "admin6@contoso.example",
+      "breakglass1@contoso.example",
+      "breakglass2@contoso.example"
+    ],
+    "total": 4
+  },
+  "evidence": {
+    "data": {
+      "eligible_assignments": 2,
+      "eligible_principals": 2,
+      "max_permanent": 2,
+      "permanent": {
+        "admin1@contoso.example": [
+          "Global Administrator"
+        ],
+        "admin6@contoso.example": [
+          "Exchange Administrator"
+        ],
+        "breakglass1@contoso.example": [
+          "Global Administrator"
+        ],
+        "breakglass2@contoso.example": [
+          "Global Administrator"
+        ]
+      },
+      "permanent_counted": 4,
+      "permanent_principals": 4
+    },
+    "summary": "4 principals have permanent privileged access (allowance 2 for emergency accounts); 2 assignments are eligible."
+  },
+  "id": "identity.pim_used",
+  "reason": null,
+  "status": "fail"
+}

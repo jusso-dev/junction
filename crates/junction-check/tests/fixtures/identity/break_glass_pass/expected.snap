@@ -1,0 +1,28 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "configured_accounts": [],
+      "emergency_accounts": [
+        "breakglass1@contoso.example"
+      ],
+      "enabled_policies": 3,
+      "global_admins_checked": 2,
+      "min": 1,
+      "policies_applying": {
+        "admin1@contoso.example": [
+          "MFA for all users",
+          "Block legacy authentication",
+          "Admins require phishing-resistant MFA"
+        ]
+      }
+    },
+    "summary": "1 Global Administrator is excluded from every enabled Conditional Access policy: breakglass1@contoso.example."
+  },
+  "id": "identity.break_glass",
+  "reason": null,
+  "status": "pass"
+}

@@ -1,0 +1,2 @@
+[config.packs.sentinel]
+workspaces = ["law-sentinel-01"]

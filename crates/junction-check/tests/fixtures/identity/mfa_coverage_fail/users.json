@@ -1,0 +1,49 @@
+[
+    {
+        "operation": "graph.users.list",
+        "responses": [
+            {
+                "body": {
+                    "value": [
+                        {
+                            "id": "00000000-0000-4000-8000-000000000001",
+                            "userPrincipalName": "admin1@contoso.example",
+                            "userType": "Member",
+                            "assignedLicenses": []
+                        },
+                        {
+                            "id": "00000000-0000-4000-8000-000000000002",
+                            "userPrincipalName": "user2@contoso.example",
+                            "userType": "Member",
+                            "assignedLicenses": []
+                        },
+                        {
+                            "id": "00000000-0000-4000-8000-000000000003",
+                            "userPrincipalName": "user3@contoso.example",
+                            "userType": "Member",
+                            "assignedLicenses": []
+                        },
+                        {
+                            "id": "00000000-0000-4000-8000-000000000004",
+                            "userPrincipalName": "user4@contoso.example",
+                            "userType": "Member",
+                            "assignedLicenses": []
+                        },
+                        {
+                            "id": "00000000-0000-4000-8000-000000000009",
+                            "userPrincipalName": "guest9_example.org#EXT#@contoso.example",
+                            "userType": "Guest",
+                            "assignedLicenses": []
+                        },
+                        {
+                            "id": "00000000-0000-4000-8000-000000000005",
+                            "userPrincipalName": "user5@contoso.example",
+                            "userType": "Member",
+                            "assignedLicenses": []
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+]

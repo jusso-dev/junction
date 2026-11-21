@@ -1,0 +1,31 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "not_found": [],
+      "sentinel_workspaces": 0,
+      "unreadable": [],
+      "workspaces": [
+        {
+          "resource_group": "rg-security",
+          "sentinel": false,
+          "subscription": "00000000-0000-4000-8000-0000000000a1",
+          "workspace": "law-sentinel-01"
+        },
+        {
+          "resource_group": "rg-security",
+          "sentinel": false,
+          "subscription": "00000000-0000-4000-8000-0000000000a1",
+          "workspace": "law-apps-01"
+        }
+      ]
+    },
+    "summary": "2 Log Analytics workspaces in scope, none with Microsoft Sentinel."
+  },
+  "id": "sentinel.workspace",
+  "reason": null,
+  "status": "fail"
+}

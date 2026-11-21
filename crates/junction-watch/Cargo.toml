@@ -19,15 +19,15 @@ clap.workspace = true
 tokio = { version = "1", features = ["macros", "rt-multi-thread", "time", "signal", "net", "sync", "process", "io-util"] }
 url = "2"
 toml = "0.8"
-rusqlite = { version = "0.37", features = ["bundled"] }
+rusqlite = { version = "0.43", features = ["bundled", "fallible_uint"] }
 sha2 = "0.10"
 ring = "0.17.14"
-base64 = "0.22"
+base64 = "0.23"
 getrandom = "0.4"
 zeroize = "1"
 axum = { version = "0.7.9", default-features = false, features = ["http1", "tokio", "form", "query"] }
 maud = "0.27"
-argon2 = "0.5"
+argon2 = "0.6"
 subtle = "2"
 rpassword = "7"
 

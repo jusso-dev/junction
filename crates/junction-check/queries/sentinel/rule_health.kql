@@ -1,0 +1,7 @@
+SentinelHealth
+| where SentinelResourceType == "Analytics Rule"
+| summarize arg_max(TimeGenerated, Status) by SentinelResourceName
+| where Status == "Failure"
+| project RuleName = SentinelResourceName, LastFailure = TimeGenerated
+| order by RuleName asc
+| take 50

@@ -1,0 +1,27 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "internet_macros_blocked": [
+        "excel",
+        "powerpoint",
+        "word"
+      ],
+      "policies": [
+        "Office macro security"
+      ],
+      "vba_notification": {
+        "excel": 4,
+        "powerpoint": 3,
+        "word": 4
+      }
+    },
+    "summary": "Word, Excel and PowerPoint block internet macros and only run trusted or signed macros (Office macro security)."
+  },
+  "id": "intune.office_macros",
+  "reason": null,
+  "status": "pass"
+}

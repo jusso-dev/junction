@@ -1,0 +1,31 @@
+{
+  "affected": {
+    "items": [
+      "Exchange",
+      "OneDrive",
+      "SharePoint"
+    ],
+    "total": 3
+  },
+  "evidence": {
+    "data": {
+      "exchange": {
+        "active": 0,
+        "policies": 0
+      },
+      "onedrive": {
+        "active": 0,
+        "policies": 0
+      },
+      "service_status": "enabled",
+      "sharepoint": {
+        "active": 0,
+        "policies": 0
+      }
+    },
+    "summary": "Microsoft 365 Backup is enabled but no workload has an active protection policy. If another product backs up Microsoft 365, answer backup.offline_copy, backup.restore_tested and backup.admin_separation."
+  },
+  "id": "backup.m365_backup",
+  "reason": null,
+  "status": "fail"
+}

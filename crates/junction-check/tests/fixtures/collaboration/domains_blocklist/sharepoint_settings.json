@@ -1,0 +1,23 @@
+{
+    "operation": "graph.admin.sharepoint.settings.get",
+    "responses": [
+        {
+            "body": {
+                "sharingCapability": "externalUserSharingOnly",
+                "sharingDomainRestrictionMode": "blockList",
+                "sharingAllowedDomainList": [],
+                "sharingBlockedDomainList": [],
+                "isResharingByExternalUsersEnabled": false,
+                "isLegacyAuthProtocolsEnabled": false,
+                "isUnmanagedSyncAppForTenantRestricted": true,
+                "isLoopEnabled": true,
+                "isMacSyncAppEnabled": true,
+                "idleSessionSignOut": {
+                    "isEnabled": true,
+                    "warnAfterInSeconds": 9900,
+                    "signOutAfterInSeconds": 10800
+                }
+            }
+        }
+    ]
+}

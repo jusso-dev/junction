@@ -1,0 +1,22 @@
+{
+  "affected": {
+    "items": [
+      "Veeam Backup for Microsoft 365"
+    ],
+    "total": 1
+  },
+  "evidence": {
+    "data": {
+      "disabled_matches": 1,
+      "matches": 1,
+      "products": [
+        "Veeam: Veeam Backup for Microsoft 365 / Veeam Data Cloud for Microsoft 365"
+      ],
+      "service_principals": 4
+    },
+    "summary": "Backup app with consent: Veeam: Veeam Backup for Microsoft 365 / Veeam Data Cloud for Microsoft 365."
+  },
+  "id": "backup.third_party_app",
+  "reason": null,
+  "status": "pass"
+}

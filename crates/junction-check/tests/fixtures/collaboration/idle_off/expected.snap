@@ -1,0 +1,16 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "enabled": false,
+      "sign_out_after_seconds": 0
+    },
+    "summary": "Idle session sign-out is off."
+  },
+  "id": "collaboration.idle_session_signout",
+  "reason": null,
+  "status": "fail"
+}

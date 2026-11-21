@@ -1,0 +1,64 @@
+{
+  "affected": {
+    "items": [
+      "law-sentinel-01/CommonSecurityLog: 120.5 GB, about AUD 1071 a month at the analytics price"
+    ],
+    "total": 1
+  },
+  "evidence": {
+    "data": {
+      "billable_gb_30d": 146.15,
+      "currency": "AUD",
+      "estimated_monthly": 1299.2,
+      "monthly_budget": null,
+      "note": "Estimate only: pay-as-you-go analytics price for 30 days of billable ingestion. Commitment tiers, agreements and data grants are not applied. Junction never changes table plans.",
+      "price": {
+        "auxiliary_per_gb": 0.1033,
+        "basic_per_gb": 1.7523,
+        "price_data_as_of": "2026-10-25",
+        "price_data_currency": "AUD",
+        "price_data_source": "https://prices.azure.com/api/retail/prices?currencyCode='AUD'&$filter=serviceName eq 'Sentinel' and armRegionName eq 'australiaeast'",
+        "price_per_gb": 8.8895,
+        "pricing_page": "https://azure.microsoft.com/pricing/details/microsoft-sentinel/",
+        "source": "data/sentinel-pricing.yaml: Sentinel \"Pay-as-you-go Analysis\" (analytics logs, per GB ingested), Australia East, retail price as of 2026-10-25"
+      },
+      "suggestions": [
+        "law-sentinel-01/CommonSecurityLog: 120.5 GB, about AUD 1071 a month at the analytics price"
+      ],
+      "top_tables": [
+        {
+          "billable_gb_30d": 120.5,
+          "estimated_monthly": 1071.18,
+          "plan": "Analytics",
+          "table": "CommonSecurityLog",
+          "workspace": "law-sentinel-01"
+        },
+        {
+          "billable_gb_30d": 20.25,
+          "estimated_monthly": 180.01,
+          "plan": "Analytics",
+          "table": "SigninLogs",
+          "workspace": "law-sentinel-01"
+        },
+        {
+          "billable_gb_30d": 5.0,
+          "estimated_monthly": 44.45,
+          "plan": "Basic",
+          "table": "FirewallLogs_CL",
+          "workspace": "law-sentinel-01"
+        },
+        {
+          "billable_gb_30d": 0.4,
+          "estimated_monthly": 3.56,
+          "plan": "Analytics",
+          "table": "Syslog",
+          "workspace": "law-sentinel-01"
+        }
+      ]
+    },
+    "summary": "146.2 GB billable in 30 days, an estimated AUD 1299.20 a month at AUD 8.8895/GB, Australia East pay-as-you-go retail price as of 2026-10-25. 1 noisy table could move to Basic or Auxiliary logs."
+  },
+  "id": "sentinel.ingestion_cost",
+  "reason": null,
+  "status": "warn"
+}

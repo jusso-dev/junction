@@ -1,0 +1,19 @@
+licences = ["exchange_online"]
+
+[dns."contoso.example"]
+txt = ["v=spf1 include:spf.protection.outlook.com -all", "contoso-verification=0000"]
+
+[dns."fabrikam.example"]
+txt = ["v=spf1 redirect=_spf.fabrikam.example"]
+
+[dns."_spf.fabrikam.example"]
+txt = ["v=spf1 ip4:203.0.113.10 include:spf.protection.outlook.com ~all"]
+
+[dns."parked.example.org"]
+txt = ["v=spf1 -all"]
+
+[dns."spf.protection.outlook.com"]
+txt = ["v=spf1 ip4:192.0.2.0/24 include:spfd.protection.outlook.com -all"]
+
+[dns."spfd.protection.outlook.com"]
+txt = ["v=spf1 ip4:198.51.100.0/24 -all"]

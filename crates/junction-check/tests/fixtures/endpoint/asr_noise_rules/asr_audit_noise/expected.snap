@@ -1,0 +1,55 @@
+{
+  "affected": {
+    "items": [
+      "Block Win32 API calls from Office macros",
+      "Block credential stealing from the Windows local security authority subsystem",
+      "Block rebooting machine in Safe Mode"
+    ],
+    "total": 3
+  },
+  "evidence": {
+    "data": {
+      "audit_events": 4218,
+      "days": 7,
+      "quiet_below": 20,
+      "ready_for_block": [
+        "Block Win32 API calls from Office macros",
+        "Block rebooting machine in Safe Mode"
+      ],
+      "rules": [
+        {
+          "devices": 61,
+          "events": 4210,
+          "guid": "9e6c4e1f-7d60-472f-ba1a-a39ef669e4b2",
+          "name": "Block credential stealing from the Windows local security authority subsystem",
+          "processes": [
+            "svchost.exe",
+            "MsMpEng.exe"
+          ]
+        },
+        {
+          "devices": 2,
+          "events": 7,
+          "guid": "92e97fa1-2edf-4476-bdd6-9dd0b4dddc7b",
+          "name": "Block Win32 API calls from Office macros",
+          "processes": [
+            "EXCEL.EXE"
+          ]
+        },
+        {
+          "devices": 1,
+          "events": 1,
+          "guid": "33ddedf1-c6e0-47cb-833e-de6133960387",
+          "name": "Block rebooting machine in Safe Mode",
+          "processes": [
+            "bcdedit.exe"
+          ]
+        }
+      ]
+    },
+    "summary": "3 ASR rules in audit mode raised 4218 audit events in 7 days. 2 rules raised fewer than 20 and can likely move to block: Block Win32 API calls from Office macros; Block rebooting machine in Safe Mode."
+  },
+  "id": "endpoint.asr_audit_noise",
+  "reason": null,
+  "status": "warn"
+}

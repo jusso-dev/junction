@@ -129,7 +129,10 @@ fn stdio_mcp_uses_registry_and_enforces_policy_before_credentials() {
             .map(|line| serde_json::from_str(line).unwrap())
             .collect();
         assert_eq!(responses.len(), 11);
-        assert_eq!(responses[1]["result"]["tools"].as_array().unwrap().len(), 6);
+        assert_eq!(
+            responses[1]["result"]["tools"].as_array().unwrap().len(),
+            10
+        );
         assert_eq!(
             responses[2]["result"]["structuredContent"]["matches"][0]["operation"],
             "graph.users.list"

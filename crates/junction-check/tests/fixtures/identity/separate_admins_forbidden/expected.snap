@@ -1,0 +1,20 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": null,
+    "summary": "graph.subscribed_skus.list was refused (HTTP 403 Authorization_RequestDenied). Grant LicenseAssignment.Read.All or Organization.Read.All (read-only) and re-run."
+  },
+  "id": "identity.separate_admin_accounts",
+  "reason": {
+    "code": "missing_permission",
+    "detail": "graph.subscribed_skus.list was refused (HTTP 403 Authorization_RequestDenied). Grant LicenseAssignment.Read.All or Organization.Read.All (read-only) and re-run.",
+    "missing_permissions": [
+      "LicenseAssignment.Read.All",
+      "Organization.Read.All"
+    ]
+  },
+  "status": "unknown"
+}

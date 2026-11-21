@@ -1,0 +1,16 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": null,
+    "summary": "No Conditional Access policy is enabled, so there is nothing to exclude an emergency account from (identity.baseline reports the missing policies)."
+  },
+  "id": "identity.break_glass",
+  "reason": {
+    "code": "no_enabled_policies",
+    "detail": "No Conditional Access policy is enabled, so there is nothing to exclude an emergency account from (identity.baseline reports the missing policies)."
+  },
+  "status": "not_applicable"
+}

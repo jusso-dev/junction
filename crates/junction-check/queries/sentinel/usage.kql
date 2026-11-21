@@ -1,0 +1,4 @@
+Usage
+| where IsBillable == true
+| summarize BillableGB = round(sum(Quantity) / 1000.0, 3) by DataType
+| order by BillableGB desc

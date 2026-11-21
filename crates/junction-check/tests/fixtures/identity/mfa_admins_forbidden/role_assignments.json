@@ -1,0 +1,14 @@
+[
+    {
+        "operation": "graph.role_management.directory.role_assignments.list",
+        "responses": [
+            {
+                "status": 403,
+                "error": {
+                    "code": "Authorization_RequestDenied",
+                    "message": "Insufficient privileges to complete the operation."
+                }
+            }
+        ]
+    }
+]

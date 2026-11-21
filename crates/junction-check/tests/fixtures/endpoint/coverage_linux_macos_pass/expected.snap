@@ -1,0 +1,50 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "active": 5,
+      "by_os": {
+        "RedHatEnterpriseLinux 9.4": {
+          "active": 1,
+          "impaired_communication": 0,
+          "inactive": 0,
+          "machines": 1,
+          "no_sensor_data": 0
+        },
+        "Ubuntu 22.4": {
+          "active": 2,
+          "impaired_communication": 0,
+          "inactive": 0,
+          "machines": 2,
+          "no_sensor_data": 0
+        },
+        "macOS 15": {
+          "active": 1,
+          "impaired_communication": 0,
+          "inactive": 0,
+          "machines": 1,
+          "no_sensor_data": 0
+        },
+        "macOS 26": {
+          "active": 1,
+          "impaired_communication": 0,
+          "inactive": 0,
+          "machines": 1,
+          "no_sensor_data": 0
+        }
+      },
+      "impaired_communication": 0,
+      "inactive": 0,
+      "machines": 5,
+      "max_days": 7,
+      "no_sensor_data": 0
+    },
+    "summary": "All 5 Linux and macOS machines are active (RedHatEnterpriseLinux 9.4: 1, Ubuntu 22.4: 2, macOS 15: 1, macOS 26: 1)."
+  },
+  "id": "endpoint.linux_macos_health",
+  "reason": null,
+  "status": "pass"
+}

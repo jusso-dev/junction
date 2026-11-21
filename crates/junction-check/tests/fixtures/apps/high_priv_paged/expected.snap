@@ -1,0 +1,18 @@
+{
+  "affected": {
+    "items": [
+      "Fabrikam Backup (00000000-0000-4000-8000-000000000d03): Mail.ReadWrite"
+    ],
+    "total": 1
+  },
+  "evidence": {
+    "data": {
+      "high_impact": 1,
+      "service_principals": 3
+    },
+    "summary": "1 third-party applications hold high-impact permissions; confirm each is justified and owned."
+  },
+  "id": "apps.high_privilege_permissions",
+  "reason": null,
+  "status": "warn"
+}

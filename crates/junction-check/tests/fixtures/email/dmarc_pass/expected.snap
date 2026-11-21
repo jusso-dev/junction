@@ -1,0 +1,42 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "assessed": 2,
+      "domains": [
+        {
+          "detail": "p=reject with aggregate reporting",
+          "domain": "contoso.example",
+          "record": "v=DMARC1; p=reject; rua=mailto:dmarc-reports@contoso.example",
+          "result": "pass",
+          "role": "exchange"
+        },
+        {
+          "detail": "inherits _dmarc.contoso.example: p=reject with aggregate reporting",
+          "domain": "mail.contoso.example",
+          "record": "v=DMARC1; p=reject; rua=mailto:dmarc-reports@contoso.example",
+          "result": "pass",
+          "role": "exchange"
+        },
+        {
+          "detail": "no mail",
+          "domain": "parked.example.org",
+          "result": "skipped",
+          "role": "parked"
+        }
+      ],
+      "failed": 0,
+      "passed": 2,
+      "skipped": 1,
+      "unresolved": 0,
+      "warned": 0
+    },
+    "summary": "DMARC passes for all 2 domains."
+  },
+  "id": "email.dmarc",
+  "reason": null,
+  "status": "pass"
+}

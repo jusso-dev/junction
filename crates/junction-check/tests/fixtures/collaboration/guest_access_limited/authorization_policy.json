@@ -1,0 +1,20 @@
+{
+    "operation": "graph.policies.authorization_policy.get",
+    "responses": [
+        {
+            "body": {
+                "id": "authorizationPolicy",
+                "allowInvitesFrom": "adminsAndGuestInviters",
+                "allowEmailVerifiedUsersToJoinOrganization": false,
+                "guestUserRoleId": "a0b1b346-4d3e-4e8b-98f8-753987be4970",
+                "defaultUserRolePermissions": {
+                    "allowedToCreateApps": false,
+                    "allowedToCreateSecurityGroups": false,
+                    "allowedToCreateTenants": false,
+                    "allowedToReadBitlockerKeysForOwnedDevice": false,
+                    "permissionGrantPoliciesAssigned": []
+                }
+            }
+        }
+    ]
+}

@@ -1,0 +1,23 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "global_admins_added": true,
+      "registering_users_added": "all",
+      "replacing_policies": [
+        {
+          "assigned_to": "all devices or users",
+          "name": "Local administrators"
+        }
+      ],
+      "selected_principals": 0
+    },
+    "summary": "Entra ID adds every user who joins a device as local administrator, but Intune policy Local administrators replaces the local Administrators group on all devices."
+  },
+  "id": "intune.local_admin",
+  "reason": null,
+  "status": "pass"
+}

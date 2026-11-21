@@ -1,0 +1,48 @@
+{
+  "affected": {
+    "items": [
+      "contoso.example",
+      "fabrikam.example",
+      "mail.example.org"
+    ],
+    "total": 3
+  },
+  "evidence": {
+    "data": {
+      "assessed": 3,
+      "domains": [
+        {
+          "detail": "does not include spf.protection.outlook.com",
+          "domain": "contoso.example",
+          "record": "v=spf1 ip4:192.0.2.1 -all",
+          "result": "fail",
+          "role": "exchange"
+        },
+        {
+          "detail": "2 SPF records; RFC 7208 allows one and receivers return PermError",
+          "domain": "fabrikam.example",
+          "result": "fail",
+          "role": "exchange"
+        },
+        {
+          "detail": "ends +all, which authorises every sender",
+          "domain": "mail.example.org",
+          "record": "v=spf1 mx +all",
+          "result": "fail",
+          "role": "other_mail"
+        }
+      ],
+      "failed": 3,
+      "max_lookups": 10,
+      "passed": 0,
+      "required_include": "spf.protection.outlook.com",
+      "skipped": 0,
+      "unresolved": 0,
+      "warned": 0
+    },
+    "summary": "SPF fails for 3 of 3 domains: contoso.example (does not include spf.protection.outlook.com); fabrikam.example (2 SPF records; RFC 7208 allows one and receivers return PermError); mail.example.org (ends +all, which authorises every sender)."
+  },
+  "id": "email.spf",
+  "reason": null,
+  "status": "fail"
+}

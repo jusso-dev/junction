@@ -1,0 +1,23 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "elements": {
+        "block_legacy_auth": "enforced",
+        "mfa_admins": "enforced",
+        "mfa_all_users": "enforced",
+        "risky_sign_ins": "missing"
+      },
+      "enabled_policies": 2,
+      "report_only_policies": 0,
+      "security_defaults": false
+    },
+    "summary": "Security Defaults are off and Conditional Access does not enforce: MFA or block for high-risk sign-ins."
+  },
+  "id": "identity.baseline",
+  "reason": null,
+  "status": "fail"
+}

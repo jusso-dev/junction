@@ -1,0 +1,27 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "critical_tag": "tier=gold",
+      "critical_vms": 1,
+      "critical_vms_unprotected": 0,
+      "require_locked": false,
+      "vaults": [
+        {
+          "immutability": "Unlocked",
+          "kind": "recovery_services_vault",
+          "name": "rsv-contoso-1",
+          "soft_delete": "Enabled"
+        }
+      ],
+      "virtual_machines": 2
+    },
+    "summary": "1 vault with soft delete and immutability enabled. Critical virtual machines protected: 1 of 1."
+  },
+  "id": "backup.azure_vaults",
+  "reason": null,
+  "status": "pass"
+}

@@ -79,6 +79,8 @@ where
                     Some("server_busy" | "credential_busy") => 429,
                     Some("response_too_large") => 413,
                     Some("operation_wait_timed_out") => 504,
+                    Some("attestation_disabled") => 403,
+                    Some("not_found") => 404,
                     Some("authorization_failed") => match result.value["http_status"].as_u64() {
                         Some(401) => 401,
                         _ => 403,

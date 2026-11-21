@@ -450,7 +450,9 @@ pub fn verified_domains(body: &Value) -> Vec<String> {
     out
 }
 
-fn sku_summaries(body: &Value) -> Vec<SkuSummary> {
+/// Summarise `subscribedSkus`: enabled service plans per SKU. Shared with
+/// `junction-check` licence detection.
+pub fn sku_summaries(body: &Value) -> Vec<SkuSummary> {
     body.get("value")
         .and_then(Value::as_array)
         .into_iter()

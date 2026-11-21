@@ -1,0 +1,62 @@
+[
+    {
+        "operation": "azure.arc.machines.list_by_subscription",
+        "responses": [
+            {
+                "status": 200,
+                "body": {
+                    "value": [
+                        {
+                            "id": "/subscriptions/11111111-1111-4111-8111-111111111111/resourceGroups/rg-arc/providers/Microsoft.HybridCompute/machines/arc-001",
+                            "name": "arc-001",
+                            "type": "Microsoft.HybridCompute/machines",
+                            "location": "australiaeast",
+                            "properties": {
+                                "status": "Connected",
+                                "osType": "windows",
+                                "osName": "windows",
+                                "machineFqdn": "arc-001.contoso.example",
+                                "vmId": "aaaaaaaa-0000-4000-8000-000000000001"
+                            }
+                        },
+                        {
+                            "id": "/subscriptions/11111111-1111-4111-8111-111111111111/resourceGroups/rg-arc/providers/Microsoft.HybridCompute/machines/arc-009",
+                            "name": "arc-009",
+                            "type": "Microsoft.HybridCompute/machines",
+                            "location": "australiaeast",
+                            "properties": {
+                                "status": "Expired",
+                                "osType": "windows",
+                                "osName": "windows",
+                                "machineFqdn": "arc-009.contoso.example",
+                                "vmId": "aaaaaaaa-0000-4000-8000-000000000009"
+                            }
+                        }
+                    ]
+                }
+            }
+        ],
+        "match": {
+            "parameters": {
+                "subscriptionId": "11111111-1111-4111-8111-111111111111"
+            }
+        }
+    },
+    {
+        "operation": "azure.arc.machines.list_by_subscription",
+        "match": {
+            "parameters": {
+                "subscriptionId": "22222222-2222-4222-8222-222222222222"
+            }
+        },
+        "responses": [
+            {
+                "status": 409,
+                "error": {
+                    "code": "MissingSubscriptionRegistration",
+                    "message": "The subscription is not registered to use namespace 'Microsoft.HybridCompute'."
+                }
+            }
+        ]
+    }
+]

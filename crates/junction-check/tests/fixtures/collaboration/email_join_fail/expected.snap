@@ -1,0 +1,15 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "allow_email_verified_users_to_join": true
+    },
+    "summary": "Email-verified users can self-join the organisation."
+  },
+  "id": "collaboration.email_verified_join_blocked",
+  "reason": null,
+  "status": "fail"
+}

@@ -1,0 +1,86 @@
+[
+    {
+        "operation": "azure.resource_graph.resources.post",
+        "responses": [
+            {
+                "body": {
+                    "totalRecords": 1,
+                    "count": 1,
+                    "data": [
+                        {
+                            "subscriptionId": "00000000-0000-4000-8000-000000005001",
+                            "name": "Production",
+                            "state": "Enabled"
+                        }
+                    ],
+                    "resultTruncated": "false",
+                    "$skipToken": "page-2"
+                }
+            }
+        ],
+        "match": {
+            "body": {
+                "query": "resourcecontainers | where type =~ 'microsoft.resources/subscriptions' | project subscriptionId, name, state = tostring(properties.state)"
+            }
+        }
+    },
+    {
+        "operation": "azure.resource_graph.resources.post",
+        "responses": [
+            {
+                "body": {
+                    "data": [
+                        {
+                            "subscriptionId": "00000000-0000-4000-8000-000000005002",
+                            "name": "Development",
+                            "state": "Enabled"
+                        }
+                    ],
+                    "count": 1
+                }
+            }
+        ],
+        "match": {
+            "body": {
+                "query": "resourcecontainers | where type =~ 'microsoft.resources/subscriptions' | project subscriptionId, name, state = tostring(properties.state)",
+                "options": {
+                    "$skipToken": "page-2"
+                }
+            }
+        }
+    },
+    {
+        "operation": "azure.resource_graph.resources.post",
+        "responses": [
+            {
+                "body": {
+                    "totalRecords": 3,
+                    "count": 3,
+                    "data": [
+                        {
+                            "subscriptionId": "00000000-0000-4000-8000-000000005001",
+                            "type": "microsoft.compute/virtualmachines",
+                            "n": 3
+                        },
+                        {
+                            "subscriptionId": "00000000-0000-4000-8000-000000005001",
+                            "type": "microsoft.keyvault/vaults",
+                            "n": 1
+                        },
+                        {
+                            "subscriptionId": "00000000-0000-4000-8000-000000005002",
+                            "type": "microsoft.storage/storageaccounts",
+                            "n": 2
+                        }
+                    ],
+                    "resultTruncated": "false"
+                }
+            }
+        ],
+        "match": {
+            "body": {
+                "query": "resources | where type in~ ('microsoft.compute/virtualmachines', 'microsoft.hybridcompute/machines', 'microsoft.storage/storageaccounts', 'microsoft.sql/servers', 'microsoft.keyvault/vaults', 'microsoft.containerservice/managedclusters', 'microsoft.containerregistry/registries') | summarize n = count() by subscriptionId, type = tolower(type)"
+            }
+        }
+    }
+]

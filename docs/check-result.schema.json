@@ -1,0 +1,214 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/jusso-dev/junction/blob/main/docs/check-result.schema.json",
+  "title": "junction check run result",
+  "description": "Output of `junction check run --format json` (and the MCP and HTTP check tools). schema_version 1.x: minor versions only add fields.",
+  "type": "object",
+  "required": ["schema_version", "run_id", "tool", "started_at", "finished_at", "selection", "tenants"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "pattern": "^1\\.[0-9]+$" },
+    "run_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "tool": {
+      "type": "object",
+      "required": ["name", "version"],
+      "additionalProperties": false,
+      "properties": { "name": { "const": "junction" }, "version": { "type": "string" } }
+    },
+    "started_at": { "$ref": "#/$defs/timestamp" },
+    "finished_at": { "$ref": "#/$defs/timestamp" },
+    "selection": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "packs": { "type": "array", "items": { "$ref": "#/$defs/pack" } },
+        "checks": { "type": "array", "items": { "type": "string" } },
+        "exclude": { "type": "array", "items": { "type": "string" } },
+        "tags": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "tenants": { "type": "array", "items": { "$ref": "#/$defs/tenant" } }
+  },
+  "$defs": {
+    "timestamp": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]+)?Z$" },
+    "pack": { "enum": ["identity", "endpoint", "intune", "email", "backup", "sentinel", "apps", "collaboration", "azure"] },
+    "status": { "enum": ["pass", "fail", "warn", "unknown", "not_applicable"] },
+    "severity": { "enum": ["critical", "high", "medium", "low", "info"] },
+    "level": { "enum": ["low", "medium", "high"] },
+    "reason": {
+      "type": "object",
+      "required": ["code", "detail"],
+      "additionalProperties": false,
+      "properties": {
+        "code": { "type": "string", "pattern": "^[a-z_]+$" },
+        "detail": { "type": "string" },
+        "missing_permissions": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "statuses": {
+      "type": "object",
+      "required": ["pass", "fail", "warn", "unknown", "not_applicable"],
+      "additionalProperties": false,
+      "properties": {
+        "pass": { "type": "integer", "minimum": 0 },
+        "fail": { "type": "integer", "minimum": 0 },
+        "warn": { "type": "integer", "minimum": 0 },
+        "unknown": { "type": "integer", "minimum": 0 },
+        "not_applicable": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "score": {
+      "type": "object",
+      "required": ["score", "counted", "excluded", "statuses"],
+      "properties": {
+        "score": { "type": ["number", "null"], "minimum": 0, "maximum": 100 },
+        "counted": { "type": "integer", "minimum": 0 },
+        "excluded": { "type": "integer", "minimum": 0 },
+        "statuses": { "$ref": "#/$defs/statuses" }
+      }
+    },
+    "tags": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "essential_eight": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["strategy", "levels"],
+            "additionalProperties": false,
+            "properties": {
+              "strategy": { "type": "string" },
+              "levels": { "type": "array", "items": { "type": "integer", "minimum": 1, "maximum": 3 }, "minItems": 1 }
+            }
+          }
+        },
+        "ism": { "type": "array", "items": { "type": "string" } },
+        "cis_m365": { "type": "array", "items": { "type": "string" } },
+        "cis_v8": { "type": "array", "items": { "type": "string" } },
+        "nist_csf": { "type": "array", "items": { "type": "string" } },
+        "mitre": { "type": "array", "items": { "type": "string", "pattern": "^T[0-9]{4}(\\.[0-9]{3})?$" } }
+      }
+    },
+    "attestation": {
+      "type": "object",
+      "required": ["answer", "note", "author", "attested_at", "expires_at"],
+      "additionalProperties": false,
+      "properties": {
+        "answer": { "enum": ["yes", "no", "partial", "not_applicable"] },
+        "note": { "type": "string" },
+        "author": { "type": "string" },
+        "attested_at": { "$ref": "#/$defs/timestamp" },
+        "expires_at": { "$ref": "#/$defs/timestamp" }
+      }
+    },
+    "result": {
+      "type": "object",
+      "required": ["id", "title", "pack", "kind", "status", "severity", "effort", "impact", "evidence", "affected", "remediation", "references", "tags"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z][a-z0-9_]*\\.[a-z][a-z0-9_]*$" },
+        "title": { "type": "string", "minLength": 1 },
+        "pack": { "$ref": "#/$defs/pack" },
+        "kind": { "enum": ["automated", "manual"] },
+        "status": { "$ref": "#/$defs/status" },
+        "severity": { "$ref": "#/$defs/severity" },
+        "effort": { "$ref": "#/$defs/level" },
+        "impact": { "$ref": "#/$defs/level" },
+        "evidence": {
+          "type": "object",
+          "required": ["summary", "data"],
+          "additionalProperties": false,
+          "properties": { "summary": { "type": "string" }, "data": {} }
+        },
+        "affected": {
+          "type": "object",
+          "required": ["total", "items"],
+          "additionalProperties": false,
+          "properties": {
+            "total": { "type": "integer", "minimum": 0 },
+            "items": { "type": "array", "items": { "type": "string" } }
+          }
+        },
+        "remediation": {
+          "type": "object",
+          "required": ["text", "links"],
+          "additionalProperties": false,
+          "properties": {
+            "text": { "type": "string", "minLength": 1 },
+            "links": { "type": "array", "items": { "type": "string" } }
+          }
+        },
+        "references": { "type": "array", "items": { "type": "string" } },
+        "tags": { "$ref": "#/$defs/tags" },
+        "reason": { "$ref": "#/$defs/reason" },
+        "attested": { "$ref": "#/$defs/attestation" }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "status": { "enum": ["unknown", "not_applicable"] } } },
+          "then": { "required": ["reason"] }
+        }
+      ]
+    },
+    "diff": {
+      "type": "object",
+      "required": ["previous_run_id", "previous_finished_at", "new_failures", "fixed", "changed", "added", "removed", "score_delta"],
+      "additionalProperties": false,
+      "properties": {
+        "previous_run_id": { "type": "string" },
+        "previous_finished_at": { "type": "string" },
+        "new_failures": { "type": "array", "items": { "type": "string" } },
+        "fixed": { "type": "array", "items": { "type": "string" } },
+        "changed": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id", "before", "after"],
+            "additionalProperties": false,
+            "properties": {
+              "id": { "type": "string" },
+              "before": { "$ref": "#/$defs/status" },
+              "after": { "$ref": "#/$defs/status" }
+            }
+          }
+        },
+        "added": { "type": "array", "items": { "type": "string" } },
+        "removed": { "type": "array", "items": { "type": "string" } },
+        "score_delta": { "type": ["number", "null"] }
+      }
+    },
+    "tenant": {
+      "type": "object",
+      "required": ["tenant_id", "status", "score", "packs", "quick_wins", "results"],
+      "additionalProperties": false,
+      "properties": {
+        "tenant_id": { "type": "string", "minLength": 1 },
+        "label": { "type": "string" },
+        "status": { "enum": ["complete", "partial", "failed"] },
+        "error": { "$ref": "#/$defs/reason" },
+        "licences": {
+          "type": "object",
+          "required": ["features", "skus"],
+          "additionalProperties": false,
+          "properties": {
+            "features": { "type": "array", "items": { "type": "string" } },
+            "skus": { "type": "array", "items": { "type": "string" } }
+          }
+        },
+        "score": { "$ref": "#/$defs/score" },
+        "packs": {
+          "type": "array",
+          "items": {
+            "allOf": [{ "$ref": "#/$defs/score" }],
+            "required": ["pack"],
+            "properties": { "pack": { "$ref": "#/$defs/pack" } }
+          }
+        },
+        "quick_wins": { "type": "array", "items": { "type": "string" } },
+        "results": { "type": "array", "items": { "$ref": "#/$defs/result" } },
+        "diff": { "$ref": "#/$defs/diff" }
+      }
+    }
+  }
+}

@@ -1,0 +1,19 @@
+licences = ["exchange_online"]
+
+[dns."contoso.example"]
+txt = ["v=spf1 include:spf.protection.outlook.com include:_spf1.contoso.example include:_spf2.contoso.example ~all"]
+
+[dns."_spf1.contoso.example"]
+txt = ["v=spf1 a mx a:x.contoso.example mx:y.contoso.example -all"]
+
+[dns."_spf2.contoso.example"]
+txt = ["v=spf1 a mx ptr exists:z.contoso.example include:_spf3.contoso.example -all"]
+
+[dns."_spf3.contoso.example"]
+txt = ["v=spf1 a -all"]
+
+[dns."spf.protection.outlook.com"]
+txt = ["v=spf1 ip4:192.0.2.0/24 include:spfd.protection.outlook.com -all"]
+
+[dns."spfd.protection.outlook.com"]
+txt = ["v=spf1 ip4:198.51.100.0/24 -all"]

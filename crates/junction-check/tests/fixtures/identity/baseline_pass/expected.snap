@@ -1,0 +1,22 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "elements": {
+        "block_legacy_auth": "enforced",
+        "mfa_admins": "enforced",
+        "mfa_all_users": "enforced"
+      },
+      "enabled_policies": 2,
+      "report_only_policies": 0,
+      "security_defaults": false
+    },
+    "summary": "Conditional Access enforces the baseline (MFA for all users, legacy authentication blocked, MFA for every privileged role)."
+  },
+  "id": "identity.baseline",
+  "reason": null,
+  "status": "pass"
+}

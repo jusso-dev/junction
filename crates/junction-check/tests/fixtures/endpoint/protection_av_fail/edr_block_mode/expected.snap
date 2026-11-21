@@ -1,0 +1,20 @@
+{
+  "affected": {
+    "items": [
+      "pc-02.contoso.example"
+    ],
+    "total": 1
+  },
+  "evidence": {
+    "data": {
+      "devices_reporting": 5,
+      "edr_block_mode": 1,
+      "passive_without_edr_block": 1,
+      "percent_compliant": 50
+    },
+    "summary": "1 of 2 devices with Defender Antivirus in passive mode do not run EDR in block mode (50% compliant)."
+  },
+  "id": "endpoint.edr_block_mode",
+  "reason": null,
+  "status": "fail"
+}

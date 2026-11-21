@@ -1,0 +1,19 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": null,
+    "summary": "azure.log_analytics_query.query.execute was refused (HTTP 403 InsufficientAccessError). Grant Log Analytics Reader (read-only) and re-run."
+  },
+  "id": "sentinel.ingestion_cost",
+  "reason": {
+    "code": "missing_permission",
+    "detail": "azure.log_analytics_query.query.execute was refused (HTTP 403 InsufficientAccessError). Grant Log Analytics Reader (read-only) and re-run.",
+    "missing_permissions": [
+      "Log Analytics Reader"
+    ]
+  },
+  "status": "unknown"
+}

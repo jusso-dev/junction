@@ -1,0 +1,16 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": null,
+    "summary": "The tenant has no verified custom domains; Microsoft manages the DNS of the initial onmicrosoft domain."
+  },
+  "id": "email.spf",
+  "reason": {
+    "code": "no_custom_domains",
+    "detail": "The tenant has no verified custom domains; Microsoft manages the DNS of the initial onmicrosoft domain."
+  },
+  "status": "not_applicable"
+}

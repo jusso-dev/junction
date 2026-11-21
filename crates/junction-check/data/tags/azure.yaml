@@ -1,0 +1,12 @@
+azure.defender_plans:
+  cis_v8: ["10.1", "13.1"]
+  nist_csf: [ID.RA-01, DE.CM-09]
+  mitre: [T1190, T1562.001]
+azure.key_vault_protection:
+  cis_v8: ["3.11", "11.3"]
+  nist_csf: [PR.AA-05, PR.DS-01]
+  mitre: [T1552, T1490]
+azure.public_network_exposure:
+  cis_v8: ["3.3", "12.2"]
+  nist_csf: [PR.AA-05, PR.DS-01]
+  mitre: [T1530, T1190]

@@ -1,0 +1,33 @@
+{
+  "affected": {
+    "items": [
+      "admin1@contoso.example",
+      "breakglass1@contoso.example"
+    ],
+    "total": 2
+  },
+  "evidence": {
+    "data": {
+      "configured_accounts": [],
+      "emergency_accounts": [],
+      "enabled_policies": 3,
+      "global_admins_checked": 2,
+      "min": 1,
+      "policies_applying": {
+        "admin1@contoso.example": [
+          "MFA for all users",
+          "Block legacy authentication",
+          "Admins require phishing-resistant MFA"
+        ],
+        "breakglass1@contoso.example": [
+          "MFA for all users",
+          "Admins require phishing-resistant MFA"
+        ]
+      }
+    },
+    "summary": "0 Global Administrators are excluded from every enabled Conditional Access policy; at least 1 needed. 2 accounts checked."
+  },
+  "id": "identity.break_glass",
+  "reason": null,
+  "status": "fail"
+}

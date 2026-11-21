@@ -1,0 +1,30 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "autopatch": false,
+      "max_quality_deferral_days": 7,
+      "rings": [
+        {
+          "assigned_to": "all devices or users",
+          "name": "Broad",
+          "quality_deferral_days": 7,
+          "quality_paused": false
+        },
+        {
+          "assigned_to": "groups",
+          "name": "Pilot",
+          "quality_deferral_days": 0,
+          "quality_paused": false
+        }
+      ]
+    },
+    "summary": "Update ring Broad assigned to all devices or users with quality deferral of 7 days or less."
+  },
+  "id": "intune.update_rings",
+  "reason": null,
+  "status": "pass"
+}

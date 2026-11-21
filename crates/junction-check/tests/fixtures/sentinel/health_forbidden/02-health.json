@@ -1,0 +1,14 @@
+[
+  {
+    "operation": "azure.log_analytics_query.query.execute",
+    "responses": [
+      {
+        "status": 403,
+        "error": {
+          "code": "InsufficientAccessError",
+          "message": "The provided credentials have insufficient access to perform the requested operation."
+        }
+      }
+    ]
+  }
+]

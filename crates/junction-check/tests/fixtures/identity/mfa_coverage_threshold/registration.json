@@ -1,0 +1,64 @@
+[
+    {
+        "operation": "graph.reports.authentication_methods.user_registration_details.list",
+        "responses": [
+            {
+                "body": {
+                    "value": [
+                        {
+                            "id": "00000000-0000-4000-8000-000000000001",
+                            "userPrincipalName": "admin1@contoso.example",
+                            "userType": "member",
+                            "isAdmin": true,
+                            "isMfaCapable": true,
+                            "isMfaRegistered": true,
+                            "methodsRegistered": [
+                                "microsoftAuthenticatorPush"
+                            ]
+                        },
+                        {
+                            "id": "00000000-0000-4000-8000-000000000002",
+                            "userPrincipalName": "user2@contoso.example",
+                            "userType": "member",
+                            "isAdmin": false,
+                            "isMfaCapable": true,
+                            "isMfaRegistered": true,
+                            "methodsRegistered": [
+                                "microsoftAuthenticatorPush"
+                            ]
+                        },
+                        {
+                            "id": "00000000-0000-4000-8000-000000000003",
+                            "userPrincipalName": "user3@contoso.example",
+                            "userType": "member",
+                            "isAdmin": false,
+                            "isMfaCapable": true,
+                            "isMfaRegistered": true,
+                            "methodsRegistered": [
+                                "microsoftAuthenticatorPush"
+                            ]
+                        },
+                        {
+                            "id": "00000000-0000-4000-8000-000000000004",
+                            "userPrincipalName": "user4@contoso.example",
+                            "userType": "member",
+                            "isAdmin": false,
+                            "isMfaCapable": false,
+                            "isMfaRegistered": false,
+                            "methodsRegistered": []
+                        },
+                        {
+                            "id": "00000000-0000-4000-8000-000000000006",
+                            "userPrincipalName": "sync@contoso.example",
+                            "userType": "member",
+                            "isAdmin": false,
+                            "isMfaCapable": false,
+                            "isMfaRegistered": false,
+                            "methodsRegistered": []
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+]

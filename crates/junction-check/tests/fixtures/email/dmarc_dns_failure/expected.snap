@@ -1,0 +1,40 @@
+{
+  "affected": {
+    "items": [
+      "fabrikam.example"
+    ],
+    "total": 1
+  },
+  "evidence": {
+    "data": {
+      "assessed": 2,
+      "domains": [
+        {
+          "detail": "p=reject with aggregate reporting",
+          "domain": "contoso.example",
+          "record": "v=DMARC1; p=reject; rua=mailto:dmarc-reports@contoso.example",
+          "result": "pass",
+          "role": "exchange"
+        },
+        {
+          "detail": "MX lookup for fabrikam.example failed: timed out (fixture)",
+          "domain": "fabrikam.example",
+          "result": "unresolved",
+          "role": null
+        }
+      ],
+      "failed": 0,
+      "passed": 1,
+      "skipped": 0,
+      "unresolved": 1,
+      "warned": 0
+    },
+    "summary": "DMARC could not be confirmed for 1 of 2 domains: fabrikam.example (MX lookup for fabrikam.example failed: timed out (fixture))."
+  },
+  "id": "email.dmarc",
+  "reason": {
+    "code": "dns_lookup_failed",
+    "detail": "DMARC could not be confirmed for 1 of 2 domains: fabrikam.example (MX lookup for fabrikam.example failed: timed out (fixture))."
+  },
+  "status": "unknown"
+}

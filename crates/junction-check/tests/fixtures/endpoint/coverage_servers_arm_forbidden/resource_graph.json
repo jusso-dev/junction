@@ -1,0 +1,12 @@
+{
+    "operation": "azure.resource_graph.resources.post",
+    "responses": [
+        {
+            "status": 403,
+            "error": {
+                "code": "AuthorizationFailed",
+                "message": "The client does not have authorization to perform action 'Microsoft.ResourceGraph/resources/read'."
+            }
+        }
+    ]
+}

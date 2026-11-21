@@ -1,0 +1,19 @@
+{
+  "affected": {
+    "items": [
+      "Payroll Sync (secret valid 1094 days, to 2027-12-31)"
+    ],
+    "total": 1
+  },
+  "evidence": {
+    "data": {
+      "current_secrets": 2,
+      "long_lived": 1,
+      "max_days": 365
+    },
+    "summary": "1 of 2 current client secrets are valid for more than 365 days."
+  },
+  "id": "apps.secret_lifetime",
+  "reason": null,
+  "status": "warn"
+}

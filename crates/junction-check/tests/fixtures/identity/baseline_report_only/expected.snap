@@ -1,0 +1,22 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "elements": {
+        "block_legacy_auth": "enforced",
+        "mfa_admins": "report_only",
+        "mfa_all_users": "report_only"
+      },
+      "enabled_policies": 1,
+      "report_only_policies": 1,
+      "security_defaults": false
+    },
+    "summary": "The Conditional Access baseline is in place, but only in report-only mode for: MFA for all users, MFA for every privileged role."
+  },
+  "id": "identity.baseline",
+  "reason": null,
+  "status": "warn"
+}

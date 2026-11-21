@@ -1,0 +1,19 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": null,
+    "summary": "defender.endpoint.machines.list_secure_configurations_assessment_by_machine was refused (HTTP 403 Forbidden). Grant Vulnerability.Read.All (read-only) and re-run."
+  },
+  "id": "endpoint.realtime_protection",
+  "reason": {
+    "code": "missing_permission",
+    "detail": "defender.endpoint.machines.list_secure_configurations_assessment_by_machine was refused (HTTP 403 Forbidden). Grant Vulnerability.Read.All (read-only) and re-run.",
+    "missing_permissions": [
+      "Vulnerability.Read.All"
+    ]
+  },
+  "status": "unknown"
+}

@@ -1,0 +1,18 @@
+{
+    "operation": "azure.resource_graph.resources.post",
+    "responses": [
+        {
+            "body": {
+                "totalRecords": 0,
+                "count": 0,
+                "data": [],
+                "resultTruncated": "false"
+            }
+        }
+    ],
+    "match": {
+        "body": {
+            "query": "resources | where type =~ 'microsoft.keyvault/vaults' | project id, name, subscriptionId, enableRbacAuthorization = properties.enableRbacAuthorization, enablePurgeProtection = properties.enablePurgeProtection, enableSoftDelete = properties.enableSoftDelete, publicNetworkAccess = tostring(properties.publicNetworkAccess), defaultAction = tostring(properties.networkAcls.defaultAction)"
+        }
+    }
+}

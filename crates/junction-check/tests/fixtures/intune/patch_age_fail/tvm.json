@@ -1,0 +1,95 @@
+[
+    {
+        "operation": "defender.endpoint.vulnerabilities.list_machines_vulnerabilities",
+        "responses": [
+            {
+                "body": {
+                    "value": [
+                        {
+                            "id": "m1-CVE-2026-1001",
+                            "cveId": "CVE-2026-1001",
+                            "machineId": "m1",
+                            "productName": "chrome",
+                            "productVendor": "google",
+                            "productVersion": "139.0.7258.66",
+                            "severity": "High"
+                        },
+                        {
+                            "id": "m1-CVE-2026-1002",
+                            "cveId": "CVE-2026-1002",
+                            "machineId": "m1",
+                            "productName": "windows_11",
+                            "productVendor": "microsoft",
+                            "productVersion": "10.0.26100.9711",
+                            "severity": "Medium",
+                            "fixingKbId": "5130000"
+                        },
+                        {
+                            "id": "m2-CVE-2026-1003",
+                            "cveId": "CVE-2026-1003",
+                            "machineId": "m2",
+                            "productName": "7-zip",
+                            "productVendor": "7-zip",
+                            "productVersion": "24.08",
+                            "severity": "Medium"
+                        }
+                    ]
+                }
+            }
+        ]
+    },
+    {
+        "operation": "defender.endpoint.vulnerabilities.list",
+        "responses": [
+            {
+                "body": {
+                    "value": [
+                        {
+                            "id": "CVE-2026-1001",
+                            "severity": "High",
+                            "publishedOn": "2026-09-01T00:00:00Z",
+                            "publicExploit": false,
+                            "exploitVerified": false,
+                            "exploitInKit": false
+                        },
+                        {
+                            "id": "CVE-2026-1002",
+                            "severity": "Medium",
+                            "publishedOn": "2026-10-14T00:00:00Z",
+                            "publicExploit": false,
+                            "exploitVerified": false,
+                            "exploitInKit": false
+                        },
+                        {
+                            "id": "CVE-2026-1003",
+                            "severity": "Medium",
+                            "publishedOn": "2026-10-01T00:00:00Z",
+                            "publicExploit": false,
+                            "exploitVerified": false,
+                            "exploitInKit": false
+                        }
+                    ]
+                }
+            }
+        ]
+    },
+    {
+        "operation": "defender.endpoint.machines.list",
+        "responses": [
+            {
+                "body": {
+                    "value": [
+                        {
+                            "id": "m1",
+                            "computerDnsName": "win-01.contoso.example"
+                        },
+                        {
+                            "id": "m2",
+                            "computerDnsName": "win-02.contoso.example"
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+]

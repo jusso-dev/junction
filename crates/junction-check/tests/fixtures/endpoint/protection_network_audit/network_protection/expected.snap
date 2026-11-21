@@ -1,0 +1,26 @@
+{
+  "affected": {
+    "items": [
+      "pc-02.contoso.example"
+    ],
+    "total": 1
+  },
+  "evidence": {
+    "data": {
+      "audit_mode": 1,
+      "block_events_seen": 1,
+      "compliant": 3,
+      "configuration_ids": [
+        "scid-96"
+      ],
+      "devices_assessed": 3,
+      "non_compliant": 0,
+      "percent_compliant": 100,
+      "truncated": false
+    },
+    "summary": "Network protection is on for all 3 assessed devices, but 1 of them logged audit-mode events in the last 30 days, so it only audits there. 66% show no audit-mode events."
+  },
+  "id": "endpoint.network_protection",
+  "reason": null,
+  "status": "warn"
+}

@@ -2,9 +2,9 @@
   "documents": [
     {
       "receipt": {
-        "bytes": 7085,
+        "bytes": 7287,
         "path": "api-activities",
-        "sha256": "e03084bf811ad7c4ca5155000527e4fc48a4b4f40c91e264614f7e779573adae",
+        "sha256": "2c128acecc231a8f592dfcf740be14b5b16179d11625e9d821ad8683bad8f442",
         "source": "defender-cloud-apps",
         "upstream": "https://learn.microsoft.com/en-us/defender-cloud-apps/api-activities"
       },
@@ -12,9 +12,9 @@
     },
     {
       "receipt": {
-        "bytes": 3324,
+        "bytes": 3526,
         "path": "api-activities-feedback",
-        "sha256": "c9a088d868f0c091b424a572d63a9d73f62986e47f1b876c7a21edb3c40ce366",
+        "sha256": "d707a01d72ae2b1ea5b7e42874633fa5c9a7ab7fdd00b12de4d670ecd8145a41",
         "source": "defender-cloud-apps",
         "upstream": "https://learn.microsoft.com/en-us/defender-cloud-apps/api-activities-feedback"
       },
@@ -22,9 +22,9 @@
     },
     {
       "receipt": {
-        "bytes": 2834,
+        "bytes": 3036,
         "path": "api-activities-fetch",
-        "sha256": "325f70ab61855d93ade2fd823731e8085b9a67f392708deee93001106ced9dad",
+        "sha256": "0a881bdc5cbe23ec5166bb99e9898feac151049d0dc5e26fccce40b93b8f3779",
         "source": "defender-cloud-apps",
         "upstream": "https://learn.microsoft.com/en-us/defender-cloud-apps/api-activities-fetch"
       },
@@ -34,7 +34,7 @@
       "receipt": {
         "bytes": 6128,
         "path": "api-activities-investigate-script",
-        "sha256": "075a7a78277cc8a4fefbed689e05e0ec8a14ed159cbbfb4219e9435d6a9082d5",
+        "sha256": "e09a80e9851c65d40bd3399b44234e1a8e47fc9ab709b27b45994c6e8cafd927",
         "source": "defender-cloud-apps",
         "upstream": "https://learn.microsoft.com/en-us/defender-cloud-apps/api-activities-investigate-script"
       },
@@ -44,7 +44,7 @@
       "receipt": {
         "bytes": 3853,
         "path": "api-activities-list",
-        "sha256": "4f201fd404b387ca094ca3cd551b673b046556d7f2c2fe889150fea89dfad551",
+        "sha256": "77fba3feef30c2655df310c6846cf5bda4b74abe4d27000b31aa127d915fde7d",
         "source": "defender-cloud-apps",
         "upstream": "https://learn.microsoft.com/en-us/defender-cloud-apps/api-activities-list"
       },
@@ -52,9 +52,9 @@
     },
     {
       "receipt": {
-        "bytes": 7353,
+        "bytes": 7555,
         "path": "api-alerts",
-        "sha256": "f1f058b811c9e2468ad37114cd7c1046c71372af0d1fcd705fc4769993473f27",
+        "sha256": "b23e34974700634db5d27908b883e06c80f9661ed1679d44ebe7a6234e8a6786",
         "source": "defender-cloud-apps",
         "upstream": "https://learn.microsoft.com/en-us/defender-cloud-apps/api-alerts"
       },
@@ -64,7 +64,7 @@
       "receipt": {
         "bytes": 4499,
         "path": "api-alerts-close-benign",
-        "sha256": "e1180bb18b0eb20e69d334b9b2b3711c57c74e3de34d1efcaf0310edba3d1278",
+        "sha256": "16523cb9d6f37542c0fd9c0bc1f0cba5d4607feecf509411eeffee95e41e868d",
         "source": "defender-cloud-apps",
         "upstream": "https://learn.microsoft.com/en-us/defender-cloud-apps/api-alerts-close-benign"
       },
@@ -74,7 +74,7 @@
       "receipt": {
         "bytes": 4542,
         "path": "api-alerts-close-false-positive",
-        "sha256": "f6983036dc7c3506d6fe3ad69da96dc22febaa9838bdb469170face283c9369f",
+        "sha256": "75820a96018e859c3742b64f0750c45a3a87f8c6b02f135fe25c58658c483c43",
         "source": "defender-cloud-apps",
         "upstream": "https://learn.microsoft.com/en-us/defender-cloud-apps/api-alerts-close-false-positive"
       },
@@ -84,7 +84,7 @@
       "receipt": {
         "bytes": 4235,
         "path": "api-alerts-close-true-positive",
-        "sha256": "d35424a5afcd9c4bc6e1af3b9be59b1b583a71e687763e1f12d06fea6f0d420b",
+        "sha256": "24cf2e077c4c4f3624af4f498e32dc50abb780409470c1351b7c59b102778042",
         "source": "defender-cloud-apps",
         "upstream": "https://learn.microsoft.com/en-us/defender-cloud-apps/api-alerts-close-true-positive"
       },
@@ -92,9 +92,9 @@
     },
     {
       "receipt": {
-        "bytes": 4792,
+        "bytes": 4994,
         "path": "api-alerts-fetch",
-        "sha256": "6eadc229f305c3c590be06cc1a4fb7b6748a9e05ca91c2e642b01ab905e8173d",
+        "sha256": "faa9be02938358d87b23b1c40267c862fcb0cb8a95f5bd991af86dfd40b51cc2",
         "source": "defender-cloud-apps",
         "upstream": "https://learn.microsoft.com/en-us/defender-cloud-apps/api-alerts-fetch"
       },
@@ -104,7 +104,7 @@
       "receipt": {
         "bytes": 5999,
         "path": "api-alerts-list",
-        "sha256": "9822f4eb8e7f1b6a4787e56f1c7e3c1f6c041d4d3ccedd7ec23813ca8424e2ad",
+        "sha256": "6597510d2968f07b011774852ba7c12bf3882c66012592d9fa2c0a06fa888877",
         "source": "defender-cloud-apps",
         "upstream": "https://learn.microsoft.com/en-us/defender-cloud-apps/api-alerts-list"
       },
@@ -112,9 +112,9 @@
     },
     {
       "receipt": {
-        "bytes": 2782,
+        "bytes": 2984,
         "path": "api-alerts-mark-read",
-        "sha256": "7976661ea06e6af330c1bf15bdb618e54eabcfa1f8a09ed60065fb6cd83dadb3",
+        "sha256": "a7419ea353f38630aa0c913d4d7c177bdd75bda739de63306e23d7e413331a98",
         "source": "defender-cloud-apps",
         "upstream": "https://learn.microsoft.com/en-us/defender-cloud-apps/api-alerts-mark-read"
       },
@@ -122,9 +122,9 @@
     },
     {
       "receipt": {
-        "bytes": 2804,
+        "bytes": 3006,
         "path": "api-alerts-mark-unread",
-        "sha256": "f9c8dc6ca5848460f5ad80072cd2a212fd0581600dcd50a1bf3d5e57b592e644",
+        "sha256": "0ed4bee94dfcebeac571b297f8d6382e9db3a442772611c99331a9e605688106",
         "source": "defender-cloud-apps",
         "upstream": "https://learn.microsoft.com/en-us/defender-cloud-apps/api-alerts-mark-unread"
       },
@@ -132,9 +132,9 @@
     },
     {
       "receipt": {
-        "bytes": 4315,
+        "bytes": 4501,
         "path": "api-authentication",
-        "sha256": "6cdac1fbfd8f81a4f0292482379c0f08aa1ea015826436ac0fb012d8b90dd060",
+        "sha256": "6452812585dbe6421554ee764fa7b4431ba28c02ccf92f829ac7bac6f954c475",
         "source": "defender-cloud-apps",
         "upstream": "https://learn.microsoft.com/en-us/defender-cloud-apps/api-authentication"
       },
@@ -142,9 +142,9 @@
     },
     {
       "receipt": {
-        "bytes": 14191,
+        "bytes": 14175,
         "path": "api-authentication-application",
-        "sha256": "7036777862a1c3212dee15abb76f278961b923430f55e5f10e881fede3edbe33",
+        "sha256": "ef59d824686cfdbc38f72bca23f35b06e599a7c33c21af4e5b38139d3957ffa8",
         "source": "defender-cloud-apps",
         "upstream": "https://learn.microsoft.com/en-us/defender-cloud-apps/api-authentication-application"
       },
@@ -154,7 +154,7 @@
       "receipt": {
         "bytes": 13184,
         "path": "api-authentication-user",
-        "sha256": "91ea50d5068026520d09c0412ce4f965a8f59b93df8845d2d9cb25e0394644e8",
+        "sha256": "0e64ff5bb612c2da0572c79e5b35cf706814e20883c959ab463b0bacfbee6b18",
         "source": "defender-cloud-apps",
         "upstream": "https://learn.microsoft.com/en-us/defender-cloud-apps/api-authentication-user"
       },
@@ -162,9 +162,9 @@
     },
     {
       "receipt": {
-        "bytes": 4333,
+        "bytes": 4721,
         "path": "api-data-enrichment",
-        "sha256": "1d3bf25e9a67917a1bb7757ccb974ef59411958d6c02a3d0c6108167ef947687",
+        "sha256": "2d979cd02202024251aee3096358b43d446c525c5c8626a168b2d9b04ca540d5",
         "source": "defender-cloud-apps",
         "upstream": "https://learn.microsoft.com/en-us/defender-cloud-apps/api-data-enrichment"
       },
@@ -172,9 +172,9 @@
     },
     {
       "receipt": {
-        "bytes": 3597,
+        "bytes": 3799,
         "path": "api-data-enrichment-create",
-        "sha256": "8b7c607977ce56f5b2a0107ceb868c6e77268a85054b0abc1dd5607f102b8d6e",
+        "sha256": "c3b14dfe6fec0e917d193ec81b31796516b66f999e5f254f10ebe16a708d847c",
         "source": "defender-cloud-apps",
         "upstream": "https://learn.microsoft.com/en-us/defender-cloud-apps/api-data-enrichment-create"
       },
@@ -182,9 +182,9 @@
     },
     {
       "receipt": {
-        "bytes": 2715,
+        "bytes": 2917,
         "path": "api-data-enrichment-delete",
-        "sha256": "8413cb6915a4397518d23bc1e8d9252d049f6615bddab4d22c43a5de9a1cb9cb",
+        "sha256": "1c6494e03c8f8a4e304d14b5dd8aed132c9f6392fe9ec83642afcee6378f55b9",
         "source": "defender-cloud-apps",
         "upstream": "https://learn.microsoft.com/en-us/defender-cloud-apps/api-data-enrichment-delete"
       },
@@ -194,7 +194,7 @@
       "receipt": {
         "bytes": 5139,
         "path": "api-data-enrichment-list",
-        "sha256": "46dfa395b37d97c691667fe3cb95b00a2870387dbaff0ca74880fc72c45ef684",
+        "sha256": "baccceac7d8441972e4676c95f88b361afd395925d86526e93333e7d3ace38db",
         "source": "defender-cloud-apps",
         "upstream": "https://learn.microsoft.com/en-us/defender-cloud-apps/api-data-enrichment-list"
       },
@@ -202,9 +202,9 @@
     },
     {
       "receipt": {
-        "bytes": 10691,
+        "bytes": 10893,
         "path": "api-data-enrichment-manage-script",
-        "sha256": "795c94318f5ebc74605be21e1e3cae0b08f4a25d408dbbeb76f7cb7bb0034713",
+        "sha256": "9e816d5202ad2c0a9e5a52807b59d42d2d299934c8aaab2f76e7d066e78630af",
         "source": "defender-cloud-apps",
         "upstream": "https://learn.microsoft.com/en-us/defender-cloud-apps/api-data-enrichment-manage-script"
       },
@@ -212,9 +212,9 @@
     },
     {
       "receipt": {
-        "bytes": 3790,
+        "bytes": 3992,
         "path": "api-data-enrichment-update",
-        "sha256": "7c733c58ab23726fea8a872eabb97c45dce59c405f6ad3b015b51ee2cd821717",
+        "sha256": "c6b85ce1afd0c7b60eeb53e9811a18d732d6aa5366694ca1c5bcb1c3aa021d44",
         "source": "defender-cloud-apps",
         "upstream": "https://learn.microsoft.com/en-us/defender-cloud-apps/api-data-enrichment-update"
       },
@@ -222,9 +222,9 @@
     },
     {
       "receipt": {
-        "bytes": 4053,
+        "bytes": 4255,
         "path": "api-discovery",
-        "sha256": "73f509d10f3129b592f1c38513e6bed87b18a462596d5213ad52ec685ee0f932",
+        "sha256": "5bffeaa196ed6aff7730c6eee8e28b171e30f80219c676c6f2496675563b80be",
         "source": "defender-cloud-apps",
         "upstream": "https://learn.microsoft.com/en-us/defender-cloud-apps/api-discovery"
       },
@@ -232,9 +232,9 @@
     },
     {
       "receipt": {
-        "bytes": 3413,
+        "bytes": 3615,
         "path": "api-discovery-finalize",
-        "sha256": "963c5027fb5558d03291ddbc6bca1e3350eaeb8e392c811dffa1155e617077f0",
+        "sha256": "91ea9e446884e1276d94d36b91b24cef97f5bda499b39983a1c54718dfbd1241",
         "source": "defender-cloud-apps",
         "upstream": "https://learn.microsoft.com/en-us/defender-cloud-apps/api-discovery-finalize"
       },
@@ -242,9 +242,9 @@
     },
     {
       "receipt": {
-        "bytes": 5320,
+        "bytes": 5522,
         "path": "api-discovery-initiate",
-        "sha256": "57638ff454a734b9fed746263f6a06b6f857fb76e9c5afba51f58be55fe97315",
+        "sha256": "4376d14b95c74e6094148447c92917412f28bf5ec2cccf864f32ecd5bce4a94c",
         "source": "defender-cloud-apps",
         "upstream": "https://learn.microsoft.com/en-us/defender-cloud-apps/api-discovery-initiate"
       },
@@ -254,7 +254,7 @@
       "receipt": {
         "bytes": 7159,
         "path": "api-discovery-list-categories",
-        "sha256": "232ef0637898eb4ed0739b0608c409ac7b2b3744dc0a515bcfa3c82610d910bd",
+        "sha256": "206696cef0eb6fc71cf173574898cd2be44bf6830f98c0281f7eefedb613f81d",
         "source": "defender-cloud-apps",
         "upstream": "https://learn.microsoft.com/en-us/defender-cloud-apps/api-discovery-list-categories"
       },
@@ -262,9 +262,9 @@
     },
     {
       "receipt": {
-        "bytes": 10131,
+        "bytes": 10147,
         "path": "api-discovery-list-streams",
-        "sha256": "dcd89500e9fb8b66596c84720023098ca988640c080bff58aa3af8368f2e2574",
+        "sha256": "ba0ee96cb7cf400a86a458e82b620887293f021a80fec238a513944dfc882ab3",
         "source": "defender-cloud-apps",
         "upstream": "https://learn.microsoft.com/en-us/defender-cloud-apps/api-discovery-list-streams"
       },
@@ -272,9 +272,9 @@
     },
     {
       "receipt": {
-        "bytes": 3919,
+        "bytes": 3935,
         "path": "api-discovery-perform",
-        "sha256": "a5d6cf7897e403a9e9462ac9043c392264ff2602ae0004ca3cb9c6abad435bd1",
+        "sha256": "663a1d84cf580bfca7b30c618aa58206aba668c025c8f01c7799c7770ed16047",
         "source": "defender-cloud-apps",
         "upstream": "https://learn.microsoft.com/en-us/defender-cloud-apps/api-discovery-perform"
       },
@@ -282,9 +282,9 @@
     },
     {
       "receipt": {
-        "bytes": 4115,
+        "bytes": 4131,
         "path": "api-discovery-script",
-        "sha256": "3a5e3f3d653ccf5e20a0452294146de3eb8115b92c76ba012b9c68eb0a0a6715",
+        "sha256": "874ff2e1cf284c98de267e1ece7093100779dc6f2d904345c9992261ebb96a1c",
         "source": "defender-cloud-apps",
         "upstream": "https://learn.microsoft.com/en-us/defender-cloud-apps/api-discovery-script"
       },
@@ -292,9 +292,9 @@
     },
     {
       "receipt": {
-        "bytes": 3963,
+        "bytes": 4165,
         "path": "api-entities",
-        "sha256": "cc14c0173d1d76666e8570b0374a723e46f14f29b7c9bb016915ce834427ab39",
+        "sha256": "ba3d78b31bf23c46eeb8c9486d3fecfa8ec80141449b6473448971b0dff0d724",
         "source": "defender-cloud-apps",
         "upstream": "https://learn.microsoft.com/en-us/defender-cloud-apps/api-entities"
       },
@@ -302,9 +302,9 @@
     },
     {
       "receipt": {
-        "bytes": 3258,
+        "bytes": 3274,
         "path": "api-entities-fetch",
-        "sha256": "8c13c9473db8390efc4e027eab84a4dfe916819e2066fcea0fe2007f36bea676",
+        "sha256": "45d170d26b1794a835944871b55712a791a8962b92bf680717fc354d3cb39cf2",
         "source": "defender-cloud-apps",
         "upstream": "https://learn.microsoft.com/en-us/defender-cloud-apps/api-entities-fetch"
       },
@@ -312,9 +312,9 @@
     },
     {
       "receipt": {
-        "bytes": 3346,
+        "bytes": 3362,
         "path": "api-entities-fetch-tree",
-        "sha256": "a23403572ec4bbef7b9723d9c8dedfd266c4ee33500a11e6826bf735672e1093",
+        "sha256": "e3e99478e139633520c912ecc99286b5dbaf992f0dd407da36987939a4640e9c",
         "source": "defender-cloud-apps",
         "upstream": "https://learn.microsoft.com/en-us/defender-cloud-apps/api-entities-fetch-tree"
       },
@@ -322,9 +322,9 @@
     },
     {
       "receipt": {
-        "bytes": 3837,
+        "bytes": 3853,
         "path": "api-entities-list",
-        "sha256": "fe97dfaa4326cb09209ae231c51d3cfc5318b58ea9aebbc0a6d653ffc5668955",
+        "sha256": "a9938cafef0e3de2b781ed735291f21b143c9cf5624668fd5a3d04a5da2bba9f",
         "source": "defender-cloud-apps",
         "upstream": "https://learn.microsoft.com/en-us/defender-cloud-apps/api-entities-list"
       },
@@ -332,9 +332,9 @@
     },
     {
       "receipt": {
-        "bytes": 5654,
+        "bytes": 5856,
         "path": "api-files",
-        "sha256": "5a5ddc5142e5b6074821673e552d4bc4b8e1119060cad4afdf3ef5bfb37c4278",
+        "sha256": "d82699669a939e27e867822013f4d5c5a5feba675bb9fd85ab2bfa40995b9fbe",
         "source": "defender-cloud-apps",
         "upstream": "https://learn.microsoft.com/en-us/defender-cloud-apps/api-files"
       },
@@ -342,9 +342,9 @@
     },
     {
       "receipt": {
-        "bytes": 2985,
+        "bytes": 3001,
         "path": "api-files-fetch",
-        "sha256": "712737ad2ce29e69f1e777db33f2da88bf45eb371b91d7da48a5708f6fcdb5dc",
+        "sha256": "ded2f78c062a817b84c4fc9e9dbf2655b067757d8d1836d8d0628dc47855b4e0",
         "source": "defender-cloud-apps",
         "upstream": "https://learn.microsoft.com/en-us/defender-cloud-apps/api-files-fetch"
       },
@@ -352,9 +352,9 @@
     },
     {
       "receipt": {
-        "bytes": 3625,
+        "bytes": 3641,
         "path": "api-files-list",
-        "sha256": "a845249614fb2eed9bcfa395ead13c22cc10fb9755536bccfa8d37a6abb6ae41",
+        "sha256": "49faff159b53a5a21139b6510ae36913cf11767b709e069d91ada6769d3741bd",
         "source": "defender-cloud-apps",
         "upstream": "https://learn.microsoft.com/en-us/defender-cloud-apps/api-files-list"
       },
@@ -372,9 +372,9 @@
     },
     {
       "receipt": {
-        "bytes": 4857,
+        "bytes": 5059,
         "path": "api-tokens-legacy",
-        "sha256": "30cf3b5e9aab18dd19b3852bccd3e1aee19466c7466d562579f42dc3ca5786ae",
+        "sha256": "f128438bb5e87022bd83029e90ad2301a5e01c2d5ae734c9a70c91ea183dcc73",
         "source": "defender-cloud-apps",
         "upstream": "https://learn.microsoft.com/en-us/defender-cloud-apps/api-tokens-legacy"
       },
@@ -383,5 +383,5 @@
   ],
   "imported": 38,
   "kind": "documentation",
-  "revision": "95239e91529a92b6cbe994ad9425ed53551e677077056614f6610b554efce576"
+  "revision": "bc8e7d2854c13601dcf685f31acddd21fe36a96a03a7e5414ff6b4dc1a64c46a"
 }

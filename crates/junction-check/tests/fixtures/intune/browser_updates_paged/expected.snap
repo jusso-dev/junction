@@ -1,0 +1,34 @@
+{
+  "affected": {
+    "items": [
+      "win-02.contoso.example"
+    ],
+    "total": 1
+  },
+  "evidence": {
+    "data": {
+      "behind": [
+        {
+          "browser": "edge",
+          "device": "win-02.contoso.example",
+          "version": "138.0.3351.65"
+        }
+      ],
+      "browsers": {
+        "edge": {
+          "behind": 1,
+          "installs": 2,
+          "minimum": null,
+          "newest": "141.0.3537.71"
+        }
+      },
+      "inventory_truncated": false,
+      "max_major_behind": 1,
+      "with_known_weaknesses": 0
+    },
+    "summary": "1 browser install on 1 device is more than 1 major version behind the newest in the tenant or below the configured minimum."
+  },
+  "id": "intune.browser_updates",
+  "reason": null,
+  "status": "fail"
+}

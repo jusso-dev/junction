@@ -1,0 +1,16 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": null,
+    "summary": "No Recovery Services or Backup vaults and no virtual machines in the subscriptions this identity can read. If backups run elsewhere, answer backup.offline_copy, backup.restore_tested and backup.admin_separation."
+  },
+  "id": "backup.azure_vaults",
+  "reason": {
+    "code": "no_azure_workloads",
+    "detail": "No Recovery Services or Backup vaults and no virtual machines in the subscriptions this identity can read. If backups run elsewhere, answer backup.offline_copy, backup.restore_tested and backup.admin_separation."
+  },
+  "status": "not_applicable"
+}

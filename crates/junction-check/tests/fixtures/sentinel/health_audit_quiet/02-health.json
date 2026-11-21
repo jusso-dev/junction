@@ -1,0 +1,33 @@
+[
+  {
+    "operation": "azure.log_analytics_query.query.execute",
+    "match": {
+      "parameters": {
+        "workspaceId": "00000000-0000-4000-8000-0000000000c1"
+      }
+    },
+    "responses": [
+      {
+        "status": 200,
+        "body": {
+          "tables": [
+            {
+              "name": "PrimaryResult",
+              "columns": [
+                {
+                  "name": "TableName",
+                  "type": "string"
+                }
+              ],
+              "rows": [
+                [
+                  "SentinelHealth"
+                ]
+              ]
+            }
+          ]
+        }
+      }
+    ]
+  }
+]

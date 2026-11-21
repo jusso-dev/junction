@@ -1,0 +1,10 @@
+{
+    "operation": "graph.device_management.device_configurations.list",
+    "responses": [
+        {
+            "body": {
+                "value": []
+            }
+        }
+    ]
+}

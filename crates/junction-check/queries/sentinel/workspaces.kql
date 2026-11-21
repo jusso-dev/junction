@@ -1,0 +1,4 @@
+resources
+| where type =~ 'microsoft.operationalinsights/workspaces'
+| project id, name, subscriptionId, resourceGroup, customerId = tostring(properties.customerId), retentionInDays = toint(properties.retentionInDays)
+| order by id asc

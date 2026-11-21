@@ -1,0 +1,19 @@
+{
+  "affected": {
+    "items": [
+      "Contoso CRM (00000000-0000-4000-8000-000000000d01): Directory.ReadWrite.All",
+      "Fabrikam Backup (00000000-0000-4000-8000-000000000d03): Files.ReadWrite.All (delegated, all users), full_access_as_app"
+    ],
+    "total": 2
+  },
+  "evidence": {
+    "data": {
+      "high_impact": 2,
+      "service_principals": 3
+    },
+    "summary": "2 third-party applications hold high-impact permissions; confirm each is justified and owned."
+  },
+  "id": "apps.high_privilege_permissions",
+  "reason": null,
+  "status": "warn"
+}

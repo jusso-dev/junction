@@ -1,0 +1,35 @@
+{
+  "affected": {
+    "items": [
+      "Development: Arm/StorageAccounts"
+    ],
+    "total": 1
+  },
+  "evidence": {
+    "data": {
+      "subscriptions": [
+        {
+          "missing": [
+            "Arm",
+            "StorageAccounts"
+          ],
+          "standard": [],
+          "subscription": "Development"
+        },
+        {
+          "missing": [],
+          "standard": [
+            "Arm",
+            "KeyVaults",
+            "VirtualMachines"
+          ],
+          "subscription": "Production"
+        }
+      ]
+    },
+    "summary": "1 of 2 subscription(s) have relevant Defender plans off."
+  },
+  "id": "azure.defender_plans",
+  "reason": null,
+  "status": "warn"
+}

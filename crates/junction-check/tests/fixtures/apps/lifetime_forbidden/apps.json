@@ -1,0 +1,12 @@
+{
+    "operation": "graph.applications.list",
+    "responses": [
+        {
+            "status": 403,
+            "error": {
+                "code": "Authorization_RequestDenied",
+                "message": "Insufficient privileges to complete the operation."
+            }
+        }
+    ]
+}

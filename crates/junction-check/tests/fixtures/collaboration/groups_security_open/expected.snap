@@ -1,0 +1,17 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "m365_group_creation_allowed_group": null,
+      "m365_group_creation_open": false,
+      "users_can_create_security_groups": true
+    },
+    "summary": "Any user can create security groups."
+  },
+  "id": "collaboration.group_creation_restricted",
+  "reason": null,
+  "status": "fail"
+}

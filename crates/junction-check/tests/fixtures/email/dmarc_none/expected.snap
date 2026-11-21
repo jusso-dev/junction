@@ -1,0 +1,38 @@
+{
+  "affected": {
+    "items": [
+      "fabrikam.example"
+    ],
+    "total": 1
+  },
+  "evidence": {
+    "data": {
+      "assessed": 2,
+      "domains": [
+        {
+          "detail": "p=reject with aggregate reporting",
+          "domain": "contoso.example",
+          "record": "v=DMARC1; p=reject; rua=mailto:dmarc-reports@contoso.example",
+          "result": "pass",
+          "role": "exchange"
+        },
+        {
+          "detail": "p=none only monitors; spoofed mail is still delivered",
+          "domain": "fabrikam.example",
+          "record": "v=DMARC1; p=none; rua=mailto:dmarc-reports@fabrikam.example",
+          "result": "warn",
+          "role": "exchange"
+        }
+      ],
+      "failed": 0,
+      "passed": 1,
+      "skipped": 0,
+      "unresolved": 0,
+      "warned": 1
+    },
+    "summary": "DMARC needs attention for 1 of 2 domains: fabrikam.example (p=none only monitors; spoofed mail is still delivered)."
+  },
+  "id": "email.dmarc",
+  "reason": null,
+  "status": "warn"
+}

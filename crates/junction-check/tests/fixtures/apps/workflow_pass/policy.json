@@ -1,0 +1,17 @@
+{
+    "operation": "graph.policies.admin_consent_request_policy.get",
+    "responses": [
+        {
+            "body": {
+                "isEnabled": true,
+                "notifyReviewers": true,
+                "reviewers": [
+                    {
+                        "query": "/users/00000000-0000-4000-8000-000000000001",
+                        "queryType": "MicrosoftGraph"
+                    }
+                ]
+            }
+        }
+    ]
+}

@@ -1,0 +1,49 @@
+{
+    "operation": "azure.resource_graph.resources.post",
+    "responses": [
+        {
+            "body": {
+                "totalRecords": 3,
+                "count": 3,
+                "data": [
+                    {
+                        "id": "/subscriptions/00000000-0000-4000-8000-000000005001/resourceGroups/rg-sec/providers/Microsoft.KeyVault/vaults/kv-prod",
+                        "name": "kv-prod",
+                        "subscriptionId": "00000000-0000-4000-8000-000000005001",
+                        "enableRbacAuthorization": true,
+                        "enablePurgeProtection": true,
+                        "enableSoftDelete": null,
+                        "publicNetworkAccess": "Disabled",
+                        "defaultAction": "Deny"
+                    },
+                    {
+                        "id": "/subscriptions/00000000-0000-4000-8000-000000005001/resourceGroups/rg-sec/providers/Microsoft.KeyVault/vaults/kv-legacy",
+                        "name": "kv-legacy",
+                        "subscriptionId": "00000000-0000-4000-8000-000000005001",
+                        "enableRbacAuthorization": null,
+                        "enablePurgeProtection": null,
+                        "enableSoftDelete": null,
+                        "publicNetworkAccess": "Enabled",
+                        "defaultAction": "Allow"
+                    },
+                    {
+                        "id": "/subscriptions/00000000-0000-4000-8000-000000005001/resourceGroups/rg-sec/providers/Microsoft.KeyVault/vaults/kv-test",
+                        "name": "kv-test",
+                        "subscriptionId": "00000000-0000-4000-8000-000000005001",
+                        "enableRbacAuthorization": true,
+                        "enablePurgeProtection": true,
+                        "enableSoftDelete": false,
+                        "publicNetworkAccess": "Disabled",
+                        "defaultAction": "Deny"
+                    }
+                ],
+                "resultTruncated": "false"
+            }
+        }
+    ],
+    "match": {
+        "body": {
+            "query": "resources | where type =~ 'microsoft.keyvault/vaults' | project id, name, subscriptionId, enableRbacAuthorization = properties.enableRbacAuthorization, enablePurgeProtection = properties.enablePurgeProtection, enableSoftDelete = properties.enableSoftDelete, publicNetworkAccess = tostring(properties.publicNetworkAccess), defaultAction = tostring(properties.networkAcls.defaultAction)"
+        }
+    }
+}

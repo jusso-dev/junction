@@ -1,0 +1,15 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "allowed_to_create_apps": true
+    },
+    "summary": "Any user can register applications."
+  },
+  "id": "apps.users_cannot_register_apps",
+  "reason": null,
+  "status": "fail"
+}

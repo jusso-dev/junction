@@ -1,0 +1,15 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "allowed_to_create_apps": false
+    },
+    "summary": "Only admins and Application Developers can register apps."
+  },
+  "id": "apps.users_cannot_register_apps",
+  "reason": null,
+  "status": "pass"
+}

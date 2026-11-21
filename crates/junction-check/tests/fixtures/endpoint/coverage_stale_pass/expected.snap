@@ -1,0 +1,43 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "active": 3,
+      "by_platform": {
+        "Windows": {
+          "active": 1,
+          "impaired_communication": 0,
+          "inactive": 0,
+          "machines": 1,
+          "no_sensor_data": 0
+        },
+        "Windows Server": {
+          "active": 1,
+          "impaired_communication": 0,
+          "inactive": 0,
+          "machines": 1,
+          "no_sensor_data": 0
+        },
+        "macOS": {
+          "active": 1,
+          "impaired_communication": 0,
+          "inactive": 0,
+          "machines": 1,
+          "no_sensor_data": 0
+        }
+      },
+      "impaired_communication": 0,
+      "inactive": 0,
+      "machines": 3,
+      "max_days": 7,
+      "no_sensor_data": 0
+    },
+    "summary": "All 3 onboarded machines are active and seen within 7 days."
+  },
+  "id": "endpoint.stale_sensors",
+  "reason": null,
+  "status": "pass"
+}

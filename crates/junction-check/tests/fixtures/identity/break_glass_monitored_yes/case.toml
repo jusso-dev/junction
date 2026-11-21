@@ -1,0 +1,4 @@
+[[attestations]]
+check = "identity.break_glass_monitored"
+answer = "yes"
+note = "Sentinel analytics rule on break-glass sign-ins"

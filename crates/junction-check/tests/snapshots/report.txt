@@ -1,0 +1,22 @@
+Run run-20261025 finished 2026-10-25T01:02:00Z
+
+Tenant Contoso (00000000-0000-4000-8000-000000000001)  [partial]  score 45.3
+  4 pass, 2 fail, 1 warn, 1 unknown, 1 not applicable
+  Packs
+    Identity                                         47.4  1 fail, 0 warn, 0 unknown
+    Endpoint (Defender for Endpoint and ASR)         16.7  1 fail, 1 warn, 0 unknown
+    Intune, patching and admin rights               100.0  0 fail, 0 warn, 1 unknown
+    Email                                           100.0  0 fail, 0 warn, 0 unknown
+    Backups                                    not scored  0 fail, 0 warn, 0 unknown
+
+  STATUS          SEVERITY  ID                            SUMMARY
+  fail            critical  identity.mfa_admins           25 of 30 administrators have no phishing-…
+  fail            high      endpoint.app_vulnerabilities  4 devices run applications with critical …
+  warn            medium    endpoint.asr_office_macros    The rule is in audit mode on 12 devices.
+  unknown         high      intune.os_update_rings        [missing_permission] Could not read Windo…
+  not_applicable  medium    backup.m365_backup            [missing_licence] Microsoft 365 Backup is…
+
+  4 passing checks hidden (use --show-passes to list them).
+
+Tenant Fabrikam (00000000-0000-4000-8000-000000000002)  [FAILED]
+  error: authentication_failed: The app registration has no consent in this tenant.

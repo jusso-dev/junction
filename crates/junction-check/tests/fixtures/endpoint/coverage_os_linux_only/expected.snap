@@ -1,0 +1,16 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": null,
+    "summary": "No onboarded Windows or macOS machines to assess (2 other machines are not assessed)."
+  },
+  "id": "endpoint.unsupported_os",
+  "reason": {
+    "code": "no_assessable_devices",
+    "detail": "No onboarded Windows or macOS machines to assess (2 other machines are not assessed)."
+  },
+  "status": "not_applicable"
+}

@@ -1,0 +1,62 @@
+[
+    {
+        "operation": "graph.service_principals.list",
+        "responses": [
+            {
+                "body": {
+                    "value": [
+                        {
+                            "id": "00000000-0000-4000-8000-000000000b01",
+                            "appId": "00000003-0000-0000-c000-000000000000",
+                            "appRoles": [
+                                {
+                                    "id": "00000000-0000-4000-8000-000000000a01",
+                                    "value": "Mail.ReadWrite"
+                                },
+                                {
+                                    "id": "00000000-0000-4000-8000-000000000a02",
+                                    "value": "Directory.ReadWrite.All"
+                                },
+                                {
+                                    "id": "00000000-0000-4000-8000-000000000a03",
+                                    "value": "User.Read.All"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            }
+        ],
+        "match": {
+            "parameters": {
+                "$filter": "appId eq '00000003-0000-0000-c000-000000000000'"
+            }
+        }
+    },
+    {
+        "operation": "graph.service_principals.list",
+        "responses": [
+            {
+                "body": {
+                    "value": [
+                        {
+                            "id": "00000000-0000-4000-8000-000000000b02",
+                            "appId": "00000002-0000-0ff1-ce00-000000000000",
+                            "appRoles": [
+                                {
+                                    "id": "00000000-0000-4000-8000-000000000a04",
+                                    "value": "full_access_as_app"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            }
+        ],
+        "match": {
+            "parameters": {
+                "$filter": "appId eq '00000002-0000-0ff1-ce00-000000000000'"
+            }
+        }
+    }
+]

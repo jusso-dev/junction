@@ -1,0 +1,39 @@
+[
+    {
+        "operation": "graph.identity.conditional_access.policies.list",
+        "responses": [
+            {
+                "body": {
+                    "value": [
+                        {
+                            "id": "00000000-0000-4000-b000-000000000004",
+                            "displayName": "Old pilot",
+                            "state": "disabled",
+                            "conditions": {
+                                "users": {
+                                    "includeUsers": [
+                                        "All"
+                                    ]
+                                },
+                                "applications": {
+                                    "includeApplications": [
+                                        "All"
+                                    ]
+                                },
+                                "clientAppTypes": [
+                                    "all"
+                                ]
+                            },
+                            "grantControls": {
+                                "operator": "OR",
+                                "builtInControls": [
+                                    "mfa"
+                                ]
+                            }
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+]

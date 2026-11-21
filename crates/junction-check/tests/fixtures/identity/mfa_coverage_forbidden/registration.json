@@ -1,0 +1,14 @@
+[
+    {
+        "operation": "graph.reports.authentication_methods.user_registration_details.list",
+        "responses": [
+            {
+                "status": 403,
+                "error": {
+                    "code": "Authorization_RequestDenied",
+                    "message": "Insufficient privileges to complete the operation."
+                }
+            }
+        ]
+    }
+]

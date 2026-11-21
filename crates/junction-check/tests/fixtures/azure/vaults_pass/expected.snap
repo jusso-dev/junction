@@ -1,0 +1,19 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "access_policy_model": [],
+      "no_purge_protection": [],
+      "public_network": [],
+      "soft_delete_off": [],
+      "vaults": 2
+    },
+    "summary": "All 2 key vault(s) use Azure RBAC, have purge protection and restrict network access."
+  },
+  "id": "azure.key_vault_protection",
+  "reason": null,
+  "status": "pass"
+}

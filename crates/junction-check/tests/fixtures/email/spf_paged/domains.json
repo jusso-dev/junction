@@ -1,0 +1,52 @@
+[
+    {
+        "operation": "graph.domains.list",
+        "responses": [
+            {
+                "body": {
+                    "value": [
+                        {
+                            "id": "contoso.onmicrosoft.com.example",
+                            "isVerified": true,
+                            "isInitial": true,
+                            "supportedServices": [
+                                "Email",
+                                "OfficeCommunicationsOnline"
+                            ]
+                        },
+                        {
+                            "id": "contoso.example",
+                            "isVerified": true,
+                            "isInitial": false,
+                            "supportedServices": [
+                                "Email",
+                                "OfficeCommunicationsOnline"
+                            ]
+                        }
+                    ],
+                    "@odata.nextLink": "fixture:domains-2"
+                }
+            }
+        ]
+    },
+    {
+        "url": "fixture:domains-2",
+        "responses": [
+            {
+                "body": {
+                    "value": [
+                        {
+                            "id": "fabrikam.example",
+                            "isVerified": true,
+                            "isInitial": false,
+                            "supportedServices": [
+                                "Email",
+                                "OfficeCommunicationsOnline"
+                            ]
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+]

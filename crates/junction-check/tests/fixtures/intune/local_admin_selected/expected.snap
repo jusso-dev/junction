@@ -1,0 +1,18 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "global_admins_added": true,
+      "registering_users_added": "selected",
+      "replacing_policies": [],
+      "selected_principals": 2
+    },
+    "summary": "Entra ID adds 2 selected users or groups as local administrators of the devices they join."
+  },
+  "id": "intune.local_admin",
+  "reason": null,
+  "status": "warn"
+}

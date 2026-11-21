@@ -1,11 +1,11 @@
 {
   "beta": 0,
   "deprecated": 0,
-  "operations": 172,
-  "preview": 18,
+  "operations": 189,
+  "preview": 17,
   "products": 1,
   "retired": 0,
   "services": 1,
-  "stable": 154,
-  "versions": 172
+  "stable": 172,
+  "versions": 189
 }

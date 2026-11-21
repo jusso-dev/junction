@@ -1,0 +1,95 @@
+{
+    "operation": "graph.applications.list",
+    "responses": [
+        {
+            "body": {
+                "value": [
+                    {
+                        "id": "00000000-0000-4000-8000-000000000101",
+                        "appId": "00000000-0000-4000-8000-000000000201",
+                        "displayName": "Mail Archiver",
+                        "signInAudience": "AzureADMyOrg",
+                        "passwordCredentials": [
+                            {
+                                "keyId": "00000000-0000-4000-8000-000000000304",
+                                "displayName": "secret",
+                                "startDateTime": "2026-06-01T00:00:00Z",
+                                "endDateTime": "2027-05-01T00:00:00Z"
+                            }
+                        ],
+                        "keyCredentials": [],
+                        "requiredResourceAccess": [
+                            {
+                                "resourceAppId": "00000003-0000-0000-c000-000000000000",
+                                "resourceAccess": [
+                                    {
+                                        "id": "00000000-0000-4000-8000-000000000a01",
+                                        "type": "Role"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "id": "00000000-0000-4000-8000-000000000102",
+                        "appId": "00000000-0000-4000-8000-000000000202",
+                        "displayName": "Exchange Exporter",
+                        "signInAudience": "AzureADMyOrg",
+                        "passwordCredentials": [
+                            {
+                                "keyId": "00000000-0000-4000-8000-000000000308",
+                                "displayName": "secret",
+                                "startDateTime": "2026-06-01T00:00:00Z",
+                                "endDateTime": "2027-05-01T00:00:00Z"
+                            },
+                            {
+                                "keyId": "00000000-0000-4000-8000-000000000309",
+                                "displayName": "secret",
+                                "startDateTime": "2026-06-01T00:00:00Z",
+                                "endDateTime": "2027-05-01T00:00:00Z"
+                            }
+                        ],
+                        "keyCredentials": [],
+                        "requiredResourceAccess": [
+                            {
+                                "resourceAppId": "00000002-0000-0ff1-ce00-000000000000",
+                                "resourceAccess": [
+                                    {
+                                        "id": "00000000-0000-4000-8000-000000000a04",
+                                        "type": "Role"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "id": "00000000-0000-4000-8000-000000000103",
+                        "appId": "00000000-0000-4000-8000-000000000203",
+                        "displayName": "Directory Reader",
+                        "signInAudience": "AzureADMyOrg",
+                        "passwordCredentials": [
+                            {
+                                "keyId": "00000000-0000-4000-8000-00000000030c",
+                                "displayName": "secret",
+                                "startDateTime": "2026-06-01T00:00:00Z",
+                                "endDateTime": "2027-05-01T00:00:00Z"
+                            }
+                        ],
+                        "keyCredentials": [],
+                        "requiredResourceAccess": [
+                            {
+                                "resourceAppId": "00000003-0000-0000-c000-000000000000",
+                                "resourceAccess": [
+                                    {
+                                        "id": "00000000-0000-4000-8000-000000000a03",
+                                        "type": "Role"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    ]
+}

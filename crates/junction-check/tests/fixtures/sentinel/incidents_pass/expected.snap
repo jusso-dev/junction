@@ -1,0 +1,36 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "by_severity": {
+        "High": {
+          "open": 1,
+          "stale": 0
+        },
+        "Informational": {
+          "open": 0,
+          "stale": 0
+        },
+        "Low": {
+          "open": 1,
+          "stale": 0
+        },
+        "Medium": {
+          "open": 1,
+          "stale": 0
+        }
+      },
+      "hours": 48,
+      "open": 3,
+      "stale": 0,
+      "undated": 0
+    },
+    "summary": "3 incidents open; none unassigned or untouched for more than 48 hours."
+  },
+  "id": "sentinel.incidents_stale",
+  "reason": null,
+  "status": "pass"
+}

@@ -1,0 +1,16 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": null,
+    "summary": "`[packs.endpoint] subscriptions` is empty, so there are no Azure servers to compare."
+  },
+  "id": "endpoint.servers_covered",
+  "reason": {
+    "code": "no_subscriptions",
+    "detail": "`[packs.endpoint] subscriptions` is empty, so there are no Azure servers to compare."
+  },
+  "status": "not_applicable"
+}

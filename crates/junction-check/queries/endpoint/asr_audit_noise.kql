@@ -1,0 +1,9 @@
+// ASR audit events per rule over 7 days: how noisy each audit-mode rule would be in block.
+DeviceEvents
+| where Timestamp > ago(7d)
+| where ActionType startswith "Asr" and ActionType endswith "Audited"
+| extend Rule = replace_regex(ActionType, @"Audited$", "")
+| extend Rule = iff(Rule == "AsrSafeModeRebooted", "AsrSafeModeReboot", Rule)
+| summarize Events = count(), Devices = dcount(DeviceId), Processes = make_set(InitiatingProcessFileName, 5) by Rule
+| order by Events desc
+| take 50

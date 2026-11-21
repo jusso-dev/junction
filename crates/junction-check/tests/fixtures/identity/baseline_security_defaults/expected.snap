@@ -1,0 +1,15 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "security_defaults": true
+    },
+    "summary": "Security Defaults are on: MFA registration and challenge for all users, admin MFA and legacy authentication blocking."
+  },
+  "id": "identity.baseline",
+  "reason": null,
+  "status": "pass"
+}

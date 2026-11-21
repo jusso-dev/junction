@@ -1,0 +1,53 @@
+{
+  "affected": {
+    "items": [
+      "IPHONE-001",
+      "PIXEL-001"
+    ],
+    "total": 2
+  },
+  "evidence": {
+    "data": {
+      "active_days": 30,
+      "by_platform": {
+        "Android": {
+          "devices": 1,
+          "missing": 1,
+          "onboarded": 0
+        },
+        "Linux": {
+          "devices": 1,
+          "missing": 0,
+          "onboarded": 1
+        },
+        "Windows": {
+          "devices": 3,
+          "missing": 0,
+          "onboarded": 3
+        },
+        "iOS": {
+          "devices": 1,
+          "missing": 1,
+          "onboarded": 0
+        },
+        "macOS": {
+          "devices": 1,
+          "missing": 0,
+          "onboarded": 1
+        }
+      },
+      "devices": 7,
+      "discovered_not_onboarded": 0,
+      "matched_by": {
+        "device_id": 4,
+        "name": 1
+      },
+      "missing": 2,
+      "onboarded": 5
+    },
+    "summary": "2 of 7 active devices, all iOS or Android, have no onboarded Defender for Endpoint record."
+  },
+  "id": "endpoint.onboarding_coverage",
+  "reason": null,
+  "status": "warn"
+}

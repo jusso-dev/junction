@@ -1,0 +1,18 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "devices_reporting": 4,
+      "edr_block_mode": 0,
+      "passive_without_edr_block": 0,
+      "percent_compliant": null
+    },
+    "summary": "Defender Antivirus is not passive on any of the 4 reporting devices, so EDR in block mode is not needed as a fallback. Microsoft still recommends turning it on."
+  },
+  "id": "endpoint.edr_block_mode",
+  "reason": null,
+  "status": "pass"
+}

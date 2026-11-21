@@ -1,0 +1,13 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": null,
+    "summary": "External sharing is off."
+  },
+  "id": "collaboration.external_resharing_blocked",
+  "reason": null,
+  "status": "pass"
+}

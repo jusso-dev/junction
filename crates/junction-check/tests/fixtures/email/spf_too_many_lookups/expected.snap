@@ -1,0 +1,33 @@
+{
+  "affected": {
+    "items": [
+      "contoso.example"
+    ],
+    "total": 1
+  },
+  "evidence": {
+    "data": {
+      "assessed": 1,
+      "domains": [
+        {
+          "detail": "needs at least 13 DNS lookups, over the limit of 10",
+          "domain": "contoso.example",
+          "record": "v=spf1 include:spf.protection.outlook.com include:_spf1.contoso.example include:_spf2.contoso.example ~all",
+          "result": "fail",
+          "role": "exchange"
+        }
+      ],
+      "failed": 1,
+      "max_lookups": 10,
+      "passed": 0,
+      "required_include": "spf.protection.outlook.com",
+      "skipped": 0,
+      "unresolved": 0,
+      "warned": 0
+    },
+    "summary": "SPF fails for 1 of 1 domain: contoso.example (needs at least 13 DNS lookups, over the limit of 10)."
+  },
+  "id": "email.spf",
+  "reason": null,
+  "status": "fail"
+}

@@ -1,0 +1,19 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "blob_public_access_allowed": [],
+      "data_services": 1,
+      "data_services_public": [],
+      "storage_accounts": 2,
+      "storage_network_open": []
+    },
+    "summary": "All 2 storage account(s) and 1 data service(s) are closed to anonymous and public network access."
+  },
+  "id": "azure.public_network_exposure",
+  "reason": null,
+  "status": "pass"
+}

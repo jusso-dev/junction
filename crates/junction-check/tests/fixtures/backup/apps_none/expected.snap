@@ -1,0 +1,18 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "disabled_matches": 0,
+      "matches": 0,
+      "products": [],
+      "service_principals": 2
+    },
+    "summary": "No enterprise application matches a known Microsoft 365 backup product. If you use another product, attest this check instead."
+  },
+  "id": "backup.third_party_app",
+  "reason": null,
+  "status": "warn"
+}

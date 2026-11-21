@@ -1,0 +1,17 @@
+{
+    "operation": "defender.xdr.advancedhunting.run",
+    "responses": [
+        {
+            "body": {
+                "Schema": [],
+                "Results": [
+                    {
+                        "Rule": "AsrLsassCredentialTheft",
+                        "Mode": "block",
+                        "Devices": 30
+                    }
+                ]
+            }
+        }
+    ]
+}

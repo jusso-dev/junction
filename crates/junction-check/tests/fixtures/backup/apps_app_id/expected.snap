@@ -1,0 +1,22 @@
+{
+  "affected": {
+    "items": [
+      "Cloud Backup for Microsoft 365"
+    ],
+    "total": 1
+  },
+  "evidence": {
+    "data": {
+      "disabled_matches": 0,
+      "matches": 1,
+      "products": [
+        "AvePoint: Cloud Backup for Microsoft 365"
+      ],
+      "service_principals": 2
+    },
+    "summary": "Backup app with consent: AvePoint: Cloud Backup for Microsoft 365."
+  },
+  "id": "backup.third_party_app",
+  "reason": null,
+  "status": "pass"
+}

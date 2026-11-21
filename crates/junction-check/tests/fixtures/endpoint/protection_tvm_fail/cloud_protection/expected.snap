@@ -1,0 +1,26 @@
+{
+  "affected": {
+    "items": [
+      "pc-03.contoso.example"
+    ],
+    "total": 1
+  },
+  "evidence": {
+    "data": {
+      "compliant": 2,
+      "configuration_ids": [
+        "scid-2016",
+        "scid-5094",
+        "scid-6094"
+      ],
+      "devices_assessed": 3,
+      "non_compliant": 1,
+      "percent_compliant": 66,
+      "truncated": false
+    },
+    "summary": "Cloud-delivered protection is off on 1 of 3 devices (66% compliant)."
+  },
+  "id": "endpoint.cloud_protection",
+  "reason": null,
+  "status": "fail"
+}

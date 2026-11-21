@@ -1,0 +1,74 @@
+[
+    {
+        "operation": "graph.device_management.configuration_policies.list",
+        "responses": [
+            {
+                "body": {
+                    "value": [
+                        {
+                            "id": "p-laps",
+                            "name": "Windows LAPS",
+                            "platforms": "windows10",
+                            "technologies": "mdm",
+                            "templateReference": {
+                                "templateId": "",
+                                "templateFamily": "endpointSecurityAccountProtection"
+                            },
+                            "assignments": [
+                                {
+                                    "id": "a1",
+                                    "target": {
+                                        "@odata.type": "#microsoft.graph.allDevicesAssignmentTarget"
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                }
+            }
+        ]
+    },
+    {
+        "operation": "graph.device_management.configuration_policies.settings.list",
+        "match": {
+            "parameters": {
+                "deviceManagementConfigurationPolicy-id": "p-laps"
+            }
+        },
+        "responses": [
+            {
+                "body": {
+                    "value": [
+                        {
+                            "id": "0",
+                            "settingInstance": {
+                                "settingDefinitionId": "device_vendor_msft_laps_policies_backupdirectory",
+                                "choiceSettingValue": {
+                                    "value": "device_vendor_msft_laps_policies_backupdirectory_1",
+                                    "children": [
+                                        {
+                                            "settingDefinitionId": "device_vendor_msft_laps_policies_passwordagedays_aad",
+                                            "simpleSettingValue": {
+                                                "value": 30
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "id": "0",
+                            "settingInstance": {
+                                "settingDefinitionId": "device_vendor_msft_laps_policies_passwordcomplexity",
+                                "choiceSettingValue": {
+                                    "value": "device_vendor_msft_laps_policies_passwordcomplexity_4",
+                                    "children": []
+                                }
+                            }
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+]

@@ -1,0 +1,154 @@
+[
+    {
+        "operation": "graph.identity.conditional_access.policies.list",
+        "responses": [
+            {
+                "body": {
+                    "value": [
+                        {
+                            "id": "00000000-0000-4000-b000-000000000001",
+                            "displayName": "MFA for all users",
+                            "state": "enabled",
+                            "conditions": {
+                                "users": {
+                                    "includeUsers": [
+                                        "All"
+                                    ],
+                                    "excludeGroups": [
+                                        "00000000-0000-4000-9000-000000000002"
+                                    ]
+                                },
+                                "applications": {
+                                    "includeApplications": [
+                                        "All"
+                                    ]
+                                },
+                                "clientAppTypes": [
+                                    "all"
+                                ]
+                            },
+                            "grantControls": {
+                                "operator": "OR",
+                                "builtInControls": [
+                                    "mfa"
+                                ]
+                            }
+                        },
+                        {
+                            "id": "00000000-0000-4000-b000-000000000002",
+                            "displayName": "Block legacy authentication",
+                            "state": "enabled",
+                            "conditions": {
+                                "users": {
+                                    "includeUsers": [
+                                        "All"
+                                    ],
+                                    "excludeUsers": [
+                                        "00000000-0000-4000-8000-000000000008"
+                                    ]
+                                },
+                                "applications": {
+                                    "includeApplications": [
+                                        "All"
+                                    ]
+                                },
+                                "clientAppTypes": [
+                                    "exchangeActiveSync",
+                                    "other"
+                                ]
+                            },
+                            "grantControls": {
+                                "operator": "OR",
+                                "builtInControls": [
+                                    "block"
+                                ]
+                            }
+                        },
+                        {
+                            "id": "00000000-0000-4000-b000-000000000003",
+                            "displayName": "Admins require phishing-resistant MFA",
+                            "state": "enabled",
+                            "conditions": {
+                                "users": {
+                                    "includeRoles": [
+                                        "62e90394-69f5-4237-9190-012177145e10",
+                                        "194ae4cb-b126-40b2-bd5b-6091b380977d"
+                                    ],
+                                    "excludeGroups": [
+                                        "00000000-0000-4000-9000-000000000002"
+                                    ]
+                                },
+                                "applications": {
+                                    "includeApplications": [
+                                        "All"
+                                    ]
+                                },
+                                "clientAppTypes": [
+                                    "all"
+                                ]
+                            },
+                            "grantControls": {
+                                "operator": "OR",
+                                "builtInControls": [
+                                    "mfa"
+                                ]
+                            }
+                        },
+                        {
+                            "id": "00000000-0000-4000-b000-000000000004",
+                            "displayName": "Old pilot",
+                            "state": "disabled",
+                            "conditions": {
+                                "users": {
+                                    "includeUsers": [
+                                        "All"
+                                    ]
+                                },
+                                "applications": {
+                                    "includeApplications": [
+                                        "All"
+                                    ]
+                                },
+                                "clientAppTypes": [
+                                    "all"
+                                ]
+                            },
+                            "grantControls": {
+                                "operator": "OR",
+                                "builtInControls": [
+                                    "mfa"
+                                ]
+                            }
+                        },
+                        {
+                            "id": "00000000-0000-4000-b000-000000000005",
+                            "displayName": "Compliant devices (testing)",
+                            "state": "enabledForReportingButNotEnforced",
+                            "conditions": {
+                                "users": {
+                                    "includeUsers": [
+                                        "All"
+                                    ]
+                                },
+                                "applications": {
+                                    "includeApplications": [
+                                        "All"
+                                    ]
+                                },
+                                "clientAppTypes": [
+                                    "all"
+                                ]
+                            },
+                            "grantControls": {
+                                "operator": "OR",
+                                "builtInControls": [
+                                    "mfa"
+                                ]
+                            }
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+]

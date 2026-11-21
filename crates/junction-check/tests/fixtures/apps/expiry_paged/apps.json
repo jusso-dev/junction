@@ -1,0 +1,57 @@
+[
+    {
+        "operation": "graph.applications.list",
+        "responses": [
+            {
+                "body": {
+                    "value": [
+                        {
+                            "id": "00000000-0000-4000-8000-000000000101",
+                            "appId": "00000000-0000-4000-8000-000000000201",
+                            "displayName": "Payroll Sync",
+                            "signInAudience": "AzureADMyOrg",
+                            "passwordCredentials": [
+                                {
+                                    "keyId": "00000000-0000-4000-8000-000000000304",
+                                    "displayName": "secret",
+                                    "startDateTime": "2026-06-01T00:00:00Z",
+                                    "endDateTime": "2027-05-01T00:00:00Z"
+                                }
+                            ],
+                            "keyCredentials": [],
+                            "requiredResourceAccess": []
+                        }
+                    ],
+                    "@odata.nextLink": "fixture:apps-2"
+                }
+            }
+        ]
+    },
+    {
+        "url": "fixture:apps-2",
+        "responses": [
+            {
+                "body": {
+                    "value": [
+                        {
+                            "id": "00000000-0000-4000-8000-000000000102",
+                            "appId": "00000000-0000-4000-8000-000000000202",
+                            "displayName": "HR Portal",
+                            "signInAudience": "AzureADMyOrg",
+                            "passwordCredentials": [],
+                            "keyCredentials": [
+                                {
+                                    "keyId": "00000000-0000-4000-8000-000000000408",
+                                    "type": "AsymmetricX509Cert",
+                                    "startDateTime": "2024-01-01T00:00:00Z",
+                                    "endDateTime": "2025-01-01T00:00:00Z"
+                                }
+                            ],
+                            "requiredResourceAccess": []
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+]

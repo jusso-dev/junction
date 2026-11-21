@@ -1,0 +1,33 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "eligible_assignments": 2,
+      "eligible_principals": 2,
+      "max_permanent": 2,
+      "permanent": {
+        "admin1@contoso.example": [
+          "Global Administrator"
+        ],
+        "admin6@contoso.example": [
+          "Exchange Administrator"
+        ],
+        "breakglass1@contoso.example": [
+          "Global Administrator"
+        ],
+        "breakglass2@contoso.example": [
+          "Global Administrator"
+        ]
+      },
+      "permanent_counted": 2,
+      "permanent_principals": 4
+    },
+    "summary": "2 privileged assignments are eligible through PIM; 2 permanent (allowance 2)."
+  },
+  "id": "identity.pim_used",
+  "reason": null,
+  "status": "pass"
+}

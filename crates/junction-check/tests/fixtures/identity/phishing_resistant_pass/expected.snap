@@ -1,0 +1,21 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "admins": 2,
+      "admins_with_phishing_resistant_method": 2,
+      "enforcing_policies": [
+        "Admins require phishing-resistant MFA"
+      ],
+      "report_only_policies": [],
+      "uncovered_roles": []
+    },
+    "summary": "2 of 2 admins have a phishing-resistant method and Conditional Access requires a phishing-resistant strength for every privileged role."
+  },
+  "id": "identity.phishing_resistant_admins",
+  "reason": null,
+  "status": "pass"
+}

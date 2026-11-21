@@ -1,0 +1,2 @@
+[config.checks."endpoint.stale_sensors"]
+max_days = 30

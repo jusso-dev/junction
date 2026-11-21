@@ -1,0 +1,20 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": null,
+    "summary": "graph.role_management.directory.role_eligibility_schedules.list was refused (HTTP 403 Authorization_RequestDenied). Grant RoleEligibilitySchedule.Read.Directory or RoleManagement.Read.Directory (read-only) and re-run."
+  },
+  "id": "identity.pim_used",
+  "reason": {
+    "code": "missing_permission",
+    "detail": "graph.role_management.directory.role_eligibility_schedules.list was refused (HTTP 403 Authorization_RequestDenied). Grant RoleEligibilitySchedule.Read.Directory or RoleManagement.Read.Directory (read-only) and re-run.",
+    "missing_permissions": [
+      "RoleEligibilitySchedule.Read.Directory",
+      "RoleManagement.Read.Directory"
+    ]
+  },
+  "status": "unknown"
+}

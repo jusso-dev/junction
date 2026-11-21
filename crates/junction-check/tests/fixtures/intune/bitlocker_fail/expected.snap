@@ -1,0 +1,22 @@
+{
+  "affected": {
+    "items": [
+      "WIN-03"
+    ],
+    "total": 1
+  },
+  "evidence": {
+    "data": {
+      "encrypted": 2,
+      "missing_key": 1,
+      "not_encrypted": 1,
+      "recovery_keys": 1,
+      "stale_left_out": 0,
+      "windows_devices": 3
+    },
+    "summary": "1 of 2 encrypted Windows devices have no BitLocker recovery key in Entra ID."
+  },
+  "id": "intune.bitlocker_escrow",
+  "reason": null,
+  "status": "fail"
+}

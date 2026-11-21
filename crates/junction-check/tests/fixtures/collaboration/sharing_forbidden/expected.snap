@@ -1,0 +1,19 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": null,
+    "summary": "graph.admin.sharepoint.settings.get was refused (HTTP 403 Authorization_RequestDenied). Grant SharePointTenantSettings.Read.All (read-only) and re-run."
+  },
+  "id": "collaboration.sharepoint_external_sharing",
+  "reason": {
+    "code": "missing_permission",
+    "detail": "graph.admin.sharepoint.settings.get was refused (HTTP 403 Authorization_RequestDenied). Grant SharePointTenantSettings.Read.All (read-only) and re-run.",
+    "missing_permissions": [
+      "SharePointTenantSettings.Read.All"
+    ]
+  },
+  "status": "unknown"
+}

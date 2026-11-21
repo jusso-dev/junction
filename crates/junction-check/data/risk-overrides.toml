@@ -1,0 +1,14 @@
+# Reviewed risk corrections for the embedded check catalogue, applied with the registry's
+# operator override mechanism (see overrides/README.md). Only GET listings the catalogue marks
+# privileged because of their path belong here: the runtime's HTTP method floor still rejects
+# any mutation under the read-only policy, whatever this file says.
+
+[[operations]]
+operation = "graph.identity.conditional_access.policies.list"
+risk = "read_only"
+reason = "GET listing of Conditional Access policy definitions (Policy.Read.All); reading policy state changes nothing."
+
+[[operations]]
+operation = "graph.identity.conditional_access.named_locations.list"
+risk = "read_only"
+reason = "GET listing of named locations (Policy.Read.All); reading location definitions changes nothing."

@@ -1,0 +1,19 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "audit_events": 0,
+      "days": 7,
+      "quiet_below": 20,
+      "ready_for_block": [],
+      "rules": []
+    },
+    "summary": "No ASR audit events in the last 7 days."
+  },
+  "id": "endpoint.asr_audit_noise",
+  "reason": null,
+  "status": "pass"
+}

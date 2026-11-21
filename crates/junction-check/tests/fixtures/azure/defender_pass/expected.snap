@@ -1,0 +1,33 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "subscriptions": [
+        {
+          "missing": [],
+          "standard": [
+            "Arm",
+            "StorageAccounts"
+          ],
+          "subscription": "Development"
+        },
+        {
+          "missing": [],
+          "standard": [
+            "Arm",
+            "KeyVaults",
+            "VirtualMachines"
+          ],
+          "subscription": "Production"
+        }
+      ]
+    },
+    "summary": "Every relevant Defender plan is on across 2 subscription(s)."
+  },
+  "id": "azure.defender_plans",
+  "reason": null,
+  "status": "pass"
+}

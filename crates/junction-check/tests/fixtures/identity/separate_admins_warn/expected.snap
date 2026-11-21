@@ -1,0 +1,19 @@
+{
+  "affected": {
+    "items": [
+      "admin3@contoso.example"
+    ],
+    "total": 1
+  },
+  "evidence": {
+    "data": {
+      "admins": 3,
+      "with_mailbox": 1,
+      "with_office_apps": 1
+    },
+    "summary": "1 of 3 privileged accounts is licensed for a mailbox or Office apps, which suggests daily use (1 with a mailbox, 1 with Office apps)."
+  },
+  "id": "identity.separate_admin_accounts",
+  "reason": null,
+  "status": "warn"
+}

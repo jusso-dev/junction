@@ -1,0 +1,59 @@
+[
+  {
+    "operation": "sentinel.securityinsights.alert_rules.list",
+    "match": {
+      "parameters": {
+        "workspaceName": "law-sentinel-01"
+      }
+    },
+    "responses": [
+      {
+        "status": 200,
+        "body": {
+          "value": [
+            {
+              "id": "/subscriptions/00000000-0000-4000-8000-0000000000a1/resourceGroups/rg-security/providers/Microsoft.OperationalInsights/workspaces/law-sentinel-01/providers/Microsoft.SecurityInsights/alertRules/rule-01",
+              "name": "rule-01",
+              "type": "Microsoft.SecurityInsights/alertRules",
+              "kind": "Scheduled",
+              "properties": {
+                "displayName": "Synthetic Scheduled rule 1",
+                "enabled": true
+              }
+            },
+            {
+              "id": "/subscriptions/00000000-0000-4000-8000-0000000000a1/resourceGroups/rg-security/providers/Microsoft.OperationalInsights/workspaces/law-sentinel-01/providers/Microsoft.SecurityInsights/alertRules/rule-02",
+              "name": "rule-02",
+              "type": "Microsoft.SecurityInsights/alertRules",
+              "kind": "Scheduled",
+              "properties": {
+                "displayName": "Synthetic Scheduled rule 2",
+                "enabled": true
+              }
+            },
+            {
+              "id": "/subscriptions/00000000-0000-4000-8000-0000000000a1/resourceGroups/rg-security/providers/Microsoft.OperationalInsights/workspaces/law-sentinel-01/providers/Microsoft.SecurityInsights/alertRules/rule-03",
+              "name": "rule-03",
+              "type": "Microsoft.SecurityInsights/alertRules",
+              "kind": "NRT",
+              "properties": {
+                "displayName": "Synthetic NRT rule 3",
+                "enabled": true
+              }
+            },
+            {
+              "id": "/subscriptions/00000000-0000-4000-8000-0000000000a1/resourceGroups/rg-security/providers/Microsoft.OperationalInsights/workspaces/law-sentinel-01/providers/Microsoft.SecurityInsights/alertRules/rule-04",
+              "name": "rule-04",
+              "type": "Microsoft.SecurityInsights/alertRules",
+              "kind": "Scheduled",
+              "properties": {
+                "displayName": "Synthetic Scheduled rule 4",
+                "enabled": false
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+]

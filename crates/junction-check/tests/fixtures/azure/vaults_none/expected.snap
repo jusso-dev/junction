@@ -1,0 +1,16 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": null,
+    "summary": "No key vaults in the readable subscriptions."
+  },
+  "id": "azure.key_vault_protection",
+  "reason": {
+    "code": "no_resources",
+    "detail": "No key vaults in the readable subscriptions."
+  },
+  "status": "not_applicable"
+}

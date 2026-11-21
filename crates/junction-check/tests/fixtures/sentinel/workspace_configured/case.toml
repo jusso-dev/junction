@@ -1,0 +1,2 @@
+[config.packs.sentinel]
+workspaces = ["/subscriptions/00000000-0000-4000-8000-0000000000a1/resourceGroups/rg-security/providers/Microsoft.OperationalInsights/workspaces/law-sentinel-01"]

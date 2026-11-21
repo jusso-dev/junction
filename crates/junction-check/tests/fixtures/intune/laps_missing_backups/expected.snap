@@ -1,0 +1,28 @@
+{
+  "affected": {
+    "items": [
+      "WIN-02",
+      "WIN-03"
+    ],
+    "total": 2
+  },
+  "evidence": {
+    "data": {
+      "backed_up": 1,
+      "missing_backup": 2,
+      "policies": [
+        {
+          "assigned_to": "all devices or users",
+          "backup_directory": "entra_id",
+          "name": "Windows LAPS"
+        }
+      ],
+      "stale_left_out": 0,
+      "windows_devices": 3
+    },
+    "summary": "2 of 3 active Windows devices have no local administrator password backed up to Entra ID."
+  },
+  "id": "intune.laps",
+  "reason": null,
+  "status": "fail"
+}

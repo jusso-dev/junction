@@ -1,0 +1,63 @@
+[
+    {
+        "operation": "graph.users.list",
+        "responses": [
+            {
+                "body": {
+                    "value": [
+                        {
+                            "id": "00000000-0000-4000-8000-000000000001",
+                            "userPrincipalName": "admin1@contoso.example",
+                            "userType": "Member",
+                            "assignedLicenses": [
+                                {
+                                    "skuId": "84a661c4-e949-4bd2-a560-ed7766fcaf2b",
+                                    "disabledPlans": []
+                                }
+                            ]
+                        },
+                        {
+                            "id": "00000000-0000-4000-8000-000000000002",
+                            "userPrincipalName": "admin2@contoso.example",
+                            "userType": "Member",
+                            "assignedLicenses": [
+                                {
+                                    "skuId": "05e9a617-0261-4cee-bb44-138d3ef5d965",
+                                    "disabledPlans": [
+                                        "efb87545-963c-4e0d-99df-69c6916d9eb0",
+                                        "43de0ff5-c92c-492b-9116-175376d08c38"
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "00000000-0000-4000-8000-000000000003",
+                            "userPrincipalName": "admin3@contoso.example",
+                            "userType": "Member",
+                            "assignedLicenses": [
+                                {
+                                    "skuId": "05e9a617-0261-4cee-bb44-138d3ef5d965",
+                                    "disabledPlans": [
+                                        "efb87545-963c-4e0d-99df-69c6916d9eb0",
+                                        "43de0ff5-c92c-492b-9116-175376d08c38"
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "00000000-0000-4000-8000-000000000005",
+                            "userPrincipalName": "user5@contoso.example",
+                            "userType": "Member",
+                            "assignedLicenses": [
+                                {
+                                    "skuId": "05e9a617-0261-4cee-bb44-138d3ef5d965",
+                                    "disabledPlans": []
+                                }
+                            ]
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+]

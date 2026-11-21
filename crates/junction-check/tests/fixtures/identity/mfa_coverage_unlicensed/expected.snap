@@ -1,0 +1,16 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": null,
+    "summary": "The tenant has no Microsoft Entra ID P1 (Conditional Access) licence, which this check needs."
+  },
+  "id": "identity.mfa_coverage",
+  "reason": {
+    "code": "licence_required",
+    "detail": "The tenant has no Microsoft Entra ID P1 (Conditional Access) licence, which this check needs."
+  },
+  "status": "not_applicable"
+}

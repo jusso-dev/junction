@@ -1,0 +1,15 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "guest_user_role_id": "2af84b1e-32c8-42b7-82bc-daa82404023b"
+    },
+    "summary": "Guest access is restricted (most restrictive)."
+  },
+  "id": "collaboration.guest_access_restricted",
+  "reason": null,
+  "status": "pass"
+}

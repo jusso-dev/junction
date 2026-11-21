@@ -1,0 +1,26 @@
+[
+    {
+        "operation": "defender.xdr.advancedhunting.run",
+        "responses": [
+            {
+                "status": 403,
+                "error": {
+                    "code": "Forbidden",
+                    "message": "Insufficient privileges to complete the operation."
+                }
+            }
+        ]
+    },
+    {
+        "operation": "graph.security.run_hunting_query",
+        "responses": [
+            {
+                "status": 403,
+                "error": {
+                    "code": "Authorization_RequestDenied",
+                    "message": "Insufficient privileges to complete the operation."
+                }
+            }
+        ]
+    }
+]

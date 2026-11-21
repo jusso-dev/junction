@@ -1,0 +1,4 @@
+[[attestations]]
+check = "backup.restore_tested"
+answer = "no"
+note = "Recorded by the backup owner."

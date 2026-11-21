@@ -1,0 +1,16 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": null,
+    "summary": "The tenant has no SharePoint Online licence, which this check needs."
+  },
+  "id": "collaboration.idle_session_signout",
+  "reason": {
+    "code": "licence_required",
+    "detail": "The tenant has no SharePoint Online licence, which this check needs."
+  },
+  "status": "not_applicable"
+}

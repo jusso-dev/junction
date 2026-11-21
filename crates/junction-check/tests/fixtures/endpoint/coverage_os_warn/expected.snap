@@ -1,0 +1,39 @@
+{
+  "affected": {
+    "items": [
+      "ws-002.contoso.example (Windows10 19045)",
+      "ws-003.contoso.example (Windows11 26100)",
+      "ws-004.contoso.example (Windows11 26100)"
+    ],
+    "total": 3
+  },
+  "evidence": {
+    "data": {
+      "assessed": 4,
+      "by_platform": {
+        "Windows10": {
+          "limited_support": 1,
+          "machines": 1,
+          "unsupported": 0
+        },
+        "Windows11": {
+          "limited_support": 2,
+          "machines": 3,
+          "unsupported": 0
+        }
+      },
+      "limited_support": 3,
+      "limited_support_notes": [
+        "Windows 10 reached end of support on 14-10-2025. Only LTSC editions and devices enrolled in Extended Security Updates still receive security updates.",
+        "Windows 11 23H2 (22631) and 24H2 (26100) are serviced only for Enterprise, Education and LTSC editions; Home and Pro need 25H2 (26200) or later."
+      ],
+      "not_assessed": 0,
+      "support_data_reviewed": "2026-10-25",
+      "unsupported": 0
+    },
+    "summary": "3 of 4 assessed machines run a build serviced only for some editions or with Extended Security Updates."
+  },
+  "id": "endpoint.unsupported_os",
+  "reason": null,
+  "status": "warn"
+}

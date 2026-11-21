@@ -1,0 +1,73 @@
+[
+    {
+        "operation": "azure.resource_graph.resources.post",
+        "match": {
+            "body": {
+                "query": "resources | where type =~ 'microsoft.compute/virtualmachines' | project id, name, subscriptionId, vmId = tostring(properties.vmId), computerName = tostring(properties.osProfile.computerName), osType = tostring(properties.storageProfile.osDisk.osType), powerState = tostring(properties.extended.instanceView.powerState.code)"
+            }
+        },
+        "responses": [
+            {
+                "status": 200,
+                "body": {
+                    "totalRecords": 2,
+                    "count": 2,
+                    "data": [
+                        {
+                            "id": "/subscriptions/11111111-1111-4111-8111-111111111111/resourceGroups/rg-servers/providers/Microsoft.Compute/virtualMachines/vm-app-01",
+                            "name": "vm-app-01",
+                            "subscriptionId": "11111111-1111-4111-8111-111111111111",
+                            "vmId": "vm-guid-01",
+                            "computerName": "vm-app-01",
+                            "osType": "Windows",
+                            "powerState": "PowerState/running"
+                        },
+                        {
+                            "id": "/subscriptions/11111111-1111-4111-8111-111111111111/resourceGroups/rg-servers/providers/Microsoft.Compute/virtualMachines/vm-web-01",
+                            "name": "vm-web-01",
+                            "subscriptionId": "11111111-1111-4111-8111-111111111111",
+                            "vmId": "vm-guid-02",
+                            "computerName": "web01",
+                            "osType": "Linux",
+                            "powerState": "PowerState/running"
+                        }
+                    ],
+                    "resultTruncated": "false",
+                    "$skipToken": "fixture-skip-token-2"
+                }
+            }
+        ]
+    },
+    {
+        "operation": "azure.resource_graph.resources.post",
+        "match": {
+            "body": {
+                "query": "resources | where type =~ 'microsoft.compute/virtualmachines' | project id, name, subscriptionId, vmId = tostring(properties.vmId), computerName = tostring(properties.osProfile.computerName), osType = tostring(properties.storageProfile.osDisk.osType), powerState = tostring(properties.extended.instanceView.powerState.code)",
+                "options": {
+                    "$skipToken": "fixture-skip-token-2"
+                }
+            }
+        },
+        "responses": [
+            {
+                "status": 200,
+                "body": {
+                    "totalRecords": 1,
+                    "count": 1,
+                    "data": [
+                        {
+                            "id": "/subscriptions/11111111-1111-4111-8111-111111111111/resourceGroups/rg-servers/providers/Microsoft.Compute/virtualMachines/vm-db-01",
+                            "name": "vm-db-01",
+                            "subscriptionId": "11111111-1111-4111-8111-111111111111",
+                            "vmId": "vm-guid-04",
+                            "computerName": "vm-db-01",
+                            "osType": "Linux",
+                            "powerState": "PowerState/running"
+                        }
+                    ],
+                    "resultTruncated": "false"
+                }
+            }
+        ]
+    }
+]

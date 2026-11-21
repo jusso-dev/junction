@@ -69,6 +69,15 @@ pub fn route(method: &str, target: &str, body: &[u8]) -> Result<Route, HttpError
         "/v1/operations" => ("/v1/operations", "GET", None, None),
         "/v1/contexts" => ("/v1/contexts", "GET", Some("junction_context"), None),
         "/v1/batch" => ("/v1/batch", "POST", Some("junction_batch"), None),
+        "/v1/checks" => ("/v1/checks", "GET", Some("junction_check_list"), None),
+        "/v1/checks/run" => ("/v1/checks/run", "POST", Some("junction_check_run"), None),
+        // Reading pending answers is GET; submitting one (host flag permitting) is POST.
+        "/v1/checks/attestations" => (
+            "/v1/checks/attestations",
+            if method == "POST" { "POST" } else { "GET" },
+            Some("junction_check_attestations"),
+            None,
+        ),
         _ => {
             let (template, expected, tool, id) =
                 if let Some(id) = path.strip_prefix("/v1/operations/") {
@@ -77,6 +86,13 @@ pub fn route(method: &str, target: &str, body: &[u8]) -> Result<Route, HttpError
                     ("/v1/execute/{id}", "POST", "junction_execute", id)
                 } else if let Some(id) = path.strip_prefix("/v1/permissions/") {
                     ("/v1/permissions/{id}", "GET", "junction_permissions", id)
+                } else if let Some(id) = path.strip_prefix("/v1/checks/runs/") {
+                    (
+                        "/v1/checks/runs/{id}",
+                        "GET",
+                        "junction_check_run_status",
+                        id,
+                    )
                 } else {
                     return Err(error(404, "Route not found"));
                 };
@@ -84,7 +100,12 @@ pub fn route(method: &str, target: &str, body: &[u8]) -> Result<Route, HttpError
                 || id.len() > 512
                 || !id
                     .bytes()
-                    .all(|byte| byte.is_ascii_alphanumeric() || b"._".contains(&byte))
+                    // Run ids also contain `-`; operation ids never do.
+                    .all(|byte| {
+                        byte.is_ascii_alphanumeric()
+                            || b"._".contains(&byte)
+                            || (byte == b'-' && template == "/v1/checks/runs/{id}")
+                    })
             {
                 return Err(error(400, "Invalid operation identifier"));
             }
@@ -143,16 +164,21 @@ pub fn route(method: &str, target: &str, body: &[u8]) -> Result<Route, HttpError
             return Err(error(400, "POST options belong in the JSON body"));
         }
         args = serde_json::from_slice(body).map_err(|_| error(400, "Invalid JSON request body"))?;
-        let schema = &contract["components"]["schemas"][if tool == Some("junction_execute") {
-            "ExecuteRequest"
-        } else {
-            "junction_batch"
+        let schema = &contract["components"]["schemas"][match tool {
+            Some("junction_execute") => "ExecuteRequest",
+            Some("junction_check_attestations") => "CheckAttestationRequest",
+            Some(other) => other,
+            None => "junction_batch",
         }];
         junction_schema::validate_json_schema(schema, &args)
             .map_err(|_| error(400, "Invalid request body"))?;
     }
     if let Some(id) = id {
-        args["operation"] = json!(id);
+        args[if template == "/v1/checks/runs/{id}" {
+            "run_id"
+        } else {
+            "operation"
+        }] = json!(id);
     }
     match template {
         "/health" => Ok(Route::Health),
@@ -169,6 +195,39 @@ pub fn route(method: &str, target: &str, body: &[u8]) -> Result<Route, HttpError
             name: "junction_context",
             arguments: json!({"action":"list"}),
         }),
+        "/v1/checks" | "/v1/checks/attestations" => {
+            // Comma-separated query values become the tool's arrays.
+            let list = |name: &str| -> Option<Value> {
+                args[name].as_str().map(|value| {
+                    json!(
+                        value
+                            .split(',')
+                            .filter(|v| !v.is_empty())
+                            .collect::<Vec<_>>()
+                    )
+                })
+            };
+            let mut arguments = json!({});
+            if template == "/v1/checks" {
+                for (from, to) in [("pack", "packs"), ("tag", "tags"), ("check", "checks")] {
+                    if let Some(values) = list(from) {
+                        arguments[to] = values;
+                    }
+                }
+            } else {
+                arguments = args.clone();
+                arguments["action"] = json!(if expected == "POST" {
+                    "submit"
+                } else {
+                    "pending"
+                });
+            }
+            let name = tool.expect("check route");
+            let schema = &contract["components"]["schemas"][name];
+            junction_schema::validate_json_schema(schema, &arguments)
+                .map_err(|_| error(400, "Invalid check request"))?;
+            Ok(Route::Tool { name, arguments })
+        }
         _ => Ok(Route::Tool {
             name: tool.expect("tool route"),
             arguments: args,

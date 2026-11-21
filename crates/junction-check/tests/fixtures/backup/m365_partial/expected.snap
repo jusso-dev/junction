@@ -1,0 +1,30 @@
+{
+  "affected": {
+    "items": [
+      "OneDrive",
+      "SharePoint"
+    ],
+    "total": 2
+  },
+  "evidence": {
+    "data": {
+      "exchange": {
+        "active": 1,
+        "policies": 1
+      },
+      "onedrive": {
+        "active": 0,
+        "policies": 0
+      },
+      "service_status": "enabled",
+      "sharepoint": {
+        "active": 0,
+        "policies": 1
+      }
+    },
+    "summary": "Active Microsoft 365 Backup policies for Exchange; none for OneDrive, SharePoint."
+  },
+  "id": "backup.m365_backup",
+  "reason": null,
+  "status": "warn"
+}

@@ -1,0 +1,43 @@
+[
+    {
+        "operation": "graph.subscribed_skus.list",
+        "responses": [
+            {
+                "body": {
+                    "value": [
+                        {
+                            "skuId": "84a661c4-e949-4bd2-a560-ed7766fcaf2b",
+                            "skuPartNumber": "AAD_PREMIUM_P2",
+                            "capabilityStatus": "Enabled",
+                            "servicePlans": [
+                                {
+                                    "servicePlanId": "eec0eb4f-6444-4f95-aba0-50c24d67f998",
+                                    "servicePlanName": "AAD_PREMIUM_P2"
+                                }
+                            ]
+                        },
+                        {
+                            "skuId": "05e9a617-0261-4cee-bb44-138d3ef5d965",
+                            "skuPartNumber": "SPE_E3",
+                            "capabilityStatus": "Enabled",
+                            "servicePlans": [
+                                {
+                                    "servicePlanId": "efb87545-963c-4e0d-99df-69c6916d9eb0",
+                                    "servicePlanName": "EXCHANGE_S_ENTERPRISE"
+                                },
+                                {
+                                    "servicePlanId": "43de0ff5-c92c-492b-9116-175376d08c38",
+                                    "servicePlanName": "OFFICESUBSCRIPTION"
+                                },
+                                {
+                                    "servicePlanId": "41781fb2-bc02-4b7c-bd55-b576c07bb09d",
+                                    "servicePlanName": "AAD_PREMIUM"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+]

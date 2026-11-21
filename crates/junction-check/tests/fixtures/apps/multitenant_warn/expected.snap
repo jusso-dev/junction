@@ -1,0 +1,19 @@
+{
+  "affected": {
+    "items": [
+      "Consumer App (AzureADandPersonalMicrosoftAccount)",
+      "Partner Portal (AzureADMultipleOrgs)"
+    ],
+    "total": 2
+  },
+  "evidence": {
+    "data": {
+      "app_registrations": 3,
+      "multi_tenant": 2
+    },
+    "summary": "2 of 3 app registrations accept other organisations or personal accounts."
+  },
+  "id": "apps.multi_tenant_apps",
+  "reason": null,
+  "status": "warn"
+}

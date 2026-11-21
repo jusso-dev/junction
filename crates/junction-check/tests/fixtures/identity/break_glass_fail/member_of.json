@@ -1,0 +1,32 @@
+[
+    {
+        "operation": "graph.users.transitive_member_of.list",
+        "match": {
+            "parameters": {
+                "user-id": "00000000-0000-4000-8000-000000000001"
+            }
+        },
+        "responses": [
+            {
+                "body": {
+                    "value": []
+                }
+            }
+        ]
+    },
+    {
+        "operation": "graph.users.transitive_member_of.list",
+        "match": {
+            "parameters": {
+                "user-id": "00000000-0000-4000-8000-000000000008"
+            }
+        },
+        "responses": [
+            {
+                "body": {
+                    "value": []
+                }
+            }
+        ]
+    }
+]

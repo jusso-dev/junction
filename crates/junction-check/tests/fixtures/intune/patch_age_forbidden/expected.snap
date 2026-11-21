@@ -1,0 +1,19 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": null,
+    "summary": "graph.device_management.managed_devices.list was refused (HTTP 403 Forbidden). Grant DeviceManagementManagedDevices.Read.All (read-only) and re-run."
+  },
+  "id": "intune.patch_age",
+  "reason": {
+    "code": "missing_permission",
+    "detail": "graph.device_management.managed_devices.list was refused (HTTP 403 Forbidden). Grant DeviceManagementManagedDevices.Read.All (read-only) and re-run.",
+    "missing_permissions": [
+      "DeviceManagementManagedDevices.Read.All"
+    ]
+  },
+  "status": "unknown"
+}

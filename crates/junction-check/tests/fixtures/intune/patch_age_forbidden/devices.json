@@ -1,0 +1,12 @@
+{
+    "operation": "graph.device_management.managed_devices.list",
+    "responses": [
+        {
+            "status": 403,
+            "error": {
+                "code": "Forbidden",
+                "message": "Application is not authorized to perform this operation."
+            }
+        }
+    ]
+}

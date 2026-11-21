@@ -1,0 +1,12 @@
+{
+    "operation": "defender.endpoint.machines.list_secure_configurations_assessment_by_machine",
+    "responses": [
+        {
+            "status": 403,
+            "error": {
+                "code": "Forbidden",
+                "message": "Missing application roles. API required roles: Vulnerability.Read.All."
+            }
+        }
+    ]
+}

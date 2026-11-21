@@ -1,0 +1,13 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": null,
+    "summary": "Attested 'no' by fixture on 2026-10-25."
+  },
+  "id": "backup.restore_tested",
+  "reason": null,
+  "status": "fail"
+}

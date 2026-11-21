@@ -1,0 +1,28 @@
+{
+  "affected": {
+    "items": [
+      "excel"
+    ],
+    "total": 1
+  },
+  "evidence": {
+    "data": {
+      "internet_macros_blocked": [
+        "powerpoint",
+        "word"
+      ],
+      "policies": [
+        "Office macro security"
+      ],
+      "vba_notification": {
+        "excel": 4,
+        "powerpoint": 4,
+        "word": 4
+      }
+    },
+    "summary": "Macros in files from the internet are not blocked for excel."
+  },
+  "id": "intune.office_macros",
+  "reason": null,
+  "status": "fail"
+}

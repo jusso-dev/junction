@@ -1,0 +1,13 @@
+licences = ["exchange_online"]
+
+[dns."contoso.example"]
+txt = ["v=spf1 include:spf.protection.outlook.com -all"]
+
+[dns."fabrikam.example"]
+fail = ["txt"]
+
+[dns."spf.protection.outlook.com"]
+txt = ["v=spf1 ip4:192.0.2.0/24 include:spfd.protection.outlook.com -all"]
+
+[dns."spfd.protection.outlook.com"]
+txt = ["v=spf1 ip4:198.51.100.0/24 -all"]

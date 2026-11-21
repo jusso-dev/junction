@@ -1,0 +1,70 @@
+[
+    {
+        "operation": "azure.resource_graph.resources.post",
+        "responses": [
+            {
+                "body": {
+                    "totalRecords": 2,
+                    "count": 2,
+                    "data": [
+                        {
+                            "id": "/subscriptions/00000000-0000-4000-8000-000000005001/resourceGroups/rg-data/providers/Microsoft.Storage/storageAccounts/stprod",
+                            "name": "stprod",
+                            "subscriptionId": "00000000-0000-4000-8000-000000005001",
+                            "allowSharedKeyAccess": false,
+                            "allowBlobPublicAccess": false,
+                            "publicNetworkAccess": "Disabled",
+                            "defaultAction": "Deny"
+                        },
+                        {
+                            "id": "/subscriptions/00000000-0000-4000-8000-000000005001/resourceGroups/rg-data/providers/Microsoft.Storage/storageAccounts/stpublic",
+                            "name": "stpublic",
+                            "subscriptionId": "00000000-0000-4000-8000-000000005001",
+                            "allowSharedKeyAccess": false,
+                            "allowBlobPublicAccess": null,
+                            "publicNetworkAccess": "",
+                            "defaultAction": "Allow"
+                        }
+                    ],
+                    "resultTruncated": "false"
+                }
+            }
+        ],
+        "match": {
+            "body": {
+                "query": "resources | where type =~ 'microsoft.storage/storageaccounts' | project id, name, subscriptionId, allowSharedKeyAccess = properties.allowSharedKeyAccess, allowBlobPublicAccess = properties.allowBlobPublicAccess, publicNetworkAccess = tostring(properties.publicNetworkAccess), defaultAction = tostring(properties.networkAcls.defaultAction)"
+            }
+        }
+    },
+    {
+        "operation": "azure.resource_graph.resources.post",
+        "responses": [
+            {
+                "body": {
+                    "totalRecords": 2,
+                    "count": 2,
+                    "data": [
+                        {
+                            "id": "/subscriptions/00000000-0000-4000-8000-000000005001/resourceGroups/rg-data/providers/Microsoft.Sql/servers/sql-prod",
+                            "name": "sql-prod",
+                            "type": "microsoft.sql/servers",
+                            "publicNetworkAccess": "Disabled"
+                        },
+                        {
+                            "id": "/subscriptions/00000000-0000-4000-8000-000000005001/resourceGroups/rg-data/providers/Microsoft.Cache/redis/redis-cache",
+                            "name": "redis-cache",
+                            "type": "microsoft.cache/redis",
+                            "publicNetworkAccess": ""
+                        }
+                    ],
+                    "resultTruncated": "false"
+                }
+            }
+        ],
+        "match": {
+            "body": {
+                "query": "resources | where type in~ ('microsoft.sql/servers', 'microsoft.documentdb/databaseaccounts', 'microsoft.dbforpostgresql/flexibleservers', 'microsoft.dbforpostgresql/servers', 'microsoft.dbformysql/flexibleservers', 'microsoft.dbformysql/servers', 'microsoft.dbformariadb/servers', 'microsoft.synapse/workspaces', 'microsoft.cache/redis') | project id, name, type, publicNetworkAccess = iff(isnotempty(tostring(properties.publicNetworkAccess)), tostring(properties.publicNetworkAccess), tostring(properties.network.publicNetworkAccess))"
+            }
+        }
+    }
+]

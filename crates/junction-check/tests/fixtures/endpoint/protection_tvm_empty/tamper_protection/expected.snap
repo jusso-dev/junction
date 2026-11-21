@@ -1,0 +1,26 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "compliant": 0,
+      "configuration_ids": [
+        "scid-2003",
+        "scid-5092"
+      ],
+      "devices_assessed": 0,
+      "non_compliant": 0,
+      "percent_compliant": 0,
+      "truncated": false
+    },
+    "summary": "No device has a Defender Vulnerability Management assessment for tamper protection (scid-2003, scid-5092). Check that devices are onboarded and have reported in the last day."
+  },
+  "id": "endpoint.tamper_protection",
+  "reason": {
+    "code": "no_assessment",
+    "detail": "No device has a Defender Vulnerability Management assessment for tamper protection (scid-2003, scid-5092). Check that devices are onboarded and have reported in the last day."
+  },
+  "status": "unknown"
+}

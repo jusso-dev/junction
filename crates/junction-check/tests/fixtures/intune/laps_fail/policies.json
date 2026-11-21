@@ -1,0 +1,57 @@
+[
+    {
+        "operation": "graph.device_management.configuration_policies.list",
+        "responses": [
+            {
+                "body": {
+                    "value": [
+                        {
+                            "id": "p-other",
+                            "name": "Edge baseline",
+                            "platforms": "windows10",
+                            "technologies": "mdm",
+                            "templateReference": {
+                                "templateId": "",
+                                "templateFamily": "none"
+                            },
+                            "assignments": [
+                                {
+                                    "id": "a1",
+                                    "target": {
+                                        "@odata.type": "#microsoft.graph.allDevicesAssignmentTarget"
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                }
+            }
+        ]
+    },
+    {
+        "operation": "graph.device_management.configuration_policies.settings.list",
+        "match": {
+            "parameters": {
+                "deviceManagementConfigurationPolicy-id": "p-other"
+            }
+        },
+        "responses": [
+            {
+                "body": {
+                    "value": [
+                        {
+                            "id": "0",
+                            "settingInstance": {
+                                "settingDefinitionId": "device_vendor_msft_policy_config_microsoft_edge_smartscreenenabled",
+                                "choiceSettingValue": {
+                                    "value": "device_vendor_msft_policy_config_microsoft_edge_smartscreenenabled_1",
+                                    "children": []
+                                }
+                            }
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+]

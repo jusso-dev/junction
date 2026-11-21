@@ -1,0 +1,10 @@
+{
+    "operation": "graph.group_settings.list",
+    "responses": [
+        {
+            "body": {
+                "value": []
+            }
+        }
+    ]
+}

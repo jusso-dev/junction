@@ -1,0 +1,54 @@
+[
+    {
+        "operation": "graph.device_management.device_configurations.list",
+        "responses": [
+            {
+                "body": {
+                    "value": [
+                        {
+                            "@odata.type": "#microsoft.graph.windows10GeneralConfiguration",
+                            "id": "c-1",
+                            "displayName": "Device restrictions",
+                            "assignments": [
+                                {
+                                    "id": "a1",
+                                    "target": {
+                                        "@odata.type": "#microsoft.graph.allDevicesAssignmentTarget"
+                                    }
+                                }
+                            ]
+                        }
+                    ],
+                    "@odata.nextLink": "fixture:configs-2"
+                }
+            }
+        ]
+    },
+    {
+        "url": "fixture:configs-2",
+        "responses": [
+            {
+                "body": {
+                    "value": [
+                        {
+                            "@odata.type": "#microsoft.graph.windowsUpdateForBusinessConfiguration",
+                            "id": "r-broad",
+                            "displayName": "Broad",
+                            "qualityUpdatesDeferralPeriodInDays": 5,
+                            "featureUpdatesDeferralPeriodInDays": 0,
+                            "qualityUpdatesPaused": false,
+                            "assignments": [
+                                {
+                                    "id": "a1",
+                                    "target": {
+                                        "@odata.type": "#microsoft.graph.allDevicesAssignmentTarget"
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+]

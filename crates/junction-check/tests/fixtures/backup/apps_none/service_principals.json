@@ -1,0 +1,34 @@
+[
+  {
+    "operation": "graph.service_principals.list",
+    "responses": [
+      {
+        "status": 200,
+        "body": {
+          "value": [
+            {
+              "id": "00000000-0000-4000-8000-000000000001",
+              "appId": "00000000-0000-4000-9000-000000000001",
+              "displayName": "Contoso Portal",
+              "publisherName": "Contoso",
+              "verifiedPublisher": {
+                "displayName": null
+              },
+              "accountEnabled": true
+            },
+            {
+              "id": "00000000-0000-4000-8000-000000000002",
+              "appId": "00000000-0000-4000-9000-000000000002",
+              "displayName": "AvePoint Policies",
+              "publisherName": "AvePoint",
+              "verifiedPublisher": {
+                "displayName": null
+              },
+              "accountEnabled": true
+            }
+          ]
+        }
+      }
+    ]
+  }
+]

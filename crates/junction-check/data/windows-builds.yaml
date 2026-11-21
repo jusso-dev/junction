@@ -1,0 +1,110 @@
+# Current Windows client and server releases with their recent monthly security ("B", Patch Tuesday)
+# cumulative updates, used by `intune.patch_age` to decide how far behind a device's OS build is.
+# Optional non-security previews ("D") and out-of-band releases are left out: a device on a later
+# preview already has the security fixes of the B release it follows.
+#
+# Source: Microsoft Windows release health (release information pages listed below). Review monthly
+# after Patch Tuesday: add the new B release to each version, drop entries older than about four
+# months, add new versions and set `reviewed`. The check warns when `reviewed` is more than 45 days
+# old, because a stale file can make an unpatched device look current.
+#
+# Operators can replace this data without a release: put the same structure under
+# `[packs.intune.windows_builds]` in the check configuration file.
+reviewed: "2026-10-25"
+sources:
+  - https://learn.microsoft.com/windows/release-health/windows11-release-information
+  - https://learn.microsoft.com/windows/release-health/release-information
+  - https://learn.microsoft.com/windows/release-health/windows-server-release-info
+releases:
+  - name: "Windows 11, version 26H2"
+    build: 26300
+    edition: client
+    updates:
+      - {revision: 9711, released: "2026-10-13", kb: KB5127648}
+  - name: "Windows 11, version 26H1"
+    build: 28000
+    edition: client
+    updates:
+      - {revision: 3231, released: "2026-10-13", kb: KB5127646}
+      - {revision: 2954, released: "2026-09-08", kb: KB5124012}
+      - {revision: 2704, released: "2026-08-11", kb: KB5121000}
+      - {revision: 2525, released: "2026-07-14", kb: KB5101649}
+  - name: "Windows 11, version 25H2"
+    build: 26200
+    edition: client
+    updates:
+      - {revision: 9711, released: "2026-10-13", kb: KB5127648}
+      - {revision: 9445, released: "2026-09-08", kb: KB5124008}
+      - {revision: 9168, released: "2026-08-11", kb: KB5121003}
+      - {revision: 8875, released: "2026-07-14", kb: KB5101650}
+  - name: "Windows 11, version 24H2 (and Enterprise LTSC 2024)"
+    build: 26100
+    edition: client
+    updates:
+      - {revision: 9711, released: "2026-10-13", kb: KB5127648}
+      - {revision: 9445, released: "2026-09-08", kb: KB5124008}
+      - {revision: 9168, released: "2026-08-11", kb: KB5121003}
+      - {revision: 8875, released: "2026-07-14", kb: KB5101650}
+  - name: "Windows 11, version 23H2"
+    build: 22631
+    edition: client
+    end_of_updates: "2026-11-10"
+    updates:
+      - {revision: 7652, released: "2026-10-13", kb: KB5126653}
+      - {revision: 7582, released: "2026-09-08", kb: KB5122880}
+      - {revision: 7517, released: "2026-08-11", kb: KB5120240}
+      - {revision: 7376, released: "2026-07-14", kb: KB5099414}
+  - name: "Windows 10, version 22H2 (Extended Security Updates only)"
+    build: 19045
+    edition: client
+    end_of_updates: "2025-10-14"
+    updates:
+      - {revision: 7807, released: "2026-10-13", kb: KB5126657}
+      - {revision: 7725, released: "2026-09-08", kb: KB5122878}
+      - {revision: 7663, released: "2026-08-11", kb: KB5120249}
+      - {revision: 7548, released: "2026-07-14", kb: KB5099539}
+  - name: "Windows 10 Enterprise LTSC 2021"
+    build: 19044
+    edition: client
+    end_of_updates: "2027-01-12"
+    updates:
+      - {revision: 7807, released: "2026-10-13", kb: KB5126657}
+      - {revision: 7725, released: "2026-09-08", kb: KB5122878}
+      - {revision: 7663, released: "2026-08-11", kb: KB5120249}
+      - {revision: 7548, released: "2026-07-14", kb: KB5099539}
+  - name: "Windows 10 Enterprise LTSC 2019 and Windows Server 2019"
+    build: 17763
+    edition: both
+    end_of_updates: "2029-01-09"
+    updates:
+      - {revision: 9376, released: "2026-10-13", kb: KB5126651}
+      - {revision: 9245, released: "2026-09-08", kb: KB5122876}
+      - {revision: 9121, released: "2026-08-11", kb: KB5120238}
+      - {revision: 9020, released: "2026-07-14", kb: KB5099538}
+  - name: "Windows 10 Enterprise LTSB 2016 and Windows Server 2016"
+    build: 14393
+    edition: both
+    end_of_updates: "2027-01-12"
+    updates:
+      - {revision: 9612, released: "2026-10-13", kb: KB5126868}
+      - {revision: 9512, released: "2026-09-08", kb: KB5123099}
+      - {revision: 9418, released: "2026-08-11", kb: KB5120418}
+      - {revision: 9339, released: "2026-07-14", kb: KB5099535}
+  - name: "Windows Server 2025"
+    build: 26100
+    edition: server
+    end_of_updates: "2034-11-14"
+    updates:
+      - {revision: 33650, released: "2026-10-13", kb: KB5126646}
+      - {revision: 33438, released: "2026-09-08", kb: KB5122871}
+      - {revision: 33296, released: "2026-08-11", kb: KB5120233}
+      - {revision: 33158, released: "2026-07-14", kb: KB5099536}
+  - name: "Windows Server 2022"
+    build: 20348
+    edition: server
+    end_of_updates: "2031-10-14"
+    updates:
+      - {revision: 5761, released: "2026-10-13", kb: KB5126655}
+      - {revision: 5622, released: "2026-09-08", kb: KB5122882}
+      - {revision: 5499, released: "2026-08-11", kb: KB5120242}
+      - {revision: 5386, released: "2026-07-14", kb: KB5099540}

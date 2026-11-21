@@ -1,0 +1,38 @@
+{
+    "operation": "graph.identity.conditional_access.policies.list",
+    "responses": [
+        {
+            "body": {
+                "value": [
+                    {
+                        "id": "00000000-0000-4000-8000-000000000030",
+                        "displayName": "Require compliant device",
+                        "state": "enabled",
+                        "conditions": {
+                            "users": {
+                                "includeUsers": [
+                                    "All"
+                                ],
+                                "excludeUsers": [
+                                    "00000000-0000-4000-8000-000000000031"
+                                ]
+                            },
+                            "applications": {
+                                "includeApplications": [
+                                    "All"
+                                ]
+                            }
+                        },
+                        "grantControls": {
+                            "operator": "OR",
+                            "builtInControls": [
+                                "compliantDevice",
+                                "domainJoinedDevice"
+                            ]
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}

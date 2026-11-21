@@ -1,0 +1,37 @@
+{
+    "operation": "defender.xdr.advancedhunting.run",
+    "responses": [
+        {
+            "body": {
+                "Schema": [],
+                "Results": [
+                    {
+                        "Rule": "AsrLsassCredentialTheft",
+                        "Events": 4210,
+                        "Devices": 61,
+                        "Processes": [
+                            "svchost.exe",
+                            "MsMpEng.exe"
+                        ]
+                    },
+                    {
+                        "Rule": "AsrOfficeMacroWin32ApiCalls",
+                        "Events": 7,
+                        "Devices": 2,
+                        "Processes": [
+                            "EXCEL.EXE"
+                        ]
+                    },
+                    {
+                        "Rule": "AsrSafeModeReboot",
+                        "Events": 1,
+                        "Devices": 1,
+                        "Processes": [
+                            "bcdedit.exe"
+                        ]
+                    }
+                ]
+            }
+        }
+    ]
+}

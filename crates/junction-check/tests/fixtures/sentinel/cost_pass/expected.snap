@@ -1,0 +1,46 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "billable_gb_30d": 12.5,
+      "currency": "AUD",
+      "estimated_monthly": 111.12,
+      "monthly_budget": null,
+      "note": "Estimate only: pay-as-you-go analytics price for 30 days of billable ingestion. Commitment tiers, agreements and data grants are not applied. Junction never changes table plans.",
+      "price": {
+        "auxiliary_per_gb": 0.1033,
+        "basic_per_gb": 1.7523,
+        "price_data_as_of": "2026-10-25",
+        "price_data_currency": "AUD",
+        "price_data_source": "https://prices.azure.com/api/retail/prices?currencyCode='AUD'&$filter=serviceName eq 'Sentinel' and armRegionName eq 'australiaeast'",
+        "price_per_gb": 8.8895,
+        "pricing_page": "https://azure.microsoft.com/pricing/details/microsoft-sentinel/",
+        "source": "data/sentinel-pricing.yaml: Sentinel \"Pay-as-you-go Analysis\" (analytics logs, per GB ingested), Australia East, retail price as of 2026-10-25"
+      },
+      "suggestions": [],
+      "top_tables": [
+        {
+          "billable_gb_30d": 10.0,
+          "estimated_monthly": 88.9,
+          "plan": "Analytics",
+          "table": "SigninLogs",
+          "workspace": "law-sentinel-01"
+        },
+        {
+          "billable_gb_30d": 2.5,
+          "estimated_monthly": 22.22,
+          "plan": "Analytics",
+          "table": "AuditLogs",
+          "workspace": "law-sentinel-01"
+        }
+      ]
+    },
+    "summary": "12.5 GB billable in 30 days, an estimated AUD 111.12 a month at AUD 8.8895/GB, Australia East pay-as-you-go retail price as of 2026-10-25."
+  },
+  "id": "sentinel.ingestion_cost",
+  "reason": null,
+  "status": "pass"
+}

@@ -1,0 +1,19 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": null,
+    "summary": "graph.directory.device_local_credentials.list was refused (HTTP 403 Forbidden). Grant DeviceLocalCredential.ReadBasic.All (read-only) and re-run."
+  },
+  "id": "intune.laps",
+  "reason": {
+    "code": "missing_permission",
+    "detail": "graph.directory.device_local_credentials.list was refused (HTTP 403 Forbidden). Grant DeviceLocalCredential.ReadBasic.All (read-only) and re-run.",
+    "missing_permissions": [
+      "DeviceLocalCredential.ReadBasic.All"
+    ]
+  },
+  "status": "unknown"
+}

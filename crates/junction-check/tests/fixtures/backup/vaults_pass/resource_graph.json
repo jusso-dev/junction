@@ -1,0 +1,156 @@
+[
+  {
+    "operation": "azure.resource_graph.resources.post",
+    "responses": [
+      {
+        "status": 200,
+        "body": {
+          "totalRecords": 1,
+          "count": 1,
+          "data": [
+            {
+              "id": "/subscriptions/00000000-0000-4000-8000-0000000000aa/resourceGroups/rg-backup/providers/Microsoft.RecoveryServices/vaults/rsv-contoso-1",
+              "name": "rsv-contoso-1",
+              "type": "microsoft.recoveryservices/vaults",
+              "properties": {
+                "securitySettings": {
+                  "softDeleteSettings": {
+                    "softDeleteState": "AlwaysON",
+                    "softDeleteRetentionPeriodInDays": 14
+                  },
+                  "immutabilitySettings": {
+                    "state": "Locked"
+                  }
+                }
+              }
+            }
+          ],
+          "$skipToken": "vaults-page-2"
+        }
+      }
+    ],
+    "match": {
+      "body": {
+        "query": "resources | where type in~ ('microsoft.recoveryservices/vaults', 'microsoft.dataprotection/backupvaults') | project id, name, type = tolower(type), properties"
+      }
+    }
+  },
+  {
+    "operation": "azure.resource_graph.resources.post",
+    "responses": [
+      {
+        "status": 200,
+        "body": {
+          "totalRecords": 1,
+          "count": 1,
+          "data": [
+            {
+              "id": "/subscriptions/00000000-0000-4000-8000-0000000000aa/resourceGroups/rg-backup/providers/Microsoft.DataProtection/backupVaults/bv-contoso-1",
+              "name": "bv-contoso-1",
+              "type": "microsoft.dataprotection/backupvaults",
+              "properties": {
+                "securitySettings": {
+                  "softDeleteSettings": {
+                    "state": "AlwaysOn",
+                    "retentionDurationInDays": 14
+                  },
+                  "immutabilitySettings": {
+                    "state": "Locked"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    ],
+    "match": {
+      "body": {
+        "query": "resources | where type in~ ('microsoft.recoveryservices/vaults', 'microsoft.dataprotection/backupvaults') | project id, name, type = tolower(type), properties",
+        "options": {
+          "$skipToken": "vaults-page-2"
+        }
+      }
+    }
+  },
+  {
+    "operation": "azure.resource_graph.resources.post",
+    "responses": [
+      {
+        "status": 200,
+        "body": {
+          "totalRecords": 1,
+          "count": 1,
+          "data": [
+            {
+              "vms": 3
+            }
+          ]
+        }
+      }
+    ],
+    "match": {
+      "body": {
+        "query": "resources | where type =~ 'microsoft.compute/virtualmachines' | summarize vms = count()"
+      }
+    }
+  },
+  {
+    "operation": "azure.resource_graph.resources.post",
+    "responses": [
+      {
+        "status": 200,
+        "body": {
+          "totalRecords": 2,
+          "count": 2,
+          "data": [
+            {
+              "id": "/subscriptions/00000000-0000-4000-8000-0000000000aa/resourcegroups/rg-app/providers/microsoft.compute/virtualmachines/vm-app-01",
+              "name": "vm-app-01"
+            },
+            {
+              "id": "/subscriptions/00000000-0000-4000-8000-0000000000aa/resourcegroups/rg-app/providers/microsoft.compute/virtualmachines/vm-db-01",
+              "name": "vm-db-01"
+            }
+          ]
+        }
+      }
+    ],
+    "match": {
+      "body": {
+        "query": "resources | where type =~ 'microsoft.compute/virtualmachines' | where tostring(tags['criticality']) =~ 'critical' | project id = tolower(id), name"
+      }
+    }
+  },
+  {
+    "operation": "azure.resource_graph.resources.post",
+    "responses": [
+      {
+        "status": 200,
+        "body": {
+          "totalRecords": 3,
+          "count": 3,
+          "data": [
+            {
+              "sourceId": "/subscriptions/00000000-0000-4000-8000-0000000000aa/resourcegroups/rg-app/providers/microsoft.compute/virtualmachines/vm-app-01",
+              "state": "Protected"
+            },
+            {
+              "sourceId": "/subscriptions/00000000-0000-4000-8000-0000000000aa/resourcegroups/rg-app/providers/microsoft.compute/virtualmachines/vm-db-01",
+              "state": "Protected"
+            },
+            {
+              "sourceId": "/subscriptions/00000000-0000-4000-8000-0000000000aa/resourcegroups/rg-app/providers/microsoft.compute/virtualmachines/vm-old-01",
+              "state": "ProtectionStopped"
+            }
+          ]
+        }
+      }
+    ],
+    "match": {
+      "body": {
+        "query": "recoveryservicesresources | where type =~ 'microsoft.recoveryservices/vaults/backupfabrics/protectioncontainers/protecteditems' | where tostring(properties.backupManagementType) =~ 'AzureIaasVM' | project sourceId = tolower(tostring(properties.sourceResourceId)), state = tostring(properties.protectionState)"
+      }
+    }
+  }
+]

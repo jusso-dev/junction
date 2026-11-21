@@ -1,0 +1,27 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "behind": 0,
+      "behind_devices": [],
+      "builds_reviewed": "2026-10-25",
+      "current": 3,
+      "maturity_level": 1,
+      "max_age_days": 30,
+      "stale_left_out": 1,
+      "tvm": {
+        "status": "not licensed"
+      },
+      "unrecognised": [],
+      "unsupported": [],
+      "windows_devices": 3
+    },
+    "summary": "All 3 active Windows devices have every security update older than 30 days."
+  },
+  "id": "intune.patch_age",
+  "reason": null,
+  "status": "pass"
+}

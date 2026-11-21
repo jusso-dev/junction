@@ -1,0 +1,16 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": null,
+    "summary": "No assigned Intune policy sets ASR rules. Rules set by Group Policy or other tools can only be read from device events, which need Defender for Endpoint with advanced hunting."
+  },
+  "id": "endpoint.asr_rule_state",
+  "reason": {
+    "code": "no_device_source",
+    "detail": "No assigned Intune policy sets ASR rules. Rules set by Group Policy or other tools can only be read from device events, which need Defender for Endpoint with advanced hunting."
+  },
+  "status": "unknown"
+}

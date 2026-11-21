@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="generator" content="junction 0.0.0-test">
+<title>Security posture report</title>
+<style>*{box-sizing:border-box}body{margin:0;font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:#1b1f24;background:#ffffff}.banner{background:#12355b;color:#ffffff;padding:24px 32px}.banner h1{margin:0;font-size:1.7rem;line-height:1.25}.banner p{margin:6px 0 0}.banner img{display:block;max-height:56px;max-width:220px;margin-bottom:12px;background:#ffffff;padding:4px}main{max-width:1060px;margin:0 auto;padding:8px 32px 48px}h2{font-size:1.45rem;border-bottom:2px solid #c4ccd6;padding-bottom:4px;margin:40px 0 12px}h3{font-size:1.2rem;margin:32px 0 8px}h4{font-size:1.05rem;margin:24px 0 8px}h5{font-size:1rem;margin:0 0 6px}a{color:#0b5cad}.muted{color:#4a5360}.lead{font-size:1.05rem;max-width:72ch}table{border-collapse:collapse;width:100%;margin:8px 0 20px}caption{text-align:left;font-weight:600;padding:4px 0 6px}th,td{border:1px solid #c4ccd6;padding:6px 8px;text-align:left;vertical-align:top}thead th,tbody th{background:#eef1f5}.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}.cards{display:flex;flex-wrap:wrap;gap:12px;margin:12px 0 20px;padding:0;list-style:none}.cards li{border:1px solid #c4ccd6;border-radius:6px;padding:10px 16px;background:#eef1f5;min-width:140px}.cards .big{display:block;font-size:1.7rem;font-weight:700;line-height:1.2}.badge{display:inline-block;border:1px solid currentColor;border-radius:4px;padding:0 6px;font-size:.85rem;font-weight:600;white-space:nowrap}.finding{border:1px solid #c4ccd6;border-left-width:6px;border-radius:6px;padding:12px 16px;margin:12px 0;break-inside:avoid}.finding dl{display:grid;grid-template-columns:max-content 1fr;gap:4px 14px;margin:8px 0 0}.finding dt{font-weight:600}.finding dd{margin:0;overflow-wrap:anywhere}.notice{border-left:4px solid #c4ccd6;padding:4px 12px;color:#4a5360}footer{max-width:1060px;margin:0 auto;padding:16px 32px 40px;color:#4a5360;font-size:.9rem;border-top:1px solid #c4ccd6}.s-pass{color:#0f5a2a;background:#e3f4e8}.finding.s-pass{color:#1b1f24;background:#ffffff;border-left-color:#0f5a2a}.s-fail{color:#8f1020;background:#fde7ea}.finding.s-fail{color:#1b1f24;background:#ffffff;border-left-color:#8f1020}.s-warn{color:#6b4200;background:#fff1d6}.finding.s-warn{color:#1b1f24;background:#ffffff;border-left-color:#6b4200}.s-unknown{color:#2f3a47;background:#e6eaef}.finding.s-unknown{color:#1b1f24;background:#ffffff;border-left-color:#2f3a47}.s-na{color:#4a5360;background:#f3f4f6}.finding.s-na{color:#1b1f24;background:#ffffff;border-left-color:#4a5360}@media print{@page{margin:16mm}body{font-size:10.5pt;color:#000;background:none}.banner{background:none;color:#000;padding:0 0 10px;border-bottom:2px solid #000}.banner img{padding:0}main,footer{max-width:none;padding-left:0;padding-right:0}.break,.appendix{break-before:page}h2,h3,h4,h5{break-after:avoid}table,tr,.finding,.cards li{break-inside:avoid}thead{display:table-header-group}thead th,tbody th,.cards li,.badge{background:none!important}.badge{color:#000!important}a{color:#000}}</style>
+</head>
+<body>
+<header class="banner">
+<img src="data:image/png;base64,TWE=" alt="Contoso Group logo">
+<h1>Security posture report</h1>
+<p>Prepared for Contoso Group</p>
+<p>Run run-20261025 from 2026-10-25T01:00:00Z to 2026-10-25T01:02:00Z with junction 0.0.0-test.</p>
+</header>
+<main>
+<section aria-labelledby="tenants">
+<h2 id="tenants">Tenants</h2>
+<table>
+<caption>Tenants in this report</caption>
+<thead><tr><th scope="col">Tenant</th><th scope="col">Status</th><th scope="col" class="num">Score</th><th scope="col" class="num">Fail</th><th scope="col" class="num">Warning</th><th scope="col" class="num">Unknown</th><th scope="col" class="num">Not applicable</th></tr></thead>
+<tbody>
+<tr><th scope="row"><a href="#tenant-1">Contoso (00000000-0000-4000-8000-000000000001)</a></th><td>partial (some checks could not run)</td><td class="num">45.3</td><td class="num">2</td><td class="num">1</td><td class="num">1</td><td class="num">1</td></tr>
+<tr><th scope="row"><a href="#tenant-2">Fabrikam (00000000-0000-4000-8000-000000000002)</a></th><td>failed</td><td class="num">not assessed</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td></tr>
+</tbody>
+</table>
+</section>
+<section class="tenant break" id="tenant-1" aria-labelledby="tenant-1-h">
+<h2 id="tenant-1-h">Contoso (00000000-0000-4000-8000-000000000001)</h2>
+<h3>Executive summary</h3>
+<p class="lead">The overall score is 45.3 out of 100. Junction ran 9 checks against this tenant: 4 passed, 2 failed, 1 raised a warning, 1 could not be checked and 1 did not apply.</p>
+<ul class="cards">
+<li><span class="big">45.3</span>Overall score out of 100</li>
+<li><span class="big">2</span>Failed</li>
+<li><span class="big">1</span>Warnings</li>
+<li><span class="big">1</span>Could not be checked</li>
+<li><span class="big">4</span>Passed</li>
+</ul>
+<p class="muted">Score basis: 7 checks scored, 2 excluded as unknown or not applicable.</p>
+<table>
+<caption>Score by pack</caption>
+<thead><tr><th scope="col">Pack</th><th scope="col" class="num">Score</th><th scope="col" class="num">Pass</th><th scope="col" class="num">Fail</th><th scope="col" class="num">Warning</th><th scope="col" class="num">Unknown</th><th scope="col" class="num">Not applicable</th></tr></thead>
+<tbody>
+<tr><th scope="row">Identity</th><td class="num">47.4</td><td class="num">2</td><td class="num">1</td><td class="num">0</td><td class="num">0</td><td class="num">0</td></tr>
+<tr><th scope="row">Endpoint (Defender for Endpoint and ASR)</th><td class="num">16.7</td><td class="num">0</td><td class="num">1</td><td class="num">1</td><td class="num">0</td><td class="num">0</td></tr>
+<tr><th scope="row">Intune, patching and admin rights</th><td class="num">100.0</td><td class="num">1</td><td class="num">0</td><td class="num">0</td><td class="num">1</td><td class="num">0</td></tr>
+<tr><th scope="row">Email</th><td class="num">100.0</td><td class="num">1</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td></tr>
+<tr><th scope="row">Backups</th><td class="num">not scored</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">1</td></tr>
+</tbody>
+</table>
+<h4>Top quick wins</h4>
+<p>The changes most likely to reduce risk for the least effort, in order.</p>
+<ol>
+<li><a href="#t1-identity.mfa_admins"><strong>Administrators register phishing-resistant MFA</strong></a>. 25 of 30 administrators have no phishing-resistant method registered. <span class="muted">(Fail identity.mfa_admins: critical severity, low effort, high impact.)</span></li>
+<li><a href="#t1-endpoint.app_vulnerabilities"><strong>No critical application vulnerabilities older than two weeks</strong></a>. 4 devices run applications with critical vulnerabilities. <span class="muted">(Fail endpoint.app_vulnerabilities: high severity, high effort, high impact.)</span></li>
+<li><a href="#t1-endpoint.asr_office_macros"><strong>ASR blocks Office macros from creating executables</strong></a>. The rule is in audit mode on 12 devices. <span class="muted">(Warning endpoint.asr_office_macros: medium severity, low effort, medium impact.)</span></li>
+</ol>
+<h4>Essential Eight maturity estimate</h4>
+<p>This is an estimate, not an assessment. For each strategy it shows the highest maturity level at which every check in this run tagged up to that level passed. Strategies without automated evidence show level 0. Many requirements cannot be read from Microsoft APIs, so confirm any level with a formal assessment.</p>
+<table>
+<caption>Essential Eight maturity estimate per strategy (estimate, not an assessment)</caption>
+<thead><tr><th scope="col">Strategy</th><th scope="col">Estimated level</th><th scope="col">Basis</th></tr></thead>
+<tbody>
+<tr><th scope="row">Patch applications</th><td>Level 1</td><td>ML1 met; ML2 not met: endpoint.app_vulnerabilities failed; 1 of 2 tagged checks passed.</td></tr>
+<tr><th scope="row">Patch operating systems</th><td>Level 0</td><td>ML1 not met: intune.os_update_rings could not be checked; 0 of 1 tagged check passed.</td></tr>
+<tr><th scope="row">Multi-factor authentication</th><td>Level 0</td><td>ML1 not met: identity.mfa_admins failed; 0 of 1 tagged check passed.</td></tr>
+<tr><th scope="row">Restrict administrative privileges</th><td>Level 3</td><td>ML3 met: 2 of 2 tagged checks passed.</td></tr>
+<tr><th scope="row">Application control</th><td>Level 0</td><td>no automated evidence</td></tr>
+<tr><th scope="row">Restrict Microsoft Office macros</th><td>Level 0</td><td>ML1 not met: endpoint.asr_office_macros warned; 0 of 1 tagged check passed.</td></tr>
+<tr><th scope="row">User application hardening</th><td>Level 0</td><td>no automated evidence</td></tr>
+<tr><th scope="row">Regular backups</th><td>Level 0</td><td>ML1 not met: backup.m365_backup was not applicable; 0 of 1 tagged check passed.</td></tr>
+</tbody>
+</table>
+<h3>Changes since last run</h3>
+<p>Compared with run run-20260918 (finished 2026-09-18T01:00:00Z). Score change: down 4.2 points.</p>
+<ul>
+<li>New failures: endpoint.app_vulnerabilities</li>
+<li>Fixed: identity.global_admin_count</li>
+<li>New checks: backup.m365_backup</li>
+<li>No longer run: identity.legacy_check</li>
+<li>Other status changes: endpoint.asr_office_macros (Pass to Warning)</li>
+</ul>
+<section class="appendix">
+<h3>Technical appendix</h3>
+<p>Every check in pack order, then quick-win order. Affected resources list up to 20 items.</p>
+<h4>Identity</h4>
+<article class="finding s-fail" id="t1-identity.mfa_admins">
+<h5><span class="badge s-fail">Fail</span> Administrators register phishing-resistant MFA</h5>
+<dl>
+<dt>Check</dt><dd><code>identity.mfa_admins</code></dd>
+<dt>Severity</dt><dd>critical; effort low; impact high</dd>
+<dt>Evidence</dt><dd>25 of 30 administrators have no phishing-resistant method registered.</dd>
+<dt>Affected (25)</dt><dd>admin01@contoso.example, admin02@contoso.example, admin03@contoso.example, admin04@contoso.example, admin05@contoso.example, admin06@contoso.example, admin07@contoso.example, admin08@contoso.example, admin09@contoso.example, admin10@contoso.example, admin11@contoso.example, admin12@contoso.example, admin13@contoso.example, admin14@contoso.example, admin15@contoso.example, admin16@contoso.example, admin17@contoso.example, admin18@contoso.example, admin19@contoso.example, admin20@contoso.example and 5 more</dd>
+<dt>Remediation</dt><dd>Suggested fix for Administrators register phishing-resistant MFA.</dd>
+<dt>Links</dt><dd><a href="https://learn.microsoft.com/entra/identity/">https://learn.microsoft.com/entra/identity/</a></dd>
+<dt>Frameworks</dt><dd>E8 mfa ML1/ML2/ML3; ISM-1504; CIS v8 5.4</dd>
+<dt>References</dt><dd>CIS M365 1.1.1</dd>
+</dl>
+</article>
+<article class="finding s-pass" id="t1-identity.global_admin_count">
+<h5><span class="badge s-pass">Pass</span> Between two and four Global Administrators</h5>
+<dl>
+<dt>Check</dt><dd><code>identity.global_admin_count</code></dd>
+<dt>Severity</dt><dd>high; effort low; impact high</dd>
+<dt>Evidence</dt><dd>3 Global Administrators.</dd>
+<dt>Frameworks</dt><dd>E8 restrict-admin-privileges ML1/ML2/ML3; ISM-1507; CIS v8 5.4</dd>
+</dl>
+</article>
+<article class="finding s-pass" id="t1-identity.break_glass_monitored">
+<h5><span class="badge s-pass">Pass</span> Break-glass sign-ins raise an alert</h5>
+<dl>
+<dt>Check</dt><dd><code>identity.break_glass_monitored</code></dd>
+<dt>Severity</dt><dd>medium; effort low; impact medium</dd>
+<dt>Evidence</dt><dd>Attested &#39;yes&#39; by secops@contoso.example on 2026-10-01.</dd>
+<dt>Attested</dt><dd>yes by secops@contoso.example on 2026-10-01T00:00:00Z, expires 2027-04-01T00:00:00Z. Note: Sentinel rule BG-01 alerts the on-call engineer.</dd>
+<dt>Frameworks</dt><dd>E8 restrict-admin-privileges ML2/ML3; CIS v8 5.4</dd>
+</dl>
+</article>
+<h4>Endpoint (Defender for Endpoint and ASR)</h4>
+<article class="finding s-fail" id="t1-endpoint.app_vulnerabilities">
+<h5><span class="badge s-fail">Fail</span> No critical application vulnerabilities older than two weeks</h5>
+<dl>
+<dt>Check</dt><dd><code>endpoint.app_vulnerabilities</code></dd>
+<dt>Severity</dt><dd>high; effort high; impact high</dd>
+<dt>Evidence</dt><dd>4 devices run applications with critical vulnerabilities.</dd>
+<dt>Remediation</dt><dd>Suggested fix for No critical application vulnerabilities older than two weeks.</dd>
+<dt>Links</dt><dd><a href="https://learn.microsoft.com/entra/identity/">https://learn.microsoft.com/entra/identity/</a></dd>
+<dt>Frameworks</dt><dd>E8 patch-applications ML2/ML3; CIS v8 5.4</dd>
+</dl>
+</article>
+<article class="finding s-warn" id="t1-endpoint.asr_office_macros">
+<h5><span class="badge s-warn">Warning</span> ASR blocks Office macros from creating executables</h5>
+<dl>
+<dt>Check</dt><dd><code>endpoint.asr_office_macros</code></dd>
+<dt>Severity</dt><dd>medium; effort low; impact medium</dd>
+<dt>Evidence</dt><dd>The rule is in audit mode on 12 devices.</dd>
+<dt>Remediation</dt><dd>Suggested fix for ASR blocks Office macros from creating executables.</dd>
+<dt>Links</dt><dd><a href="https://learn.microsoft.com/entra/identity/">https://learn.microsoft.com/entra/identity/</a></dd>
+<dt>Frameworks</dt><dd>E8 office-macros ML1/ML2/ML3; CIS v8 5.4</dd>
+</dl>
+</article>
+<h4>Intune, patching and admin rights</h4>
+<article class="finding s-unknown" id="t1-intune.os_update_rings">
+<h5><span class="badge s-unknown">Unknown</span> Windows quality updates install within two weeks</h5>
+<dl>
+<dt>Check</dt><dd><code>intune.os_update_rings</code></dd>
+<dt>Severity</dt><dd>high; effort medium; impact high</dd>
+<dt>Evidence</dt><dd>Could not read Windows update rings.</dd>
+<dt>Reason</dt><dd>missing_permission: Microsoft Graph returned 403 for update rings. (grant: DeviceManagementConfiguration.Read.All)</dd>
+<dt>Frameworks</dt><dd>E8 patch-operating-systems ML1/ML2/ML3; ISM-1877; CIS v8 5.4</dd>
+</dl>
+</article>
+<article class="finding s-pass" id="t1-intune.app_update_policy">
+<h5><span class="badge s-pass">Pass</span> Microsoft 365 Apps update automatically</h5>
+<dl>
+<dt>Check</dt><dd><code>intune.app_update_policy</code></dd>
+<dt>Severity</dt><dd>medium; effort low; impact medium</dd>
+<dt>Evidence</dt><dd>Monthly Enterprise Channel with automatic updates.</dd>
+<dt>Frameworks</dt><dd>E8 patch-applications ML1; CIS v8 5.4</dd>
+</dl>
+</article>
+<h4>Email</h4>
+<article class="finding s-pass" id="t1-email.dmarc_reject">
+<h5><span class="badge s-pass">Pass</span> DMARC policy is reject or quarantine</h5>
+<dl>
+<dt>Check</dt><dd><code>email.dmarc_reject</code></dd>
+<dt>Severity</dt><dd>low; effort low; impact medium</dd>
+<dt>Evidence</dt><dd>contoso.example publishes p=reject.</dd>
+<dt>Frameworks</dt><dd>CIS v8 5.4</dd>
+</dl>
+</article>
+<h4>Backups</h4>
+<article class="finding s-na" id="t1-backup.m365_backup">
+<h5><span class="badge s-na">Not applicable</span> Microsoft 365 Backup protects mailboxes and sites</h5>
+<dl>
+<dt>Check</dt><dd><code>backup.m365_backup</code></dd>
+<dt>Severity</dt><dd>medium; effort medium; impact medium</dd>
+<dt>Evidence</dt><dd>Microsoft 365 Backup is not licensed.</dd>
+<dt>Reason</dt><dd>missing_licence: Microsoft 365 Backup is not licensed.</dd>
+<dt>Frameworks</dt><dd>E8 regular-backups ML1/ML2/ML3; CIS v8 5.4</dd>
+</dl>
+</article>
+</section>
+</section>
+<section class="tenant break" id="tenant-2" aria-labelledby="tenant-2-h">
+<h2 id="tenant-2-h">Fabrikam (00000000-0000-4000-8000-000000000002)</h2>
+<h3>Executive summary</h3>
+<p class="lead">This tenant could not be assessed, so it has no score or findings.</p>
+<p>Error: authentication_failed: The app registration has no consent in this tenant.</p>
+</section>
+</main>
+<footer>
+<p>Read-only assessment of the configuration Microsoft APIs reported at the time of the run. Remediation text is a suggestion only. Junction is not affiliated with or endorsed by Microsoft or the Australian Signals Directorate. The Essential Eight maturity figures are an estimate, not an assessment.</p>
+</footer>
+</body>
+</html>

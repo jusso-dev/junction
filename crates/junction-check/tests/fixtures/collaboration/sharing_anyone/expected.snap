@@ -1,0 +1,15 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "sharing_capability": "externaluserandguestsharing"
+    },
+    "summary": "SharePoint sharing allows Anyone links."
+  },
+  "id": "collaboration.sharepoint_external_sharing",
+  "reason": null,
+  "status": "fail"
+}

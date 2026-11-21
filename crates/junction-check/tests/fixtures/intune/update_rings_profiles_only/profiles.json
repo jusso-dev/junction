@@ -1,0 +1,35 @@
+[
+    {
+        "operation": "graph.device_management.windows_feature_update_profiles.list",
+        "responses": [
+            {
+                "body": {
+                    "value": [
+                        {
+                            "id": "f1",
+                            "displayName": "Windows 11 25H2",
+                            "assignments": [
+                                {
+                                    "id": "a1",
+                                    "target": {
+                                        "@odata.type": "#microsoft.graph.allDevicesAssignmentTarget"
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                }
+            }
+        ]
+    },
+    {
+        "operation": "graph.device_management.windows_quality_update_profiles.list",
+        "responses": [
+            {
+                "body": {
+                    "value": []
+                }
+            }
+        ]
+    }
+]

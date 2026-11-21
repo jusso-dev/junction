@@ -1,0 +1,61 @@
+{
+    "operation": "defender.xdr.advancedhunting.run",
+    "responses": [
+        {
+            "status": 429,
+            "retry_after": 0,
+            "error": {
+                "code": "TooManyRequests",
+                "message": "Rate limit is exceeded. Try again in 0 seconds."
+            }
+        },
+        {
+            "body": {
+                "Schema": [
+                    {
+                        "Name": "DeviceId",
+                        "Type": "String"
+                    },
+                    {
+                        "Name": "DeviceName",
+                        "Type": "String"
+                    },
+                    {
+                        "Name": "OSPlatform",
+                        "Type": "String"
+                    },
+                    {
+                        "Name": "AvMode",
+                        "Type": "String"
+                    },
+                    {
+                        "Name": "AvSignatureVersion",
+                        "Type": "String"
+                    },
+                    {
+                        "Name": "AvSignatureUpdateTime",
+                        "Type": "DateTime"
+                    }
+                ],
+                "Results": [
+                    {
+                        "DeviceId": "0000000000000000000000000000000000000001",
+                        "DeviceName": "pc-01.contoso.example",
+                        "OSPlatform": "Windows11",
+                        "AvMode": "0",
+                        "AvSignatureVersion": "1.419.512.0",
+                        "AvSignatureUpdateTime": "2026-10-24T03:12:45Z"
+                    },
+                    {
+                        "DeviceId": "0000000000000000000000000000000000000002",
+                        "DeviceName": "pc-02.contoso.example",
+                        "OSPlatform": "Windows11",
+                        "AvMode": "0",
+                        "AvSignatureVersion": "1.419.512.0",
+                        "AvSignatureUpdateTime": "2026-10-24T03:12:45Z"
+                    }
+                ]
+            }
+        }
+    ]
+}

@@ -1,0 +1,41 @@
+{
+  "affected": {
+    "items": [
+      "fabrikam.example"
+    ],
+    "total": 1
+  },
+  "evidence": {
+    "data": {
+      "assessed": 2,
+      "domains": [
+        {
+          "detail": "selector CNAMEs published (selector1 -> selector1-contoso-example._domainkey.contoso.onmicrosoft.com.example; selector2 -> selector2-contoso-example._domainkey.contoso.onmicrosoft.com.example)",
+          "domain": "contoso.example",
+          "result": "pass",
+          "role": "exchange"
+        },
+        {
+          "detail": "CNAME lookup for selector1._domainkey.fabrikam.example failed: timed out (fixture); CNAME lookup for selector2._domainkey.fabrikam.example failed: timed out (fixture)",
+          "domain": "fabrikam.example",
+          "result": "unresolved",
+          "role": "exchange"
+        }
+      ],
+      "failed": 0,
+      "method": "selector CNAME records in public DNS",
+      "passed": 1,
+      "signing_state": "not read: Get-DkimSigningConfig needs Exchange Online PowerShell, which Junction does not call",
+      "skipped": 0,
+      "unresolved": 1,
+      "warned": 0
+    },
+    "summary": "DKIM could not be confirmed for 1 of 2 domains: fabrikam.example (CNAME lookup for selector1._domainkey.fabrikam.example failed: timed out (fixture); CNAME lookup for selector2._domainkey.fabrikam.example failed: timed out (fixture))."
+  },
+  "id": "email.dkim",
+  "reason": {
+    "code": "dns_lookup_failed",
+    "detail": "DKIM could not be confirmed for 1 of 2 domains: fabrikam.example (CNAME lookup for selector1._domainkey.fabrikam.example failed: timed out (fixture); CNAME lookup for selector2._domainkey.fabrikam.example failed: timed out (fixture))."
+  },
+  "status": "unknown"
+}

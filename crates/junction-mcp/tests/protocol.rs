@@ -79,7 +79,11 @@ async fn lifecycle_and_tool_schema_validation_guard_host_execution() {
             "junction_execute",
             "junction_batch",
             "junction_permissions",
-            "junction_context"
+            "junction_context",
+            "junction_check_list",
+            "junction_check_run",
+            "junction_check_run_status",
+            "junction_check_attestations"
         ]
     );
     assert_eq!(tools[0]["annotations"]["readOnlyHint"], true);

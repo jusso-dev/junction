@@ -1,0 +1,166 @@
+{
+  "version": "Notebook/1.0",
+  "items": [
+    {
+      "type": 1,
+      "content": {
+        "json": "## Junction check posture\nResults pushed by `junction check run --push-sentinel` to `JunctionCheck_CL`. Scores are 0 to 100; unknown and not-applicable checks are not scored."
+      },
+      "name": "intro"
+    },
+    {
+      "type": 9,
+      "content": {
+        "version": "KqlParameterItem/1.0",
+        "parameters": [
+          {
+            "id": "b6f1c3d2-1f0e-4f43-9a51-6d0f5b8f2a01",
+            "version": "KqlParameterItem/1.0",
+            "name": "TimeRange",
+            "label": "Time range",
+            "type": 4,
+            "isRequired": true,
+            "value": {
+              "durationMs": 2592000000
+            },
+            "typeSettings": {
+              "selectableValues": [
+                {
+                  "durationMs": 604800000
+                },
+                {
+                  "durationMs": 1209600000
+                },
+                {
+                  "durationMs": 2592000000
+                },
+                {
+                  "durationMs": 7776000000
+                }
+              ]
+            }
+          },
+          {
+            "id": "b6f1c3d2-1f0e-4f43-9a51-6d0f5b8f2a02",
+            "version": "KqlParameterItem/1.0",
+            "name": "Tenant",
+            "type": 2,
+            "multiSelect": true,
+            "quote": "'",
+            "delimiter": ",",
+            "query": "JunctionCheck_CL\n| summarize by EntraTenantId, Label = iff(isempty(TenantLabel), EntraTenantId, TenantLabel)\n| project value = EntraTenantId, label = Label",
+            "typeSettings": {
+              "showDefault": false,
+              "additionalResourceOptions": [
+                "value::all"
+              ],
+              "selectAllValue": "*"
+            },
+            "defaultValue": "value::all",
+            "timeContextFromParameter": "TimeRange",
+            "queryType": 0,
+            "resourceType": "microsoft.operationalinsights/workspaces",
+            "value": [
+              "value::all"
+            ]
+          }
+        ],
+        "style": "pills",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces"
+      },
+      "name": "parameters"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "JunctionCheck_CL\n| where '*' in ({Tenant}) or EntraTenantId in ({Tenant})\n| where isnotnull(Score)\n| summarize Score = take_any(Score) by RunId, TimeGenerated, Tenant = iff(isempty(TenantLabel), EntraTenantId, TenantLabel)\n| project TimeGenerated, Tenant, Score\n| order by TimeGenerated asc",
+        "size": 0,
+        "title": "Score over time by tenant",
+        "timeContextFromParameter": "TimeRange",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces",
+        "visualization": "linechart"
+      },
+      "name": "score-over-time"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "let latest = JunctionCheck_CL\n| summarize arg_max(TimeGenerated, RunId) by EntraTenantId\n| project EntraTenantId, RunId;\nJunctionCheck_CL\n| join kind=inner latest on EntraTenantId, RunId\n| where '*' in ({Tenant}) or EntraTenantId in ({Tenant})\n| where Status == \"fail\"\n| summarize Failing = count() by Tenant = iff(isempty(TenantLabel), EntraTenantId, TenantLabel), Severity\n| order by Failing desc",
+        "size": 0,
+        "title": "Failing checks by tenant (latest run)",
+        "timeContextFromParameter": "TimeRange",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces",
+        "visualization": "barchart",
+        "chartSettings": {
+          "group": "Severity",
+          "createOtherGroup": null
+        }
+      },
+      "name": "failing-by-tenant"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "let latest = JunctionCheck_CL\n| summarize arg_max(TimeGenerated, RunId) by EntraTenantId\n| project EntraTenantId, RunId;\nJunctionCheck_CL\n| join kind=inner latest on EntraTenantId, RunId\n| where '*' in ({Tenant}) or EntraTenantId in ({Tenant})\n| extend SeverityRank = case(Severity == \"critical\", 4, Severity == \"high\", 3, Severity == \"medium\", 2, Severity == \"low\", 1, 0)\n| extend StatusRank = case(Status == \"failed\", 0, Status == \"fail\", 1, Status == \"warn\", 2, Status == \"unknown\", 3, Status == \"not_applicable\", 4, 5)\n| order by StatusRank asc, SeverityRank desc, CheckId asc\n| project Tenant = iff(isempty(TenantLabel), EntraTenantId, TenantLabel), CheckId, Pack, Status, Severity, Score, PackScore, Attested, Tags, Summary, RunId, TimeGenerated",
+        "size": 0,
+        "title": "Latest status per tenant and check",
+        "timeContextFromParameter": "TimeRange",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces",
+        "visualization": "table",
+        "gridSettings": {
+          "filter": true,
+          "formatters": [
+            {
+              "columnMatch": "Status",
+              "formatter": 18,
+              "formatOptions": {
+                "thresholdsOptions": "icons",
+                "thresholdsGrid": [
+                  {
+                    "operator": "==",
+                    "thresholdValue": "pass",
+                    "representation": "success",
+                    "text": "{0}"
+                  },
+                  {
+                    "operator": "==",
+                    "thresholdValue": "fail",
+                    "representation": "4",
+                    "text": "{0}"
+                  },
+                  {
+                    "operator": "==",
+                    "thresholdValue": "failed",
+                    "representation": "4",
+                    "text": "{0}"
+                  },
+                  {
+                    "operator": "==",
+                    "thresholdValue": "warn",
+                    "representation": "2",
+                    "text": "{0}"
+                  },
+                  {
+                    "operator": "Default",
+                    "representation": "unknown",
+                    "text": "{0}"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "name": "latest-status"
+    }
+  ],
+  "fallbackResourceIds": [],
+  "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
+}

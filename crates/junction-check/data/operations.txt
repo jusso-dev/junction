@@ -1,0 +1,94 @@
+# Junction catalogue operations embedded in junction-check (see scripts/check-catalog.py).
+# One canonical operation id per line. `id@beta` selects the Microsoft Graph beta
+# version (preview; only for settings v1.0 does not expose). Keep this list to what
+# the packs call: every entry widens what a check run can reach.
+
+# Tenant pre-flight (licences and organisation)
+graph.subscribed_skus.list
+graph.organization.list
+graph.domains.list
+
+# Identity
+graph.users.list
+graph.reports.authentication_methods.user_registration_details.list
+graph.policies.identity_security_defaults_enforcement_policy.get
+graph.identity.conditional_access.policies.list
+graph.identity.conditional_access.named_locations.list
+graph.policies.authentication_strength_policies.list
+graph.policies.authentication_methods_policy.get
+graph.policies.authorization_policy.get
+graph.policies.admin_consent_request_policy.get
+graph.policies.default_app_management_policy.get
+graph.policies.cross_tenant_access_policy.default.get
+graph.policies.device_registration_policy.get
+graph.policies.role_management_policy_assignments.list
+graph.role_management.directory.role_assignments.list
+graph.role_management.directory.role_eligibility_schedules.list
+graph.role_management.directory.role_assignment_schedules.list
+graph.role_management.directory.role_definitions.list
+graph.directory.on_premises_synchronization.list
+graph.groups.list
+graph.groups.transitive_members.list
+graph.users.transitive_member_of.list
+graph.users.authentication.methods.list
+graph.group_settings.list
+
+# Applications and consent
+graph.applications.list
+graph.service_principals.list
+graph.service_principals.app_role_assigned_to.list
+graph.oauth2permission_grants.list
+
+# Devices, Intune and endpoint hardening
+graph.devices.list
+graph.device_management.managed_devices.list
+graph.device_management.device_configurations.list
+graph.device_management.device_compliance_policies.list
+graph.device_management.device_enrollment_configurations.list
+graph.device_management.configuration_policies.list@beta
+graph.device_management.configuration_policies.settings.list@beta
+graph.device_management.compliance_policies.list@beta
+graph.device_management.get
+graph.device_management.intents.list@beta
+graph.device_management.intents.settings.list@beta
+graph.device_management.windows_feature_update_profiles.list@beta
+graph.device_management.windows_quality_update_profiles.list@beta
+graph.directory.device_local_credentials.list
+graph.information_protection.bitlocker.recovery_keys.list
+
+# Collaboration
+graph.admin.sharepoint.settings.get
+
+# Security posture and hunting
+graph.security.secure_scores.list
+graph.security.run_hunting_query
+defender.xdr.advancedhunting.run
+
+# Defender for Endpoint
+defender.endpoint.machines.list
+defender.endpoint.advancedqueries.run
+defender.endpoint.machines.list_secure_configurations_assessment_by_machine
+defender.endpoint.machines.list_software_inventory_by_machine
+defender.endpoint.vulnerabilities.list_machines_vulnerabilities
+defender.endpoint.vulnerabilities.list
+defender.endpoint.recommendations.list
+
+# Backups
+graph.solutions.backup_restore.get
+graph.solutions.backup_restore.protection_policies.list
+graph.solutions.backup_restore.exchange_protection_policies.list
+graph.solutions.backup_restore.one_drive_for_business_protection_policies.list
+graph.solutions.backup_restore.share_point_protection_policies.list
+
+# Azure, Sentinel and Log Analytics
+azure.resource_graph.resources.post
+azure.arc.machines.list_by_subscription
+azure.log_analytics.workspaces.list
+azure.log_analytics.tables.list_by_workspace
+azure.log_analytics_query.query.execute
+sentinel.securityinsights.sentinel_onboarding_states.list
+sentinel.securityinsights.data_connectors.list
+sentinel.securityinsights.alert_rules.list
+sentinel.securityinsights.incidents.list
+sentinel.securityinsights.automation_rules.list
+defender.cloud.pricings.list

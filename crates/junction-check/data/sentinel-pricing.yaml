@@ -1,0 +1,17 @@
+# Microsoft Sentinel ingestion prices used by `sentinel.ingestion_cost` for its estimate.
+# Override the analytics price per tenant with `[packs.sentinel] price_per_gb = <number>`
+# (and `currency = "<code>"` when it is not AUD) in the check configuration.
+#
+# Pay-as-you-go retail prices for the simplified pricing tier, where one Sentinel meter
+# covers both Microsoft Sentinel and Log Analytics analytics-tier ingestion. Commitment
+# tiers, enterprise agreements, the Microsoft 365 E5/A5/F5/G5 data grant and the Defender
+# for Servers data benefit all lower the real bill; this is an estimate only.
+currency: AUD
+region: Australia East
+meter: Sentinel "Pay-as-you-go Analysis" (analytics logs, per GB ingested)
+price_per_gb: 8.8895
+basic_per_gb: 1.7523
+auxiliary_per_gb: 0.1033
+source: https://prices.azure.com/api/retail/prices?currencyCode='AUD'&$filter=serviceName eq 'Sentinel' and armRegionName eq 'australiaeast'
+pricing_page: https://azure.microsoft.com/pricing/details/microsoft-sentinel/
+as_of: "2026-10-25"

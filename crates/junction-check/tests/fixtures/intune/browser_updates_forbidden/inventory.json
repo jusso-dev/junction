@@ -1,0 +1,12 @@
+{
+    "operation": "defender.endpoint.machines.list_software_inventory_by_machine",
+    "responses": [
+        {
+            "status": 403,
+            "error": {
+                "code": "Forbidden",
+                "message": "Application is not authorized to perform this operation."
+            }
+        }
+    ]
+}

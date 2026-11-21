@@ -1,0 +1,38 @@
+{
+  "affected": {
+    "items": [
+      "fabrikam.example"
+    ],
+    "total": 1
+  },
+  "evidence": {
+    "data": {
+      "assessed": 2,
+      "domains": [
+        {
+          "detail": "selector CNAMEs published (selector1 -> selector1-contoso-example._domainkey.contoso.onmicrosoft.com.example; selector2 -> selector2-contoso-example._domainkey.contoso.onmicrosoft.com.example)",
+          "domain": "contoso.example",
+          "result": "pass",
+          "role": "exchange"
+        },
+        {
+          "detail": "selector2 CNAME missing; Exchange Online cannot sign without both selectors",
+          "domain": "fabrikam.example",
+          "result": "fail",
+          "role": "exchange"
+        }
+      ],
+      "failed": 1,
+      "method": "selector CNAME records in public DNS",
+      "passed": 1,
+      "signing_state": "not read: Get-DkimSigningConfig needs Exchange Online PowerShell, which Junction does not call",
+      "skipped": 0,
+      "unresolved": 0,
+      "warned": 0
+    },
+    "summary": "DKIM fails for 1 of 2 domains: fabrikam.example (selector2 CNAME missing; Exchange Online cannot sign without both selectors)."
+  },
+  "id": "email.dkim",
+  "reason": null,
+  "status": "fail"
+}

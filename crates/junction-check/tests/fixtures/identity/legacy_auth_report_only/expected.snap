@@ -1,0 +1,20 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "blocking_policies": [],
+      "partial_policies": [],
+      "report_only_policies": [
+        "Block legacy authentication"
+      ],
+      "security_defaults": false
+    },
+    "summary": "The policy blocking legacy authentication is report-only (Block legacy authentication), so nothing is blocked yet."
+  },
+  "id": "identity.legacy_auth_blocked",
+  "reason": null,
+  "status": "warn"
+}

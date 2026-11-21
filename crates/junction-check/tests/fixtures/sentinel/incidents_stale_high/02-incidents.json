@@ -1,0 +1,108 @@
+[
+  {
+    "operation": "sentinel.securityinsights.incidents.list",
+    "match": {
+      "parameters": {
+        "workspaceName": "law-sentinel-01"
+      }
+    },
+    "responses": [
+      {
+        "status": 200,
+        "body": {
+          "value": [
+            {
+              "id": "/subscriptions/00000000-0000-4000-8000-0000000000a1/resourceGroups/rg-security/providers/Microsoft.OperationalInsights/workspaces/law-sentinel-01/providers/Microsoft.SecurityInsights/incidents/inc-201",
+              "name": "inc-201",
+              "type": "Microsoft.SecurityInsights/incidents",
+              "properties": {
+                "incidentNumber": 201,
+                "title": "Synthetic incident 201",
+                "severity": "High",
+                "status": "Active",
+                "owner": {
+                  "objectId": null,
+                  "email": null,
+                  "assignedTo": null,
+                  "userPrincipalName": null
+                },
+                "createdTimeUtc": "2026-10-20T08:00:00.000Z",
+                "lastModifiedTimeUtc": "2026-10-20T08:00:00.000Z"
+              }
+            },
+            {
+              "id": "/subscriptions/00000000-0000-4000-8000-0000000000a1/resourceGroups/rg-security/providers/Microsoft.OperationalInsights/workspaces/law-sentinel-01/providers/Microsoft.SecurityInsights/incidents/inc-202",
+              "name": "inc-202",
+              "type": "Microsoft.SecurityInsights/incidents",
+              "properties": {
+                "incidentNumber": 202,
+                "title": "Synthetic incident 202",
+                "severity": "Medium",
+                "status": "Active",
+                "owner": {
+                  "objectId": "00000000-0000-4000-8000-0000000000e1",
+                  "email": "analyst@contoso.example",
+                  "assignedTo": "Analyst One",
+                  "userPrincipalName": "analyst@contoso.example"
+                },
+                "createdTimeUtc": "2026-10-24T12:00:00.000Z",
+                "lastModifiedTimeUtc": "2026-10-24T12:00:00.000Z"
+              }
+            }
+          ],
+          "nextLink": "fixture:incidents-2"
+        }
+      }
+    ]
+  },
+  {
+    "url": "fixture:incidents-2",
+    "responses": [
+      {
+        "status": 200,
+        "body": {
+          "value": [
+            {
+              "id": "/subscriptions/00000000-0000-4000-8000-0000000000a1/resourceGroups/rg-security/providers/Microsoft.OperationalInsights/workspaces/law-sentinel-01/providers/Microsoft.SecurityInsights/incidents/inc-203",
+              "name": "inc-203",
+              "type": "Microsoft.SecurityInsights/incidents",
+              "properties": {
+                "incidentNumber": 203,
+                "title": "Synthetic incident 203",
+                "severity": "Medium",
+                "status": "Active",
+                "owner": {
+                  "objectId": "00000000-0000-4000-8000-0000000000e1",
+                  "email": "analyst@contoso.example",
+                  "assignedTo": "Analyst One",
+                  "userPrincipalName": "analyst@contoso.example"
+                },
+                "createdTimeUtc": "2026-10-20T08:00:00.000Z",
+                "lastModifiedTimeUtc": "2026-10-20T08:00:00.000Z"
+              }
+            },
+            {
+              "id": "/subscriptions/00000000-0000-4000-8000-0000000000a1/resourceGroups/rg-security/providers/Microsoft.OperationalInsights/workspaces/law-sentinel-01/providers/Microsoft.SecurityInsights/incidents/inc-204",
+              "name": "inc-204",
+              "type": "Microsoft.SecurityInsights/incidents",
+              "properties": {
+                "incidentNumber": 204,
+                "title": "Synthetic incident 204",
+                "severity": "Informational",
+                "status": "Active",
+                "owner": {
+                  "objectId": null,
+                  "email": null,
+                  "assignedTo": null,
+                  "userPrincipalName": null
+                },
+                "createdTimeUtc": "2026-10-20T08:00:00.000Z",
+                "lastModifiedTimeUtc": "2026-10-24T12:00:00.000Z"
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+]

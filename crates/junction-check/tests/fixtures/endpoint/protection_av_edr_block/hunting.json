@@ -1,0 +1,69 @@
+{
+    "operation": "defender.xdr.advancedhunting.run",
+    "responses": [
+        {
+            "body": {
+                "Schema": [
+                    {
+                        "Name": "DeviceId",
+                        "Type": "String"
+                    },
+                    {
+                        "Name": "DeviceName",
+                        "Type": "String"
+                    },
+                    {
+                        "Name": "OSPlatform",
+                        "Type": "String"
+                    },
+                    {
+                        "Name": "AvMode",
+                        "Type": "String"
+                    },
+                    {
+                        "Name": "AvSignatureVersion",
+                        "Type": "String"
+                    },
+                    {
+                        "Name": "AvSignatureUpdateTime",
+                        "Type": "DateTime"
+                    }
+                ],
+                "Results": [
+                    {
+                        "DeviceId": "0000000000000000000000000000000000000001",
+                        "DeviceName": "pc-01.contoso.example",
+                        "OSPlatform": "Windows11",
+                        "AvMode": "0",
+                        "AvSignatureVersion": "1.419.512.0",
+                        "AvSignatureUpdateTime": "2026-10-24T03:12:45Z"
+                    },
+                    {
+                        "DeviceId": "0000000000000000000000000000000000000002",
+                        "DeviceName": "pc-02.contoso.example",
+                        "OSPlatform": "Windows11",
+                        "AvMode": "0",
+                        "AvSignatureVersion": "1.419.512.0",
+                        "AvSignatureUpdateTime": "2026-10-23T22:01:10Z"
+                    },
+                    {
+                        "DeviceId": "0000000000000000000000000000000000000003",
+                        "DeviceName": "pc-03.contoso.example",
+                        "OSPlatform": "Windows11",
+                        "AvMode": "4",
+                        "AvSignatureVersion": "1.419.512.0",
+                        "AvSignatureUpdateTime": "2026-10-22T08:00:00Z"
+                    },
+                    {
+                        "DeviceId": "0000000000000000000000000000000000000005",
+                        "DeviceName": "srv-05.contoso.example",
+                        "OSPlatform": "Linux",
+                        "AvMode": "0",
+                        "AvSignatureVersion": "1.419.512.0",
+                        "AvSignatureUpdateTime": "2026-10-24T03:12:45Z"
+                    }
+                ]
+            }
+        }
+    ]
+}

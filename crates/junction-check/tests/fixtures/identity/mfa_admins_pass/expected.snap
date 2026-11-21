@@ -1,0 +1,17 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "admins": 3,
+      "mfa_capable": 3,
+      "source": "registration_details"
+    },
+    "summary": "All 3 users holding privileged roles are MFA capable."
+  },
+  "id": "identity.mfa_admins",
+  "reason": null,
+  "status": "pass"
+}

@@ -1,0 +1,40 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "active_days": 30,
+      "by_platform": {
+        "Linux": {
+          "devices": 1,
+          "missing": 0,
+          "onboarded": 1
+        },
+        "Windows": {
+          "devices": 3,
+          "missing": 0,
+          "onboarded": 3
+        },
+        "macOS": {
+          "devices": 1,
+          "missing": 0,
+          "onboarded": 1
+        }
+      },
+      "devices": 5,
+      "discovered_not_onboarded": 0,
+      "matched_by": {
+        "device_id": 4,
+        "name": 1
+      },
+      "missing": 0,
+      "onboarded": 5
+    },
+    "summary": "All 5 active devices are onboarded to Defender for Endpoint."
+  },
+  "id": "endpoint.onboarding_coverage",
+  "reason": null,
+  "status": "pass"
+}

@@ -1,0 +1,25 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "backed_up": 2,
+      "missing_backup": 0,
+      "policies": [
+        {
+          "assigned_to": "all devices or users",
+          "backup_directory": "entra_id",
+          "name": "Windows LAPS"
+        }
+      ],
+      "stale_left_out": 0,
+      "windows_devices": 2
+    },
+    "summary": "Windows LAPS backs up to Entra ID and all 2 active Windows devices have a backed-up local administrator password."
+  },
+  "id": "intune.laps",
+  "reason": null,
+  "status": "pass"
+}

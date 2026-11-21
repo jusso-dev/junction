@@ -1,0 +1,24 @@
+{
+  "affected": {
+    "items": [
+      "law-sentinel-01"
+    ],
+    "total": 1
+  },
+  "evidence": {
+    "data": {
+      "workspaces": [
+        {
+          "automation_rules": 4,
+          "enabled_incident_rules": 3,
+          "routing_rules": [],
+          "workspace": "law-sentinel-01"
+        }
+      ]
+    },
+    "summary": "No enabled automation rule assigns an owner or runs a playbook for High severity incidents in law-sentinel-01."
+  },
+  "id": "sentinel.automation",
+  "reason": null,
+  "status": "warn"
+}

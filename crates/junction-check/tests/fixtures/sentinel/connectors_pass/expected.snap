@@ -1,0 +1,63 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "connector_kinds": {
+        "law-sentinel-01": [
+          "MicrosoftThreatProtection",
+          "Office365"
+        ]
+      },
+      "days": 7,
+      "sources": [
+        {
+          "connected": true,
+          "cost": "billed per GB; the Microsoft 365 E5, A5, F5 and G5 data grant covers it up to 5 MB per user per day",
+          "source": "Entra ID sign-in logs",
+          "workspaces": [
+            "law-sentinel-01 (data)"
+          ]
+        },
+        {
+          "connected": true,
+          "cost": "billed per GB; the Microsoft 365 E5, A5, F5 and G5 data grant covers it up to 5 MB per user per day",
+          "source": "Entra ID audit logs",
+          "workspaces": [
+            "law-sentinel-01 (data)"
+          ]
+        },
+        {
+          "connected": true,
+          "cost": "incidents and alerts are free; raw advanced hunting events are billed per GB",
+          "source": "Microsoft Defender XDR",
+          "workspaces": [
+            "law-sentinel-01 (connector and data)"
+          ]
+        },
+        {
+          "connected": true,
+          "cost": "free to ingest",
+          "source": "Office 365",
+          "workspaces": [
+            "law-sentinel-01 (connector and data)"
+          ]
+        },
+        {
+          "connected": true,
+          "cost": "free to ingest",
+          "source": "Azure Activity",
+          "workspaces": [
+            "law-sentinel-01 (data)"
+          ]
+        }
+      ]
+    },
+    "summary": "All 5 key Microsoft sources reach Sentinel."
+  },
+  "id": "sentinel.connectors",
+  "reason": null,
+  "status": "pass"
+}

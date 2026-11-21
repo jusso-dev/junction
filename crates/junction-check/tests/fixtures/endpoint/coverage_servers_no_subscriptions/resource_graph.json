@@ -1,0 +1,19 @@
+{
+    "operation": "azure.resource_graph.resources.post",
+    "match": {
+        "body": {
+            "query": "resourcecontainers | where type =~ 'microsoft.resources/subscriptions' | project subscriptionId, name"
+        }
+    },
+    "responses": [
+        {
+            "status": 200,
+            "body": {
+                "totalRecords": 0,
+                "count": 0,
+                "data": [],
+                "resultTruncated": "false"
+            }
+        }
+    ]
+}

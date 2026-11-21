@@ -1,0 +1,129 @@
+[
+    {
+        "operation": "graph.device_management.configuration_policies.list",
+        "responses": [
+            {
+                "body": {
+                    "value": [
+                        {
+                            "id": "p-other",
+                            "name": "Edge baseline",
+                            "platforms": "windows10",
+                            "technologies": "mdm",
+                            "templateReference": {
+                                "templateId": "",
+                                "templateFamily": "none"
+                            },
+                            "assignments": [
+                                {
+                                    "id": "a1",
+                                    "target": {
+                                        "@odata.type": "#microsoft.graph.allDevicesAssignmentTarget"
+                                    }
+                                }
+                            ]
+                        }
+                    ],
+                    "@odata.nextLink": "fixture:policies-2"
+                }
+            }
+        ]
+    },
+    {
+        "url": "fixture:policies-2",
+        "responses": [
+            {
+                "body": {
+                    "value": [
+                        {
+                            "id": "p-lugm",
+                            "name": "Local administrators",
+                            "platforms": "windows10",
+                            "technologies": "mdm",
+                            "templateReference": {
+                                "templateId": "",
+                                "templateFamily": "endpointSecurityAccountProtection"
+                            },
+                            "assignments": [
+                                {
+                                    "id": "a1",
+                                    "target": {
+                                        "@odata.type": "#microsoft.graph.allDevicesAssignmentTarget"
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                }
+            }
+        ]
+    },
+    {
+        "operation": "graph.device_management.configuration_policies.settings.list",
+        "match": {
+            "parameters": {
+                "deviceManagementConfigurationPolicy-id": "p-other"
+            }
+        },
+        "responses": [
+            {
+                "body": {
+                    "value": []
+                }
+            }
+        ]
+    },
+    {
+        "operation": "graph.device_management.configuration_policies.settings.list",
+        "match": {
+            "parameters": {
+                "deviceManagementConfigurationPolicy-id": "p-lugm"
+            }
+        },
+        "responses": [
+            {
+                "body": {
+                    "value": [
+                        {
+                            "id": "0",
+                            "settingInstance": {
+                                "settingDefinitionId": "device_vendor_msft_policy_config_localusersandgroups_configure",
+                                "groupSettingCollectionValue": [
+                                    {
+                                        "children": [
+                                            {
+                                                "settingDefinitionId": "device_vendor_msft_policy_config_localusersandgroups_configure_groupconfiguration",
+                                                "groupSettingCollectionValue": [
+                                                    {
+                                                        "children": [
+                                                            {
+                                                                "settingDefinitionId": "device_vendor_msft_policy_config_localusersandgroups_configure_groupconfiguration_accessgroup_desc",
+                                                                "choiceSettingCollectionValue": [
+                                                                    {
+                                                                        "value": "device_vendor_msft_policy_config_localusersandgroups_configure_groupconfiguration_accessgroup_desc_administrators",
+                                                                        "children": []
+                                                                    }
+                                                                ]
+                                                            },
+                                                            {
+                                                                "settingDefinitionId": "device_vendor_msft_policy_config_localusersandgroups_configure_groupconfiguration_accessgroup_action",
+                                                                "choiceSettingValue": {
+                                                                    "value": "device_vendor_msft_policy_config_localusersandgroups_configure_groupconfiguration_accessgroup_action_add_restrict",
+                                                                    "children": []
+                                                                }
+                                                            }
+                                                        ]
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+]

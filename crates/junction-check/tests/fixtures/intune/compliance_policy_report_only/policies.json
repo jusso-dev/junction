@@ -1,0 +1,24 @@
+{
+    "operation": "graph.device_management.device_compliance_policies.list",
+    "responses": [
+        {
+            "body": {
+                "value": [
+                    {
+                        "@odata.type": "#microsoft.graph.windows10CompliancePolicy",
+                        "id": "cp-windows-compliance",
+                        "displayName": "Windows compliance",
+                        "assignments": [
+                            {
+                                "id": "a1",
+                                "target": {
+                                    "@odata.type": "#microsoft.graph.allDevicesAssignmentTarget"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    ]
+}

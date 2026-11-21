@@ -1,0 +1,35 @@
+{
+    "operation": "defender.xdr.advancedhunting.run",
+    "responses": [
+        {
+            "body": {
+                "Schema": [
+                    {
+                        "Name": "DeviceId",
+                        "Type": "String"
+                    },
+                    {
+                        "Name": "DeviceName",
+                        "Type": "String"
+                    },
+                    {
+                        "Name": "Audited",
+                        "Type": "Int64"
+                    },
+                    {
+                        "Name": "Blocked",
+                        "Type": "Int64"
+                    }
+                ],
+                "Results": [
+                    {
+                        "DeviceId": "0000000000000000000000000000000000000001",
+                        "DeviceName": "pc-01.contoso.example",
+                        "Audited": 0,
+                        "Blocked": 2
+                    }
+                ]
+            }
+        }
+    ]
+}

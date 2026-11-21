@@ -1,0 +1,15 @@
+// ASR rule mode per device, from the latest ASR event each device raised for each rule in 30 days.
+// Rules that raised no event do not appear: their mode cannot be read from device reports.
+DeviceEvents
+| where Timestamp > ago(30d)
+| where ActionType startswith "Asr"
+| extend Mode = case(ActionType endswith "Audited", "audit",
+                     ActionType endswith "Blocked", "block",
+                     ActionType endswith "WarnBypassed" or ActionType endswith "Warned", "warn",
+                     "other")
+| where Mode != "other"
+| extend Rule = replace_regex(ActionType, @"(Audited|Blocked|WarnBypassed|Warned)$", "")
+| extend Rule = iff(Rule == "AsrSafeModeRebooted", "AsrSafeModeReboot", Rule)
+| summarize arg_max(Timestamp, Mode) by DeviceId, Rule
+| summarize Devices = dcount(DeviceId) by Rule, Mode
+| take 200

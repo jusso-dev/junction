@@ -1,0 +1,38 @@
+{
+  "affected": {
+    "items": [
+      "law-sentinel-01 #301 (Low, untouched)"
+    ],
+    "total": 1
+  },
+  "evidence": {
+    "data": {
+      "by_severity": {
+        "High": {
+          "open": 1,
+          "stale": 0
+        },
+        "Informational": {
+          "open": 0,
+          "stale": 0
+        },
+        "Low": {
+          "open": 1,
+          "stale": 1
+        },
+        "Medium": {
+          "open": 0,
+          "stale": 0
+        }
+      },
+      "hours": 48,
+      "open": 2,
+      "stale": 1,
+      "undated": 0
+    },
+    "summary": "1 of 2 open incidents unassigned or untouched for more than 48 hours (1 Low)."
+  },
+  "id": "sentinel.incidents_stale",
+  "reason": null,
+  "status": "warn"
+}

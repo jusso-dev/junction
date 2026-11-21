@@ -1,0 +1,31 @@
+[
+    {
+        "operation": "graph.role_management.directory.role_eligibility_schedules.list",
+        "responses": [
+            {
+                "body": {
+                    "value": [
+                        {
+                            "id": "sched-3",
+                            "principalId": "00000000-0000-4000-8000-000000000005",
+                            "roleDefinitionId": "4a5d8f65-41da-4de4-8968-e035b65339cf",
+                            "directoryScopeId": "/",
+                            "memberType": "Direct",
+                            "scheduleInfo": {
+                                "startDateTime": "2026-01-01T00:00:00Z",
+                                "expiration": {
+                                    "type": "noExpiration"
+                                }
+                            },
+                            "principal": {
+                                "@odata.type": "#microsoft.graph.user",
+                                "id": "00000000-0000-4000-8000-000000000005",
+                                "userPrincipalName": "user5@contoso.example"
+                            }
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+]

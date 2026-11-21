@@ -1,0 +1,125 @@
+{
+  "format_version": 1,
+  "operations": [
+    {
+      "id": "azure.monitor.logs_ingestion.upload",
+      "product": "azure",
+      "service": "monitor",
+      "resource": "logs_ingestion",
+      "operation": "upload",
+      "description": "Ingestion API used to directly ingest data using Data Collection Rules.",
+      "method": "POST",
+      "base_url": "{endpoint}",
+      "endpoint_template": {
+        "template": "{endpoint}",
+        "variables": {
+          "endpoint": {
+            "default": null,
+            "choices": null
+          }
+        }
+      },
+      "path": "/dataCollectionRules/{ruleId}/streams/{stream}",
+      "api_version": "2023-01-01",
+      "parameters": [
+        {
+          "name": "api-version",
+          "location": "query",
+          "required": true,
+          "schema": {
+            "description": "The API version to use for this operation.",
+            "in": "query",
+            "minLength": 1,
+            "name": "api-version",
+            "type": "string"
+          },
+          "serialization": {
+            "style": null,
+            "explode": null,
+            "collection_format": "csv",
+            "allow_reserved": false
+          }
+        },
+        {
+          "name": "ruleId",
+          "location": "path",
+          "required": true,
+          "schema": {
+            "description": "The immutable ID of the Data Collection Rule resource.",
+            "in": "path",
+            "name": "ruleId",
+            "type": "string",
+            "pattern": "^dcr-[0-9a-f]{32}$"
+          },
+          "serialization": {
+            "style": null,
+            "explode": null,
+            "collection_format": "csv",
+            "allow_reserved": false,
+            "skip_url_encoding": true
+          }
+        },
+        {
+          "name": "stream",
+          "location": "path",
+          "required": true,
+          "schema": {
+            "description": "The streamDeclaration name as defined in the Data Collection Rule.",
+            "in": "path",
+            "name": "stream",
+            "type": "string",
+            "pattern": "^Custom-[A-Za-z0-9_-]{1,121}$"
+          },
+          "serialization": {
+            "style": null,
+            "explode": null,
+            "collection_format": "csv",
+            "allow_reserved": false,
+            "skip_url_encoding": true
+          }
+        }
+      ],
+      "request_body": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "description": "The array of objects matching the schema defined by the provided stream.",
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": {}
+              }
+            }
+          }
+        },
+        "required": true
+      },
+      "responses": {
+        "204": {
+          "description": "There is no content to send for this request, but the headers may be useful. "
+        },
+        "default": {
+          "description": "An unexpected error response."
+        }
+      },
+      "security": [
+        {
+          "OAuth2Auth": [
+            "https://monitor.azure.com/.default"
+          ]
+        }
+      ],
+      "documentation_url": "https://learn.microsoft.com/azure/azure-monitor/logs/logs-ingestion-api-overview",
+      "long_running": null,
+      "risk": "write",
+      "preview": false,
+      "maturity": "stable",
+      "source": {
+        "id": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/ba3eef39e5be55cd5ed1a2e5c6c9bb1a17c36b9a/specification/monitor/data-plane/Ingestion/stable/2023-01-01/DataCollectionRules.json",
+        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/ba3eef39e5be55cd5ed1a2e5c6c9bb1a17c36b9a/specification/monitor/data-plane/Ingestion/stable/2023-01-01/DataCollectionRules.json",
+        "operation_id": "Upload"
+      }
+    }
+  ],
+  "schemas": {}
+}

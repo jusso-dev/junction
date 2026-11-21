@@ -1,0 +1,17 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "m365_group_creation_allowed_group": null,
+      "m365_group_creation_open": true,
+      "users_can_create_security_groups": false
+    },
+    "summary": "Security group creation is restricted, but any user can create Microsoft 365 groups."
+  },
+  "id": "collaboration.group_creation_restricted",
+  "reason": null,
+  "status": "warn"
+}

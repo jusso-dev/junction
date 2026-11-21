@@ -1,0 +1,37 @@
+{
+    "operation": "defender.xdr.advancedhunting.run",
+    "responses": [
+        {
+            "body": {
+                "Schema": [],
+                "Results": [
+                    {
+                        "Rule": "AsrOfficeChildProcess",
+                        "Mode": "block",
+                        "Devices": 12
+                    },
+                    {
+                        "Rule": "AsrLsassCredentialTheft",
+                        "Mode": "block",
+                        "Devices": 60
+                    },
+                    {
+                        "Rule": "AsrExecutableEmailContent",
+                        "Mode": "block",
+                        "Devices": 2
+                    },
+                    {
+                        "Rule": "AsrScriptExecutableDownload",
+                        "Mode": "block",
+                        "Devices": 1
+                    },
+                    {
+                        "Rule": "AsrOfficeMacroWin32ApiCalls",
+                        "Mode": "block",
+                        "Devices": 3
+                    }
+                ]
+            }
+        }
+    ]
+}

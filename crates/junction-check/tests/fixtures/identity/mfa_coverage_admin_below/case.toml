@@ -1,0 +1,2 @@
+[config.checks."identity.mfa_coverage"]
+user_percent = 50

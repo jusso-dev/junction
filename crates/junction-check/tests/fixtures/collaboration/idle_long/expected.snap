@@ -1,0 +1,16 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "enabled": true,
+      "sign_out_after_seconds": 28800
+    },
+    "summary": "Idle sessions sign out after 8.0 hours (over 3)."
+  },
+  "id": "collaboration.idle_session_signout",
+  "reason": null,
+  "status": "warn"
+}

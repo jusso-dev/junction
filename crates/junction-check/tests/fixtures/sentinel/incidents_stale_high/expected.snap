@@ -1,0 +1,40 @@
+{
+  "affected": {
+    "items": [
+      "law-sentinel-01 #201 (High, unassigned)",
+      "law-sentinel-01 #203 (Medium, untouched)",
+      "law-sentinel-01 #204 (Informational, unassigned)"
+    ],
+    "total": 3
+  },
+  "evidence": {
+    "data": {
+      "by_severity": {
+        "High": {
+          "open": 1,
+          "stale": 1
+        },
+        "Informational": {
+          "open": 1,
+          "stale": 1
+        },
+        "Low": {
+          "open": 0,
+          "stale": 0
+        },
+        "Medium": {
+          "open": 2,
+          "stale": 1
+        }
+      },
+      "hours": 48,
+      "open": 4,
+      "stale": 3,
+      "undated": 0
+    },
+    "summary": "3 of 4 open incidents unassigned or untouched for more than 48 hours (1 High, 1 Medium, 1 Informational)."
+  },
+  "id": "sentinel.incidents_stale",
+  "reason": null,
+  "status": "fail"
+}

@@ -1,0 +1,16 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": null,
+    "summary": "The tenant has no Defender Vulnerability Management (TVM data) licence, which this check needs."
+  },
+  "id": "endpoint.network_protection",
+  "reason": {
+    "code": "licence_required",
+    "detail": "The tenant has no Defender Vulnerability Management (TVM data) licence, which this check needs."
+  },
+  "status": "not_applicable"
+}

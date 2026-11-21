@@ -1,0 +1,61 @@
+{
+  "affected": {
+    "items": [
+      "Azure Activity",
+      "Entra ID audit logs",
+      "Microsoft Defender XDR"
+    ],
+    "total": 3
+  },
+  "evidence": {
+    "data": {
+      "connector_kinds": {
+        "law-sentinel-01": [
+          "Office365",
+          "ThreatIntelligence"
+        ]
+      },
+      "days": 7,
+      "sources": [
+        {
+          "connected": true,
+          "cost": "billed per GB; the Microsoft 365 E5, A5, F5 and G5 data grant covers it up to 5 MB per user per day",
+          "source": "Entra ID sign-in logs",
+          "workspaces": [
+            "law-sentinel-01 (data)"
+          ]
+        },
+        {
+          "connected": false,
+          "cost": "billed per GB; the Microsoft 365 E5, A5, F5 and G5 data grant covers it up to 5 MB per user per day",
+          "source": "Entra ID audit logs",
+          "workspaces": []
+        },
+        {
+          "connected": false,
+          "cost": "incidents and alerts are free; raw advanced hunting events are billed per GB",
+          "source": "Microsoft Defender XDR",
+          "workspaces": []
+        },
+        {
+          "connected": true,
+          "cost": "free to ingest",
+          "source": "Office 365",
+          "workspaces": [
+            "law-sentinel-01 (connector)"
+          ]
+        },
+        {
+          "connected": false,
+          "cost": "free to ingest",
+          "source": "Azure Activity",
+          "workspaces": []
+        }
+      ]
+    },
+    "summary": "No connector or data in the last 7 days for 3 sources: Entra ID audit logs (billed per GB; the Microsoft 365 E5, A5, F5 and G5 data grant covers it up to 5 MB per user per day); Microsoft Defender XDR (incidents and alerts are free; raw advanced hunting events are billed per GB); Azure Activity (free to ingest)."
+  },
+  "id": "sentinel.connectors",
+  "reason": null,
+  "status": "fail"
+}

@@ -1,0 +1,159 @@
+[
+  {
+    "operation": "sentinel.securityinsights.automation_rules.list",
+    "match": {
+      "parameters": {
+        "workspaceName": "law-sentinel-01"
+      }
+    },
+    "responses": [
+      {
+        "status": 200,
+        "body": {
+          "value": [
+            {
+              "id": "/subscriptions/00000000-0000-4000-8000-0000000000a1/resourceGroups/rg-security/providers/Microsoft.OperationalInsights/workspaces/law-sentinel-01/providers/Microsoft.SecurityInsights/automationRules/auto-1",
+              "name": "auto-1",
+              "type": "Microsoft.SecurityInsights/automationRules",
+              "properties": {
+                "displayName": "Assign High (disabled)",
+                "order": 1,
+                "triggeringLogic": {
+                  "isEnabled": false,
+                  "triggersOn": "Incidents",
+                  "triggersWhen": "Created",
+                  "conditions": [
+                    {
+                      "conditionType": "Property",
+                      "conditionProperties": {
+                        "propertyName": "IncidentSeverity",
+                        "operator": "Equals",
+                        "propertyValues": [
+                          "High"
+                        ]
+                      }
+                    }
+                  ]
+                },
+                "actions": [
+                  {
+                    "order": 1,
+                    "actionType": "ModifyProperties",
+                    "actionConfiguration": {
+                      "owner": {
+                        "objectId": "00000000-0000-4000-8000-0000000000e1",
+                        "email": "oncall@contoso.example"
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "id": "/subscriptions/00000000-0000-4000-8000-0000000000a1/resourceGroups/rg-security/providers/Microsoft.OperationalInsights/workspaces/law-sentinel-01/providers/Microsoft.SecurityInsights/automationRules/auto-2",
+              "name": "auto-2",
+              "type": "Microsoft.SecurityInsights/automationRules",
+              "properties": {
+                "displayName": "Page on-call for Low",
+                "order": 2,
+                "triggeringLogic": {
+                  "isEnabled": true,
+                  "triggersOn": "Incidents",
+                  "triggersWhen": "Created",
+                  "conditions": [
+                    {
+                      "conditionType": "Property",
+                      "conditionProperties": {
+                        "propertyName": "IncidentSeverity",
+                        "operator": "Equals",
+                        "propertyValues": [
+                          "Low"
+                        ]
+                      }
+                    }
+                  ]
+                },
+                "actions": [
+                  {
+                    "order": 1,
+                    "actionType": "RunPlaybook",
+                    "actionConfiguration": {
+                      "logicAppResourceId": "/subscriptions/00000000-0000-4000-8000-0000000000a1/resourceGroups/rg-security/providers/Microsoft.Logic/workflows/notify-oncall",
+                      "tenantId": "00000000-0000-4000-8000-000000000001"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "id": "/subscriptions/00000000-0000-4000-8000-0000000000a1/resourceGroups/rg-security/providers/Microsoft.OperationalInsights/workspaces/law-sentinel-01/providers/Microsoft.SecurityInsights/automationRules/auto-3",
+              "name": "auto-3",
+              "type": "Microsoft.SecurityInsights/automationRules",
+              "properties": {
+                "displayName": "Not High",
+                "order": 3,
+                "triggeringLogic": {
+                  "isEnabled": true,
+                  "triggersOn": "Incidents",
+                  "triggersWhen": "Created",
+                  "conditions": [
+                    {
+                      "conditionType": "Property",
+                      "conditionProperties": {
+                        "propertyName": "IncidentSeverity",
+                        "operator": "NotEquals",
+                        "propertyValues": [
+                          "High"
+                        ]
+                      }
+                    }
+                  ]
+                },
+                "actions": [
+                  {
+                    "order": 1,
+                    "actionType": "ModifyProperties",
+                    "actionConfiguration": {
+                      "owner": {
+                        "objectId": "00000000-0000-4000-8000-0000000000e1",
+                        "email": "oncall@contoso.example"
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "id": "/subscriptions/00000000-0000-4000-8000-0000000000a1/resourceGroups/rg-security/providers/Microsoft.OperationalInsights/workspaces/law-sentinel-01/providers/Microsoft.SecurityInsights/automationRules/auto-4",
+              "name": "auto-4",
+              "type": "Microsoft.SecurityInsights/automationRules",
+              "properties": {
+                "displayName": "Tag everything",
+                "order": 4,
+                "triggeringLogic": {
+                  "isEnabled": true,
+                  "triggersOn": "Incidents",
+                  "triggersWhen": "Created",
+                  "conditions": []
+                },
+                "actions": [
+                  {
+                    "order": 1,
+                    "actionType": "ModifyProperties",
+                    "actionConfiguration": {
+                      "labels": [
+                        {
+                          "labelName": "triage"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+]

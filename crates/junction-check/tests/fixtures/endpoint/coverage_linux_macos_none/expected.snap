@@ -1,0 +1,16 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": null,
+    "summary": "No Linux or macOS machines are onboarded to Defender for Endpoint."
+  },
+  "id": "endpoint.linux_macos_health",
+  "reason": {
+    "code": "no_linux_or_macos",
+    "detail": "No Linux or macOS machines are onboarded to Defender for Endpoint."
+  },
+  "status": "not_applicable"
+}

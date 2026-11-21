@@ -1,0 +1,43 @@
+{
+    "operation": "azure.arc.machines.list_by_subscription",
+    "responses": [
+        {
+            "status": 200,
+            "body": {
+                "value": [
+                    {
+                        "id": "/subscriptions/11111111-1111-4111-8111-111111111111/resourceGroups/rg-arc/providers/Microsoft.HybridCompute/machines/arc-001",
+                        "name": "arc-001",
+                        "type": "Microsoft.HybridCompute/machines",
+                        "location": "australiaeast",
+                        "properties": {
+                            "status": "Connected",
+                            "osType": "windows",
+                            "osName": "windows",
+                            "machineFqdn": "arc-001.contoso.example",
+                            "vmId": "aaaaaaaa-0000-4000-8000-000000000001"
+                        }
+                    },
+                    {
+                        "id": "/subscriptions/11111111-1111-4111-8111-111111111111/resourceGroups/rg-arc/providers/Microsoft.HybridCompute/machines/arc-002",
+                        "name": "arc-002",
+                        "type": "Microsoft.HybridCompute/machines",
+                        "location": "australiaeast",
+                        "properties": {
+                            "status": "Disconnected",
+                            "osType": "linux",
+                            "osName": "linux",
+                            "machineFqdn": "arc-002.contoso.example",
+                            "vmId": "aaaaaaaa-0000-4000-8000-000000000002"
+                        }
+                    }
+                ]
+            }
+        }
+    ],
+    "match": {
+        "parameters": {
+            "subscriptionId": "11111111-1111-4111-8111-111111111111"
+        }
+    }
+}

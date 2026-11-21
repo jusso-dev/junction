@@ -1,0 +1,36 @@
+[
+    {
+        "operation": "graph.reports.authentication_methods.user_registration_details.list",
+        "responses": [
+            {
+                "body": {
+                    "value": [
+                        {
+                            "id": "00000000-0000-4000-8000-000000000001",
+                            "userPrincipalName": "admin1@contoso.example",
+                            "userType": "member",
+                            "isAdmin": true,
+                            "isMfaCapable": true,
+                            "isMfaRegistered": true,
+                            "methodsRegistered": [
+                                "fido2SecurityKey"
+                            ]
+                        },
+                        {
+                            "id": "00000000-0000-4000-8000-000000000002",
+                            "userPrincipalName": "admin2@contoso.example",
+                            "userType": "member",
+                            "isAdmin": true,
+                            "isMfaCapable": true,
+                            "isMfaRegistered": true,
+                            "methodsRegistered": [
+                                "microsoftAuthenticatorPush",
+                                "mobilePhone"
+                            ]
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+]

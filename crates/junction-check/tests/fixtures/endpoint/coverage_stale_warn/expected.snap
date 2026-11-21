@@ -1,0 +1,31 @@
+{
+  "affected": {
+    "items": [
+      "ws-003.contoso.example"
+    ],
+    "total": 1
+  },
+  "evidence": {
+    "data": {
+      "active": 2,
+      "by_platform": {
+        "Windows": {
+          "active": 2,
+          "impaired_communication": 0,
+          "inactive": 1,
+          "machines": 3,
+          "no_sensor_data": 0
+        }
+      },
+      "impaired_communication": 0,
+      "inactive": 1,
+      "machines": 3,
+      "max_days": 30,
+      "no_sensor_data": 0
+    },
+    "summary": "1 of 3 onboarded machines are inactive or not seen for 30 days."
+  },
+  "id": "endpoint.stale_sensors",
+  "reason": null,
+  "status": "warn"
+}

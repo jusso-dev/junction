@@ -1,0 +1,22 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "active": 4,
+      "devices_reporting": 4,
+      "disabled": 0,
+      "edr_block_mode": 0,
+      "other": 0,
+      "passive": 0,
+      "percent_active": 100,
+      "third_party_av": null
+    },
+    "summary": "Defender Antivirus is active on all 4 devices that report a mode (100%)."
+  },
+  "id": "endpoint.av_mode",
+  "reason": null,
+  "status": "pass"
+}

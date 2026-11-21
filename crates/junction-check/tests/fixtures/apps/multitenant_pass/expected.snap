@@ -1,0 +1,16 @@
+{
+  "affected": {
+    "items": [],
+    "total": 0
+  },
+  "evidence": {
+    "data": {
+      "app_registrations": 2,
+      "multi_tenant": 0
+    },
+    "summary": "All 2 app registrations are single-tenant."
+  },
+  "id": "apps.multi_tenant_apps",
+  "reason": null,
+  "status": "pass"
+}

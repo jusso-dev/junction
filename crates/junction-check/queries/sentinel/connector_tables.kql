@@ -1,0 +1,12 @@
+union isfuzzy=true
+    (datatable(TableName: string)[]),
+    (SigninLogs | take 1 | project TableName = "SigninLogs"),
+    (AuditLogs | take 1 | project TableName = "AuditLogs"),
+    (OfficeActivity | take 1 | project TableName = "OfficeActivity"),
+    (AzureActivity | take 1 | project TableName = "AzureActivity"),
+    (AlertInfo | take 1 | project TableName = "AlertInfo"),
+    (DeviceEvents | take 1 | project TableName = "DeviceEvents"),
+    (EmailEvents | take 1 | project TableName = "EmailEvents"),
+    (IdentityLogonEvents | take 1 | project TableName = "IdentityLogonEvents"),
+    (CloudAppEvents | take 1 | project TableName = "CloudAppEvents")
+| distinct TableName

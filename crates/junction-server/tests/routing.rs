@@ -148,3 +148,62 @@ fn invalid_targets_options_and_credentials_fail_without_echoing_input() {
         .unwrap();
     assert_eq!(error.status, 413);
 }
+
+#[test]
+fn check_routes_map_to_check_tools_and_validate_input() {
+    let Some(Route::Tool { name, arguments }) =
+        route("GET", "/v1/checks?pack=identity,email&tag=e8:ml1", b"").ok()
+    else {
+        panic!("check list route")
+    };
+    assert_eq!(name, "junction_check_list");
+    assert_eq!(
+        arguments,
+        json!({"packs":["identity","email"],"tags":["e8:ml1"]})
+    );
+    assert!(route("GET", "/v1/checks?pack=nope", b"").is_err());
+
+    let body = br#"{"contexts":["contoso"],"packs":["identity"],"background":true}"#;
+    let Some(Route::Tool { name, arguments }) = route("POST", "/v1/checks/run", body).ok() else {
+        panic!("check run route")
+    };
+    assert_eq!(name, "junction_check_run");
+    assert_eq!(arguments["background"], true);
+    assert!(route("POST", "/v1/checks/run", br#"{"contexts":["../x"]}"#).is_err());
+    assert!(route("GET", "/v1/checks/run", b"").is_err());
+
+    let Some(Route::Tool { name, arguments }) = route(
+        "GET",
+        "/v1/checks/runs/20261025t000000-abcd?context=contoso",
+        b"",
+    )
+    .ok() else {
+        panic!("run status route")
+    };
+    assert_eq!(name, "junction_check_run_status");
+    assert_eq!(
+        arguments,
+        json!({"run_id":"20261025t000000-abcd","context":"contoso"})
+    );
+
+    let Some(Route::Tool { arguments, .. }) =
+        route("GET", "/v1/checks/attestations?context=contoso", b"").ok()
+    else {
+        panic!("pending route")
+    };
+    assert_eq!(arguments, json!({"action":"pending","context":"contoso"}));
+    let submit = br#"{"context":"contoso","check":"backup.restore_tested","answer":"yes"}"#;
+    let Some(Route::Tool { arguments, .. }) = route("POST", "/v1/checks/attestations", submit).ok()
+    else {
+        panic!("submit route")
+    };
+    assert_eq!(arguments["action"], "submit");
+    assert!(
+        route(
+            "POST",
+            "/v1/checks/attestations",
+            br#"{"check":"backup.restore_tested","answer":"maybe"}"#
+        )
+        .is_err()
+    );
+}
