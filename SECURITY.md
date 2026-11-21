@@ -2,7 +2,7 @@
 
 ## Supported versions
 
-Junction is currently in prerelease (`0.1.x`), with automated daily builds published from the `main` branch. Security fixes are applied to `main` and shipped in the next release; older prereleases are not backported.
+Junction is currently in prerelease (`0.1.x`), with automated daily builds published from the `main` branch. Security fixes are applied to `main` and ship in the next release built from a commit containing the fix; older prereleases are not backported.
 
 | Version | Supported |
 | --- | --- |
@@ -45,6 +45,6 @@ If you need to coordinate a disclosure timeline, note that in your advisory subm
 ### Out of scope
 
 - Vulnerabilities in Microsoft cloud services or upstream Microsoft API specifications; report those directly to the [Microsoft Security Response Center](https://msrc.microsoft.com/)
-- Misconfigurations, excessive permissions, or destructive actions performed using valid credentials supplied by the operator or their agents (see [DISCLAIMER.md](DISCLAIMER.md))
+- Misconfigurations, excessive permissions, or destructive actions performed using valid credentials supplied by the operator or their agents when Junction's policy and approval checks operate as intended (see [DISCLAIMER.md](DISCLAIMER.md))
 - Vulnerabilities in third-party Rust dependencies that do not have a Junction-specific exploit path; report those upstream to the crate maintainers or RustSec (Junction runs `cargo audit` on dependency changes and on a weekly schedule)
 - Attacks requiring an already-compromised local host or OS credential store
