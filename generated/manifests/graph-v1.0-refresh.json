@@ -1,15 +1,15 @@
 {
-  "bytes": 44758767,
+  "bytes": 44946464,
   "dependencies": [],
   "documents": [
     {
       "receipt": {
-        "bytes": 44758767,
+        "bytes": 44946464,
         "path": "openapi/v1.0/openapi.yaml",
-        "revision": "cf55999152ccd93960b5ba2062f5e2bcbef714b5",
-        "sha256": "eed44b45dd36f8489aabdffedd9de6e2f4e7613c1c7b2d884845e59652d489ff",
+        "revision": "6515412a38ee4efb99669442b697df15b7f55c36",
+        "sha256": "bd6385c5eb3df05a69da5f39359d9df61a44d0032d9b2234a97f4c29c0826d4d",
         "source": "graph",
-        "upstream": "https://raw.githubusercontent.com/microsoftgraph/msgraph-metadata/cf55999152ccd93960b5ba2062f5e2bcbef714b5/openapi/v1.0/openapi.yaml"
+        "upstream": "https://raw.githubusercontent.com/microsoftgraph/msgraph-metadata/6515412a38ee4efb99669442b697df15b7f55c36/openapi/v1.0/openapi.yaml"
       },
       "status": "imported"
     }
@@ -18,14 +18,14 @@
   "inventory": {
     "documents": [
       {
-        "blob_sha": "2555e90a07405104535329b1cb442d0e130b4881",
-        "bytes": 44758767,
+        "blob_sha": "d82714867604667937f58d0286e5db3cf434c243",
+        "bytes": 44946464,
         "path": "openapi/v1.0/openapi.yaml",
-        "upstream": "https://raw.githubusercontent.com/microsoftgraph/msgraph-metadata/cf55999152ccd93960b5ba2062f5e2bcbef714b5/openapi/v1.0/openapi.yaml"
+        "upstream": "https://raw.githubusercontent.com/microsoftgraph/msgraph-metadata/6515412a38ee4efb99669442b697df15b7f55c36/openapi/v1.0/openapi.yaml"
       }
     ],
-    "revision": "cf55999152ccd93960b5ba2062f5e2bcbef714b5",
+    "revision": "6515412a38ee4efb99669442b697df15b7f55c36",
     "source": "graph",
-    "tree_sha": "cf55999152ccd93960b5ba2062f5e2bcbef714b5"
+    "tree_sha": "6515412a38ee4efb99669442b697df15b7f55c36"
   }
 }
