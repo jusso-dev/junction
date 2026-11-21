@@ -1505,7 +1505,7 @@ name = "junction-auth"
 version = "0.1.51"
 dependencies = [
  "anyhow",
- "base64 0.22.1",
+ "base64 0.23.1",
  "getrandom 0.4.3",
  "keyring",
  "reqwest",
@@ -1593,7 +1593,7 @@ name = "junction-http"
 version = "0.1.51"
 dependencies = [
  "anyhow",
- "base64 0.22.1",
+ "base64 0.23.1",
  "getrandom 0.4.3",
  "httpdate",
  "junction-auth",
@@ -1719,7 +1719,7 @@ dependencies = [
  "anyhow",
  "argon2",
  "axum",
- "base64 0.22.1",
+ "base64 0.23.1",
  "clap",
  "getrandom 0.4.3",
  "junction-auth",
