@@ -9,6 +9,6 @@ repository.workspace = true
 junction-schema = { path = "../junction-schema" }
 serde_json.workspace = true
 anyhow.workspace = true
-sha2 = "0.10"
+sha2 = "0.11"
 [dev-dependencies]
 tempfile = "3"
