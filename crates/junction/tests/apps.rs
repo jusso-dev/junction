@@ -352,7 +352,17 @@ fn apply_never_sends_without_an_operator_terminal() {
     assert_eq!(report["would_send"].as_array().unwrap().len(), 1);
 
     // A real apply with no controlling terminal declines before any send.
-    let applied = apply_detached(&contexts, &plan, &[]);
+    // Unix only, as in tests/approve.rs: a new session (setsid) has no
+    // /dev/tty there, but a Windows child can still open the runner's console
+    // (CONIN$) and the prompt would wait for input. The library tests cover
+    // decline-before-send on every platform.
+    #[cfg(unix)]
+    apply_without_terminal_sends_nothing(&contexts, &plan);
+}
+
+#[cfg(unix)]
+fn apply_without_terminal_sends_nothing(contexts: &Path, plan: &Path) {
+    let applied = apply_detached(contexts, plan, &[]);
     let out: Value = serde_json::from_slice(&applied.stdout).unwrap_or(Value::Null);
     let outcomes = out["outcomes"].as_array().cloned().unwrap_or_default();
     assert_eq!(
