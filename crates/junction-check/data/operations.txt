@@ -39,6 +39,12 @@ graph.service_principals.list
 graph.service_principals.app_role_assigned_to.list
 graph.oauth2permission_grants.list
 
+# Connected-app governance (`junction apps`): sign-in recency and risky workload identities
+graph.reports.service_principal_sign_in_activities.list@beta
+graph.identity_protection.risky_service_principals.list
+graph.applications.owners.list
+graph.service_principals.owners.list
+
 # Devices, Intune and endpoint hardening
 graph.devices.list
 graph.device_management.managed_devices.list

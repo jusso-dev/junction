@@ -29,10 +29,17 @@ pub fn checks() -> Vec<Arc<dyn Check>> {
 /// Microsoft Graph and Exchange Online, whose application roles are resolved by name.
 pub const GRAPH_APP_ID: &str = "00000003-0000-0000-c000-000000000000";
 pub const EXCHANGE_APP_ID: &str = "00000002-0000-0ff1-ce00-000000000000";
-/// Tenants that own Microsoft first-party applications.
-const MICROSOFT_TENANTS: &[&str] = &[
+/// Tenants that own Microsoft first-party applications: Microsoft Services
+/// (most first-party apps), the Microsoft corporate tenant, Microsoft Accounts,
+/// the Azure AME infrastructure tenant, and the owning tenants of first-party
+/// apps in the US Government and China (21Vianet) clouds.
+pub const MICROSOFT_TENANTS: &[&str] = &[
     "f8cdef31-a31e-4b4a-93e4-5f571e91255a",
     "72f988bf-86f1-41af-91ab-2d7cd011db47",
+    "9188040d-6c67-4c5b-b112-36a304b66dad",
+    "33e01921-4d64-4f8c-a055-5bdaffd5e33d",
+    "cab8a31a-1906-4287-a0d8-4eef66b95f6e",
+    "a55a4d5b-9241-49b1-b4ff-befa8db00269",
 ];
 /// Permissions that read or control tenant-wide data or the directory itself.
 pub const HIGH_IMPACT: &[&str] = &[
