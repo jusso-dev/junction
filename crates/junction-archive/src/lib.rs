@@ -14,6 +14,7 @@ pub mod collect;
 pub mod config;
 pub mod defender;
 pub mod evidence;
+pub mod forward;
 pub mod manifest;
 pub mod record;
 pub mod search;
