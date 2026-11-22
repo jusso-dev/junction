@@ -785,7 +785,8 @@ async fn run() -> Result<()> {
         return output_options.emit(&result);
     }
     if let Command::Archive(args) = cli.command {
-        let result = junction_archive::cli::run(args).await?;
+        let env = check_host::Environment::new(cli.contexts_directory.clone());
+        let result = junction_archive::cli::run(args, &env).await?;
         return output_options.emit(&result);
     }
     if let Command::Check(args) = cli.command {

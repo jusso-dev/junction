@@ -13,6 +13,7 @@ junction-core = { path = "../junction-core" }
 junction-http = { path = "../junction-http" }
 junction-policy = { path = "../junction-policy" }
 junction-watch = { path = "../junction-watch" }
+junction-check = { path = "../junction-check" }
 serde.workspace = true
 serde_json.workspace = true
 anyhow.workspace = true
@@ -32,3 +33,4 @@ getrandom = "0.4"
 
 [dev-dependencies]
 tempfile = "3"
+jsonschema = { version = "0.58", default-features = false }

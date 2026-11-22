@@ -4,7 +4,7 @@ use crate::{
     checkpoint::Checkpoint,
     collect,
     config::{ArchiveConfig, write_new_private},
-    evidence, search,
+    evidence, search, forward,
     store::{DeleteProbe, ObjectStore, PutOutcome},
 };
 use anyhow::Result;
@@ -50,6 +50,36 @@ pub enum ArchiveCommand {
     Export(ExportArgs),
     /// Recompute every hash in an evidence bundle directory.
     Verify { bundle: PathBuf },
+    /// Forward only high-value events to Sentinel or Bower (off unless run).
+    Forward(ForwardArgs),
+}
+
+#[derive(clap::Args)]
+pub struct ForwardArgs {
+    /// Print the built-in high-value selector and exit.
+    #[arg(long, exclusive = true)]
+    pub list: bool,
+    /// `sentinel` or `bower`.
+    #[arg(long, value_parser = ["sentinel", "bower"], required_unless_present = "list")]
+    pub to: Option<String>,
+    /// Start of the range to forward (RFC 3339).
+    #[arg(long, required_unless_present = "list")]
+    pub from: Option<String>,
+    /// End of the range to forward (RFC 3339).
+    #[arg(long, required_unless_present = "list")]
+    pub until: Option<String>,
+    /// Narrow the selector to these rule ids (repeatable). It cannot be widened.
+    #[arg(long = "only")]
+    pub only: Vec<String>,
+    /// Sentinel: Logs Ingestion endpoint and rule (see examples/archive/archive-forward-table.bicep).
+    #[command(flatten)]
+    pub push: junction_check::cli::PushArgs,
+    /// Bower: the collector base URL (token from JUNCTION_BOWER_INGEST_TOKEN).
+    #[arg(long)]
+    pub endpoint: Option<String>,
+    /// Bower: application environment label sent with each event.
+    #[arg(long, default_value = "production")]
+    pub environment: String,
 }
 
 #[derive(Subcommand)]
@@ -167,8 +197,9 @@ pub fn confirm_full(yes: bool, what: &str) -> Result<()> {
     Ok(())
 }
 
-pub async fn run(args: ArchiveArgs) -> Result<Value> {
+pub async fn run(args: ArchiveArgs, env: &dyn junction_check::cli::Environment) -> Result<Value> {
     match args.command {
+        ArchiveCommand::Forward(forward_args) => run_forward(&args.config, forward_args, env).await,
         ArchiveCommand::Init { tenant_id } => init(&args.config, &tenant_id),
         ArchiveCommand::Permissions => Ok(permissions()),
         ArchiveCommand::Doctor => {
@@ -300,6 +331,110 @@ pub async fn run_search(store: &dyn ObjectStore, tenant: &str, args: &SearchArgs
         "problems": results.problems,
         "redacted": !args.full,
     }))
+}
+
+async fn run_forward(
+    config_path: &std::path::Path,
+    args: ForwardArgs,
+    env: &dyn junction_check::cli::Environment,
+) -> Result<Value> {
+    if args.list {
+        return Ok(
+            json!({"selector_version": forward::SELECTOR_VERSION, "rules": forward::SELECTOR}),
+        );
+    }
+    forward::validate_only(&args.only)?;
+    let config = ArchiveConfig::load(config_path)?;
+    let store = config.open_store()?;
+    let query = search::Query {
+        from: args.from.clone().unwrap_or_default(),
+        to: args.until.clone().unwrap_or_default(),
+        ..search::Query::default()
+    };
+    query.range()?;
+    let mut checkpoint = Checkpoint::open(&config.state_directory, &config.tenant_id)?;
+    let retry = crate::store::Retry::default();
+    let backoff = junction_watch::backoff::Backoff::default();
+    let summary = match args.to.as_deref() {
+        Some("sentinel") => {
+            if !args.push.push_sentinel {
+                anyhow::bail!(
+                    "--to sentinel needs --push-sentinel with --dce, --dcr, --stream and --push-context"
+                );
+            }
+            let target = junction_check::push::PushTarget::parse(
+                args.push.dce.as_deref().unwrap_or_default(),
+                args.push.dcr.as_deref().unwrap_or_default(),
+                args.push.stream.as_deref().unwrap_or_default(),
+            )?;
+            let context = args.push.push_context.clone().ok_or_else(|| {
+                anyhow::anyhow!("--push-context names the context whose credential sends the rows")
+            })?;
+            let base = match &args.push.push_policy {
+                Some(path) => junction_policy::Policy::parse(&std::fs::read_to_string(path)?)?,
+                None => junction_policy::Policy::default(),
+            };
+            let policy =
+                junction_check::push::effective_policy(true, &base, args.push.approve_push)?;
+            if args.push.approve_push && !junction_check::push::policy_allows(&base) {
+                env.confirm_push(&context, target.dce.as_str(), &format!(
+                    "Forward selected high-value archive events (redacted summary columns; no raw records) to stream {} via DCR {}?",
+                    target.stream, target.dcr_immutable_id
+                ))?;
+            }
+            let live = env.live_target(&context)?;
+            if !live.tenant_id.eq_ignore_ascii_case(&config.tenant_id) {
+                // Allowed (a security workspace can live in another tenant) but noted.
+                eprintln!(
+                    "note: the Sentinel workspace context is in a different tenant from the archive"
+                );
+            }
+            let sender =
+                junction_check::push::ExecutorSender::new(&target, live, env.tokens(), policy)?;
+            let key = forward::destination_id(
+                "sentinel",
+                &format!("{}{}{}", target.dce, target.dcr_immutable_id, target.stream),
+            );
+            forward::forward(
+                store.as_ref(),
+                &mut checkpoint,
+                &key,
+                &query,
+                &args.only,
+                forward::Destination::Sentinel {
+                    target: &target,
+                    sender: &sender,
+                },
+                retry,
+                backoff,
+            )
+            .await?
+        }
+        Some("bower") => {
+            let endpoint = args
+                .endpoint
+                .as_deref()
+                .ok_or_else(|| anyhow::anyhow!("--to bower needs --endpoint"))?;
+            let sender = forward::LiveBower::new(endpoint)?;
+            let key = forward::destination_id("bower", endpoint);
+            forward::forward(
+                store.as_ref(),
+                &mut checkpoint,
+                &key,
+                &query,
+                &args.only,
+                forward::Destination::Bower {
+                    sender: &sender,
+                    environment: &args.environment,
+                },
+                retry,
+                backoff,
+            )
+            .await?
+        }
+        _ => anyhow::bail!("--to must be sentinel or bower"),
+    };
+    Ok(json!({"to": args.to, "selector_version": forward::SELECTOR_VERSION, "summary": summary}))
 }
 
 fn live_upstream(config: &ArchiveConfig) -> Result<LiveUpstream> {

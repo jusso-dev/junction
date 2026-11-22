@@ -501,6 +501,23 @@ pub async fn push(
     backoff: Backoff,
 ) -> Result<PushSummary> {
     let rows = rows(report);
+    let (count, total) = push_rows(target, rows, sender, backoff).await?;
+    Ok(PushSummary {
+        rows: count,
+        batches: total,
+        run_id: report.run_id.clone(),
+    })
+}
+
+/// Send caller-built rows through the same batching, retry and policy-checked
+/// [`Sender`] as [`push`]. Used by `junction archive forward`, whose rows are
+/// redacted summaries. Returns (rows, batches).
+pub async fn push_rows(
+    target: &PushTarget,
+    rows: Vec<Value>,
+    sender: &dyn Sender,
+    backoff: Backoff,
+) -> Result<(usize, usize)> {
     let count = rows.len();
     let batches = batches(rows, MAX_BATCH_BYTES);
     let total = batches.len();
@@ -511,9 +528,5 @@ pub async fn push(
             .await
             .map_err(|e| explain(&e, index, total))?;
     }
-    Ok(PushSummary {
-        rows: count,
-        batches: total,
-        run_id: report.run_id.clone(),
-    })
+    Ok((count, total))
 }
