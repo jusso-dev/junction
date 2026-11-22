@@ -154,3 +154,99 @@ fn flags_and_permissions_need_no_tenant() {
         assert!(!rows.as_array().unwrap().is_empty());
     }
 }
+
+#[test]
+fn markdown_and_html_reports_render_from_fixtures() {
+    let md = text(&apps("tenant", &["inventory", "--format", "markdown"]));
+    assert!(md.starts_with("# Connected apps"));
+    assert!(md.contains("### Free PDF Helper"));
+    assert!(md.contains("Suggested fix:"));
+    let html = text(&apps("tenant", &["inventory", "--format", "html"]));
+    assert!(html.starts_with("<!doctype html>"));
+    assert!(html.contains("default-src 'none'"));
+    assert!(!html.contains("<script"));
+    assert!(
+        !html.contains("http://") && !html.contains("https://"),
+        "no external assets"
+    );
+    for out in [&md, &html] {
+        assert!(!out.contains('\u{2014}'), "no em dashes");
+    }
+}
+
+/// MCP host over the governance fixtures; returns each call's structured content.
+fn mcp(flags: &[&str], calls: &[Value]) -> Vec<Value> {
+    use std::io::Write;
+    use std::process::Stdio;
+    let directory = tempfile::tempdir().unwrap();
+    let registry = directory.path().join("registry.json");
+    std::fs::write(
+        &registry,
+        br#"{"format_version":1,"schemas":{},"operations":[]}"#,
+    )
+    .unwrap();
+    let mut child = Command::new(env!("CARGO_BIN_EXE_junction"))
+        .env("JUNCTION_CHECK_OFFLINE", "1")
+        .env("JUNCTION_CHECK_FIXTURES", fixtures())
+        .arg("--contexts-directory")
+        .arg(directory.path().join("contexts"))
+        .arg("--registry")
+        .arg(&registry)
+        .args(["mcp", "serve"])
+        .args(flags)
+        .arg("--check-history-dir")
+        .arg(directory.path().join("history"))
+        .stdin(Stdio::piped())
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped())
+        .spawn()
+        .unwrap();
+    let mut stdin = child.stdin.take().unwrap();
+    let init = serde_json::json!({"jsonrpc":"2.0","id":0,"method":"initialize","params":{"protocolVersion":"2025-11-25","capabilities":{},"clientInfo":{"name":"test","version":"1"}}});
+    writeln!(stdin, "{init}").unwrap();
+    writeln!(
+        stdin,
+        "{}",
+        serde_json::json!({"jsonrpc":"2.0","method":"notifications/initialized"})
+    )
+    .unwrap();
+    for (i, params) in calls.iter().enumerate() {
+        writeln!(
+            stdin,
+            "{}",
+            serde_json::json!({"jsonrpc":"2.0","id":i + 1,"method":"tools/call","params":params})
+        )
+        .unwrap();
+    }
+    drop(stdin);
+    let output = child.wait_with_output().unwrap();
+    String::from_utf8(output.stdout)
+        .unwrap()
+        .lines()
+        .skip(1)
+        .map(|l| serde_json::from_str::<Value>(l).unwrap()["result"].clone())
+        .collect()
+}
+
+#[test]
+fn mcp_inventory_matches_the_cli_and_needs_the_context_flag() {
+    let cli: Value =
+        serde_json::from_slice(&apps("tenant", &["inventory", "--format", "json"]).stdout).unwrap();
+    let call =
+        serde_json::json!({"name":"junction_apps_inventory","arguments":{"context":"tenant"}});
+    let replies = mcp(&["--allow-check-contexts"], std::slice::from_ref(&call));
+    assert_eq!(replies[0]["isError"], false, "{}", replies[0]);
+    assert_eq!(replies[0]["structuredContent"], cli);
+
+    // Without the operator flag agents cannot name another context.
+    let refused = mcp(&[], &[call]);
+    assert_eq!(
+        refused[0]["structuredContent"]["status"],
+        "context_not_allowed"
+    );
+
+    // No write tool exists to call.
+    let apply = serde_json::json!({"name":"junction_apps_apply","arguments":{}});
+    let reply = mcp(&["--allow-check-contexts"], &[apply]);
+    assert_ne!(reply[0]["isError"], false);
+}

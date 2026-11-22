@@ -149,7 +149,7 @@ impl CheckTools {
     }
 
     pub fn handles(name: &str) -> bool {
-        name.starts_with("junction_check_")
+        name.starts_with("junction_check_") || name == "junction_apps_inventory"
     }
 
     fn contexts(&self, args: &Value) -> Result<(Vec<String>, Targets)> {
@@ -375,6 +375,49 @@ impl CheckTools {
                 }
                 let stored = store.attestations()?;
                 Ok(json!({"pending": junction_check::attest::pending(registry, &stored, now)}))
+            }
+            // Read-only connected-app inventory. There is deliberately no
+            // revoke or restrict tool: those writes are CLI-only operator
+            // actions (`junction apps apply`) behind terminal approval.
+            "junction_apps_inventory" => {
+                let context = match args["context"].as_str() {
+                    Some(c) => c.to_owned(),
+                    None if self.env.fixed.is_some() => HOST_CONTEXT.into(),
+                    None => {
+                        return Err(fail(
+                            "context_required",
+                            "Name the context to inventory (see junction_context).",
+                        ));
+                    }
+                };
+                self.permit(&context)?;
+                let source = junction_check::governance::cli::Source {
+                    fixtures: fixtures(),
+                    config: None,
+                    per_host: 4,
+                };
+                let inventory = junction_check::governance::cli::collect(
+                    &context,
+                    &source,
+                    Some(&self.env),
+                    Some(&self.policy),
+                )
+                .await
+                .map_err(|e| fail("apps_inventory_failed", format!("{e:#}")))?;
+                let view = junction_check::governance::report::View {
+                    flagged_only: args["flagged_only"].as_bool().unwrap_or(false),
+                    min_severity: args["min_severity"]
+                        .as_str()
+                        .and_then(junction_check::model::Severity::parse),
+                    include_microsoft: true,
+                };
+                // Filter like the CLI but keep the inventory's order, so the
+                // tool returns exactly what `--format json` prints.
+                let mut value = serde_json::to_value(&inventory)?;
+                let kept: Vec<&junction_check::governance::inventory::App> =
+                    inventory.apps.iter().filter(|a| view.keeps(a)).collect();
+                value["apps"] = serde_json::to_value(kept)?;
+                Ok(value)
             }
             _ => Err(fail("unknown_tool", "Unknown check tool.")),
         }

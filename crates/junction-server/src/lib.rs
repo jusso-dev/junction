@@ -170,6 +170,33 @@ pub fn openapi() -> Value {
         None,
         json!({"type":"object","properties":{"status":{"type":"string"}},"required":["status"]}),
     );
+    let flag = |name: &str, description: &str, schema: Value| {
+        let mut p = parameter(name, "query", false, schema);
+        p["description"] = json!(description);
+        p
+    };
+    paths["/v1/apps/inventory"]["get"] = make(
+        "junction_apps_inventory",
+        json!([
+            flag(
+                "context",
+                "Context to inventory (default: the host's own)",
+                json!({"type":"string","pattern":"^[A-Za-z0-9_-][A-Za-z0-9._-]{0,79}$"})
+            ),
+            flag(
+                "flagged_only",
+                "Only apps with at least one flag",
+                json!({"type":"boolean"})
+            ),
+            flag(
+                "min_severity",
+                "Only apps flagged at least this severe",
+                json!({"type":"string","enum":["critical","high","medium","low"]})
+            )
+        ]),
+        None,
+        json!({"type":"object","description":"Connected-app inventory (schema_version 1); read-only"}),
+    );
     let mut attestation = schemas["junction_check_attestations"].clone();
     attestation["properties"]
         .as_object_mut()

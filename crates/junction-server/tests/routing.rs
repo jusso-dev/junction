@@ -207,3 +207,24 @@ fn check_routes_map_to_check_tools_and_validate_input() {
         .is_err()
     );
 }
+
+#[test]
+fn apps_inventory_route_accepts_only_bounded_read_options() {
+    let Some(Route::Tool { name, arguments }) = route(
+        "GET",
+        "/v1/apps/inventory?context=contoso&flagged_only=true&min_severity=high",
+        b"",
+    )
+    .ok() else {
+        panic!("apps inventory route")
+    };
+    assert_eq!(name, "junction_apps_inventory");
+    assert_eq!(
+        arguments,
+        json!({"context":"contoso","flagged_only":true,"min_severity":"high"})
+    );
+    assert!(route("POST", "/v1/apps/inventory", b"{}").is_err());
+    assert!(route("GET", "/v1/apps/inventory?context=../x", b"").is_err());
+    assert!(route("GET", "/v1/apps/inventory?min_severity=info", b"").is_err());
+    assert!(route("GET", "/v1/apps/apply", b"").is_err());
+}
