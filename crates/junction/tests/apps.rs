@@ -274,3 +274,139 @@ fn mcp_inventory_matches_the_cli_and_needs_the_context_flag() {
     let reply = mcp(&["--allow-check-contexts"], &[apply]);
     assert_ne!(reply[0]["isError"], false);
 }
+
+/// A saved cloud context for the fixture tenant (no secrets).
+fn context_dir(dir: &Path, name: &str) -> PathBuf {
+    let contexts = dir.join("contexts");
+    std::fs::create_dir_all(&contexts).unwrap();
+    std::fs::write(
+        contexts.join(format!("{name}.json")),
+        serde_json::to_vec(&serde_json::json!({
+            "cloud": "public", "tenant": "00000000-0000-4000-8000-000000000001",
+            "service": "graph", "credential_profile": "governance", "flow": "client_credentials"
+        }))
+        .unwrap(),
+    )
+    .unwrap();
+    contexts
+}
+
+/// `junction apps apply` detached from any terminal (new session, no /dev/tty).
+fn apply_detached(contexts: &Path, plan: &Path, extra: &[&str]) -> Output {
+    let mut command = Command::new(env!("CARGO_BIN_EXE_junction"));
+    command
+        .env("JUNCTION_CHECK_OFFLINE", "1")
+        .arg("--contexts-directory")
+        .arg(contexts)
+        .args(["--context", "tenant", "apps", "apply", "--plan"])
+        .arg(plan)
+        .arg("--fixtures")
+        .arg(fixtures())
+        .args(extra)
+        .stdin(std::process::Stdio::null());
+    #[cfg(unix)]
+    unsafe {
+        use std::os::unix::process::CommandExt;
+        command.pre_exec(|| {
+            libc::setsid();
+            Ok(())
+        });
+    }
+    command.output().unwrap()
+}
+
+#[test]
+fn apply_never_sends_without_an_operator_terminal() {
+    let dir = tempfile::tempdir().unwrap();
+    let contexts = context_dir(dir.path(), "tenant");
+    let plan = dir.path().join("plan.json");
+    let planned = apps(
+        "tenant",
+        &[
+            "plan",
+            "--app",
+            "00000000-0000-4000-a000-000000000003",
+            "--action",
+            "revoke-delegated",
+            "--output",
+            plan.to_str().unwrap(),
+        ],
+    );
+    assert_eq!(
+        code(&planned),
+        0,
+        "{}",
+        String::from_utf8_lossy(&planned.stderr)
+    );
+    let summary: Value = serde_json::from_slice(&planned.stdout).unwrap();
+    assert_eq!(
+        summary["items"][0]["operation"],
+        "graph.oauth2permission_grants.delete"
+    );
+
+    // Dry run checks freshness and lists what would be sent; nothing is sent.
+    let dry = apply_detached(&contexts, &plan, &["--dry-run"]);
+    assert_eq!(code(&dry), 0, "{}", String::from_utf8_lossy(&dry.stderr));
+    let report: Value = serde_json::from_slice(&dry.stdout).unwrap();
+    assert_eq!(report["status"], "dry_run");
+    assert_eq!(report["would_send"].as_array().unwrap().len(), 1);
+
+    // A real apply with no controlling terminal declines before any send.
+    // Unix only, as in tests/approve.rs: a new session (setsid) has no
+    // /dev/tty there, but a Windows child can still open the runner's console
+    // (CONIN$) and the prompt would wait for input. The library tests cover
+    // decline-before-send on every platform.
+    #[cfg(unix)]
+    apply_without_terminal_sends_nothing(&contexts, &plan);
+}
+
+#[cfg(unix)]
+fn apply_without_terminal_sends_nothing(contexts: &Path, plan: &Path) {
+    let applied = apply_detached(contexts, plan, &[]);
+    let out: Value = serde_json::from_slice(&applied.stdout).unwrap_or(Value::Null);
+    let outcomes = out["outcomes"].as_array().cloned().unwrap_or_default();
+    assert_eq!(
+        code(&applied),
+        3,
+        "{out} {}",
+        String::from_utf8_lossy(&applied.stderr)
+    );
+    assert_eq!(outcomes.len(), 1);
+    assert_eq!(outcomes[0]["status"], "declined");
+    assert!(
+        outcomes[0]["reason"]
+            .as_str()
+            .unwrap()
+            .contains("operator_terminal_unavailable"),
+        "{out}"
+    );
+}
+
+#[test]
+fn apply_refuses_deny_rules_before_reading_the_tenant() {
+    let dir = tempfile::tempdir().unwrap();
+    let contexts = context_dir(dir.path(), "tenant");
+    let plan = dir.path().join("plan.json");
+    apps(
+        "tenant",
+        &[
+            "plan",
+            "--app",
+            "00000000-0000-4000-a000-000000000003",
+            "--action",
+            "disable",
+            "--output",
+            plan.to_str().unwrap(),
+        ],
+    );
+    let policy = dir.path().join("policy.toml");
+    std::fs::write(
+        &policy,
+        "[deny]\noperations = [\"graph.service_principals.*\"]\n",
+    )
+    .unwrap();
+    let refused = apply_detached(&contexts, &plan, &["--policy", policy.to_str().unwrap()]);
+    assert_eq!(code(&refused), 2);
+    assert!(String::from_utf8_lossy(&refused.stderr).contains("forbids"));
+    assert!(refused.stdout.is_empty());
+}

@@ -1,0 +1,19 @@
+# Reviewed risk corrections for the `junction apps apply` write registry
+# (crates/junction-check/data/apps-write.json), applied with the registry's operator
+# override mechanism (see overrides/README.md).
+#
+# Upstream classifies both PATCH operations as `write`, which a safe-write policy would
+# allow without approval. Narrowing a consent grant or disabling an application changes
+# who can reach tenant data, so both are raised to `privileged`: every item that
+# `junction apps apply` sends needs explicit operator approval on the terminal. The two
+# DELETE operations are already destructive or privileged upstream.
+
+[[operations]]
+operation = "graph.oauth2permission_grants.update"
+risk = "privileged"
+reason = "Narrowing a delegated consent grant changes what an application may do as users; require trusted operator approval for every request."
+
+[[operations]]
+operation = "graph.service_principals.update"
+risk = "privileged"
+reason = "Disabling a service principal stops an application signing in to the tenant; require trusted operator approval for every request. The request schema only allows accountEnabled = false."
