@@ -12,6 +12,7 @@ pub mod checkpoint;
 pub mod cli;
 pub mod collect;
 pub mod config;
+pub mod defender;
 pub mod manifest;
 pub mod record;
 pub mod store;
