@@ -8,7 +8,10 @@
 //! The archive is read-only against the tenant. Its only write path is
 //! create-only objects in the operator's own storage.
 pub mod catalog;
+pub mod checkpoint;
 pub mod cli;
+pub mod collect;
 pub mod config;
+pub mod manifest;
 pub mod record;
 pub mod store;
