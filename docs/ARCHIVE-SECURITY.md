@@ -53,9 +53,12 @@ Use separate identities so no single credential can collect, read and hold.
 | Identity | Azure Blob | Cloudflare R2 | Can | Cannot |
 | --- | --- | --- | --- | --- |
 | Collector | Custom role with `blobs/read` and `blobs/add/action` on the container (in `archive-storage.bicep`) | Object Read & Write token for the bucket | Create new objects and read them back | Overwrite, delete, change retention or set legal holds |
-| Searcher | Storage Blob Data Reader on the container | Object Read token | `search` and `export` | Write, delete or hold |
+| Searcher | Storage Blob Data Reader on the container | Object Read token | `search` and `export` (the export audit entry is then not written) | Write, delete or hold |
 | Hold administrator | Storage Blob Data Contributor on the container | Object Read & Write token | `hold create` and `hold release` | Delete or overwrite objects under retention |
 | Storage administrator | Owner of the account | Admin Read & Write token | Set and extend retention, lock policies, change lock rules | Shorten a locked Azure policy (the service refuses it) |
+
+Every identity uses Junction's environment credential, so the storage
+identities must be in the same Entra tenant as the archived tenant.
 
 Junction never uses the storage administrator identity. Keep it with the
 people who own retention, not on the collector host.
@@ -97,8 +100,10 @@ lifecycle rule you configure removes them. Junction has no delete command.
 - R2 holds copy the objects under `holds/`, protected by an indefinite lock
   rule that only a storage administrator can change.
 - Creation fails closed, and releases are recorded and never delete.
-- Every hold, release and export writes an audit entry under `audit/` in the
-  store.
+- Every hold and release writes an audit entry under `audit/` in the store.
+  Exports also try to; under the read-only searcher identity the store refuses
+  the write, the export says so, and the bundle stays valid. Record such
+  exports in your case notes.
 
 ## Personal data
 
@@ -110,8 +115,11 @@ lifecycle rule you configure removes them. Junction has no delete command.
 - Default search and export output pseudonymises actors and truncates IPs.
 - Forwarded events carry pseudonyms, IP networks and the raw hash only, never
   the raw record.
-- Audit content is attacker-influenced. It is size-bounded, stripped of control
-  and bidirectional-override characters, and never interpreted.
+- Audit content is attacker-influenced. Normalised fields, Defender
+  reductions and manifest text are size-bounded and stripped of control and
+  bidirectional-override characters. The raw record is stored as Microsoft
+  delivered it, so `--full` output can contain control characters; view it as
+  JSON (it is escaped) rather than pasting fields into a terminal.
 
 ## Network and residency
 

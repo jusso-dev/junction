@@ -17,8 +17,8 @@
 //!   [`MAX_RECENT_IDS`]) so the overlap does not re-store them.
 //!
 //! Gaps are never hidden: content older than the API window, quarantined
-//! blobs and rejected records are written to the window's manifest and shown
-//! by `junction archive status`.
+//! blobs and rejected records are written to the window's manifest and
+//! reported in every evidence bundle that covers them.
 use crate::{
     checkpoint::{Checkpoint, SourceState},
     manifest::{Gap, Manifest, ObjectEntry},

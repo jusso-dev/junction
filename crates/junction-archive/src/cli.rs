@@ -37,7 +37,8 @@ pub enum ArchiveCommand {
     Doctor,
     /// Run one collection pass over every configured source.
     Collect,
-    /// Show checkpoints, paused sources and recent gaps from local state.
+    /// Show checkpoints, paused sources and why a source is unavailable.
+    /// Gaps are in the manifests and in every evidence bundle.
     Status,
     /// Search archived records. Output is redacted unless --full is given.
     Search(SearchArgs),

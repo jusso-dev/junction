@@ -172,8 +172,22 @@ objects, record counts and gaps. Gaps are recorded when:
   organisation.
 
 Manifests for a source are chained by hash (`previousManifestSha256`) and are
-create-only objects under the same retention as the records. Evidence bundles
-list every gap that overlaps their range.
+create-only objects under the same retention as the records.
+
+Evidence bundles report two kinds of gap for their range:
+
+- **recorded**: gaps the collector wrote into manifests (read from 8 days
+  before the range to 8 days after it, because an offline gap is filed with
+  the window that resumed collection);
+- **uncovered**: any part of the range that no complete collection window
+  covers, because the collector was not running, has not reached it yet, or
+  the source was never collected.
+
+A bundle with no gaps therefore means every part of the range was collected
+by a complete window and nothing was rejected or quarantined.
+
+`junction archive status` shows watermarks, paused sources and why a source is
+unavailable; the gaps themselves are in the manifests and bundles.
 
 ## Search
 
@@ -184,11 +198,15 @@ junction archive search --from ... --to ... --actor person@example.org --full
 ```
 
 Filters: `--source`, `--operation` (exact, case-insensitive), `--actor` (UPN),
-`--ip` (exact), `--contains` (case-insensitive text anywhere in the record).
+`--ip` (exact), `--contains` (case-insensitive text in the record id, raw hash,
+Microsoft id, operation, target, result, correlation id, actor, IP or raw
+record).
 All given filters must match. A range may cover at most 3660 days.
 
 Default output is redacted: the actor is a `sha256:` pseudonym, IPv4 is
-truncated to /24 and IPv6 to /48, and raw records are not shown. `--full`
+truncated to /24 and IPv6 to /48, and raw records are not shown. The query is
+echoed redacted too (actor and IP filters as pseudonym and network, free text
+as a hash), so the output cannot be used to reverse its own pseudonyms. `--full`
 shows everything and asks for confirmation (`--yes` when not at a terminal).
 The pseudonym is not a secret mapping: anyone with the archive can hash a
 known UPN to find its records. It keeps identities out of casual output and
@@ -206,18 +224,22 @@ junction archive hold list
 junction archive hold release --name matter-2026-17 --reason "Matter closed"
 ```
 
-A hold first writes a hold manifest (who, when, why, the query, and every
-covered record id with its raw hash), then protects each object holding a
-matching record:
+A hold first writes an intent manifest naming every object it will protect,
+then protects each object holding a matching record, then writes the hold
+manifest (who, when, why, the query, every covered record id with its raw
+hash, and each object held):
 
 - **Azure**: `Set Blob Legal Hold` on the object. Needs the hold
   administrator identity (Storage Blob Data Contributor).
 - **R2 and local**: a copy under `holds/<hold-id>/`, protected by the
   indefinite `holds/` lock rule.
 
-Creation fails closed and names every object that could not be held. Release
-is recorded and never deletes anything. On Azure the flag is cleared only on
-objects no other active hold covers; on R2 the copies stay until an
+Creation fails closed: it refuses when an object in range cannot be read, and
+names every object that could not be held. Release is recorded and never
+deletes anything. On Azure the flag is cleared only on objects no other
+unreleased hold covers, and a release refuses to run if any other hold's
+manifests cannot be read. A release that fails part-way is shown as
+`release_incomplete` and can be run again. On R2 the copies stay until an
 administrator changes the lock rule.
 
 ## Evidence bundles
@@ -233,9 +255,10 @@ The bundle directory holds:
 - `records.ndjson`: matching records, deduplicated, ordered by event time then
   record id, redacted unless `--full`.
 - `manifest.json`: tool version, who exported it and why, tenant, storage,
-  range, query and its hash, sources, record count, duplicates removed, the
-  SHA-256 of `records.ndjson`, the result-set hash, the storage objects read,
-  every gap overlapping the range, and any read problems.
+  range, query and its hash (the query is redacted in a redacted bundle),
+  sources, record count, duplicates removed, the SHA-256 of `records.ndjson`,
+  the result-set hash, the storage objects read, recorded and uncovered gaps,
+  and any read problems.
 - `README.txt`: how to verify it by hand.
 
 The **result-set hash** is the SHA-256 of the sorted `recordId rawSha256`
@@ -256,7 +279,8 @@ junction archive forward --to sentinel --from ... --until ... \
 junction archive forward --to bower --endpoint https://collector.example.org --from ... --until ...
 ```
 
-Only events matching the built-in selector are forwarded: role grants, app
+Only the sources a selected rule can match are read, and only events matching
+the built-in selector are forwarded: role grants, app
 consent, app credentials, mailbox forwarding and rules, mailbox permissions,
 audit logging reduced, high-severity Defender alerts and risky sign-in
 success. `--only` narrows the list; it cannot be widened.
@@ -268,8 +292,10 @@ success. `--only` narrows the list; it cannot be widened.
   `/v1/events`, with a producer token from `JUNCTION_BOWER_INGEST_TOKEN`. See
   [the Bower contract](archive/BOWER-CONTRACT.md).
 
-Raw records are never forwarded. A cursor per destination means an accepted
-event is not sent again.
+Defender alerts and incidents are forwarded by their update time: an alert
+raised up to 30 days before the range and escalated or resolved inside it is
+forwarded. Raw records are never forwarded. A cursor per destination (kept for
+400 days) means an accepted event is not sent again.
 
 ## Retention
 
@@ -296,3 +322,8 @@ See [ARCHIVE-SECURITY.md](ARCHIVE-SECURITY.md).
 - Search scans objects; it is not indexed. It suits investigations and
   evidence exports, not interactive dashboards.
 - Holds and exports cover at most 1,000,000 records per query.
+- One run per tenant at a time: the state file is locked, and an overlapping
+  `collect` or `forward` exits with a message instead of sharing it.
+- A Graph day with more than 2,000 pages is split into smaller windows over
+  following runs (down to five minutes) rather than completed in one run.
+- Storage identities must be in the same Entra tenant as the archived tenant.
