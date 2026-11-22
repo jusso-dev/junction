@@ -8,6 +8,7 @@
 //! Everything here is read-only and runs through the check gateway
 //! ([`crate::gateway`]), which forces Junction's read-only policy. See
 //! `docs/APP-GOVERNANCE.md` and `docs/APP-GOVERNANCE-SECURITY.md`.
+pub mod apply;
 pub mod baseline;
 pub mod cli;
 pub mod export;

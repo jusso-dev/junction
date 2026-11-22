@@ -649,3 +649,250 @@ async fn reports_escape_hostile_tenant_text() {
     let table = report::table(&inv, &view);
     assert!(!table.contains('\u{1b}'));
 }
+
+// --- human-approved revoke and restrict (#49) --------------------------------------
+
+use junction_check::governance::apply::{self, Action, Approver, Item, Plan, Sender};
+use std::sync::Mutex;
+
+/// Records approvals; declines after `allow` items.
+struct Scripted {
+    allow: usize,
+    seen: Mutex<Vec<String>>,
+}
+impl Approver for Scripted {
+    fn approve(
+        &self,
+        item: &Item,
+        _: &junction_core::JunctionOperation,
+        _: &str,
+        _: &str,
+    ) -> anyhow::Result<()> {
+        let mut seen = self.seen.lock().unwrap();
+        seen.push(item.id.clone());
+        if seen.len() > self.allow {
+            anyhow::bail!("operator_declined");
+        }
+        Ok(())
+    }
+}
+
+/// Records what would be sent; sends nothing.
+#[derive(Default)]
+struct Recorder(Mutex<Vec<(String, serde_json::Value)>>);
+impl Sender for Recorder {
+    fn send<'a>(
+        &'a self,
+        item: &'a Item,
+    ) -> junction_check::gateway::BoxFut<'a, anyhow::Result<()>> {
+        self.0
+            .lock()
+            .unwrap()
+            .push((item.operation.clone(), item.input.clone()));
+        Box::pin(async { Ok(()) })
+    }
+}
+
+const PDF: &str = "00000000-0000-4000-a000-000000000003";
+const LEGACY: &str = "00000000-0000-4000-a000-000000000004";
+
+#[tokio::test]
+async fn plans_target_exact_grants_and_never_microsoft_apps() {
+    let inv = inventory("tenant").await.unwrap();
+    let plan = apply::build(
+        &inv,
+        &[PDF.into(), LEGACY.into()],
+        &[
+            Action::RevokeDelegated,
+            Action::RemoveAppRole,
+            Action::Disable,
+        ],
+    )
+    .unwrap();
+    let ops: Vec<(&str, &str)> = plan
+        .items
+        .iter()
+        .map(|i| (i.app.as_str(), i.operation.as_str()))
+        .collect();
+    assert_eq!(
+        ops,
+        [
+            ("Free PDF Helper", apply::REVOKE_DELEGATED),
+            ("Free PDF Helper", apply::DISABLE),
+            ("Legacy Provisioning Script", apply::REMOVE_APP_ROLE),
+            ("Legacy Provisioning Script", apply::DISABLE),
+        ]
+    );
+    let revoke = &plan.items[0];
+    assert_eq!(
+        revoke.input["parameters"]["oAuth2PermissionGrant-id"],
+        "grant-pdf-all"
+    );
+    assert_eq!(revoke.risk, "destructive");
+    let disable = &plan.items[1];
+    assert_eq!(
+        disable.input["body"],
+        serde_json::json!({"accountEnabled": false})
+    );
+    assert_eq!(
+        disable.risk, "privileged",
+        "raised by the reviewed override"
+    );
+    assert!(
+        plan.items
+            .iter()
+            .all(|i| !i.rollback.is_empty() && i.why.starts_with("Flags:"))
+    );
+
+    // Narrowing keeps low-impact scopes and removes only high-impact ones.
+    let narrow = apply::build(&inv, &[PDF.into()], &[Action::NarrowDelegated]).unwrap();
+    assert_eq!(
+        narrow.items[0].input["body"]["scope"],
+        "offline_access openid profile"
+    );
+
+    // Microsoft first-party apps are never planned.
+    let exo = "00000000-0000-4000-a000-000000000108";
+    assert!(apply::build(&inv, &[exo.into()], &[Action::Disable]).is_err());
+
+    // A plan survives a round trip and refuses tampered input.
+    let text = serde_json::to_string(&plan).unwrap();
+    assert_eq!(Plan::parse(&text).unwrap(), plan);
+    let widened = text.replace(
+        "{\"accountEnabled\":false}",
+        "{\"accountEnabled\":false,\"appRoleAssignmentRequired\":false}",
+    );
+    assert!(Plan::parse(&widened).is_err());
+}
+
+#[tokio::test]
+async fn every_item_is_approved_before_it_is_sent_and_a_decline_stops_the_run() {
+    let inv = inventory("tenant").await.unwrap();
+    let plan = apply::build(
+        &inv,
+        &[LEGACY.into()],
+        &[Action::RemoveAppRole, Action::Disable],
+    )
+    .unwrap();
+    let now = Instant::parse(&inv.captured_at).unwrap();
+    let (valid, refused) = apply::check_fresh(&plan, &inv, now).unwrap();
+    assert_eq!((valid.len(), refused.len()), (2, 0));
+
+    // Operator approves the first item and declines the second.
+    let approver = Scripted {
+        allow: 1,
+        seen: Mutex::new(vec![]),
+    };
+    let sender = Recorder::default();
+    let outcomes = apply::run(
+        &valid,
+        &refused,
+        &approver,
+        &sender,
+        "https://graph.microsoft.com/v1.0",
+        "https://graph.microsoft.com",
+    )
+    .await
+    .unwrap();
+    let statuses: Vec<&str> = outcomes.iter().map(|o| o.status.as_str()).collect();
+    assert_eq!(statuses, ["applied", "declined"]);
+    {
+        let sent = sender.0.lock().unwrap();
+        assert_eq!(sent.len(), 1, "the declined item was never sent");
+        assert_eq!(sent[0].0, apply::REMOVE_APP_ROLE);
+    }
+
+    // Declining the first item sends nothing at all.
+    let approver = Scripted {
+        allow: 0,
+        seen: Mutex::new(vec![]),
+    };
+    let sender = Recorder::default();
+    apply::run(
+        &valid,
+        &refused,
+        &approver,
+        &sender,
+        "https://graph.microsoft.com/v1.0",
+        "https://graph.microsoft.com",
+    )
+    .await
+    .unwrap();
+    assert!(sender.0.lock().unwrap().is_empty());
+}
+
+#[tokio::test]
+async fn stale_plans_and_old_plans_are_refused() {
+    let before = inventory("tenant").await.unwrap();
+    // The retired app holds no permissions, so planning it alone changes nothing.
+    let nothing = apply::build(
+        &before,
+        &["00000000-0000-4000-a000-000000000006".into()],
+        &[Action::RemoveAppRole],
+    )
+    .unwrap_err();
+    assert!(
+        nothing.to_string().contains("nothing to change"),
+        "{nothing}"
+    );
+
+    let plan = apply::build(
+        &before,
+        &["00000000-0000-4000-a000-000000000002".into(), LEGACY.into()],
+        &[Action::RemoveAppRole],
+    )
+    .unwrap();
+    // A month later Fabrikam gained a permission and Legacy is unchanged.
+    let mut after = inventory("later").await.unwrap();
+    after.captured_at = before.captured_at.clone();
+    let now = Instant::parse(&before.captured_at).unwrap();
+    let (valid, refused) = apply::check_fresh(&plan, &after, now).unwrap();
+    // Existing assignments still match exactly; the new one is not in the plan.
+    assert_eq!(valid.len(), 2, "{refused:?}");
+
+    // A target changed since the plan was made is refused.
+    let mut changed = before.clone();
+    let legacy = changed
+        .apps
+        .iter_mut()
+        .find(|a| a.service_principal_id == LEGACY)
+        .unwrap();
+    legacy.application_permissions[0].app_role_id = "00000000-0000-4000-a000-000000000999".into();
+    let (valid, refused) = apply::check_fresh(&plan, &changed, now).unwrap();
+    assert_eq!(valid.len(), 1);
+    assert!(refused[0].reason.contains("stale"));
+
+    // A removed target is refused.
+    let mut gone = before.clone();
+    gone.apps.retain(|a| a.service_principal_id != LEGACY);
+    let (_, refused) = apply::check_fresh(&plan, &gone, now).unwrap();
+    assert!(refused[0].reason.contains("no longer exists"));
+
+    // Another tenant's inventory, or a plan older than a day, is refused outright.
+    let mut other = before.clone();
+    other.tenant_id = "00000000-0000-4000-8000-000000000002".into();
+    assert!(apply::check_fresh(&plan, &other, now).is_err());
+    let later = now.plus(std::time::Duration::from_secs(25 * 3600));
+    assert!(apply::check_fresh(&plan, &before, later).is_err());
+}
+
+#[tokio::test]
+async fn operator_deny_rules_cannot_be_approved_away() {
+    let inv = inventory("tenant").await.unwrap();
+    let plan = apply::build(&inv, &[PDF.into()], &[Action::RevokeDelegated]).unwrap();
+    let mut operator = junction_policy::Policy::default();
+    assert!(apply::effective_policy(&operator, &plan).is_ok());
+    operator.deny.operations = vec!["graph.oauth2permission_grants.*".into()];
+    let error = apply::effective_policy(&operator, &plan)
+        .unwrap_err()
+        .to_string();
+    assert!(error.contains("forbids"), "{error}");
+    // A tenant allow-list that excludes the plan's tenant also refuses.
+    let other = junction_policy::Policy {
+        allow: junction_policy::Allow {
+            tenants: vec!["00000000-0000-4000-8000-000000000002".into()],
+        },
+        ..Default::default()
+    };
+    assert!(apply::effective_policy(&other, &plan).is_err());
+}

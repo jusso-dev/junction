@@ -124,6 +124,84 @@ impl junction_check::cli::Environment for Environment {
     }
 }
 
+/// The operator terminal: shows each item with the existing approval prompt
+/// (`approval_cli::confirm`), which reads from `/dev/tty`, never stdin.
+struct TerminalApprover {
+    tenant: String,
+    cloud: MicrosoftCloud,
+    credential_profile: String,
+}
+
+impl junction_check::governance::apply::Approver for TerminalApprover {
+    fn approve(
+        &self,
+        item: &junction_check::governance::apply::Item,
+        operation: &junction_core::JunctionOperation,
+        endpoint: &str,
+        audience: &str,
+    ) -> Result<()> {
+        let reason = format!(
+            "{} on {}. {} Rollback: {}",
+            item.id, item.app, item.why, item.rollback
+        );
+        crate::approval_cli::confirm(&crate::approval_cli::Summary {
+            operation,
+            reason: &reason,
+            tenant: &self.tenant,
+            cloud: &self.cloud,
+            endpoint,
+            audience,
+            credential_profile: &self.credential_profile,
+            input: &item.input,
+        })
+    }
+}
+
+/// Cloud of a saved context (for the approval binding and prompt).
+fn context_cloud(bytes: &[u8]) -> MicrosoftCloud {
+    crate::validated_context(bytes)
+        .ok()
+        .and_then(|v| v.get("cloud").cloned())
+        .and_then(|c| serde_json::from_value(c).ok())
+        .unwrap_or(MicrosoftCloud::Custom)
+}
+
+impl junction_check::governance::cli::ApplyEnvironment for Environment {
+    fn approver(
+        &self,
+        context: &str,
+    ) -> Result<Box<dyn junction_check::governance::apply::Approver>> {
+        let bytes = crate::context_store::read(&self.contexts, context)?;
+        let live = live_target(&bytes)?;
+        Ok(Box::new(TerminalApprover {
+            tenant: live.tenant_id,
+            cloud: context_cloud(&bytes),
+            credential_profile: live.credential_profile,
+        }))
+    }
+    fn sender(
+        &self,
+        context: &str,
+        policy: junction_policy::Policy,
+    ) -> Result<(
+        Box<dyn junction_check::governance::apply::Sender>,
+        String,
+        String,
+    )> {
+        let bytes = crate::context_store::read(&self.contexts, context)?;
+        let live = live_target(&bytes)?;
+        let cloud = context_cloud(&bytes);
+        let sender = junction_check::governance::apply::ExecutorSender::new(
+            live,
+            Arc::new(Tokens),
+            policy,
+            cloud,
+        )?;
+        let (endpoint, audience) = (sender.endpoint().to_owned(), sender.audience().to_owned());
+        Ok((Box::new(sender), endpoint, audience))
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

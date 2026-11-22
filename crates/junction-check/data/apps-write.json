@@ -1,0 +1,269 @@
+{
+ "format_version": 1,
+ "operations": [
+  {
+   "api_version": "v1.0",
+   "base_url": "https://graph.microsoft.com/v1.0",
+   "description": "Delete oAuth2PermissionGrant (a delegated permission grant)",
+   "documentation_url": null,
+   "id": "graph.oauth2permission_grants.delete",
+   "long_running": null,
+   "maturity": "stable",
+   "method": "DELETE",
+   "operation": "delete",
+   "parameters": [
+    {
+     "location": "path",
+     "name": "oAuth2PermissionGrant-id",
+     "required": true,
+     "schema": {
+      "type": "string"
+     },
+     "serialization": {
+      "allow_reserved": false,
+      "collection_format": null,
+      "explode": null,
+      "style": null
+     }
+    }
+   ],
+   "path": "/oauth2PermissionGrants/{oAuth2PermissionGrant-id}",
+   "preview": false,
+   "product": "graph",
+   "request_body": null,
+   "resource": "oauth2permission_grants",
+   "responses": {
+    "204": {
+     "description": "Success"
+    },
+    "4XX": {
+     "description": ""
+    },
+    "5XX": {
+     "description": ""
+    }
+   },
+   "risk": "destructive",
+   "security": [],
+   "service": "oauth2permission_grants",
+   "source": {
+    "id": "https://raw.githubusercontent.com/microsoftgraph/msgraph-metadata/6515412a38ee4efb99669442b697df15b7f55c36/openapi/v1.0/openapi.yaml",
+    "operation_id": "oauth2PermissionGrants.oAuth2PermissionGrant.DeleteOAuth2PermissionGrant",
+    "upstream": "https://raw.githubusercontent.com/microsoftgraph/msgraph-metadata/6515412a38ee4efb99669442b697df15b7f55c36/openapi/v1.0/openapi.yaml"
+   }
+  },
+  {
+   "api_version": "v1.0",
+   "base_url": "https://graph.microsoft.com/v1.0",
+   "description": "Update a delegated permission grant (oAuth2PermissionGrant)",
+   "documentation_url": null,
+   "id": "graph.oauth2permission_grants.update",
+   "long_running": null,
+   "maturity": "stable",
+   "method": "PATCH",
+   "operation": "update",
+   "parameters": [
+    {
+     "location": "path",
+     "name": "oAuth2PermissionGrant-id",
+     "required": true,
+     "schema": {
+      "type": "string"
+     },
+     "serialization": {
+      "allow_reserved": false,
+      "collection_format": null,
+      "explode": null,
+      "style": null
+     }
+    }
+   ],
+   "path": "/oauth2PermissionGrants/{oAuth2PermissionGrant-id}",
+   "preview": false,
+   "product": "graph",
+   "request_body": {
+    "content": {
+     "application/json": {
+      "schema": {
+       "additionalProperties": false,
+       "properties": {
+        "scope": {
+         "description": "Space-separated scopes that remain granted.",
+         "maxLength": 4096,
+         "minLength": 1,
+         "type": "string"
+        }
+       },
+       "required": [
+        "scope"
+       ],
+       "type": "object"
+      }
+     }
+    },
+    "description": "New property values",
+    "required": true
+   },
+   "resource": "oauth2permission_grants",
+   "responses": {
+    "2XX": {
+     "description": "Success"
+    },
+    "4XX": {
+     "description": ""
+    },
+    "5XX": {
+     "description": ""
+    }
+   },
+   "risk": "write",
+   "security": [],
+   "service": "oauth2permission_grants",
+   "source": {
+    "id": "https://raw.githubusercontent.com/microsoftgraph/msgraph-metadata/6515412a38ee4efb99669442b697df15b7f55c36/openapi/v1.0/openapi.yaml",
+    "operation_id": "oauth2PermissionGrants.oAuth2PermissionGrant.UpdateOAuth2PermissionGrant",
+    "upstream": "https://raw.githubusercontent.com/microsoftgraph/msgraph-metadata/6515412a38ee4efb99669442b697df15b7f55c36/openapi/v1.0/openapi.yaml"
+   }
+  },
+  {
+   "api_version": "v1.0",
+   "base_url": "https://graph.microsoft.com/v1.0",
+   "description": "Delete appRoleAssignedTo",
+   "documentation_url": null,
+   "id": "graph.service_principals.app_role_assigned_to.delete",
+   "long_running": null,
+   "maturity": "stable",
+   "method": "DELETE",
+   "operation": "delete",
+   "parameters": [
+    {
+     "location": "path",
+     "name": "servicePrincipal-id",
+     "required": true,
+     "schema": {
+      "type": "string"
+     },
+     "serialization": {
+      "allow_reserved": false,
+      "collection_format": null,
+      "explode": null,
+      "style": null
+     }
+    },
+    {
+     "location": "path",
+     "name": "appRoleAssignment-id",
+     "required": true,
+     "schema": {
+      "type": "string"
+     },
+     "serialization": {
+      "allow_reserved": false,
+      "collection_format": null,
+      "explode": null,
+      "style": null
+     }
+    }
+   ],
+   "path": "/servicePrincipals/{servicePrincipal-id}/appRoleAssignedTo/{appRoleAssignment-id}",
+   "preview": false,
+   "product": "graph",
+   "request_body": null,
+   "resource": "service_principals.app_role_assigned_to",
+   "responses": {
+    "204": {
+     "description": "Success"
+    },
+    "4XX": {
+     "description": ""
+    },
+    "5XX": {
+     "description": ""
+    }
+   },
+   "risk": "privileged",
+   "security": [],
+   "service": "service_principals",
+   "source": {
+    "id": "https://raw.githubusercontent.com/microsoftgraph/msgraph-metadata/6515412a38ee4efb99669442b697df15b7f55c36/openapi/v1.0/openapi.yaml",
+    "operation_id": "servicePrincipals.DeleteAppRoleAssignedTo",
+    "upstream": "https://raw.githubusercontent.com/microsoftgraph/msgraph-metadata/6515412a38ee4efb99669442b697df15b7f55c36/openapi/v1.0/openapi.yaml"
+   }
+  },
+  {
+   "api_version": "v1.0",
+   "base_url": "https://graph.microsoft.com/v1.0",
+   "description": "Upsert servicePrincipal",
+   "documentation_url": null,
+   "id": "graph.service_principals.update",
+   "long_running": null,
+   "maturity": "stable",
+   "method": "PATCH",
+   "operation": "update",
+   "parameters": [
+    {
+     "location": "path",
+     "name": "servicePrincipal-id",
+     "required": true,
+     "schema": {
+      "type": "string"
+     },
+     "serialization": {
+      "allow_reserved": false,
+      "collection_format": null,
+      "explode": null,
+      "style": null
+     }
+    }
+   ],
+   "path": "/servicePrincipals/{servicePrincipal-id}",
+   "preview": false,
+   "product": "graph",
+   "request_body": {
+    "content": {
+     "application/json": {
+      "schema": {
+       "additionalProperties": false,
+       "properties": {
+        "accountEnabled": {
+         "description": "Only disabling is allowed.",
+         "enum": [
+          false
+         ],
+         "type": "boolean"
+        }
+       },
+       "required": [
+        "accountEnabled"
+       ],
+       "type": "object"
+      }
+     }
+    },
+    "description": "New property values",
+    "required": true
+   },
+   "resource": "service_principals",
+   "responses": {
+    "2XX": {
+     "description": "Success"
+    },
+    "4XX": {
+     "description": ""
+    },
+    "5XX": {
+     "description": ""
+    }
+   },
+   "risk": "write",
+   "security": [],
+   "service": "service_principals",
+   "source": {
+    "id": "https://raw.githubusercontent.com/microsoftgraph/msgraph-metadata/6515412a38ee4efb99669442b697df15b7f55c36/openapi/v1.0/openapi.yaml",
+    "operation_id": "servicePrincipals.servicePrincipal.UpdateServicePrincipal",
+    "upstream": "https://raw.githubusercontent.com/microsoftgraph/msgraph-metadata/6515412a38ee4efb99669442b697df15b7f55c36/openapi/v1.0/openapi.yaml"
+   }
+  }
+ ],
+ "schemas": {}
+}

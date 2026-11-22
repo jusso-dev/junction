@@ -25,10 +25,14 @@ use std::sync::Arc;
   junction apps baseline save --context contoso --output contoso-baseline.json
   junction apps diff --context contoso --baseline contoso-baseline.json --fail-on-drift
   junction apps export --context contoso --baseline contoso-baseline.json --output evidence/
+  junction apps plan --context contoso --app <id> --action revoke-delegated --output plan.json
+  junction apps apply --context contoso --plan plan.json
   junction apps flags
   junction apps permissions
 
 Reads run under Junction's read-only policy, whatever policy the context uses.
+`apply` is the only command that writes: CLI only, each item approved on the
+controlling terminal (docs/APPROVALS.md). Nothing is ever revoked automatically.
 Exit codes: 0 done, 1 --fail-on threshold or --fail-on-drift breached, 2 error.")]
 pub struct AppsArgs {
     #[command(subcommand)]
@@ -48,6 +52,10 @@ pub enum AppsCommand {
     Diff(Box<DiffArgs>),
     /// Write an evidence pack (Markdown, JSON, CSV and a SHA-256 manifest).
     Export(Box<ExportArgs>),
+    /// Write a reviewable plan to revoke or restrict access for named apps. Read-only.
+    Plan(Box<PlanArgs>),
+    /// Apply a plan. Every item is approved on the controlling terminal; agents cannot run this.
+    Apply(Box<ApplyArgs>),
     /// Describe every risk flag: what it reads, why it matters and how to fix it.
     Flags {
         #[arg(long, value_enum, default_value = "table")]
@@ -107,6 +115,47 @@ pub struct ExportArgs {
     /// Include drift against this approved baseline.
     #[arg(long)]
     pub baseline: Option<PathBuf>,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct PlanArgs {
+    #[command(flatten)]
+    pub source: Source,
+    /// Service principal object id or app id (repeatable).
+    #[arg(long = "app", required = true)]
+    pub apps: Vec<String>,
+    /// What to change (repeatable).
+    #[arg(long = "action", value_enum, required = true)]
+    pub actions: Vec<super::apply::Action>,
+    /// Plan file to write.
+    #[arg(long)]
+    pub output: PathBuf,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct ApplyArgs {
+    #[command(flatten)]
+    pub source: Source,
+    /// Plan from `junction apps plan`.
+    #[arg(long)]
+    pub plan: PathBuf,
+    /// Operator policy whose deny rules, tenant allow-list and limits apply.
+    #[arg(long)]
+    pub policy: Option<PathBuf>,
+    /// Check the plan against the tenant and print what would be sent; send nothing.
+    #[arg(long)]
+    pub dry_run: bool,
+}
+
+/// What the `junction` binary provides for `apply`: the terminal approver and
+/// the live sender. MCP and HTTP hosts never implement this.
+pub trait ApplyEnvironment: Environment {
+    fn approver(&self, context: &str) -> Result<Box<dyn super::apply::Approver>>;
+    fn sender(
+        &self,
+        context: &str,
+        policy: junction_policy::Policy,
+    ) -> Result<(Box<dyn super::apply::Sender>, String, String)>;
 }
 
 fn read_baseline(path: &Path) -> Result<super::baseline::Baseline> {
@@ -319,10 +368,80 @@ pub fn permissions() -> Vec<serde_json::Value> {
 pub async fn run(
     args: AppsArgs,
     contexts: Vec<String>,
-    env: &dyn Environment,
+    env: &dyn ApplyEnvironment,
     out: &mut dyn Write,
 ) -> Result<i32> {
     match args.command {
+        AppsCommand::Plan(args) => {
+            let context = one_context(&contexts)?;
+            let inventory = collect(context, &args.source, Some(env), None).await?;
+            let plan = super::apply::build(&inventory, &args.apps, &args.actions)?;
+            write_output(
+                &args.output,
+                (serde_json::to_string_pretty(&plan)? + "\n").as_bytes(),
+            )?;
+            out.write_all(
+                (serde_json::to_string_pretty(&json!({
+                    "status": "planned",
+                    "plan": args.output,
+                    "items": plan.items.iter().map(|i| json!({"id": i.id, "app": i.app,
+                        "operation": i.operation, "risk": i.risk})).collect::<Vec<_>>(),
+                    "next": "Review the plan, then run `junction apps apply --plan FILE` on a terminal.",
+                }))? + "\n")
+                    .as_bytes(),
+            )?;
+            Ok(exit::OK)
+        }
+        AppsCommand::Apply(args) => {
+            let context = one_context(&contexts)?;
+            let plan = super::apply::Plan::parse(
+                &std::fs::read_to_string(&args.plan).context("reading --plan")?,
+            )?;
+            let operator = match &args.policy {
+                Some(path) => junction_policy::Policy::parse(
+                    &std::fs::read_to_string(path).context("reading --policy")?,
+                )?,
+                None => junction_policy::Policy::default(),
+            };
+            // Policy first: a deny rule fails before any tenant call.
+            let policy = super::apply::effective_policy(&operator, &plan)?;
+            let inventory = collect(context, &args.source, Some(env), None).await?;
+            let now = match &args.source.fixtures {
+                Some(_) => Instant::parse(&inventory.captured_at)?,
+                None => Instant::now(),
+            };
+            let (valid, refused) = super::apply::check_fresh(&plan, &inventory, now)?;
+            if args.dry_run || valid.is_empty() {
+                let report = json!({
+                    "status": if args.dry_run { "dry_run" } else { "nothing_to_apply" },
+                    "would_send": valid.iter().map(|i| json!({"id": i.id, "app": i.app,
+                        "operation": i.operation, "input": i.input})).collect::<Vec<_>>(),
+                    "refused": refused,
+                });
+                out.write_all((serde_json::to_string_pretty(&report)? + "\n").as_bytes())?;
+                return Ok(if refused.is_empty() {
+                    exit::OK
+                } else {
+                    exit::PARTIAL
+                });
+            }
+            let approver = env.approver(context)?;
+            let (sender, endpoint, audience) = env.sender(context, policy)?;
+            let outcomes = super::apply::run(
+                &valid,
+                &refused,
+                approver.as_ref(),
+                sender.as_ref(),
+                &endpoint,
+                &audience,
+            )
+            .await?;
+            let all_applied = outcomes.iter().all(|o| o.status == "applied");
+            out.write_all(
+                (serde_json::to_string_pretty(&json!({"outcomes": outcomes}))? + "\n").as_bytes(),
+            )?;
+            Ok(if all_applied { exit::OK } else { exit::PARTIAL })
+        }
         AppsCommand::Inventory(args) => {
             let context = one_context(&contexts)?;
             let inventory = collect(context, &args.source, Some(env), None).await?;
