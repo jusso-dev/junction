@@ -169,6 +169,29 @@ fn rule_matches(rule: &Rule, r: &ArchiveRecord) -> bool {
     }
 }
 
+/// Every source at least one active rule reads.
+pub fn selectable_sources(only: &[String]) -> Vec<String> {
+    let mut out: Vec<String> = SELECTOR
+        .iter()
+        .filter(|rule| only.is_empty() || only.iter().any(|o| o == rule.id))
+        .flat_map(|rule| rule.sources.iter().map(|s| s.to_string()))
+        .collect();
+    out.sort();
+    out.dedup();
+    out
+}
+
+/// Sources whose records are versioned by `lastUpdateDateTime`.
+pub const VERSIONED_SOURCES: [&str; 2] = ["graph:alerts_v2", "graph:incidents"];
+/// How far before a forward range versioned records are looked for. An alert
+/// raised more than this before its update is not forwarded by that update.
+pub const VERSION_LOOKBACK: std::time::Duration = std::time::Duration::from_secs(30 * 86_400);
+
+/// Forwarded ids are remembered this long per destination. Older ids are
+/// dropped so the cursor stays bounded; re-forwarding a range older than
+/// this may resend events, which Bower and KQL deduplicate on the stable id.
+pub const CURSOR_DAYS: u64 = 400;
+
 /// The first rule matching `r`, limited to `only` when given.
 pub fn select<'a>(r: &ArchiveRecord, only: &[String]) -> Option<&'a Rule> {
     SELECTOR
@@ -488,7 +511,36 @@ pub async fn forward(
 ) -> Result<ForwardSummary> {
     validate_only(only)?;
     let tenant = checkpoint.state.tenant_id.clone();
-    let results = crate::search::search(store, &tenant, query, crate::search::MAX_LIMIT).await?;
+    // Only sources a selected rule can match are read, so busy sources that
+    // never forward (SharePoint, General) cannot exhaust the scan limit.
+    let mut query = query.clone();
+    query.sources = selectable_sources(only);
+    let (from, to) = query.range()?;
+    // Defender alerts are filed by when they were raised, so an alert raised
+    // earlier and escalated or resolved inside the range sits in an earlier
+    // partition. Versioned sources are read from VERSION_LOOKBACK before the
+    // range and their updates selected by lastUpdateDateTime.
+    let mut scan = query.clone();
+    if query
+        .sources
+        .iter()
+        .any(|s| VERSIONED_SOURCES.contains(&s.as_str()))
+    {
+        scan.from = from.minus(VERSION_LOOKBACK).to_rfc3339();
+    }
+    let in_range = |r: &ArchiveRecord| {
+        let at = if VERSIONED_SOURCES.contains(&r.source.as_str()) {
+            r.version
+                .as_deref()
+                .and_then(|v| junction_watch::clock::Instant::parse(v).ok())
+        } else {
+            r.event_instant()
+        };
+        at.is_some_and(|t| t >= from && t < to)
+    };
+    let mut results =
+        crate::search::search(store, &tenant, &scan, crate::search::MAX_LIMIT).await?;
+    results.records.retain(in_range);
     if results.truncated {
         bail!(
             "more than {} records in range; forward a shorter range",
@@ -496,6 +548,15 @@ pub async fn forward(
         );
     }
     let cursor_source = format!("forward:{destination_key}");
+    {
+        let keep_from = junction_watch::clock::Instant::now()
+            .minus(std::time::Duration::from_secs(CURSOR_DAYS * 86_400))
+            .to_rfc3339();
+        checkpoint
+            .source(&cursor_source)
+            .recent_records
+            .retain(|_, at| *at >= keep_from);
+    }
     let mut summary = ForwardSummary {
         scanned: results.records.len(),
         ..ForwardSummary::default()

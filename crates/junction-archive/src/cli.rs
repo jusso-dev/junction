@@ -4,7 +4,7 @@ use crate::{
     checkpoint::Checkpoint,
     collect,
     config::{ArchiveConfig, write_new_private},
-    evidence, search, forward,
+    evidence, forward, search,
     store::{DeleteProbe, ObjectStore, PutOutcome},
 };
 use anyhow::Result;

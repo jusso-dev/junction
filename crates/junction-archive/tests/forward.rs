@@ -129,6 +129,7 @@ async fn only_selected_events_are_forwarded_once_with_backpressure_retried() {
 
     // A second pass sends nothing: the cursor remembers both.
     let again = FakeBower::new(&[]);
+    drop(cp);
     let mut cp = Checkpoint::open(&dir.path().join("state"), T).unwrap();
     let summary = forward(
         &store,
@@ -172,6 +173,7 @@ async fn bower_scope_refusal_stops_and_keeps_progress() {
     .await
     .unwrap_err();
     assert!(format!("{error:#}").contains("producer scope"), "{error:#}");
+    drop(cp);
     let cp = Checkpoint::open(&dir.path().join("state"), T).unwrap();
     assert_eq!(
         cp.get("forward:bower-test").unwrap().recent_records.len(),
@@ -250,4 +252,45 @@ async fn sentinel_rows_are_redacted_summaries_narrowed_by_only() {
         .is_err(),
         "the selector cannot be widened"
     );
+}
+
+#[tokio::test]
+async fn an_alert_escalated_inside_the_range_is_forwarded_even_if_raised_earlier() {
+    let dir = tempfile::tempdir().unwrap();
+    let store = LocalStore::new(&dir.path().join("store")).unwrap();
+    let spec = junction_archive::collect::graph_spec("graph:alerts_v2").unwrap();
+    let alert = json!({"id": "a-1", "tenantId": T, "status": "inProgress", "severity": "high",
+        "category": "InitialAccess", "createdDateTime": "2026-10-20T01:00:00Z",
+        "lastUpdateDateTime": "2026-11-01T09:00:00Z", "evidence": []});
+    let record = junction_archive::defender::record(
+        T,
+        spec,
+        &alert,
+        Instant::parse("2026-11-02T00:00:00Z").unwrap(),
+    )
+    .unwrap();
+    for o in encode(T, vec![record]).unwrap() {
+        store
+            .put_new(&o.key, o.bytes, "application/gzip")
+            .await
+            .unwrap();
+    }
+    let mut cp = Checkpoint::open(&dir.path().join("state"), T).unwrap();
+    let bower = FakeBower::new(&[]);
+    let summary = forward(
+        &store,
+        &mut cp,
+        "b",
+        &day(),
+        &["defender-high-severity-alert".into()],
+        Destination::Bower {
+            sender: &bower,
+            environment: "production",
+        },
+        Retry::IMMEDIATE,
+        Backoff::IMMEDIATE,
+    )
+    .await
+    .unwrap();
+    assert_eq!(summary.sent, 1, "{summary:?}");
 }
