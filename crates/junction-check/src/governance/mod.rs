@@ -5,8 +5,9 @@
 //! service principal, OAuth client, application permission and delegated
 //! consent grant, with owners, sign-in recency and documented risk flags.
 //!
-//! Everything here is read-only and runs through the check gateway
-//! ([`crate::gateway`]), which forces Junction's read-only policy. See
+//! Every read runs through the check gateway ([`crate::gateway`]), which
+//! forces Junction's read-only policy. The one write path is [`apply`]: CLI
+//! only, with per-item operator approval on the terminal. See
 //! `docs/APP-GOVERNANCE.md` and `docs/APP-GOVERNANCE-SECURITY.md`.
 pub mod apply;
 pub mod baseline;

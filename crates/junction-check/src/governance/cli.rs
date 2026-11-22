@@ -405,7 +405,28 @@ pub async fn run(
             };
             // Policy first: a deny rule fails before any tenant call.
             let policy = super::apply::effective_policy(&operator, &plan)?;
-            let inventory = collect(context, &args.source, Some(env), None).await?;
+            // The context must reach the plan's tenant, and that tenant must be
+            // in the operator's allow-list, before anything is read.
+            let context_tenant = match &args.source.fixtures {
+                Some(dir) => crate::testkit::case_settings(&dir.join(context))?
+                    .tenant_id
+                    .unwrap_or_else(|| crate::testkit::TENANT.to_owned()),
+                None => env.live_target(context)?.tenant_id,
+            };
+            if !context_tenant.eq_ignore_ascii_case(&plan.tenant_id) {
+                bail!(
+                    "context {context} reaches tenant {context_tenant}, but the plan is for {}",
+                    plan.tenant_id
+                );
+            }
+            // Re-read under the operator's policy (tenant allow-list and read
+            // deny rules kept; reads still forced read-only). The write identity
+            // needs the inventory's core read permissions for this step.
+            let inventory = collect(context, &args.source, Some(env), Some(&operator))
+                .await
+                .context(
+                    "re-reading the tenant before apply; the apply identity also needs Application.Read.All and DelegatedPermissionGrant.Read.All",
+                )?;
             let now = match &args.source.fixtures {
                 Some(_) => Instant::parse(&inventory.captured_at)?,
                 None => Instant::now(),
@@ -414,8 +435,9 @@ pub async fn run(
             if args.dry_run || valid.is_empty() {
                 let report = json!({
                     "status": if args.dry_run { "dry_run" } else { "nothing_to_apply" },
-                    "would_send": valid.iter().map(|i| json!({"id": i.id, "app": i.app,
-                        "operation": i.operation, "input": i.input})).collect::<Vec<_>>(),
+                    "would_send": valid.iter().map(|c| json!({"id": c.item.id,
+                        "target": c.target, "operation": c.item.operation,
+                        "input": c.item.input})).collect::<Vec<_>>(),
                     "refused": refused,
                 });
                 out.write_all((serde_json::to_string_pretty(&report)? + "\n").as_bytes())?;

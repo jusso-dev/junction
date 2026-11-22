@@ -38,15 +38,8 @@ pub fn live_target(bytes: &[u8]) -> Result<LiveTarget> {
     }
     // Explicit contexts name one endpoint; infer the cloud from the authority.
     let request = crate::ExecutionConfig::parse(bytes)?.token_request;
-    let cloud = match url::Url::parse(&request.authority)
-        .ok()
-        .and_then(|u| u.host_str().map(str::to_owned))
-        .as_deref()
-    {
-        Some("login.microsoftonline.com") => MicrosoftCloud::Public,
-        Some("login.microsoftonline.us") => MicrosoftCloud::UsGovernment,
-        Some("login.chinacloudapi.cn") => MicrosoftCloud::China,
-        _ => bail!("use a cloud context (with `cloud` and `tenant`) for checks"),
+    let Some(cloud) = cloud_of_authority(&request.authority) else {
+        bail!("use a cloud context (with `cloud` and `tenant`) for checks");
     };
     Ok(LiveTarget {
         tenant_id: request.tenant,
@@ -136,13 +129,24 @@ impl junction_check::governance::apply::Approver for TerminalApprover {
     fn approve(
         &self,
         item: &junction_check::governance::apply::Item,
+        target: &junction_check::governance::apply::Target,
         operation: &junction_core::JunctionOperation,
         endpoint: &str,
         audience: &str,
     ) -> Result<()> {
+        // What changes comes from the fresh inventory. The plan's own notes are
+        // shown last and labelled, because anyone who can edit the plan file
+        // can write them; `render` also neutralises control characters.
         let reason = format!(
-            "{} on {}. {} Rollback: {}",
-            item.id, item.app, item.why, item.rollback
+            "{}: {} on {} (app id {}, service principal {}, owner tenant {}). Plan note: {} Rollback note: {}",
+            item.id,
+            target.change,
+            target.app,
+            target.app_id,
+            target.service_principal_id,
+            target.owner_tenant,
+            item.why,
+            item.rollback
         );
         crate::approval_cli::confirm(&crate::approval_cli::Summary {
             operation,
@@ -157,12 +161,30 @@ impl junction_check::governance::apply::Approver for TerminalApprover {
     }
 }
 
-/// Cloud of a saved context (for the approval binding and prompt).
+/// The Microsoft cloud a sign-in authority belongs to.
+fn cloud_of_authority(authority: &str) -> Option<MicrosoftCloud> {
+    match url::Url::parse(authority).ok()?.host_str()? {
+        "login.microsoftonline.com" => Some(MicrosoftCloud::Public),
+        "login.microsoftonline.us" => Some(MicrosoftCloud::UsGovernment),
+        "login.chinacloudapi.cn" => Some(MicrosoftCloud::China),
+        _ => None,
+    }
+}
+
+/// Cloud of a saved context (for the approval binding and prompt): the
+/// context's `cloud`, or for explicit contexts the cloud of its authority,
+/// exactly as `live_target` infers it.
 fn context_cloud(bytes: &[u8]) -> MicrosoftCloud {
-    crate::validated_context(bytes)
+    let declared = crate::validated_context(bytes)
         .ok()
         .and_then(|v| v.get("cloud").cloned())
-        .and_then(|c| serde_json::from_value(c).ok())
+        .and_then(|c| serde_json::from_value(c).ok());
+    declared
+        .or_else(|| {
+            crate::ExecutionConfig::parse(bytes)
+                .ok()
+                .and_then(|c| cloud_of_authority(&c.token_request.authority))
+        })
         .unwrap_or(MicrosoftCloud::Custom)
 }
 

@@ -11,8 +11,15 @@
 //!   JSON file. Nothing is sent.
 //! - **Apply is CLI-only.** `junction apps apply --plan FILE` exists only in the
 //!   CLI. MCP and HTTP hosts have no apply tool or route (tested).
-//! - **Fresh state.** Before anything is sent, apply re-reads the tenant and
-//!   refuses every item whose target no longer matches the plan (stale plan).
+//! - **Fresh state, plan input not trusted.** Before anything is sent, apply
+//!   re-reads the tenant and rebuilds each item's exact request from the live
+//!   object it expects (`expected_input`). The plan's input must equal it, so a
+//!   hand-edited target id, a widened scope list or a different app is refused,
+//!   as is any item whose target changed or no longer exists (stale plan), and
+//!   any Microsoft first-party app. Plans dated more than five minutes in the
+//!   future, older than 24 hours, or for another tenant are refused whole.
+//! - **What you approve is what is sent.** The terminal prompt describes each
+//!   item from the fresh inventory ([`Target`]), never from plan text.
 //! - **Per-item terminal approval.** Each item is shown on the controlling
 //!   terminal and needs the existing confirmation (`docs/APPROVALS.md`). A
 //!   single-use grant bound to the exact operation, input, tenant, endpoint,
@@ -152,8 +159,13 @@ fn is_guid_like(value: &str) -> bool {
             .all(|b| b.is_ascii_alphanumeric() || matches!(b, b'-' | b'_'))
 }
 
-/// Structural checks on an item, independent of tenant state. The registry
-/// schema check happens again when the approval grant is issued.
+/// Longest scope string a narrowing item may set (the registry schema bound).
+const MAX_SCOPE_CHARS: usize = 4096;
+
+/// Structural checks on an item, independent of tenant state: the operation
+/// matches the action, the input has exactly the allowed shape, and its target
+/// ids are the ones `expects` names. The fresh-state check in [`check_fresh`]
+/// then rebuilds the input from the live tenant and requires equality.
 pub fn validate_item(item: &Item) -> Result<()> {
     let expected = match item.action {
         Action::RevokeDelegated => REVOKE_DELEGATED,
@@ -168,41 +180,89 @@ pub fn validate_item(item: &Item) -> Result<()> {
             item.action
         );
     }
+    let input = item.input.as_object();
+    let keys: BTreeSet<&str> = input
+        .map(|o| o.keys().map(String::as_str).collect())
+        .unwrap_or_default();
+    let params = item.input["parameters"].as_object();
+    let param_keys: BTreeSet<&str> = params
+        .map(|o| o.keys().map(String::as_str).collect())
+        .unwrap_or_default();
     let p = &item.input["parameters"];
-    let ok = match item.action {
-        Action::RevokeDelegated => {
-            p["oAuth2PermissionGrant-id"]
+    let e = &item.expects;
+    let same = |param: &str, expected: &str| {
+        p[param].as_str().is_some_and(is_guid_like)
+            && e[expected]
                 .as_str()
-                .is_some_and(is_guid_like)
-                && item.input.get("body").is_none()
-        }
-        Action::NarrowDelegated => {
-            p["oAuth2PermissionGrant-id"]
-                .as_str()
-                .is_some_and(is_guid_like)
-                && item.input["body"].as_object().is_some_and(|b| {
-                    b.len() == 1 && b["scope"].as_str().is_some_and(|s| !s.trim().is_empty())
-                })
-        }
-        Action::RemoveAppRole => {
-            p["servicePrincipal-id"].as_str().is_some_and(is_guid_like)
-                && p["appRoleAssignment-id"].as_str().is_some_and(is_guid_like)
-                && item.input.get("body").is_none()
-        }
-        Action::Disable => {
-            p["servicePrincipal-id"].as_str() == Some(item.service_principal_id.as_str())
-                && is_guid_like(&item.service_principal_id)
-                && item.input["body"] == json!({"accountEnabled": false})
-        }
+                .is_some_and(|x| x.eq_ignore_ascii_case(p[param].as_str().unwrap_or_default()))
     };
+    let client = e["client"]
+        .as_str()
+        .or(e["service_principal_id"].as_str())
+        .is_some_and(|c| c.eq_ignore_ascii_case(&item.service_principal_id));
+    let ok = is_guid_like(&item.service_principal_id)
+        && client
+        && match item.action {
+            Action::RevokeDelegated => {
+                keys == BTreeSet::from(["parameters"])
+                    && param_keys == BTreeSet::from(["oAuth2PermissionGrant-id"])
+                    && same("oAuth2PermissionGrant-id", "grant_id")
+            }
+            Action::NarrowDelegated => {
+                keys == BTreeSet::from(["parameters", "body"])
+                    && param_keys == BTreeSet::from(["oAuth2PermissionGrant-id"])
+                    && same("oAuth2PermissionGrant-id", "grant_id")
+                    && item.input["body"].as_object().is_some_and(|b| {
+                        b.len() == 1
+                            && b["scope"].as_str().is_some_and(|s| {
+                                !s.trim().is_empty() && s.chars().count() <= MAX_SCOPE_CHARS
+                            })
+                    })
+                    && narrows(item)
+            }
+            Action::RemoveAppRole => {
+                keys == BTreeSet::from(["parameters"])
+                    && param_keys == BTreeSet::from(["servicePrincipal-id", "appRoleAssignment-id"])
+                    && same("servicePrincipal-id", "resource_id")
+                    && same("appRoleAssignment-id", "assignment_id")
+            }
+            Action::Disable => {
+                keys == BTreeSet::from(["parameters", "body"])
+                    && param_keys == BTreeSet::from(["servicePrincipal-id"])
+                    && p["servicePrincipal-id"]
+                        .as_str()
+                        .is_some_and(|s| s.eq_ignore_ascii_case(&item.service_principal_id))
+                    && item.input["body"] == json!({"accountEnabled": false})
+                    && e["enabled"] == json!(true)
+            }
+        };
     if !ok {
         bail!(
-            "item {}: input does not match the {:?} action (disable only allows {{\"accountEnabled\": false}})",
+            "item {}: input does not match the {:?} action and the target it expects (disable only allows {{\"accountEnabled\": false}}; narrowing may only remove scopes)",
             item.id,
             item.action
         );
     }
     Ok(())
+}
+
+/// A narrowing item's new scopes are a non-empty, strict subset of the scopes
+/// the grant held when planned. Re-checked against the live grant in
+/// [`expected_input`].
+fn narrows(item: &Item) -> bool {
+    let before: BTreeSet<String> = item.expects["scopes"]
+        .as_array()
+        .into_iter()
+        .flatten()
+        .filter_map(|s| s.as_str().map(str::to_ascii_lowercase))
+        .collect();
+    let after: BTreeSet<String> = item.input["body"]["scope"]
+        .as_str()
+        .unwrap_or_default()
+        .split_whitespace()
+        .map(str::to_ascii_lowercase)
+        .collect();
+    !after.is_empty() && after.is_subset(&before) && after.len() < before.len()
 }
 
 fn risk_label(operation: &str) -> String {
@@ -374,6 +434,12 @@ pub fn build(inventory: &Inventory, apps: &[String], actions: &[Action]) -> Resu
     if items.is_empty() {
         bail!("nothing to change: the selected apps have nothing the selected actions apply to");
     }
+    if items.len() > 100 {
+        bail!(
+            "the plan would hold {} items; a plan holds at most 100, so plan fewer apps or actions at a time",
+            items.len()
+        );
+    }
     for (i, item) in items.iter_mut().enumerate() {
         item.id = format!("item-{}", i + 1);
     }
@@ -389,17 +455,136 @@ pub fn build(inventory: &Inventory, apps: &[String], actions: &[Action]) -> Resu
     Ok(plan)
 }
 
+/// The live object an item targets, described from the fresh inventory. This,
+/// not plan text, is what the operator is shown before approving.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct Target {
+    pub app: String,
+    pub app_id: String,
+    pub service_principal_id: String,
+    pub owner_tenant: String,
+    /// What the request changes, in words, for example
+    /// `revoke AllPrincipals grant <id> on Microsoft Graph (Files.ReadWrite.All openid)`.
+    pub change: String,
+}
+
+/// The exact request for `item`, rebuilt from the live tenant, and the target
+/// it changes. `None` when the target no longer exists.
+fn expected_input(item: &Item, inventory: &Inventory) -> Option<(Value, Target)> {
+    let app = inventory.apps.iter().find(|a| {
+        a.service_principal_id
+            .eq_ignore_ascii_case(&item.service_principal_id)
+    })?;
+    let target = |change: String| Target {
+        app: app.display_name.clone(),
+        app_id: app.app_id.clone(),
+        service_principal_id: app.service_principal_id.clone(),
+        owner_tenant: format!("{:?}", app.owner_tenant).to_lowercase(),
+        change,
+    };
+    let grant = || {
+        let id = item.expects["grant_id"].as_str()?;
+        app.delegated_grants
+            .iter()
+            .find(|g| g.grant_id.eq_ignore_ascii_case(id))
+    };
+    match item.action {
+        Action::RevokeDelegated => {
+            let g = grant()?;
+            Some((
+                json!({"parameters": {"oAuth2PermissionGrant-id": g.grant_id}}),
+                target(format!(
+                    "revoke {} grant {} on {} ({})",
+                    g.consent_type,
+                    g.grant_id,
+                    g.resource_name,
+                    g.scopes.join(" ")
+                )),
+            ))
+        }
+        Action::NarrowDelegated => {
+            let g = grant()?;
+            // The new scope list must be a non-empty strict subset of the
+            // live grant's scopes; anything else could widen access.
+            let live: BTreeSet<String> = g.scopes.iter().map(|s| s.to_ascii_lowercase()).collect();
+            let requested: Vec<&str> = item.input["body"]["scope"]
+                .as_str()?
+                .split_whitespace()
+                .collect();
+            let keep: Vec<&String> = g
+                .scopes
+                .iter()
+                .filter(|s| requested.iter().any(|r| r.eq_ignore_ascii_case(s)))
+                .collect();
+            let all_known = requested
+                .iter()
+                .all(|r| live.contains(&r.to_ascii_lowercase()));
+            if !all_known || keep.is_empty() || keep.len() >= g.scopes.len() {
+                return Some((Value::Null, target(String::new())));
+            }
+            let scope = keep
+                .iter()
+                .map(|s| s.as_str())
+                .collect::<Vec<_>>()
+                .join(" ");
+            let removed: Vec<&str> = g
+                .scopes
+                .iter()
+                .filter(|s| !keep.contains(s))
+                .map(String::as_str)
+                .collect();
+            Some((
+                json!({"parameters": {"oAuth2PermissionGrant-id": g.grant_id},
+                    "body": {"scope": scope}}),
+                target(format!(
+                    "narrow {} grant {} on {}: remove {}, keep {scope}",
+                    g.consent_type,
+                    g.grant_id,
+                    g.resource_name,
+                    removed.join(" ")
+                )),
+            ))
+        }
+        Action::RemoveAppRole => {
+            let id = item.expects["assignment_id"].as_str()?;
+            let p = app
+                .application_permissions
+                .iter()
+                .find(|p| p.assignment_id.eq_ignore_ascii_case(id))?;
+            Some((
+                json!({"parameters": {"servicePrincipal-id": p.resource_id,
+                    "appRoleAssignment-id": p.assignment_id}}),
+                target(format!(
+                    "remove application permission {} on {} (assignment {})",
+                    p.permission, p.resource_name, p.assignment_id
+                )),
+            ))
+        }
+        Action::Disable => Some((
+            json!({"parameters": {"servicePrincipal-id": app.service_principal_id},
+                "body": {"accountEnabled": false}}),
+            target(format!(
+                "disable service principal {} (sign-in stops; grants stay)",
+                app.service_principal_id
+            )),
+        )),
+    }
+}
+
 /// What the item expects, recomputed from a fresh inventory (`None` when the
-/// target no longer exists).
+/// target no longer exists). Matched by service principal object id only.
 fn current_state(item: &Item, inventory: &Inventory) -> Option<Value> {
-    let app = inventory.app(&item.service_principal_id)?;
+    let app = inventory.apps.iter().find(|a| {
+        a.service_principal_id
+            .eq_ignore_ascii_case(&item.service_principal_id)
+    })?;
     match item.action {
         Action::RevokeDelegated | Action::NarrowDelegated => {
             let grant_id = item.expects["grant_id"].as_str()?;
             let g = app
                 .delegated_grants
                 .iter()
-                .find(|g| g.grant_id == grant_id)?;
+                .find(|g| g.grant_id.eq_ignore_ascii_case(grant_id))?;
             Some(
                 json!({"grant_id": g.grant_id, "client": app.service_principal_id,
                 "consent_type": g.consent_type, "scopes": g.scopes}),
@@ -410,7 +595,7 @@ fn current_state(item: &Item, inventory: &Inventory) -> Option<Value> {
             let p = app
                 .application_permissions
                 .iter()
-                .find(|p| p.assignment_id == id)?;
+                .find(|p| p.assignment_id.eq_ignore_ascii_case(id))?;
             Some(
                 json!({"assignment_id": p.assignment_id, "client": app.service_principal_id,
                 "resource_id": p.resource_id, "app_role_id": p.app_role_id}),
@@ -428,13 +613,23 @@ pub struct Refusal {
     pub reason: String,
 }
 
-/// Check a plan against a fresh inventory. Returns the items still valid and
-/// the refusals; nothing is sent.
+/// An item that may be applied now, with the live target it changes.
+#[derive(Debug, Clone)]
+pub struct Checked<'a> {
+    pub item: &'a Item,
+    pub target: Target,
+}
+
+/// Most a plan's `created_at` may lie in the future (clock skew).
+const MAX_CLOCK_SKEW: std::time::Duration = std::time::Duration::from_secs(300);
+
+/// Check a plan against a fresh inventory. Returns the items still valid (with
+/// the live target each changes) and the refusals; nothing is sent.
 pub fn check_fresh<'a>(
     plan: &'a Plan,
     inventory: &Inventory,
     now: junction_watch::clock::Instant,
-) -> Result<(Vec<&'a Item>, Vec<Refusal>)> {
+) -> Result<(Vec<Checked<'a>>, Vec<Refusal>)> {
     if !plan.tenant_id.eq_ignore_ascii_case(&inventory.tenant_id) {
         bail!(
             "the plan is for tenant {}, not {}",
@@ -444,22 +639,54 @@ pub fn check_fresh<'a>(
     }
     let created = junction_watch::clock::Instant::parse(&plan.created_at)
         .context("the plan's created_at is not a timestamp")?;
+    if created > now.plus(MAX_CLOCK_SKEW) {
+        bail!("the plan is dated in the future; run `junction apps plan` again");
+    }
     if now.since(created) > std::time::Duration::from_secs(MAX_PLAN_AGE_HOURS * 3600) {
         bail!("the plan is older than {MAX_PLAN_AGE_HOURS} hours; run `junction apps plan` again");
     }
     let mut valid = vec![];
     let mut refused = vec![];
+    let refuse = |refused: &mut Vec<Refusal>, item: &Item, reason: &str| {
+        refused.push(Refusal {
+            item: item.id.clone(),
+            reason: reason.into(),
+        })
+    };
     for item in &plan.items {
-        match current_state(item, inventory) {
-            Some(state) if state == item.expects => valid.push(item),
-            Some(_) => refused.push(Refusal {
-                item: item.id.clone(),
-                reason: "the target changed since the plan was made (stale plan)".into(),
-            }),
-            None => refused.push(Refusal {
-                item: item.id.clone(),
-                reason: "the target no longer exists".into(),
-            }),
+        let live_app = inventory.apps.iter().find(|a| {
+            a.service_principal_id
+                .eq_ignore_ascii_case(&item.service_principal_id)
+        });
+        if live_app.is_some_and(|a| a.is_microsoft()) {
+            refuse(
+                &mut refused,
+                item,
+                "the target is a Microsoft first-party application",
+            );
+            continue;
+        }
+        match (
+            current_state(item, inventory),
+            expected_input(item, inventory),
+        ) {
+            (Some(state), Some((input, target))) if state == item.expects => {
+                if input == item.input {
+                    valid.push(Checked { item, target });
+                } else {
+                    refuse(
+                        &mut refused,
+                        item,
+                        "the request does not match the live target (the plan was edited, or narrowing would not only remove scopes)",
+                    );
+                }
+            }
+            (Some(_), _) => refuse(
+                &mut refused,
+                item,
+                "the target changed since the plan was made (stale plan)",
+            ),
+            (None, _) => refuse(&mut refused, item, "the target no longer exists"),
         }
     }
     Ok((valid, refused))
@@ -496,9 +723,12 @@ pub fn effective_policy(operator: &Policy, plan: &Plan) -> Result<Policy> {
 /// Asks the operator to approve one item. The CLI implements this with the
 /// controlling terminal; tests use a scripted approver.
 pub trait Approver: Send + Sync {
+    /// Approve `item`. `target` is the live object it changes, described from
+    /// the fresh inventory; show that, not plan text.
     fn approve(
         &self,
         item: &Item,
+        target: &Target,
         operation: &JunctionOperation,
         endpoint: &str,
         audience: &str,
@@ -526,7 +756,7 @@ pub struct Outcome {
 /// Approve and send each still-valid item in order. A declined or failed item
 /// stops the run, so the operator can review before anything else changes.
 pub async fn run(
-    valid: &[&Item],
+    valid: &[Checked<'_>],
     refused: &[Refusal],
     approver: &dyn Approver,
     sender: &dyn Sender,
@@ -544,16 +774,17 @@ pub async fn run(
             reason: Some(r.reason.clone()),
         })
         .collect();
-    for item in valid {
+    for checked in valid {
+        let item = checked.item;
         let op = registry.resolve(&item.operation, None, false)?;
         let base = |status: &str, reason: Option<String>| Outcome {
             item: item.id.clone(),
             operation: item.operation.clone(),
-            app: item.app.clone(),
+            app: checked.target.app.clone(),
             status: status.into(),
             reason,
         };
-        if let Err(e) = approver.approve(item, op, endpoint, audience) {
+        if let Err(e) = approver.approve(item, &checked.target, op, endpoint, audience) {
             out.push(base("declined", Some(e.to_string())));
             break;
         }
@@ -722,7 +953,7 @@ mod tests {
             operation: DISABLE.into(),
             input: json!({"parameters": {"servicePrincipal-id": "sp1"}, "body": {"accountEnabled": false}}),
             risk: "privileged".into(),
-            expects: json!({}),
+            expects: json!({"service_principal_id": "sp1", "enabled": true}),
             why: String::new(),
             rollback: String::new(),
         };

@@ -664,6 +664,7 @@ impl Approver for Scripted {
     fn approve(
         &self,
         item: &Item,
+        _: &apply::Target,
         _: &junction_core::JunctionOperation,
         _: &str,
         _: &str,
@@ -777,6 +778,11 @@ async fn every_item_is_approved_before_it_is_sent_and_a_decline_stops_the_run() 
     let now = Instant::parse(&inv.captured_at).unwrap();
     let (valid, refused) = apply::check_fresh(&plan, &inv, now).unwrap();
     assert_eq!((valid.len(), refused.len()), (2, 0));
+    assert!(
+        valid
+            .iter()
+            .all(|c| c.target.app == "Legacy Provisioning Script")
+    );
 
     // Operator approves the first item and declines the second.
     let approver = Scripted {
@@ -895,4 +901,115 @@ async fn operator_deny_rules_cannot_be_approved_away() {
         ..Default::default()
     };
     assert!(apply::effective_policy(&other, &plan).is_err());
+}
+
+// --- adversarial review follow-ups on #63 ----------------------------------------------
+
+/// A one-item plan for `action` on `app`, ready to tamper with.
+async fn one_item(app: &str, action: Action) -> (Inventory, Plan) {
+    let inv = inventory("tenant").await.unwrap();
+    let mut plan = apply::build(&inv, &[app.into()], &[action]).unwrap();
+    plan.items.truncate(1);
+    (inv, plan)
+}
+
+fn refused_reason(plan: &Plan, inv: &Inventory) -> String {
+    let now = Instant::parse(&inv.captured_at).unwrap();
+    let (valid, refused) = apply::check_fresh(plan, inv, now).unwrap();
+    assert!(valid.is_empty(), "tampered item was accepted");
+    refused[0].reason.clone()
+}
+
+#[tokio::test]
+async fn a_plan_cannot_point_an_item_at_a_different_target() {
+    // Revoke: keep `expects`, swap the grant id that would actually be deleted.
+    let (inv, mut plan) = one_item(PDF, Action::RevokeDelegated).await;
+    plan.items[0].input["parameters"]["oAuth2PermissionGrant-id"] = "grant-cal-guest".into();
+    assert!(Plan::parse(&serde_json::to_string(&plan).unwrap()).is_err());
+    assert!(refused_reason(&plan, &inv).contains("does not match"));
+
+    // Remove app role: swap the assignment id.
+    let (inv, mut plan) = one_item(LEGACY, Action::RemoveAppRole).await;
+    plan.items[0].input["parameters"]["appRoleAssignment-id"] = "asg-mailread-2".into();
+    assert!(Plan::parse(&serde_json::to_string(&plan).unwrap()).is_err());
+    assert!(!refused_reason(&plan, &inv).is_empty());
+
+    // Disable: point the whole item at Exchange Online while keeping the app name.
+    let (inv, mut plan) = one_item(PDF, Action::Disable).await;
+    let exo = "00000000-0000-4000-a000-000000000008";
+    let item = &mut plan.items[0];
+    item.service_principal_id = exo.into();
+    item.input["parameters"]["servicePrincipal-id"] = exo.into();
+    item.expects = serde_json::json!({"service_principal_id": exo, "enabled": true});
+    assert_eq!(item.app, "Free PDF Helper");
+    assert!(refused_reason(&plan, &inv).contains("Microsoft first-party"));
+
+    // A valid item reports the live target, not the plan's label.
+    let (inv, mut plan) = one_item(PDF, Action::Disable).await;
+    plan.items[0].app = "Something harmless".into();
+    let now = Instant::parse(&inv.captured_at).unwrap();
+    let (valid, _) = apply::check_fresh(&plan, &inv, now).unwrap();
+    assert_eq!(valid[0].target.app, "Free PDF Helper");
+    assert!(
+        valid[0]
+            .target
+            .change
+            .starts_with("disable service principal")
+    );
+}
+
+#[tokio::test]
+async fn narrowing_can_never_widen_a_grant() {
+    let (inv, plan) = one_item(PDF, Action::NarrowDelegated).await;
+    // Untouched, the narrowing item is valid and says what it removes.
+    let now = Instant::parse(&inv.captured_at).unwrap();
+    let (valid, _) = apply::check_fresh(&plan, &inv, now).unwrap();
+    assert!(
+        valid[0]
+            .target
+            .change
+            .contains("remove Files.ReadWrite.All"),
+        "{:?}",
+        valid[0].target
+    );
+
+    for scope in [
+        // A new scope the grant never held.
+        "openid Directory.AccessAsUser.All",
+        // Every original scope (nothing removed).
+        "Files.ReadWrite.All offline_access openid profile",
+    ] {
+        let mut tampered = plan.clone();
+        tampered.items[0].input["body"]["scope"] = scope.into();
+        assert!(
+            Plan::parse(&serde_json::to_string(&tampered).unwrap()).is_err(),
+            "{scope}"
+        );
+        assert!(!refused_reason(&tampered, &inv).is_empty(), "{scope}");
+    }
+    // Widening `expects` to match does not help: the live grant decides.
+    let mut both = plan.clone();
+    both.items[0].expects["scopes"] =
+        serde_json::json!(["Directory.AccessAsUser.All", "openid", "profile"]);
+    both.items[0].input["body"]["scope"] = "Directory.AccessAsUser.All openid".into();
+    assert!(!refused_reason(&both, &inv).is_empty());
+}
+
+#[tokio::test]
+async fn future_dated_plans_and_oversized_inputs_are_refused() {
+    let (inv, mut plan) = one_item(PDF, Action::Disable).await;
+    let now = Instant::parse(&inv.captured_at).unwrap();
+    plan.created_at = "2099-01-01T00:00:00Z".into();
+    let error = apply::check_fresh(&plan, &inv, now)
+        .unwrap_err()
+        .to_string();
+    assert!(error.contains("future"), "{error}");
+
+    // Extra keys anywhere in the input are refused at parse, before any prompt.
+    let (_, mut plan) = one_item(PDF, Action::RevokeDelegated).await;
+    plan.items[0].input["parameters"]["extra"] = 1.into();
+    assert!(Plan::parse(&serde_json::to_string(&plan).unwrap()).is_err());
+    let (_, mut plan) = one_item(PDF, Action::RevokeDelegated).await;
+    plan.items[0].input["headers"] = serde_json::json!({});
+    assert!(Plan::parse(&serde_json::to_string(&plan).unwrap()).is_err());
 }

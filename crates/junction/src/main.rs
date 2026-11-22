@@ -74,7 +74,8 @@ enum Command {
     /// Long-term audit and evidence archive in customer-owned immutable storage.
     Archive(junction_archive::cli::ArchiveArgs),
     /// Connected-app and OAuth governance: inventory enterprise apps, OAuth
-    /// clients, permissions and consent grants with risk flags (read-only).
+    /// clients, permissions and consent grants with risk flags (read-only), and
+    /// revoke or restrict access with per-item terminal approval (`apply`).
     Apps(junction_check::governance::cli::AppsArgs),
     /// Explore the API catalog in an interactive Ratatui terminal interface.
     Tui {
