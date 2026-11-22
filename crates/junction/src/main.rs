@@ -71,6 +71,8 @@ enum Command {
     /// Read-only security posture checks (identity, endpoint, ASR, email, Intune,
     /// Sentinel, backups) with Essential Eight, ISM, CIS and ATT&CK mappings.
     Check(junction_check::cli::CheckArgs),
+    /// Long-term audit and evidence archive in customer-owned immutable storage.
+    Archive(junction_archive::cli::ArchiveArgs),
     /// Explore the API catalog in an interactive Ratatui terminal interface.
     Tui {
         #[arg(long)]
@@ -780,6 +782,10 @@ async fn run() -> Result<()> {
     };
     if let Command::Watch(args) = cli.command {
         let result = junction_watch::cli::run(args).await?;
+        return output_options.emit(&result);
+    }
+    if let Command::Archive(args) = cli.command {
+        let result = junction_archive::cli::run(args).await?;
         return output_options.emit(&result);
     }
     if let Command::Check(args) = cli.command {
@@ -1927,6 +1933,7 @@ async fn run() -> Result<()> {
         | Command::Sources { .. }
         | Command::Context { .. }
         | Command::Check(_)
+        | Command::Archive(_)
         | Command::Watch(_) => unreachable!(),
     };
     output_options.emit(&output)?;

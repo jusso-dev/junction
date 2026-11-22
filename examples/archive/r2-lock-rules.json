@@ -1,0 +1,14 @@
+[
+  {
+    "id": "junction-archive-365-days",
+    "enabled": true,
+    "prefix": "v1/",
+    "condition": { "type": "Age", "maxAgeSeconds": 31536000 }
+  },
+  {
+    "id": "junction-archive-legal-holds",
+    "enabled": true,
+    "prefix": "holds/",
+    "condition": { "type": "Indefinite" }
+  }
+]

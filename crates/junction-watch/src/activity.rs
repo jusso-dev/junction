@@ -92,11 +92,12 @@ pub struct CollectOutcome {
     pub error: Option<String>,
 }
 
-struct ContentItem {
-    id: String,
-    uri: Url,
-    created: String,
-    expiration: Option<String>,
+/// One entry of a content listing, already checked to point at this tenant's feed.
+pub struct ContentItem {
+    pub id: String,
+    pub uri: Url,
+    pub created: String,
+    pub expiration: Option<String>,
 }
 
 pub async fn collect(
@@ -232,7 +233,7 @@ pub async fn collect_all(
 /// Microsoft refused this one blob for a reason that will not change on retry.
 /// Authentication and permission failures are deliberately excluded: they are
 /// about the app, not the blob, and must never cause content to be skipped.
-fn is_poison(e: &CallError) -> bool {
+pub fn is_poison(e: &CallError) -> bool {
     match e.kind {
         FailureKind::Malformed => true,
         FailureKind::Http => {
@@ -244,7 +245,8 @@ fn is_poison(e: &CallError) -> bool {
     }
 }
 
-fn is_throttle(e: &CallError) -> bool {
+/// Throttling by Microsoft (`429`, `AF429`) or by Junction's own request budget.
+pub fn is_throttle(e: &CallError) -> bool {
     matches!(e.kind, FailureKind::LocalThrottle)
         || (matches!(e.kind, FailureKind::Http)
             && (e.status == Some(429) || e.code.as_deref() == Some("AF429")))
@@ -483,7 +485,9 @@ fn capability(
     }
 }
 
-async fn list_window(
+/// List one content window (at most 24 hours), following only page links on this
+/// tenant's listing endpoint. Returns accepted items and the count rejected.
+pub async fn list_window(
     up: &impl Upstream,
     content_type: &str,
     start: Instant,
@@ -601,7 +605,8 @@ fn content_item(up: &impl Upstream, raw: &Value) -> Option<ContentItem> {
     })
 }
 
-async fn fetch_blob(
+/// Fetch one content blob; it must be a JSON array of audit records.
+pub async fn fetch_blob(
     up: &impl Upstream,
     uri: &Url,
     backoff: &Backoff,
