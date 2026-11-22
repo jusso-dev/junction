@@ -1,12 +1,15 @@
 //! `junction archive ...` commands.
 use crate::{
     catalog,
+    checkpoint::Checkpoint,
+    collect,
     config::{ArchiveConfig, write_new_private},
     store::{DeleteProbe, ObjectStore, PutOutcome},
 };
 use anyhow::Result;
 use clap::Subcommand;
 use junction_watch::clock::Instant;
+use junction_watch::upstream::LiveUpstream;
 use serde_json::{Value, json};
 use std::path::PathBuf;
 
@@ -31,6 +34,10 @@ pub enum ArchiveCommand {
     /// Check the configured store: create-only writes, refused deletion and the
     /// retention the service reports. Writes one small canary object.
     Doctor,
+    /// Run one collection pass over every configured source.
+    Collect,
+    /// Show checkpoints, paused sources and recent gaps from local state.
+    Status,
 }
 
 pub async fn run(args: ArchiveArgs) -> Result<Value> {
@@ -42,7 +49,62 @@ pub async fn run(args: ArchiveArgs) -> Result<Value> {
             let store = config.open_store()?;
             doctor(&config, store.as_ref(), Instant::now()).await
         }
+        ArchiveCommand::Collect => {
+            let config = ArchiveConfig::load(&args.config)?;
+            let store = config.open_store()?;
+            let up = live_upstream(&config)?;
+            let mut checkpoint = Checkpoint::open(&config.state_directory, &config.tenant_id)?;
+            let outcomes = collect::collect_all(
+                &up,
+                store.as_ref(),
+                &mut checkpoint,
+                &config.sources,
+                Instant::now(),
+                &collect::CollectOptions::default(),
+            )
+            .await;
+            Ok(json!({"store": store.describe(), "sources": outcomes}))
+        }
+        ArchiveCommand::Status => {
+            let config = ArchiveConfig::load(&args.config)?;
+            let checkpoint = Checkpoint::open(&config.state_directory, &config.tenant_id)?;
+            Ok(status(&config, &checkpoint))
+        }
     }
+}
+
+fn live_upstream(config: &ArchiveConfig) -> Result<LiveUpstream> {
+    let mut policy = junction_policy::Policy::default();
+    policy.limits.max_requests_per_minute = config.max_requests_per_minute;
+    let governor = junction_policy::RequestGovernor::new(&policy)?;
+    let transport = junction_http::HttpTransport::new(
+        governor,
+        std::time::Duration::from_secs(60),
+        64 * 1024 * 1024,
+    )?;
+    LiveUpstream::new(&config.tenant_id, config.cloud, config.auth, transport)
+}
+
+fn status(config: &ArchiveConfig, checkpoint: &Checkpoint) -> Value {
+    let sources: Vec<Value> = config
+        .sources
+        .iter()
+        .map(|source| {
+            let state = checkpoint.get(source);
+            json!({
+                "source": source,
+                "watermark": state.and_then(|s| s.watermark.clone()),
+                "paused_until": state.and_then(|s| s.retry_after.clone()),
+                "unavailable": state.and_then(|s| s.unavailable.clone()),
+                "last_manifest_sha256": state.and_then(|s| s.last_manifest_sha256.clone()),
+            })
+        })
+        .collect();
+    json!({
+        "tenant_id": config.tenant_id,
+        "sources": sources,
+        "exactness": "at-least-once into storage; search and export deduplicate on record id",
+    })
 }
 
 fn init(path: &std::path::Path, tenant_id: &str) -> Result<Value> {
