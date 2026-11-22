@@ -153,6 +153,20 @@ pub async fn create_hold(
             search::MAX_LIMIT
         );
     }
+    // An unreadable object might hold matching records; a hold that silently
+    // skipped it would not protect what it claims to.
+    if !results.problems.is_empty() {
+        bail!(
+            "{} object(s) in range could not be read, so the hold cannot be complete: {}",
+            results.problems.len(),
+            results
+                .problems
+                .iter()
+                .map(|p| format!("{} ({})", p.key, p.problem))
+                .collect::<Vec<_>>()
+                .join("; ")
+        );
+    }
     let mut keys = BTreeSet::new();
     for key in &results.objects_read {
         keys.insert(key.clone());
@@ -178,6 +192,14 @@ pub async fn create_hold(
         objects: vec![],
         failed: vec![],
     };
+    // Record the intent, naming every object, before anything is held, so a
+    // crash part-way leaves a manifest that accounts for each held object.
+    let intent = HoldManifest {
+        action: "intent".into(),
+        failed: matching.iter().map(|k| format!("{k}: pending")).collect(),
+        ..manifest.clone()
+    };
+    write_hold_manifest(store, &intent).await?;
     for key in matching {
         match store.hold(&key, hold_id).await {
             Ok(h) => manifest.objects.push(HeldObject {
@@ -212,9 +234,10 @@ async fn objects_with_records(
         .collect();
     let mut out = vec![];
     for key in keys {
-        let Some(bytes) = store.get(key).await? else {
-            continue;
-        };
+        let bytes = store
+            .get(key)
+            .await?
+            .ok_or_else(|| anyhow::anyhow!("object {key} disappeared while placing the hold"))?;
         let decoded = crate::record::decode(key, &bytes)?;
         if decoded
             .records
@@ -227,6 +250,8 @@ async fn objects_with_records(
     Ok(out)
 }
 
+/// Every manifest of one hold. Fails if any is missing, altered or names
+/// another hold: release decisions must never be made on partial knowledge.
 async fn hold_manifests(
     store: &dyn ObjectStore,
     tenant: &str,
@@ -237,16 +262,54 @@ async fn hold_manifests(
         .list(&format!("{}{hold_id}/", hold_prefix(tenant)))
         .await?
     {
-        if let Some(bytes) = store.get(&key).await?
-            && let Ok(m) = serde_json::from_slice::<HoldManifest>(&bytes)
-            && m.schema == HOLD_SCHEMA
-            && m.hold_id == hold_id
-        {
-            out.push(m);
+        let bytes = store
+            .get(&key)
+            .await?
+            .ok_or_else(|| anyhow::anyhow!("hold manifest {key} is listed but missing"))?;
+        let named = key
+            .rsplit('/')
+            .next()
+            .and_then(|n| n.strip_suffix(".json"))
+            .and_then(|n| n.rsplit('-').next());
+        if named != Some(sha256_hex(&bytes).as_str()) {
+            bail!("hold manifest {key} does not match its hash");
         }
+        let m: HoldManifest = serde_json::from_slice(&bytes)
+            .with_context(|| format!("hold manifest {key} is unreadable"))?;
+        if m.schema != HOLD_SCHEMA || m.hold_id != hold_id {
+            bail!("hold manifest {key} does not belong to hold {hold_id}");
+        }
+        out.push(m);
     }
-    out.sort_by(|a, b| a.created_at.cmp(&b.created_at));
+    // Same-second actions keep their written order: intent, create, release.
+    let rank = |a: &str| match a {
+        "intent" => 0,
+        "create" => 1,
+        _ => 2,
+    };
+    out.sort_by(|a, b| {
+        a.created_at
+            .cmp(&b.created_at)
+            .then(rank(&a.action).cmp(&rank(&b.action)))
+    });
     Ok(out)
+}
+
+/// Every object a hold may protect: those it held, plus those its intent
+/// named (a crash between intent and create can leave held objects the
+/// create manifest never recorded).
+fn protected_keys(manifests: &[HoldManifest]) -> BTreeSet<String> {
+    let mut keys = BTreeSet::new();
+    for m in manifests.iter().filter(|m| m.action != "release") {
+        keys.extend(m.objects.iter().map(|o| o.key.clone()));
+        keys.extend(
+            m.failed
+                .iter()
+                .filter_map(|f| f.split(": ").next())
+                .map(str::to_owned),
+        );
+    }
+    keys
 }
 
 /// Active holds: created and not released, newest action last.
@@ -260,14 +323,32 @@ pub async fn list_holds(store: &dyn ObjectStore, tenant: &str) -> Result<Vec<Val
     }
     let mut out = vec![];
     for id in ids {
-        let manifests = hold_manifests(store, tenant, &id).await?;
-        let Some(created) = manifests.iter().find(|m| m.action == "create") else {
+        let manifests = match hold_manifests(store, tenant, &id).await {
+            Ok(m) => m,
+            Err(e) => {
+                out.push(json!({"holdId": id, "state": "unreadable", "problem": format!("{e:#}")}));
+                continue;
+            }
+        };
+        let Some(created) = manifests
+            .iter()
+            .rev()
+            .find(|m| m.action == "create")
+            .or_else(|| manifests.iter().find(|m| m.action == "intent"))
+        else {
             continue;
         };
         let released = manifests.iter().rev().find(|m| m.action == "release");
+        let state = match released {
+            Some(r) if r.failed.is_empty() => "released",
+            Some(_) => "release_incomplete",
+            None if created.action == "intent" => "incomplete",
+            None if created.failed.is_empty() => "active",
+            None => "incomplete",
+        };
         out.push(json!({
             "holdId": id,
-            "state": if released.is_some() { "released" } else if created.failed.is_empty() { "active" } else { "incomplete" },
+            "state": state,
             "createdAt": created.created_at,
             "createdBy": created.created_by,
             "reason": created.reason,
@@ -294,20 +375,44 @@ pub async fn release_hold(
     let manifests = hold_manifests(store, tenant, hold_id).await?;
     let created = manifests
         .iter()
+        .rev()
         .find(|m| m.action == "create")
+        .or_else(|| manifests.iter().find(|m| m.action == "intent"))
         .cloned()
         .ok_or_else(|| anyhow::anyhow!("no hold named {hold_id}"))?;
-    if manifests.iter().any(|m| m.action == "release") {
+    // Objects an earlier, partial release already cleared.
+    let already: BTreeSet<String> = manifests
+        .iter()
+        .filter(|m| m.action == "release")
+        .flat_map(|m| m.objects.iter().map(|o| o.key.clone()))
+        .collect();
+    let last_release = manifests.iter().rev().find(|m| m.action == "release");
+    if last_release.is_some_and(|r| r.failed.is_empty()) {
         bail!("hold {hold_id} is already released");
     }
-    // Objects still covered by other active holds keep their flag.
+    // Objects other holds still need. Any hold that cannot be read fails the
+    // release: clearing a flag on partial knowledge could drop protection.
     let mut covered_elsewhere = BTreeSet::new();
-    for other in list_holds(store, tenant).await? {
-        let id = other["holdId"].as_str().unwrap_or_default();
-        if id != hold_id && other["state"] != "released" {
-            for m in hold_manifests(store, tenant, id).await? {
-                covered_elsewhere.extend(m.objects.into_iter().map(|o| o.key));
-            }
+    let prefix = hold_prefix(tenant);
+    let mut others = BTreeSet::new();
+    for key in store.list(&prefix).await? {
+        if let Some(id) = key.strip_prefix(&prefix).and_then(|r| r.split('/').next())
+            && id != hold_id
+        {
+            others.insert(id.to_owned());
+        }
+    }
+    for id in others {
+        let theirs = hold_manifests(store, tenant, &id).await.with_context(|| {
+            format!("cannot confirm what hold {id} still protects; release refused")
+        })?;
+        let released = theirs
+            .iter()
+            .rev()
+            .find(|m| m.action == "release")
+            .is_some_and(|r| r.failed.is_empty());
+        if !released {
+            covered_elsewhere.extend(protected_keys(&theirs));
         }
     }
     let mut release = HoldManifest {
@@ -319,19 +424,36 @@ pub async fn release_hold(
         failed: vec![],
         ..created.clone()
     };
-    for object in &created.objects {
-        if object.method == "legal_hold_flag" && covered_elsewhere.contains(&object.key) {
+    let mut targets: Vec<HeldObject> = created.objects.clone();
+    // Objects named only in the intent (a crash before create) are released too.
+    for key in protected_keys(&manifests) {
+        if !targets.iter().any(|o| o.key == key) {
+            targets.push(HeldObject {
+                key: key.clone(),
+                method: created
+                    .objects
+                    .first()
+                    .map_or("unknown".into(), |o| o.method.clone()),
+                held_key: key,
+            });
+        }
+    }
+    for object in targets {
+        if already.contains(&object.key) {
+            continue;
+        }
+        if covered_elsewhere.contains(&object.key) {
             continue;
         }
         match store.release(&object.key).await {
-            Ok(()) => release.objects.push(object.clone()),
+            Ok(()) => release.objects.push(object),
             Err(e) => release.failed.push(format!("{}: {e:#}", object.key)),
         }
     }
     write_hold_manifest(store, &release).await?;
     if !release.failed.is_empty() {
         bail!(
-            "release of {hold_id} is incomplete: {}",
+            "release of {hold_id} is incomplete; run the release again to retry: {}",
             release.failed.join("; ")
         );
     }
@@ -368,7 +490,19 @@ pub async fn audit(
 // ---------------------------------------------------------------------------
 // Export and verify
 
-/// Gaps recorded in manifests that overlap the range, for the searched sources.
+/// What an evidence bundle can say about completeness for one source.
+///
+/// Two kinds of gap are reported:
+///
+/// - **recorded**: gaps written into manifests (offline past the API window,
+///   quarantined blobs, rejected records) that overlap the range;
+/// - **uncovered**: parts of the range that no complete window manifest
+///   covers, because the collector was not running, has not reached them
+///   yet, or the source was never collected.
+///
+/// Offline gaps are filed with the window that resumed collection, which
+/// starts at the end of the gap, so manifests are read from 8 days before
+/// the range to 8 days after it.
 async fn gaps_in_range(
     store: &dyn ObjectStore,
     tenant: &str,
@@ -376,34 +510,87 @@ async fn gaps_in_range(
     from: Instant,
     to: Instant,
 ) -> Result<Vec<Value>> {
+    let margin = std::time::Duration::from_secs(8 * 86_400);
     let mut out = vec![];
-    // Manifests are filed by window start; a window that started up to 7 days
-    // before `from` can record a gap reaching into the range.
-    let start = from.minus(std::time::Duration::from_secs(8 * 86_400));
     for source in sources {
+        let mut covered: Vec<(Instant, Instant)> = vec![];
+        let start = from.minus(margin);
+        let end = to.plus(margin);
         let mut day = Instant(start.0.div_euclid(86_400_000) * 86_400_000);
-        while day < to {
+        while day < end {
             for key in store
                 .list(&manifest_date_prefix(tenant, source, day))
                 .await?
             {
                 let Some(bytes) = store.get(&key).await? else {
+                    out.push(
+                        json!({"source": source, "kind": "recorded", "manifest": key,
+                        "reason": "manifest listed but missing"}),
+                    );
                     continue;
                 };
                 let Ok(m) = Manifest::decode(&key, &bytes) else {
-                    out.push(json!({"source": source, "manifest": key, "reason": "manifest unreadable or altered"}));
+                    out.push(
+                        json!({"source": source, "kind": "recorded", "manifest": key,
+                        "reason": "manifest unreadable or altered"}),
+                    );
                     continue;
                 };
                 for g in &m.gaps {
                     if overlaps(g, from, to) {
-                        out.push(json!({"source": source, "from": g.from, "to": g.to, "reason": g.reason}));
+                        out.push(json!({"source": source, "kind": "recorded",
+                            "from": g.from, "to": g.to, "reason": g.reason}));
                     }
+                }
+                if m.complete
+                    && let (Ok(a), Ok(b)) = (
+                        Instant::parse(&m.window_start),
+                        Instant::parse(&m.window_end),
+                    )
+                    && b > a
+                {
+                    covered.push((a, b));
                 }
             }
             day = day.plus(std::time::Duration::from_secs(86_400));
         }
+        for (a, b) in uncovered(covered, from, to) {
+            out.push(json!({"source": source, "kind": "uncovered",
+                "from": a.to_rfc3339(), "to": b.to_rfc3339(),
+                "reason": "no complete collection window covers this period; records may be missing"}));
+        }
     }
     Ok(out)
+}
+
+/// Parts of `[from, to)` not covered by any interval in `covered`.
+fn uncovered(
+    mut covered: Vec<(Instant, Instant)>,
+    from: Instant,
+    to: Instant,
+) -> Vec<(Instant, Instant)> {
+    covered.sort();
+    let mut out = vec![];
+    let mut cursor = from;
+    for (a, b) in covered {
+        if b <= cursor {
+            continue;
+        }
+        if a >= to {
+            break;
+        }
+        if a > cursor {
+            out.push((cursor, a.min(to)));
+        }
+        cursor = cursor.max(b);
+        if cursor >= to {
+            break;
+        }
+    }
+    if cursor < to {
+        out.push((cursor, to));
+    }
+    out
 }
 
 fn overlaps(g: &Gap, from: Instant, to: Instant) -> bool {
@@ -428,12 +615,17 @@ Verify
   3. Or run: junction archive verify <this directory>
 
 Completeness
-  gaps lists every period inside the range where collection was incomplete.
-  A bundle never proves more than its gaps allow.
+  gaps lists every period inside the range where collection was incomplete:
+  recorded gaps written by the collector, and uncovered periods that no
+  complete collection window covers. A bundle never proves more than its gaps
+  allow.
 ";
 
 pub struct Export {
     pub manifest: Value,
+    /// Whether the export's audit entry was written to the store.
+    pub audit_written: bool,
+    pub audit_error: Option<String>,
 }
 
 /// Write an evidence bundle for `query` into `output` (a new directory).
@@ -479,7 +671,7 @@ pub async fn export(
         "tenantId": tenant,
         "storage": store.describe(),
         "range": {"from": from.to_rfc3339(), "to": to.to_rfc3339()},
-        "query": query,
+        "query": if full { serde_json::to_value(query)? } else { query.redacted() },
         "querySha256": query.sha256(),
         "sources": sources,
         "redacted": !full,
@@ -507,7 +699,10 @@ pub async fn export(
         &serde_json::to_string_pretty(&manifest)?,
     )?;
     crate::config::write_new_private(&output.join("README.txt"), README)?;
-    audit(
+    // Exports run under the read-only searcher identity, which cannot write
+    // to the store. The audit entry is then reported as not written, and the
+    // bundle itself stays valid.
+    let audited = audit(
         store,
         tenant,
         "export",
@@ -516,8 +711,12 @@ pub async fn export(
             "redacted": !full, "resultSetSha256": manifest["resultSetSha256"],
         }),
     )
-    .await?;
-    Ok(Export { manifest })
+    .await;
+    Ok(Export {
+        manifest,
+        audit_written: audited.is_ok(),
+        audit_error: audited.err().map(|e| format!("{e:#}")),
+    })
 }
 
 /// Recompute every hash in a bundle directory. Returns the problems found.
@@ -552,15 +751,43 @@ pub fn verify(bundle: &Path) -> Result<Vec<String>> {
             )),
         }
     }
+    if manifest["recordCount"].as_u64() != Some(lines.len() as u64) {
+        problems.push("record count does not match the records".to_owned());
+    }
     lines.sort();
+    let total = lines.len();
     lines.dedup();
+    if lines.len() != total {
+        problems.push(format!(
+            "records.ndjson repeats {} record(s)",
+            total - lines.len()
+        ));
+    }
     let mut joined = lines.join("\n");
     joined.push('\n');
     if manifest["resultSetSha256"].as_str() != Some(sha256_hex(joined.as_bytes()).as_str()) {
         problems.push("result-set hash does not match the records".to_owned());
     }
-    if manifest["recordCount"].as_u64() != Some(lines.len() as u64) {
-        problems.push("record count does not match the records".to_owned());
+    // A full bundle carries the exact query, so its hash can be recomputed.
+    // A redacted bundle carries the hash inside its redacted query too.
+    match (
+        manifest["redacted"].as_bool(),
+        manifest["querySha256"].as_str(),
+    ) {
+        (Some(false), Some(expected)) => {
+            let recomputed = serde_json::from_value::<Query>(manifest["query"].clone())
+                .map(|q| q.sha256())
+                .unwrap_or_default();
+            if recomputed != expected {
+                problems.push("query does not match querySha256".to_owned());
+            }
+        }
+        (Some(true), Some(expected)) => {
+            if manifest["query"]["querySha256"].as_str() != Some(expected) {
+                problems.push("query does not match querySha256".to_owned());
+            }
+        }
+        _ => problems.push("manifest lacks querySha256 or redacted".to_owned()),
     }
     Ok(problems)
 }

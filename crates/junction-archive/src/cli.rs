@@ -4,7 +4,7 @@ use crate::{
     checkpoint::Checkpoint,
     collect,
     config::{ArchiveConfig, write_new_private},
-    search, evidence,
+    evidence, search,
     store::{DeleteProbe, ObjectStore, PutOutcome},
 };
 use anyhow::Result;
@@ -262,6 +262,10 @@ pub async fn run(args: ArchiveArgs) -> Result<Value> {
                 "resultSetSha256": out.manifest["resultSetSha256"],
                 "gaps": out.manifest["gaps"].as_array().map_or(0, Vec::len),
                 "redacted": out.manifest["redacted"],
+                "audit_written": out.audit_written,
+                "audit_note": out.audit_error.map(|e| format!(
+                    "the export audit entry was not written to the store ({e}); a read-only searcher identity cannot write it. Record this export in your case notes."
+                )),
             }))
         }
         ArchiveCommand::Verify { bundle } => {
