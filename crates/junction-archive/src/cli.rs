@@ -4,7 +4,7 @@ use crate::{
     checkpoint::Checkpoint,
     collect,
     config::{ArchiveConfig, write_new_private},
-    search,
+    evidence, search,
     store::{DeleteProbe, ObjectStore, PutOutcome},
 };
 use anyhow::Result;
@@ -41,6 +41,57 @@ pub enum ArchiveCommand {
     Status,
     /// Search archived records. Output is redacted unless --full is given.
     Search(SearchArgs),
+    /// Place, list or release legal holds.
+    Hold {
+        #[command(subcommand)]
+        command: HoldCommand,
+    },
+    /// Write an evidence bundle (records, manifest with hashes, README) to a new directory.
+    Export(ExportArgs),
+    /// Recompute every hash in an evidence bundle directory.
+    Verify { bundle: PathBuf },
+}
+
+#[derive(Subcommand)]
+pub enum HoldCommand {
+    /// Hold every object holding a record that matches the filters.
+    Create {
+        /// Hold id: 1-64 letters, digits, - or _.
+        #[arg(long)]
+        name: String,
+        /// Why the hold is needed (case or matter reference).
+        #[arg(long)]
+        reason: String,
+        #[command(flatten)]
+        filter: FilterArgs,
+    },
+    /// List holds and their state.
+    List,
+    /// Release a hold (recorded; never deletes anything).
+    Release {
+        #[arg(long)]
+        name: String,
+        #[arg(long)]
+        reason: String,
+    },
+}
+
+#[derive(clap::Args)]
+pub struct ExportArgs {
+    #[command(flatten)]
+    pub filter: FilterArgs,
+    /// New directory to write the bundle into.
+    #[arg(long)]
+    pub output: PathBuf,
+    /// Why the bundle is being exported (assessment, incident reference).
+    #[arg(long)]
+    pub purpose: String,
+    /// Include UPNs, IP addresses and raw records.
+    #[arg(long)]
+    pub full: bool,
+    /// Confirm --full without a terminal prompt.
+    #[arg(long, requires = "full")]
+    pub yes: bool,
 }
 
 #[derive(clap::Args, Clone)]
@@ -148,6 +199,80 @@ pub async fn run(args: ArchiveArgs) -> Result<Value> {
             }
             let store = config.open_store()?;
             run_search(store.as_ref(), &config.tenant_id, &search_args).await
+        }
+        ArchiveCommand::Hold { command } => {
+            let config = ArchiveConfig::load(&args.config)?;
+            let store = config.open_store()?;
+            let tenant = &config.tenant_id;
+            match command {
+                HoldCommand::Create {
+                    name,
+                    reason,
+                    filter,
+                } => {
+                    let m = evidence::create_hold(
+                        store.as_ref(),
+                        tenant,
+                        &name,
+                        &reason,
+                        &filter.query(),
+                        Instant::now(),
+                    )
+                    .await?;
+                    Ok(
+                        json!({"hold": name, "records": m.records.len(), "objects": m.objects, "resultSetSha256": m.result_set_sha256}),
+                    )
+                }
+                HoldCommand::List => {
+                    Ok(json!({"holds": evidence::list_holds(store.as_ref(), tenant).await?}))
+                }
+                HoldCommand::Release { name, reason } => {
+                    let m = evidence::release_hold(
+                        store.as_ref(),
+                        tenant,
+                        &name,
+                        &reason,
+                        Instant::now(),
+                    )
+                    .await?;
+                    Ok(json!({"hold": name, "released_objects": m.objects.len(),
+                        "note": "Releasing never deletes. On R2 and local stores the copies under holds/ stay until an administrator changes the lock rule."}))
+                }
+            }
+        }
+        ArchiveCommand::Export(export_args) => {
+            let config = ArchiveConfig::load(&args.config)?;
+            if export_args.full {
+                confirm_full(export_args.yes, "export --full")?;
+            }
+            let store = config.open_store()?;
+            let out = evidence::export(
+                store.as_ref(),
+                &config.tenant_id,
+                &export_args.filter.query(),
+                export_args.full,
+                &export_args.purpose,
+                &export_args.output,
+                Instant::now(),
+            )
+            .await?;
+            Ok(json!({
+                "bundle": export_args.output.display().to_string(),
+                "records": out.manifest["recordCount"],
+                "resultSetSha256": out.manifest["resultSetSha256"],
+                "gaps": out.manifest["gaps"].as_array().map_or(0, Vec::len),
+                "redacted": out.manifest["redacted"],
+                "audit_written": out.audit_written,
+                "audit_note": out.audit_error.map(|e| format!(
+                    "the export audit entry was not written to the store ({e}); a read-only searcher identity cannot write it. Record this export in your case notes."
+                )),
+            }))
+        }
+        ArchiveCommand::Verify { bundle } => {
+            let problems = evidence::verify(&bundle)?;
+            Ok(
+                json!({"bundle": bundle.display().to_string(), "valid": problems.is_empty(), "problems": problems}),
+            )
         }
         ArchiveCommand::Status => {
             let config = ArchiveConfig::load(&args.config)?;

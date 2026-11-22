@@ -13,6 +13,7 @@ pub mod cli;
 pub mod collect;
 pub mod config;
 pub mod defender;
+pub mod evidence;
 pub mod manifest;
 pub mod record;
 pub mod search;
