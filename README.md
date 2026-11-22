@@ -128,6 +128,18 @@ junction watch probe              # live capability discovery
 junction watch run                # collect every 15 minutes, dashboard on 127.0.0.1:8787
 ```
 
+## M365 audit and evidence archive
+
+`junction archive` keeps the Microsoft 365 Unified Audit Log, Entra ID sign-in and audit logs, and Defender alerts and incidents in storage you own, for longer than Microsoft's default 90 or 180 days and without a full Sentinel ingestion bill. Records are written create-only to an Azure Blob container with version-level immutability or a Cloudflare R2 bucket with lock rules (12 months by default, extendable). Collection is read-only against the tenant and resumes without gaps (at-least-once, deduplicated on read). Search output is redacted by default, legal holds keep selected records past retention, and evidence bundles carry a hash of the result set and every recorded gap for IRAP assessments or incident reviews. Only a short, documented list of high-value events can be forwarded to Sentinel or Bower. Live tenant and storage validation are still required. See [docs/ARCHIVE.md](docs/ARCHIVE.md), [docs/ARCHIVE-SECURITY.md](docs/ARCHIVE-SECURITY.md) and [the Bower contract](docs/archive/BOWER-CONTRACT.md).
+
+```sh
+junction archive init --tenant-id <guid>      # secret-free configuration
+junction archive doctor                       # store is create-only and immutable
+junction archive collect                      # run on a schedule
+junction archive search --from 2026-11-01T00:00:00Z --to 2026-11-08T00:00:00Z --operation New-InboxRule
+junction archive export --from ... --to ... --purpose "IRAP assessment" --output ./bundle
+```
+
 ## Security posture checks
 
 `junction check` runs read-only security posture checks against one or many tenants and reports a score, the quick wins to fix first, and findings mapped to the ASD Essential Eight, the ISM, CIS benchmarks, NIST CSF 2.0 and MITRE ATT&CK. Packs cover identity (MFA, phishing-resistant admins, legacy authentication, Conditional Access baseline, admins, PIM), Defender for Endpoint coverage and protection settings, attack surface reduction rules, email (SPF, DKIM, DMARC and Exchange Online settings), Intune hardening and patching, Microsoft Sentinel, backups, applications and consent, collaboration and Azure. Every call runs under Junction's read-only policy; missing licences and permissions are reported as such, never as a pass or fail. Results come as a terminal table, JSON, Markdown or a self-contained HTML report, with history, drift and attested answers for controls no API exposes.
