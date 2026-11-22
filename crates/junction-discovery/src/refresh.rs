@@ -311,7 +311,7 @@ impl<'a> Refresh<'a> {
             || receipt.upstream != expected.upstream
             || receipt.bytes != fetched.bytes.len()
             || receipt.bytes as u64 != expected.bytes
-            || receipt.sha256 != format!("{:x}", Sha256::digest(&fetched.bytes))
+            || receipt.sha256 != crate::hex(&Sha256::digest(&fetched.bytes))
         {
             bail!("refresh document receipt mismatch");
         }
@@ -397,7 +397,7 @@ impl<'a> Refresh<'a> {
             || receipt.revision != self.inventory.revision
             || receipt.upstream != upstream.as_str()
             || receipt.bytes != fetched.bytes.len()
-            || receipt.sha256 != format!("{:x}", Sha256::digest(&fetched.bytes))
+            || receipt.sha256 != crate::hex(&Sha256::digest(&fetched.bytes))
         {
             bail!("refresh dependency receipt mismatch");
         }
@@ -505,7 +505,7 @@ mod tests {
                 revision: inventory.revision,
                 path: expected.path.clone(),
                 upstream: expected.upstream.clone(),
-                sha256: format!("{:x}", Sha256::digest(&bytes)),
+                sha256: crate::hex(&Sha256::digest(&bytes)),
                 bytes: bytes.len(),
             },
             bytes,

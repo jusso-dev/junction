@@ -141,8 +141,8 @@ impl State<'_> {
         }
         let (section, prefix) = section(&pointer)?;
         let name = format!(
-            "junction_external_{:x}",
-            Sha256::digest(serde_json::to_vec(&key)?)
+            "junction_external_{}",
+            crate::hex(&Sha256::digest(serde_json::to_vec(&key)?))
         );
         let reference = format!("{prefix}{name}");
         self.targets.insert(key, reference.clone());

@@ -11,6 +11,10 @@ use junction_schema::CanonicalSchema;
 use serde_json::{Value, json};
 use std::collections::{BTreeMap, BTreeSet};
 
+pub(crate) fn hex(bytes: &[u8]) -> String {
+    bytes.iter().map(|b| format!("{b:02x}")).collect()
+}
+
 /// Normalize OpenAPI 3 and Swagger 2 without flattening or losing schema definitions.
 /// Unresolved references remain explicit; execution must resolve them before validation.
 pub fn ingest(

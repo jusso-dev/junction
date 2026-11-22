@@ -1540,7 +1540,7 @@ pub async fn refresh(
                 source: source.id.clone(),
                 upstream: url.to_string(),
                 path: href.clone(),
-                sha256: format!("{:x}", Sha256::digest(&bytes)),
+                sha256: crate::hex(&Sha256::digest(&bytes)),
                 bytes: bytes.len(),
             });
             pages.push(LearnPage {
@@ -1558,7 +1558,7 @@ pub async fn refresh(
             source,
             &pages,
             receipts,
-            &format!("{:x}", Sha256::digest(&toc_bytes)),
+            &crate::hex(&Sha256::digest(&toc_bytes)),
         )
     };
     tokio::time::timeout(std::time::Duration::from_secs(timeout_seconds), work)

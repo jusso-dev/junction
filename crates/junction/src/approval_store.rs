@@ -39,10 +39,12 @@ pub struct Record {
 const FORMAT: &str = "junction-approval-v1";
 
 pub fn policy_fingerprint(policy: &junction_policy::Policy) -> Result<String> {
-    Ok(format!(
-        "{:x}",
+    Ok(
         Sha256::digest(serde_json::to_vec(&serde_json::to_value(policy)?)?)
-    ))
+            .iter()
+            .map(|b| format!("{b:02x}"))
+            .collect(),
+    )
 }
 
 fn now() -> u64 {

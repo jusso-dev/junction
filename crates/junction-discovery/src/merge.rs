@@ -17,7 +17,7 @@ pub fn merge(manifests: Vec<RegistryManifest>) -> Result<RegistryManifest> {
         if manifest.format_version != 1 {
             bail!("unsupported manifest format");
         }
-        let digest = format!("{:x}", Sha256::digest(serde_json::to_vec(&manifest)?));
+        let digest = crate::hex(&Sha256::digest(serde_json::to_vec(&manifest)?));
         documents.entry(digest).or_insert(manifest);
     }
     let mut schemas = json!({"components":{},"definitions":{},"canonical":{}});
