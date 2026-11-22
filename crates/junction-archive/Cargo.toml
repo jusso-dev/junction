@@ -1,0 +1,33 @@
+[package]
+name = "junction-archive"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "Long-term Microsoft 365 audit and evidence archive in customer-owned immutable storage"
+
+[dependencies]
+junction-auth = { path = "../junction-auth" }
+junction-core = { path = "../junction-core" }
+junction-http = { path = "../junction-http" }
+junction-policy = { path = "../junction-policy" }
+junction-watch = { path = "../junction-watch" }
+serde.workspace = true
+serde_json.workspace = true
+anyhow.workspace = true
+clap.workspace = true
+tokio = { version = "1", features = ["macros", "rt-multi-thread", "time", "sync"] }
+reqwest = { version = "0.12", default-features = false, features = ["rustls-tls"] }
+url = "2"
+toml = "0.8"
+sha2 = "0.11"
+ring = "0.17.14"
+flate2 = "1"
+quick-xml = "0.42"
+httpdate = "1"
+zeroize = "1"
+getrandom = "0.4"
+
+[dev-dependencies]
+tempfile = "3"
