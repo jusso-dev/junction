@@ -166,7 +166,7 @@ pub async fn run_search(store: &dyn ObjectStore, tenant: &str, args: &SearchArgs
         search::redacted
     };
     Ok(json!({
-        "query": query,
+        "query": if args.full { serde_json::to_value(&query)? } else { query.redacted() },
         "records": results.records.iter().map(view).collect::<Vec<_>>(),
         "count": results.records.len(),
         "truncated": results.truncated,

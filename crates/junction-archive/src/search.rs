@@ -36,7 +36,8 @@ pub struct Query {
     /// Exact IP address.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ip: Option<String>,
-    /// Case-insensitive substring of the operation, target, result or raw record.
+    /// Case-insensitive substring of the record id, raw hash, Microsoft id,
+    /// operation, target, result, correlation id, actor, IP or raw record.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub contains: Option<String>,
 }
@@ -99,10 +100,19 @@ impl Query {
         }
         if let Some(needle) = &self.contains {
             let needle = needle.to_lowercase();
+            // Identifiers are included so a record can be found from a
+            // forwarded event's record id or raw hash.
             let haystack = [
+                r.record_id.as_str(),
+                r.raw_sha256.as_str(),
+                r.source_event_id.as_str(),
                 r.operation.as_str(),
                 r.target_id.as_deref().unwrap_or_default(),
                 r.result.as_deref().unwrap_or_default(),
+                r.correlation_id.as_deref().unwrap_or_default(),
+                r.actor_upn.as_deref().unwrap_or_default(),
+                r.actor_id.as_deref().unwrap_or_default(),
+                r.ip_address.as_deref().unwrap_or_default(),
             ];
             let hit = haystack.iter().any(|h| h.to_lowercase().contains(&needle))
                 || r.raw.to_string().to_lowercase().contains(&needle);
@@ -116,6 +126,22 @@ impl Query {
     /// Stable hash of the query, recorded in evidence bundles.
     pub fn sha256(&self) -> String {
         sha256_hex(&serde_json::to_vec(self).unwrap_or_default())
+    }
+
+    /// The query as shown in redacted output: the actor is a pseudonym, the
+    /// IP a network, and free text is replaced by its hash, so the redacted
+    /// view cannot be used to reverse the pseudonyms in its own results.
+    pub fn redacted(&self) -> Value {
+        json!({
+            "from": self.from,
+            "to": self.to,
+            "sources": self.sources,
+            "operation": self.operation,
+            "actor": self.actor.as_deref().map(pseudonym),
+            "ip": self.ip.as_deref().map(truncate_ip),
+            "contains": self.contains.as_deref().map(|c| format!("sha256:{}", &sha256_hex(c.as_bytes())[..12])),
+            "querySha256": self.sha256(),
+        })
     }
 }
 

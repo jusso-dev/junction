@@ -60,8 +60,11 @@ impl ObjectStore for Spy {
     fn release<'a>(&'a self, k: &'a str) -> BoxFut<'a, anyhow::Result<()>> {
         self.inner.release(k)
     }
-    fn delete_refused<'a>(&'a self, k: &'a str) -> BoxFut<'a, anyhow::Result<bool>> {
-        self.inner.delete_refused(k)
+    fn delete_probe<'a>(
+        &'a self,
+        k: &'a str,
+    ) -> BoxFut<'a, anyhow::Result<junction_archive::store::DeleteProbe>> {
+        self.inner.delete_probe(k)
     }
     fn retention_until<'a>(&'a self, k: &'a str) -> BoxFut<'a, anyhow::Result<Option<String>>> {
         self.inner.retention_until(k)
@@ -207,6 +210,17 @@ async fn filters_and_default_output_is_redacted() {
             .starts_with("sha256:")
     );
     assert_eq!(out["redacted"], true);
+    let query = out["query"].to_string();
+    assert!(
+        !query.to_lowercase().contains("person@example.test"),
+        "the query must not undo the pseudonyms: {query}"
+    );
+    assert!(
+        out["query"]["actor"]
+            .as_str()
+            .unwrap()
+            .starts_with("sha256:")
+    );
 
     let full = run_search(
         &store,
@@ -230,6 +244,24 @@ async fn filters_and_default_output_is_redacted() {
             .unwrap()
             .records
             .len(),
+        1
+    );
+    // A forwarded event's raw hash finds the archived record.
+    let hash = search(
+        &store,
+        T,
+        &range("2026-11-01T00:00:00Z", "2026-11-02T00:00:00Z"),
+        10,
+    )
+    .await
+    .unwrap()
+    .records[0]
+        .raw_sha256
+        .clone();
+    let mut by_hash = range("2026-11-01T00:00:00Z", "2026-11-02T00:00:00Z");
+    by_hash.contains = Some(hash);
+    assert_eq!(
+        search(&store, T, &by_hash, 10).await.unwrap().records.len(),
         1
     );
     let mut ip = range("2026-11-01T00:00:00Z", "2026-11-02T00:00:00Z");
