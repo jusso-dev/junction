@@ -40,19 +40,21 @@ use junction_watch::{
 };
 use serde::Serialize;
 use serde_json::Value;
-use std::{
-    collections::{HashMap, HashSet},
-    time::Duration,
-};
+use std::{collections::HashSet, time::Duration};
 
 /// Records held in memory before they are written out as objects.
 pub const FLUSH_RECORDS: usize = 20_000;
-/// Graph record ids remembered from the overlap.
-pub const MAX_RECENT_IDS: usize = 500_000;
+/// Graph record ids remembered per source for overlap deduplication. Bounds
+/// the checkpoint file; beyond it the overlap may store bounded duplicates.
+pub const MAX_RECENT_IDS: usize = 200_000;
 /// Graph keeps sign-in and audit records for 7 days on Entra ID Free and 30 on
 /// P1 or P2. The archive starts no further back than 7 days, conservatively.
 pub const GRAPH_START_WINDOW: Duration = Duration::from_secs(7 * 86_400);
 const GRAPH_WINDOW: Duration = Duration::from_secs(24 * 3600);
+/// Smallest Graph window. A window that cannot be listed within the page
+/// budget is halved on the next run, down to this, so a busy day always makes
+/// progress instead of being re-listed forever.
+const GRAPH_MIN_WINDOW: Duration = Duration::from_secs(5 * 60);
 const GRAPH_MAX_PAGES: usize = 2_000;
 const BLOB_RETRY_RUNS: u32 = 3;
 /// Licence and permission problems are re-tested once a day.
@@ -178,7 +180,45 @@ struct Writer<'a> {
     source: &'a str,
     run_id: &'a str,
     pending: Vec<ArchiveRecord>,
+    /// Record ids in `pending`, for deduplication before they are stored.
+    pending_ids: HashSet<String>,
     gaps: Vec<Gap>,
+    /// Graph sources: remember stored ids for this overlap. None for
+    /// Management Activity, which deduplicates by content blob id instead.
+    remember_overlap: Option<Duration>,
+}
+
+impl Writer<'_> {
+    fn new<'a>(
+        store: &'a dyn ObjectStore,
+        tenant: &'a str,
+        source: &'a str,
+        run_id: &'a str,
+        remember_overlap: Option<Duration>,
+    ) -> Writer<'a> {
+        Writer {
+            store,
+            tenant,
+            source,
+            run_id,
+            pending: vec![],
+            pending_ids: HashSet::new(),
+            gaps: vec![],
+            remember_overlap,
+        }
+    }
+    fn push(&mut self, record: ArchiveRecord) {
+        self.pending_ids.insert(record.record_id.clone());
+        self.pending.push(record);
+    }
+}
+
+/// The time a record is windowed on: the update time for versioned sources,
+/// the event time otherwise. Overlap deduplication keys on the same time the
+/// collector filters on, so a record is remembered for as long as it can be
+/// listed again.
+fn window_time(r: &ArchiveRecord) -> &str {
+    r.version.as_deref().unwrap_or(&r.event_time)
 }
 
 impl<'a> Writer<'a> {
@@ -191,9 +231,18 @@ impl<'a> Writer<'a> {
         end: Instant,
         complete: bool,
         outcome: &mut Outcome,
-    ) -> Result<String> {
+    ) -> Result<(String, Vec<(String, String)>)> {
         let records = std::mem::take(&mut self.pending);
+        self.pending_ids.clear();
         let count = records.len();
+        let stored_ids: Vec<(String, String)> = if self.remember_overlap.is_some() {
+            records
+                .iter()
+                .map(|r| (r.record_id.clone(), window_time(r).to_owned()))
+                .collect()
+        } else {
+            vec![]
+        };
         let objects = record::encode(self.tenant, records)?;
         let mut entries = Vec::with_capacity(objects.len());
         for object in objects {
@@ -231,7 +280,7 @@ impl<'a> Writer<'a> {
             .put_new(&key, bytes, "application/json")
             .await
             .context("storing manifest")?;
-        Ok(sha)
+        Ok((sha, stored_ids))
     }
 }
 
@@ -244,12 +293,20 @@ fn paused(state: &SourceState, now: Instant) -> Option<String> {
     })
 }
 
-/// Record why a source failed, and when to try again.
-fn note_failure(state: &mut SourceState, error: &CallError, now: Instant, outcome: &mut Outcome) {
+/// Record why a source failed, and when to try again. Only a failure of the
+/// source itself (`whole_source`: a listing or Graph page) may mark it
+/// unavailable and pause it for a day; one content blob failing never does.
+fn note_failure(
+    state: &mut SourceState,
+    error: &CallError,
+    now: Instant,
+    outcome: &mut Outcome,
+    whole_source: bool,
+) {
     outcome.status = Status::Failed;
     outcome.detail = Some(error.summary());
     let reason = classify(error, None);
-    if reason.state().is_settled_negative() {
+    if whole_source && reason.state().is_settled_negative() {
         state.unavailable = Some(format!(
             "{} ({})",
             reason.state().as_str().to_ascii_lowercase(),
@@ -276,18 +333,14 @@ pub async fn collect_management(
 ) -> Result<Outcome> {
     let source = format!("o365:{content_type}");
     let tenant = checkpoint.state.tenant_id.clone();
+    if !up.tenant_id().eq_ignore_ascii_case(&tenant) {
+        bail!("collector tenant does not match the archive tenant");
+    }
     if let Some(why) = paused(checkpoint.source(&source), now) {
         return Ok(Outcome::skipped(&source, why));
     }
     let mut outcome = Outcome::new(&source);
-    let mut writer = Writer {
-        store,
-        tenant: &tenant,
-        source: &source,
-        run_id,
-        pending: vec![],
-        gaps: vec![],
-    };
+    let mut writer = Writer::new(store, &tenant, &source, run_id, None);
     let earliest = now.minus(CONTENT_WINDOW);
     {
         let state = checkpoint.source(&source);
@@ -317,7 +370,7 @@ pub async fn collect_management(
             match list_window(up, content_type, window_start, window_end, &options.backoff).await {
                 Ok(listing) => listing,
                 Err(e) => {
-                    note_failure(checkpoint.source(&source), &e, now, &mut outcome);
+                    note_failure(checkpoint.source(&source), &e, now, &mut outcome, true);
                     break;
                 }
             };
@@ -346,6 +399,7 @@ pub async fn collect_management(
                 Ok(records) => {
                     blobs += 1;
                     let ingested = Instant::now();
+                    let mut rejected_in_blob = 0u64;
                     for raw in &records {
                         let foreign = raw
                             .get("OrganizationId")
@@ -355,11 +409,21 @@ pub async fn collect_management(
                             .then(|| from_management_record(&tenant, content_type, raw, ingested))
                             .flatten();
                         match event {
-                            Some(e) => writer
-                                .pending
-                                .push(ArchiveRecord::from_event(&e, raw, None)),
-                            None => outcome.rejected_records += 1,
+                            Some(e) => writer.push(ArchiveRecord::from_event(&e, raw, None)),
+                            None => rejected_in_blob += 1,
                         }
+                    }
+                    if rejected_in_blob > 0 {
+                        outcome.rejected_records += rejected_in_blob;
+                        let created = Instant::parse(&item.created)?;
+                        writer.gaps.push(Gap::new(
+                            created,
+                            created,
+                            &format!(
+                                "{rejected_in_blob} record(s) in content blob {} were malformed or named another organisation and were not stored",
+                                item.id
+                            ),
+                        ));
                     }
                     checkpoint.source(&source).blob_failures.remove(&item.id);
                     archived_here.push((item.id.clone(), item.created.clone()));
@@ -370,7 +434,7 @@ pub async fn collect_management(
                     archived_here.push((item.id.clone(), item.created.clone()));
                 }
                 Err(e) if is_throttle(&e) => {
-                    note_failure(checkpoint.source(&source), &e, now, &mut outcome);
+                    note_failure(checkpoint.source(&source), &e, now, &mut outcome, false);
                     break 'windows;
                 }
                 Err(e) if e.is_transient() => {
@@ -390,12 +454,14 @@ pub async fn collect_management(
                         outcome.quarantined_blobs += 1;
                         archived_here.push((item.id.clone(), item.created.clone()));
                     } else {
-                        note_failure(checkpoint.source(&source), &e, now, &mut outcome);
+                        note_failure(checkpoint.source(&source), &e, now, &mut outcome, false);
                         break 'windows;
                     }
                 }
+                // Credential and permission failures stop the run without
+                // touching the blob; the next listing re-tests access.
                 Err(e) => {
-                    note_failure(checkpoint.source(&source), &e, now, &mut outcome);
+                    note_failure(checkpoint.source(&source), &e, now, &mut outcome, false);
                     break 'windows;
                 }
             }
@@ -472,7 +538,7 @@ async fn commit(
     if !complete && writer.pending.is_empty() && writer.gaps.is_empty() && archived.is_empty() {
         return Ok(());
     }
-    let sha = writer
+    let (sha, stored_ids) = writer
         .flush(checkpoint.source(source), start, end, complete, outcome)
         .await?;
     let state = checkpoint.source(source);
@@ -480,6 +546,23 @@ async fn commit(
     state.archived_blobs.extend(archived.drain(..));
     if complete {
         state.set_watermark(end);
+    }
+    if let Some(overlap) = writer.remember_overlap {
+        // Ids are remembered as soon as their records are stored, including
+        // partial flushes, so a failed or budget-limited run never re-stores
+        // them. Only ids the next overlap can list again are kept.
+        let keep_from = state
+            .watermark()
+            .unwrap_or(start)
+            .min(start)
+            .minus(overlap)
+            .to_rfc3339();
+        state.recent_records.retain(|_, at| *at >= keep_from);
+        for (id, at) in stored_ids {
+            if at >= keep_from && state.recent_records.len() < MAX_RECENT_IDS {
+                state.recent_records.insert(id, at);
+            }
+        }
     }
     checkpoint.save()
 }
@@ -520,14 +603,7 @@ pub async fn collect_graph(
         return Ok(Outcome::skipped(source, why));
     }
     let mut outcome = Outcome::new(source);
-    let mut writer = Writer {
-        store,
-        tenant: &tenant,
-        source,
-        run_id,
-        pending: vec![],
-        gaps: vec![],
-    };
+    let mut writer = Writer::new(store, &tenant, source, run_id, Some(options.graph_overlap));
     let floor = now.minus(GRAPH_START_WINDOW);
     let mut start = match checkpoint.source(source).watermark() {
         Some(mark) if mark < floor => {
@@ -541,10 +617,15 @@ pub async fn collect_graph(
         Some(mark) => mark.minus(options.graph_overlap).max(floor),
         None => floor,
     };
-    let mut seen: HashMap<String, String> = HashMap::new();
     let mut pages = 0usize;
+    let mut window = checkpoint
+        .source(source)
+        .window_seconds
+        .map(Duration::from_secs)
+        .unwrap_or(GRAPH_WINDOW)
+        .clamp(GRAPH_MIN_WINDOW, GRAPH_WINDOW);
     while now.since(start) > Duration::from_secs(60) {
-        let end = start.plus(GRAPH_WINDOW).min(now);
+        let end = start.plus(window).min(now);
         match graph_window(
             up,
             &tenant,
@@ -554,7 +635,6 @@ pub async fn collect_graph(
             now,
             options,
             &mut writer,
-            &mut seen,
             &mut pages,
             &mut outcome,
             checkpoint,
@@ -563,12 +643,19 @@ pub async fn collect_graph(
         {
             Ok(()) => {}
             Err(WindowError::Call(e)) => {
-                note_failure(checkpoint.source(source), &e, now, &mut outcome);
+                note_failure(checkpoint.source(source), &e, now, &mut outcome, true);
                 break;
             }
             Err(WindowError::Budget) => {
+                // Records listed so far are stored below and remembered, and
+                // the next run uses a window half this size, so it completes.
+                let smaller = (window / 2).max(GRAPH_MIN_WINDOW);
+                checkpoint.source(source).window_seconds = Some(smaller.as_secs());
                 outcome.status = Status::Partial;
-                outcome.detail = Some("per-run page budget reached; the next run continues".into());
+                outcome.detail = Some(format!(
+                    "per-run page budget reached; the next run continues with {}-minute windows",
+                    smaller.as_secs() / 60
+                ));
                 break;
             }
             Err(WindowError::Local(e)) => return Err(e),
@@ -585,8 +672,13 @@ pub async fn collect_graph(
             &mut outcome,
         )
         .await?;
-        remember(checkpoint.source(source), &seen, options.graph_overlap);
-        checkpoint.save()?;
+        // A full window succeeded: grow back towards a day.
+        if window < GRAPH_WINDOW {
+            window = (window * 2).min(GRAPH_WINDOW);
+            checkpoint.source(source).window_seconds =
+                (window < GRAPH_WINDOW).then_some(window.as_secs());
+            checkpoint.save()?;
+        }
         outcome.windows_completed += 1;
         start = end;
     }
@@ -603,8 +695,6 @@ pub async fn collect_graph(
             &mut outcome,
         )
         .await?;
-        remember(checkpoint.source(source), &seen, options.graph_overlap);
-        checkpoint.save()?;
     }
     finish(checkpoint, source, &mut outcome)
 }
@@ -621,22 +711,6 @@ impl From<anyhow::Error> for WindowError {
     }
 }
 
-/// Keep the ids of stored records the next run's overlap will list again:
-/// those at or after `watermark - overlap`. Called only after the records are
-/// stored, so a remembered id always names a stored record.
-fn remember(state: &mut SourceState, seen: &HashMap<String, String>, overlap: Duration) {
-    let Some(mark) = state.watermark() else {
-        return;
-    };
-    let keep_from = mark.minus(overlap).to_rfc3339();
-    state.recent_records.retain(|_, at| *at >= keep_from);
-    for (id, at) in seen {
-        if *at >= keep_from && state.recent_records.len() < MAX_RECENT_IDS {
-            state.recent_records.insert(id.clone(), at.clone());
-        }
-    }
-}
-
 #[allow(clippy::too_many_arguments)]
 async fn graph_window(
     up: &impl Upstream,
@@ -647,7 +721,6 @@ async fn graph_window(
     now: Instant,
     options: &CollectOptions,
     writer: &mut Writer<'_>,
-    seen: &mut HashMap<String, String>,
     pages: &mut usize,
     outcome: &mut Outcome,
     checkpoint: &mut Checkpoint,
@@ -705,12 +778,13 @@ async fn graph_window(
                 continue;
             }
             let recent = &checkpoint.source(spec.source).recent_records;
-            if recent.contains_key(&record.record_id) || seen.contains_key(&record.record_id) {
+            if recent.contains_key(&record.record_id)
+                || writer.pending_ids.contains(&record.record_id)
+            {
                 outcome.duplicates_skipped += 1;
                 continue;
             }
-            seen.insert(record.record_id.clone(), record.event_time.clone());
-            writer.pending.push(record);
+            writer.push(record);
         }
         if writer.pending.len() >= FLUSH_RECORDS {
             let mut none = Vec::new();

@@ -397,3 +397,165 @@ async fn unsafe_graph_continuation_is_refused_without_moving_the_checkpoint() {
     );
     let _ = blob_uri("unused");
 }
+
+#[tokio::test]
+async fn records_rejected_inside_a_blob_are_a_recorded_gap() {
+    let dir = tempfile::tempdir().unwrap();
+    let store = LocalStore::new(&dir.path().join("store")).unwrap();
+    let mut cp = Checkpoint::open(&dir.path().join("state"), TENANT).unwrap();
+    let up = Mock::new();
+    up.route(
+        Api::ManagementActivity,
+        "GET",
+        "/subscriptions/content",
+        None,
+        vec![ok(json!([content("blob-r", "2026-11-21T10:00:00.000Z")]))],
+    )
+    .route(
+        Api::ManagementActivity,
+        "GET",
+        "/activity/feed/audit/blob-r",
+        None,
+        vec![ok(json!([
+            exchange_record("good", "2026-11-21T09:58:00Z", "Set-Mailbox"),
+            {"Operation": "NoId", "CreationTime": "2026-11-21T09:58:00Z"},
+        ]))],
+    );
+    collect_management(
+        &up,
+        &store,
+        &mut cp,
+        "Audit.Exchange",
+        "run-1",
+        now(),
+        &options(),
+    )
+    .await
+    .unwrap();
+    let gaps: Vec<String> = manifests(&store, "o365-Audit.Exchange")
+        .await
+        .into_iter()
+        .flat_map(|m| m.gaps)
+        .map(|g| g.reason)
+        .collect();
+    assert!(
+        gaps.iter()
+            .any(|g| g.contains("1 record(s) in content blob blob-r")),
+        "{gaps:?}"
+    );
+}
+
+#[tokio::test]
+async fn one_forbidden_blob_does_not_pause_the_feed() {
+    let dir = tempfile::tempdir().unwrap();
+    let store = LocalStore::new(&dir.path().join("store")).unwrap();
+    let mut cp = Checkpoint::open(&dir.path().join("state"), TENANT).unwrap();
+    let up = Mock::new();
+    up.route(
+        Api::ManagementActivity,
+        "GET",
+        "/subscriptions/content",
+        None,
+        vec![ok(json!([content("blob-x", "2026-11-21T10:00:00.000Z")]))],
+    )
+    .route(
+        Api::ManagementActivity,
+        "GET",
+        "/activity/feed/audit/blob-x",
+        None,
+        vec![common::err(403, "AF10001")],
+    );
+    let out = collect_management(
+        &up,
+        &store,
+        &mut cp,
+        "Audit.Exchange",
+        "run-1",
+        now(),
+        &options(),
+    )
+    .await
+    .unwrap();
+    assert_eq!(out.status, Status::Failed);
+    let state = cp.get("o365:Audit.Exchange").unwrap();
+    assert!(
+        state.unavailable.is_none() && state.retry_after.is_none(),
+        "{state:?}"
+    );
+}
+
+#[tokio::test]
+async fn management_collection_refuses_another_tenants_upstream() {
+    let dir = tempfile::tempdir().unwrap();
+    let store = LocalStore::new(&dir.path().join("store")).unwrap();
+    let mut cp = Checkpoint::open(
+        &dir.path().join("state"),
+        "22222222-2222-4222-8222-222222222222",
+    )
+    .unwrap();
+    let up = Mock::new();
+    assert!(
+        collect_management(
+            &up,
+            &store,
+            &mut cp,
+            "Audit.Exchange",
+            "run-1",
+            now(),
+            &options()
+        )
+        .await
+        .is_err()
+    );
+    assert_eq!(up.total_calls(), 0);
+}
+
+#[tokio::test]
+async fn graph_records_stored_before_a_failure_are_not_stored_again() {
+    let dir = tempfile::tempdir().unwrap();
+    let store = LocalStore::new(&dir.path().join("store")).unwrap();
+    let state = dir.path().join("state");
+    let audit = |id: &str| {
+        json!({"id": id, "activityDateTime": "2026-11-15T10:00:00Z",
+        "activityDisplayName": "Add member to role", "result": "success"})
+    };
+    let up = Mock::new();
+    // Page 1 succeeds; page 2 fails with a server error that outlasts the retries.
+    up.route(Api::Graph, "GET", "/v1.0/auditLogs/directoryAudits", Some("skiptoken"),
+        vec![common::err(500, ""), common::err(500, ""), common::err(500, ""), common::err(500, ""), common::err(500, ""),
+             ok(json!({"value": []}))])
+    .route(Api::Graph, "GET", "/v1.0/auditLogs/directoryAudits", Some("ge+2026-11-15"),
+        vec![page(json!({"value": [audit("p1")],
+            "@odata.nextLink": "https://graph.microsoft.com/v1.0/auditLogs/directoryAudits?$skiptoken=2"}),
+            "https://graph.microsoft.com/v1.0/auditLogs/directoryAudits?$skiptoken=2")])
+    .route(Api::Graph, "GET", "/v1.0/auditLogs/directoryAudits", None, vec![ok(json!({"value": []}))]);
+    let spec = graph_spec("graph:directoryAudits").unwrap();
+    {
+        let mut cp = Checkpoint::open(&state, TENANT).unwrap();
+        let out = collect_graph(&up, &store, &mut cp, spec, "run-1", now(), &options())
+            .await
+            .unwrap();
+        assert_eq!(out.status, Status::Failed, "{out:?}");
+        assert_eq!(out.records_stored, 1, "page 1 is stored before the failure");
+        assert!(
+            cp.get("graph:directoryAudits")
+                .unwrap()
+                .recent_records
+                .len()
+                == 1,
+            "and remembered"
+        );
+    }
+    let mut cp = Checkpoint::open(&state, TENANT).unwrap();
+    let out = collect_graph(&up, &store, &mut cp, spec, "run-2", now(), &options())
+        .await
+        .unwrap();
+    assert_eq!(out.records_stored, 0, "{out:?}");
+    assert!(out.duplicates_skipped >= 1);
+    let stored = records_in(
+        &store,
+        &format!("v1/tenant={TENANT}/source=graph-directoryAudits/"),
+    )
+    .await;
+    assert_eq!(stored.len(), 1);
+}

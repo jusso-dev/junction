@@ -39,6 +39,10 @@ pub struct SourceState {
     /// Hash of this source's latest manifest, chaining the next one to it.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub last_manifest_sha256: Option<String>,
+    /// Graph window length in use after a run hit its page budget; absent
+    /// means the default (one day).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub window_seconds: Option<u64>,
     /// Last capability problem (`requires_licence`, `requires_permission`, ...).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub unavailable: Option<String>,
@@ -79,9 +83,15 @@ pub struct State {
     pub sources: BTreeMap<String, SourceState>,
 }
 
-/// The checkpoint file for one tenant.
+/// Largest state file accepted or written.
+pub const MAX_STATE_BYTES: usize = 256 * 1024 * 1024;
+
+/// The checkpoint file for one tenant, held under an exclusive OS lock for as
+/// long as this value lives, so overlapping runs cannot overwrite each
+/// other's progress. The lock is released by the OS if the process dies.
 pub struct Checkpoint {
     path: PathBuf,
+    _lock: std::fs::File,
     pub state: State,
 }
 
@@ -94,27 +104,46 @@ impl Checkpoint {
             use std::os::unix::fs::PermissionsExt;
             std::fs::set_permissions(directory, std::fs::Permissions::from_mode(0o700))?;
         }
+        let tenant = tenant.to_ascii_lowercase();
+        let lock_path = directory.join(format!("{tenant}.lock"));
+        let lock = std::fs::OpenOptions::new()
+            .create(true)
+            .truncate(false)
+            .write(true)
+            .open(&lock_path)
+            .context("archive state lock unavailable")?;
+        match lock.try_lock() {
+            Ok(()) => {}
+            Err(std::fs::TryLockError::WouldBlock) => bail!(
+                "another junction archive run is using this tenant's state; wait for it to finish"
+            ),
+            Err(std::fs::TryLockError::Error(_)) => bail!("archive state lock unavailable"),
+        }
         let path = directory.join(format!("{tenant}.json"));
         let state = match std::fs::read(&path) {
             Ok(bytes) => {
-                if bytes.len() > 64 * 1024 * 1024 {
+                if bytes.len() > MAX_STATE_BYTES {
                     bail!("archive state file too large");
                 }
                 let state: State =
                     serde_json::from_slice(&bytes).context("archive state file is not valid")?;
-                if state.schema != STATE_SCHEMA || !state.tenant_id.eq_ignore_ascii_case(tenant) {
+                if state.schema != STATE_SCHEMA || !state.tenant_id.eq_ignore_ascii_case(&tenant) {
                     bail!("archive state file belongs to another tenant or schema");
                 }
                 state
             }
             Err(e) if e.kind() == std::io::ErrorKind::NotFound => State {
                 schema: STATE_SCHEMA.into(),
-                tenant_id: tenant.to_owned(),
+                tenant_id: tenant.clone(),
                 sources: BTreeMap::new(),
             },
             Err(_) => bail!("archive state file unreadable"),
         };
-        Ok(Self { path, state })
+        Ok(Self {
+            path,
+            _lock: lock,
+            state,
+        })
     }
 
     pub fn source(&mut self, source: &str) -> &mut SourceState {
@@ -128,7 +157,10 @@ impl Checkpoint {
     /// Atomically replace the file with the current state.
     pub fn save(&self) -> Result<()> {
         use std::io::Write;
-        let bytes = serde_json::to_vec_pretty(&self.state)?;
+        let bytes = serde_json::to_vec(&self.state)?;
+        if bytes.len() > MAX_STATE_BYTES {
+            bail!("archive state would exceed {MAX_STATE_BYTES} bytes; not saved");
+        }
         let tmp = self
             .path
             .with_extension(format!("json.tmp-{}", std::process::id()));
@@ -163,6 +195,7 @@ mod tests {
         cp.source("graph:signIns").set_watermark(b);
         cp.source("graph:signIns").set_watermark(a);
         cp.save().unwrap();
+        drop(cp);
         let again = Checkpoint::open(dir.path(), T).unwrap();
         assert_eq!(again.get("graph:signIns").unwrap().watermark(), Some(b));
         assert!(
@@ -185,6 +218,16 @@ mod tests {
         )
         .unwrap();
         assert!(Checkpoint::open(dir.path(), T).is_err());
+    }
+
+    #[test]
+    fn a_second_open_is_refused_while_the_first_is_held() {
+        let dir = tempfile::tempdir().unwrap();
+        let first = Checkpoint::open(dir.path(), T).unwrap();
+        let second = Checkpoint::open(dir.path(), T);
+        assert!(second.is_err(), "overlapping runs must not share state");
+        drop(first);
+        Checkpoint::open(dir.path(), T).unwrap();
     }
 
     #[test]
