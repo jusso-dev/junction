@@ -52,6 +52,21 @@ pub fn sections(registry: &CheckRegistry) -> Vec<(&'static str, &'static str, St
             "coverage",
             coverage::essential_eight_matrix(registry),
         ),
+        (
+            "APP-GOVERNANCE.md",
+            "app-flags",
+            crate::governance::docs::flags_table(),
+        ),
+        (
+            "APP-GOVERNANCE-SECURITY.md",
+            "app-read-permissions",
+            crate::governance::docs::read_permissions(),
+        ),
+        (
+            "APP-GOVERNANCE-SECURITY.md",
+            "app-write-permissions",
+            crate::governance::docs::write_permissions(),
+        ),
     ]
 }
 

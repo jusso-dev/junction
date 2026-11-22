@@ -155,6 +155,23 @@ See [docs/CHECKS.md](docs/CHECKS.md), [docs/CHECKS-PERMISSIONS.md](docs/CHECKS-P
 
 Coming from M365-Secure? Its checks are moving into `junction check` packs, with a schema 1.1 export for crownguard. See the [migration plan and mapping table](docs/migration/m365-secure.md).
 
+## Connected-app governance
+
+`junction apps` answers "what is connected to this tenant?" for Entra ID and Microsoft 365. It inventories every enterprise application and service principal, app registration, application permission and delegated consent grant (admin and per-user), with owners, guest owners and consenters, sign-in recency and workload identity risk. Each app is flagged for documented, high-signal risks: critical and high-impact Graph permissions, over-broad scopes with a narrower alternative, admin consent for all users, privileged apps with no recent sign-in, unused apps, unverified external publishers, guest-owned apps, ownerless registrations and secrets added to service principals. Missing permissions or licences are reported as gaps, never as findings.
+
+Reads run under Junction's read-only policy. You can compare the tenant with an approved baseline, export an evidence pack (Markdown, JSON, CSV and a SHA-256 manifest), and read the inventory from MCP (`junction_apps_inventory`) or HTTP (`GET /v1/apps/inventory`). Revoking or restricting access is a separate CLI-only step: `junction apps plan` writes a reviewable file, and `junction apps apply` asks you to approve every item on the terminal. Nothing is revoked automatically, and agents cannot apply changes.
+
+```sh
+junction apps inventory --context contoso --flagged-only
+junction apps inventory --context contoso --format html --output apps.html
+junction apps baseline save --context contoso --output baseline.json
+junction apps export --context contoso --baseline baseline.json --output evidence/
+junction apps plan --context contoso --app <id> --action narrow-delegated --output plan.json
+junction apps apply --context contoso-admin --plan plan.json
+```
+
+See [docs/APP-GOVERNANCE.md](docs/APP-GOVERNANCE.md) and, for Graph permissions (read and write, application and delegated), what is written and how approvals work, [docs/APP-GOVERNANCE-SECURITY.md](docs/APP-GOVERNANCE-SECURITY.md).
+
 ## Disclaimer and terms of use
 
 Junction does not represent Microsoft. Microsoft has not reviewed, approved or endorsed it, and Microsoft provides no support for it. It is a consolidation tool: it reads Microsoft's public API definitions and documentation and sends the requests you choose, with credentials you supply. It does not grant access, bypass licensing or change what any service allows.

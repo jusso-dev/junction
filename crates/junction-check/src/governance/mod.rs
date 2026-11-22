@@ -49,3 +49,94 @@ pub async fn run(
     flags::apply(&mut inventory, flags::Settings::from_config(&config), now);
     Ok(inventory)
 }
+
+/// Generated Markdown tables for `docs/APP-GOVERNANCE*.md` (kept in sync by
+/// `junction check docs`, verified in CI).
+pub mod docs {
+    use super::{apply, flags, inventory};
+
+    /// Read permissions, one row per permission, with the operations it covers.
+    pub fn read_permissions() -> String {
+        let mut rows: std::collections::BTreeMap<&str, Vec<&str>> = Default::default();
+        for read in inventory::READS {
+            rows.entry(read.permissions[0])
+                .or_default()
+                .push(read.operation);
+        }
+        let mut out = String::from(
+            "| Permission | Type | Used for | Operations | If not granted |\n|---|---|---|---|---|\n",
+        );
+        for (permission, ops) in rows {
+            let (used, missing) = match permission {
+                "Application.Read.All" => (
+                    "Service principals, app registrations, application permissions and owners",
+                    "No inventory (service principals and registrations are required); owners recorded as not read",
+                ),
+                "DelegatedPermissionGrant.Read.All" => (
+                    "Admin and per-user delegated consent grants",
+                    "No inventory (grants are required)",
+                ),
+                "User.Read.All" => (
+                    "Which users are guests (guest consent, and guest status of owners Graph returns as id-only stubs)",
+                    "`guest_consented` not evaluated; owners returned as id-only stubs have unknown guest status, so `guest_owned` may be incomplete",
+                ),
+                "AuditLog.Read.All" => (
+                    "Service principal sign-in activity (Entra ID P1 or P2)",
+                    "`sign_in_data` is `unavailable`; `unused` and `privileged_no_recent_sign_in` not evaluated",
+                ),
+                "IdentityRiskyServicePrincipal.Read.All" => (
+                    "Workload identity risk (Workload Identities Premium)",
+                    "`risky_service_principal` not evaluated",
+                ),
+                _ => ("", ""),
+            };
+            out.push_str(&format!(
+                "| `{permission}` | Microsoft Graph application | {used} | {} | {missing} |\n",
+                ops.iter()
+                    .map(|o| format!("`{o}`"))
+                    .collect::<Vec<_>>()
+                    .join(", ")
+            ));
+        }
+        out
+    }
+
+    /// Write permissions, only for `junction apps apply`.
+    pub fn write_permissions() -> String {
+        let registry = apply::registry().expect("apps write registry loads");
+        let mut out = String::from(
+            "| Operation | Method and path | Risk (after review) | Permission |\n|---|---|---|---|\n",
+        );
+        for (id, permission) in apply::WRITE_PERMISSIONS {
+            let op = registry.resolve(id, None, false).expect("write operation");
+            out.push_str(&format!(
+                "| `{id}` | `{} {}` | {} | `{permission}` |\n",
+                op.method,
+                op.path,
+                serde_json::to_value(&op.risk)
+                    .ok()
+                    .and_then(|v| v.as_str().map(str::to_owned))
+                    .unwrap_or_default()
+            ));
+        }
+        out
+    }
+
+    /// Every flag with what it reads, why it matters and the fix.
+    pub fn flags_table() -> String {
+        let mut out = String::from(
+            "| Flag | Severity | Reads | Why it matters | Suggested fix |\n|---|---|---|---|---|\n",
+        );
+        for f in flags::FLAGS {
+            out.push_str(&format!(
+                "| `{}` | {} | {} | {} | {} |\n",
+                f.id,
+                f.severity.as_str(),
+                f.reads.replace('|', "\\|"),
+                f.why.replace('|', "\\|"),
+                f.fix.replace('|', "\\|")
+            ));
+        }
+        out
+    }
+}
