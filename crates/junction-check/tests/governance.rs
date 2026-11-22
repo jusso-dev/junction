@@ -433,3 +433,178 @@ async fn governed_gateway_waits_for_the_local_request_limit() {
     assert!(result.is_ok(), "local throttling is paced, not a failure");
     assert_eq!(inner.0.load(Ordering::SeqCst), 13);
 }
+
+// --- baseline, drift and evidence export (#47) ------------------------------
+
+use junction_check::governance::{baseline, export};
+
+#[tokio::test]
+async fn drift_reports_access_changes_and_ignores_activity() {
+    let base = baseline::Baseline::from_inventory(&inventory("tenant").await.unwrap()).unwrap();
+    let later = inventory("later").await.unwrap();
+    let drift = baseline::diff(&base, &later).unwrap();
+
+    let names = |apps: &[baseline::AppRef]| -> Vec<String> {
+        apps.iter().map(|a| a.display_name.clone()).collect()
+    };
+    // Re-created under the same name with a new object id: removed plus added.
+    assert_eq!(
+        names(&drift.added),
+        ["Northwind Inbox Analytics", "Old HR Sync"]
+    );
+    assert_eq!(
+        names(&drift.removed),
+        ["Old HR Sync", "Retired Reporting App"]
+    );
+
+    let fabrikam = drift
+        .changed
+        .iter()
+        .find(|c| c.display_name == "Fabrikam Mail Archive v2")
+        .expect("permission widened on an existing app");
+    assert_eq!(
+        fabrikam.application_permissions.added,
+        ["Microsoft Graph/Sites.ReadWrite.All"]
+    );
+    assert!(fabrikam.properties[0].starts_with("display_name: "));
+    let legacy = drift
+        .changed
+        .iter()
+        .find(|c| c.display_name == "Legacy Provisioning Script")
+        .unwrap();
+    assert_eq!(legacy.owners.added.len(), 1);
+    // A newer sign-in on Fabrikam is activity, not drift: only two apps changed.
+    assert_eq!(drift.changed.len(), 2);
+    assert!(drift.widened());
+
+    let same = baseline::diff(&base, &inventory("tenant").await.unwrap()).unwrap();
+    assert!(same.is_empty() && !same.widened());
+
+    let md = baseline::markdown(&drift);
+    assert!(md.contains("added application permission: Microsoft Graph/Sites.ReadWrite.All"));
+    // `>` is escaped so tenant text cannot open a block quote or raw HTML.
+    assert!(
+        md.contains("Fabrikam Mail Archive -\\> Fabrikam Mail Archive v2"),
+        "{md}"
+    );
+}
+
+#[tokio::test]
+async fn baselines_are_bound_to_their_tenant_and_content() {
+    let inv = inventory("tenant").await.unwrap();
+    let base = baseline::Baseline::from_inventory(&inv).unwrap();
+    let text = serde_json::to_string(&base).unwrap();
+    assert_eq!(baseline::Baseline::parse(&text).unwrap(), base);
+
+    // Edited content no longer matches the digest.
+    let edited = text.replace("Mail.Read", "Mail.Send");
+    assert!(
+        baseline::Baseline::parse(&edited)
+            .unwrap_err()
+            .to_string()
+            .contains("digest")
+    );
+
+    // Another tenant's baseline is refused.
+    let mut other = base.clone();
+    other.tenant_id = "00000000-0000-4000-8000-000000000002".into();
+    assert!(
+        baseline::diff(&other, &inv)
+            .unwrap_err()
+            .to_string()
+            .contains("tenant")
+    );
+    // Editing the tenant or the capture time in the file breaks the digest, so
+    // a baseline cannot be relabelled for another tenant or backdated.
+    let relabelled = text.replace(TENANT, "00000000-0000-4000-8000-000000000002");
+    assert!(baseline::Baseline::parse(&relabelled).is_err());
+    let backdated = text.replace("2026-10-25T00:00:00.000Z", "2025-01-01T00:00:00.000Z");
+    assert!(baseline::Baseline::parse(&backdated).is_err());
+    // Unknown fields are refused rather than ignored.
+    let extra = text.replacen('{', "{\"note\":\"x\",", 1);
+    assert!(baseline::Baseline::parse(&extra).is_err());
+
+    // Without owners, an inventory cannot become a baseline.
+    let no_owners = inventory("owners_forbidden").await.unwrap();
+    assert!(baseline::Baseline::from_inventory(&no_owners).is_err());
+}
+
+#[tokio::test]
+async fn evidence_pack_manifest_matches_every_file() {
+    use sha2::{Digest, Sha256};
+    let base = baseline::Baseline::from_inventory(&inventory("tenant").await.unwrap()).unwrap();
+    let later = inventory("later").await.unwrap();
+    let drift = baseline::diff(&base, &later).unwrap();
+    let dir = tempfile::tempdir().unwrap();
+    let manifest = export::write(dir.path(), &later, Some(&drift)).unwrap();
+
+    let files = manifest["files"].as_array().unwrap();
+    let mut names: Vec<&str> = files.iter().map(|f| f["file"].as_str().unwrap()).collect();
+    names.sort();
+    let mut expected: Vec<&str> = export::FILES.to_vec();
+    expected.extend(["drift.json", "drift.md"]);
+    expected.sort();
+    assert_eq!(names, expected);
+    for f in files {
+        let bytes = std::fs::read(dir.path().join(f["file"].as_str().unwrap())).unwrap();
+        let digest: String = Sha256::digest(&bytes)
+            .iter()
+            .map(|b| format!("{b:02x}"))
+            .collect();
+        assert_eq!(f["sha256"], digest.as_str(), "{}", f["file"]);
+        assert_eq!(f["bytes"], bytes.len());
+    }
+    let on_disk: serde_json::Value =
+        serde_json::from_slice(&std::fs::read(dir.path().join("manifest.json")).unwrap()).unwrap();
+    assert_eq!(on_disk, manifest);
+
+    let readme = std::fs::read_to_string(dir.path().join("README.md")).unwrap();
+    assert!(readme.contains("Nothing in the tenant was changed"));
+    assert!(readme.contains("`Application.Read.All`"));
+    assert!(readme.contains("Drift since the approved baseline"));
+    assert!(
+        !readme.contains('\u{2014}'),
+        "no em dashes in human-facing copy"
+    );
+
+    let grants = std::fs::read_to_string(dir.path().join("grants.csv")).unwrap();
+    assert!(grants.contains("\"AllPrincipals\""));
+    let permissions = std::fs::read_to_string(dir.path().join("permissions.csv")).unwrap();
+    assert!(permissions.contains("\"Sites.ReadWrite.All\",\"critical\""));
+}
+
+#[tokio::test]
+async fn export_csv_neutralises_hostile_display_names() {
+    let mut inv = inventory("tenant").await.unwrap();
+    inv.apps[0].display_name = "=HYPERLINK(\"https://attacker.example\")".into();
+    let csv = export::apps_csv(&inv);
+    assert!(csv.contains("\"'=HYPERLINK("), "{csv}");
+    assert!(!csv.contains(",\"=HYPERLINK"));
+}
+
+#[tokio::test]
+async fn renaming_a_resource_is_not_drift_but_moving_tenants_is() {
+    let inv = inventory("tenant").await.unwrap();
+    let base = baseline::Baseline::from_inventory(&inv).unwrap();
+    let mut renamed = inv.clone();
+    for app in &mut renamed.apps {
+        for p in &mut app.application_permissions {
+            p.resource_name = "Graph (renamed)".into();
+        }
+        for g in &mut app.delegated_grants {
+            g.resource_name = "Graph (renamed)".into();
+        }
+    }
+    assert!(baseline::diff(&base, &renamed).unwrap().is_empty());
+
+    let mut moved = inv.clone();
+    let app = moved
+        .apps
+        .iter_mut()
+        .find(|a| a.display_name == "Fabrikam Mail Archive")
+        .unwrap();
+    app.owner_tenant = junction_check::governance::inventory::OwnerTenant::Home;
+    let drift = baseline::diff(&base, &moved).unwrap();
+    assert!(drift.changed[0].properties[0].starts_with("owner_tenant: "));
+    assert!(drift.widened(), "a change of owning tenant needs review");
+}
