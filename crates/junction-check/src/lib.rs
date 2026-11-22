@@ -15,6 +15,7 @@ pub mod context;
 pub mod dns;
 pub mod docs;
 pub mod gateway;
+pub mod governance;
 pub mod history;
 pub mod licensing;
 pub mod model;

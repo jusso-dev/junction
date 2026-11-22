@@ -1,0 +1,136 @@
+# Reviewed impact tiers for Microsoft Graph, Exchange Online and SharePoint permission values,
+# used by `junction apps` risk flags (crates/junction-check/src/governance/flags.rs).
+#
+# Tiers describe what the permission allows when held as an application permission or as a
+# tenant-wide (admin consent for all users) delegated grant:
+#   critical: take over the directory or roles, or read and change every mailbox, file or site.
+#   high:     read every mailbox, file, chat or site, or change a broad class of objects.
+#   medium:   read directory-wide data or change a narrow class of objects.
+# Permissions not listed are `unclassified`, never assumed to be low.
+#
+# `narrower` names a less privileged alternative, which drives the `overbroad_scope` flag.
+# Values match case-insensitively and apply to whichever resource exposes them.
+
+critical:
+  - permission: Directory.ReadWrite.All
+    reason: Change any directory object, including users, groups and application credentials.
+    narrower: User.ReadWrite.All or Group.ReadWrite.All for the objects actually managed
+  - permission: RoleManagement.ReadWrite.Directory
+    reason: Assign any Entra ID role, including Global Administrator.
+  - permission: AppRoleAssignment.ReadWrite.All
+    reason: Grant itself or any app any application permission without consent.
+  - permission: Application.ReadWrite.All
+    reason: Add credentials to any application and act as it.
+    narrower: Application.ReadWrite.OwnedBy
+  - permission: RoleAssignmentSchedule.ReadWrite.Directory
+    reason: Create active role assignments through PIM schedules.
+  - permission: RoleEligibilitySchedule.ReadWrite.Directory
+    reason: Make any principal eligible for any role.
+  - permission: PrivilegedAccess.ReadWrite.AzureADGroup
+    reason: Change membership of role-assignable groups through PIM.
+  - permission: UserAuthenticationMethod.ReadWrite.All
+    reason: Add or reset authentication methods for any user, including administrators.
+  - permission: Policy.ReadWrite.ConditionalAccess
+    reason: Turn off or weaken Conditional Access for the whole tenant.
+  - permission: Domain.ReadWrite.All
+    reason: Add or federate domains, which allows sign-in as any user of that domain.
+  - permission: Mail.ReadWrite
+    reason: Read, change and delete mail in every mailbox.
+    narrower: Exchange RBAC for Applications scoped to the mailboxes needed
+  - permission: Mail.Send
+    reason: Send mail as any user.
+    narrower: Exchange RBAC for Applications scoped to the sending mailboxes
+  - permission: full_access_as_app
+    reason: Full EWS access to every mailbox.
+    narrower: Microsoft Graph Mail permissions scoped with Exchange RBAC for Applications
+  - permission: Exchange.ManageAsApp
+    reason: Run Exchange Online PowerShell as an application, usually with an admin role.
+  - permission: Files.ReadWrite.All
+    reason: Read, change and delete every file in OneDrive and SharePoint.
+    narrower: Files.SelectedOperations.Selected or Sites.Selected
+  - permission: Sites.FullControl.All
+    reason: Full control of every SharePoint site, including permissions.
+    narrower: Sites.Selected
+  - permission: Sites.ReadWrite.All
+    reason: Read and change every SharePoint site and list.
+    narrower: Sites.Selected
+
+high:
+  - permission: Mail.Read
+    reason: Read mail in every mailbox.
+    narrower: Exchange RBAC for Applications scoped to the mailboxes needed
+  - permission: MailboxSettings.ReadWrite
+    reason: Change mailbox settings, including forwarding rules, for every user.
+  - permission: Calendars.ReadWrite
+    reason: Read and change every user's calendar.
+  - permission: Files.Read.All
+    reason: Read every file in OneDrive and SharePoint.
+    narrower: Files.SelectedOperations.Selected or Sites.Selected
+  - permission: Sites.Read.All
+    reason: Read every SharePoint site and list.
+    narrower: Sites.Selected
+  - permission: Sites.Manage.All
+    reason: Create and change lists and libraries on every site.
+    narrower: Sites.Selected
+  - permission: Chat.Read.All
+    reason: Read every Teams chat message.
+  - permission: Chat.ReadWrite.All
+    reason: Read and send every Teams chat message.
+  - permission: ChannelMessage.Read.All
+    reason: Read every Teams channel message.
+  - permission: Notes.ReadWrite.All
+    reason: Read and change every OneNote notebook.
+  - permission: User.ReadWrite.All
+    reason: Change any user's profile, including disabling accounts.
+  - permission: Group.ReadWrite.All
+    reason: Change any group, including membership of security groups used for access.
+    narrower: GroupMember.ReadWrite.All
+  - permission: GroupMember.ReadWrite.All
+    reason: Change membership of any non-role-assignable group.
+  - permission: Policy.ReadWrite.AuthenticationMethod
+    reason: Change which authentication methods are allowed.
+  - permission: Policy.ReadWrite.Authorization
+    reason: Change tenant authorisation settings such as user consent.
+  - permission: DeviceManagementConfiguration.ReadWrite.All
+    reason: Change Intune configuration and scripts deployed to every device.
+  - permission: DeviceManagementManagedDevices.PrivilegedOperations.All
+    reason: Wipe, reset or retire any managed device.
+  - permission: DeviceManagementApps.ReadWrite.All
+    reason: Deploy applications to every managed device.
+  - permission: Organization.ReadWrite.All
+    reason: Change tenant organisation settings.
+  - permission: User.Export.All
+    reason: Export any user's personal data.
+  - permission: EWS.AccessAsUser.All
+    reason: Full EWS access to the signed-in user's mailbox (tenant wide when admin consented).
+  - permission: Directory.AccessAsUser.All
+    reason: Act on the directory with the full rights of the signed-in user.
+
+medium:
+  - permission: Directory.Read.All
+    reason: Read every directory object.
+    narrower: User.Read.All or Group.Read.All for the objects actually read
+  - permission: User.Read.All
+    reason: Read every user's full profile.
+    narrower: User.ReadBasic.All
+  - permission: Group.Read.All
+    reason: Read every group and its content.
+    narrower: GroupMember.Read.All
+  - permission: Mail.ReadBasic.All
+    reason: Read mail metadata (sender, subject) in every mailbox.
+  - permission: Contacts.ReadWrite
+    reason: Read and change every user's contacts.
+  - permission: Calendars.Read
+    reason: Read every user's calendar.
+  - permission: AuditLog.Read.All
+    reason: Read sign-in and audit logs.
+  - permission: Application.Read.All
+    reason: Read every application and its permissions.
+  - permission: Policy.Read.All
+    reason: Read every tenant policy, including Conditional Access.
+  - permission: RoleManagement.Read.Directory
+    reason: Read role assignments, which maps who holds privilege.
+  - permission: SecurityEvents.ReadWrite.All
+    reason: Read and update security alerts.
+  - permission: TeamMember.ReadWrite.All
+    reason: Add and remove members of any team.

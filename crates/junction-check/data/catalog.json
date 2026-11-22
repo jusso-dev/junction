@@ -1703,6 +1703,202 @@
    }
   },
   {
+   "api_version": "v1.0",
+   "base_url": "https://graph.microsoft.com/v1.0",
+   "description": "List owners of an application",
+   "documentation_url": null,
+   "id": "graph.applications.owners.list",
+   "long_running": null,
+   "maturity": "stable",
+   "method": "GET",
+   "operation": "list",
+   "pageable": {
+    "item_name": "value",
+    "next_link_name": "@odata.nextLink",
+    "operation_name": "listMore"
+   },
+   "parameters": [
+    {
+     "location": "path",
+     "name": "application-id",
+     "required": true,
+     "schema": {
+      "type": "string"
+     },
+     "serialization": {
+      "allow_reserved": false,
+      "collection_format": null,
+      "explode": null,
+      "style": null
+     }
+    },
+    {
+     "location": "header",
+     "name": "ConsistencyLevel",
+     "required": false,
+     "schema": {
+      "type": "string"
+     },
+     "serialization": {
+      "allow_reserved": false,
+      "collection_format": null,
+      "explode": null,
+      "style": null
+     }
+    },
+    {
+     "location": "query",
+     "name": "$top",
+     "required": false,
+     "schema": {
+      "minimum": 0,
+      "type": "integer"
+     },
+     "serialization": {
+      "allow_reserved": false,
+      "collection_format": null,
+      "explode": false,
+      "style": "form"
+     }
+    },
+    {
+     "location": "query",
+     "name": "$skip",
+     "required": false,
+     "schema": {
+      "minimum": 0,
+      "type": "integer"
+     },
+     "serialization": {
+      "allow_reserved": false,
+      "collection_format": null,
+      "explode": false,
+      "style": "form"
+     }
+    },
+    {
+     "location": "query",
+     "name": "$search",
+     "required": false,
+     "schema": {
+      "type": "string"
+     },
+     "serialization": {
+      "allow_reserved": false,
+      "collection_format": null,
+      "explode": false,
+      "style": "form"
+     }
+    },
+    {
+     "location": "query",
+     "name": "$filter",
+     "required": false,
+     "schema": {
+      "type": "string"
+     },
+     "serialization": {
+      "allow_reserved": false,
+      "collection_format": null,
+      "explode": false,
+      "style": "form"
+     }
+    },
+    {
+     "location": "query",
+     "name": "$count",
+     "required": false,
+     "schema": {
+      "type": "boolean"
+     },
+     "serialization": {
+      "allow_reserved": false,
+      "collection_format": null,
+      "explode": false,
+      "style": "form"
+     }
+    },
+    {
+     "location": "query",
+     "name": "$orderby",
+     "required": false,
+     "schema": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "uniqueItems": true
+     },
+     "serialization": {
+      "allow_reserved": false,
+      "collection_format": null,
+      "explode": false,
+      "style": "form"
+     }
+    },
+    {
+     "location": "query",
+     "name": "$select",
+     "required": false,
+     "schema": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "uniqueItems": true
+     },
+     "serialization": {
+      "allow_reserved": false,
+      "collection_format": null,
+      "explode": false,
+      "style": "form"
+     }
+    },
+    {
+     "location": "query",
+     "name": "$expand",
+     "required": false,
+     "schema": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "uniqueItems": true
+     },
+     "serialization": {
+      "allow_reserved": false,
+      "collection_format": null,
+      "explode": false,
+      "style": "form"
+     }
+    }
+   ],
+   "path": "/applications/{application-id}/owners",
+   "preview": false,
+   "product": "graph",
+   "request_body": null,
+   "resource": "applications.owners",
+   "responses": {
+    "2XX": {
+     "description": ""
+    },
+    "4XX": {
+     "description": ""
+    },
+    "5XX": {
+     "description": ""
+    }
+   },
+   "risk": "read_only",
+   "security": [],
+   "service": "applications",
+   "source": {
+    "id": "https://raw.githubusercontent.com/microsoftgraph/msgraph-metadata/6515412a38ee4efb99669442b697df15b7f55c36/openapi/v1.0/openapi.yaml",
+    "operation_id": "applications.ListOwners",
+    "upstream": "https://raw.githubusercontent.com/microsoftgraph/msgraph-metadata/6515412a38ee4efb99669442b697df15b7f55c36/openapi/v1.0/openapi.yaml"
+   }
+  },
+  {
    "api_version": "beta",
    "base_url": "https://graph.microsoft.com/beta",
    "description": "Get compliancePolicies from deviceManagement",
@@ -5222,6 +5418,174 @@
   {
    "api_version": "v1.0",
    "base_url": "https://graph.microsoft.com/v1.0",
+   "description": "List riskyServicePrincipals",
+   "documentation_url": null,
+   "id": "graph.identity_protection.risky_service_principals.list",
+   "long_running": null,
+   "maturity": "stable",
+   "method": "GET",
+   "operation": "list",
+   "pageable": {
+    "item_name": "value",
+    "next_link_name": "@odata.nextLink",
+    "operation_name": "listMore"
+   },
+   "parameters": [
+    {
+     "location": "query",
+     "name": "$top",
+     "required": false,
+     "schema": {
+      "minimum": 0,
+      "type": "integer"
+     },
+     "serialization": {
+      "allow_reserved": false,
+      "collection_format": null,
+      "explode": false,
+      "style": "form"
+     }
+    },
+    {
+     "location": "query",
+     "name": "$skip",
+     "required": false,
+     "schema": {
+      "minimum": 0,
+      "type": "integer"
+     },
+     "serialization": {
+      "allow_reserved": false,
+      "collection_format": null,
+      "explode": false,
+      "style": "form"
+     }
+    },
+    {
+     "location": "query",
+     "name": "$search",
+     "required": false,
+     "schema": {
+      "type": "string"
+     },
+     "serialization": {
+      "allow_reserved": false,
+      "collection_format": null,
+      "explode": false,
+      "style": "form"
+     }
+    },
+    {
+     "location": "query",
+     "name": "$filter",
+     "required": false,
+     "schema": {
+      "type": "string"
+     },
+     "serialization": {
+      "allow_reserved": false,
+      "collection_format": null,
+      "explode": false,
+      "style": "form"
+     }
+    },
+    {
+     "location": "query",
+     "name": "$count",
+     "required": false,
+     "schema": {
+      "type": "boolean"
+     },
+     "serialization": {
+      "allow_reserved": false,
+      "collection_format": null,
+      "explode": false,
+      "style": "form"
+     }
+    },
+    {
+     "location": "query",
+     "name": "$orderby",
+     "required": false,
+     "schema": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "uniqueItems": true
+     },
+     "serialization": {
+      "allow_reserved": false,
+      "collection_format": null,
+      "explode": false,
+      "style": "form"
+     }
+    },
+    {
+     "location": "query",
+     "name": "$select",
+     "required": false,
+     "schema": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "uniqueItems": true
+     },
+     "serialization": {
+      "allow_reserved": false,
+      "collection_format": null,
+      "explode": false,
+      "style": "form"
+     }
+    },
+    {
+     "location": "query",
+     "name": "$expand",
+     "required": false,
+     "schema": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "uniqueItems": true
+     },
+     "serialization": {
+      "allow_reserved": false,
+      "collection_format": null,
+      "explode": false,
+      "style": "form"
+     }
+    }
+   ],
+   "path": "/identityProtection/riskyServicePrincipals",
+   "preview": false,
+   "product": "graph",
+   "request_body": null,
+   "resource": "identity_protection.risky_service_principals",
+   "responses": {
+    "2XX": {
+     "description": ""
+    },
+    "4XX": {
+     "description": ""
+    },
+    "5XX": {
+     "description": ""
+    }
+   },
+   "risk": "read_only",
+   "security": [],
+   "service": "identity_protection",
+   "source": {
+    "id": "https://raw.githubusercontent.com/microsoftgraph/msgraph-metadata/6515412a38ee4efb99669442b697df15b7f55c36/openapi/v1.0/openapi.yaml",
+    "operation_id": "identityProtection.ListRiskyServicePrincipals",
+    "upstream": "https://raw.githubusercontent.com/microsoftgraph/msgraph-metadata/6515412a38ee4efb99669442b697df15b7f55c36/openapi/v1.0/openapi.yaml"
+   }
+  },
+  {
+   "api_version": "v1.0",
+   "base_url": "https://graph.microsoft.com/v1.0",
    "description": "List recoveryKeys",
    "documentation_url": null,
    "id": "graph.information_protection.bitlocker.recovery_keys.list",
@@ -6739,6 +7103,174 @@
    }
   },
   {
+   "api_version": "beta",
+   "base_url": "https://graph.microsoft.com/beta",
+   "description": "List servicePrincipalSignInActivities",
+   "documentation_url": null,
+   "id": "graph.reports.service_principal_sign_in_activities.list",
+   "long_running": null,
+   "maturity": "beta",
+   "method": "GET",
+   "operation": "list",
+   "pageable": {
+    "item_name": "value",
+    "next_link_name": "@odata.nextLink",
+    "operation_name": "listMore"
+   },
+   "parameters": [
+    {
+     "location": "query",
+     "name": "$top",
+     "required": false,
+     "schema": {
+      "minimum": 0,
+      "type": "integer"
+     },
+     "serialization": {
+      "allow_reserved": false,
+      "collection_format": null,
+      "explode": false,
+      "style": "form"
+     }
+    },
+    {
+     "location": "query",
+     "name": "$skip",
+     "required": false,
+     "schema": {
+      "minimum": 0,
+      "type": "integer"
+     },
+     "serialization": {
+      "allow_reserved": false,
+      "collection_format": null,
+      "explode": false,
+      "style": "form"
+     }
+    },
+    {
+     "location": "query",
+     "name": "$search",
+     "required": false,
+     "schema": {
+      "type": "string"
+     },
+     "serialization": {
+      "allow_reserved": false,
+      "collection_format": null,
+      "explode": false,
+      "style": "form"
+     }
+    },
+    {
+     "location": "query",
+     "name": "$filter",
+     "required": false,
+     "schema": {
+      "type": "string"
+     },
+     "serialization": {
+      "allow_reserved": false,
+      "collection_format": null,
+      "explode": false,
+      "style": "form"
+     }
+    },
+    {
+     "location": "query",
+     "name": "$count",
+     "required": false,
+     "schema": {
+      "type": "boolean"
+     },
+     "serialization": {
+      "allow_reserved": false,
+      "collection_format": null,
+      "explode": false,
+      "style": "form"
+     }
+    },
+    {
+     "location": "query",
+     "name": "$orderby",
+     "required": false,
+     "schema": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "uniqueItems": true
+     },
+     "serialization": {
+      "allow_reserved": false,
+      "collection_format": null,
+      "explode": false,
+      "style": "form"
+     }
+    },
+    {
+     "location": "query",
+     "name": "$select",
+     "required": false,
+     "schema": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "uniqueItems": true
+     },
+     "serialization": {
+      "allow_reserved": false,
+      "collection_format": null,
+      "explode": false,
+      "style": "form"
+     }
+    },
+    {
+     "location": "query",
+     "name": "$expand",
+     "required": false,
+     "schema": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "uniqueItems": true
+     },
+     "serialization": {
+      "allow_reserved": false,
+      "collection_format": null,
+      "explode": false,
+      "style": "form"
+     }
+    }
+   ],
+   "path": "/reports/servicePrincipalSignInActivities",
+   "preview": true,
+   "product": "graph",
+   "request_body": null,
+   "resource": "reports.service_principal_sign_in_activities",
+   "responses": {
+    "2XX": {
+     "description": ""
+    },
+    "4XX": {
+     "description": ""
+    },
+    "5XX": {
+     "description": ""
+    }
+   },
+   "risk": "read_only",
+   "security": [],
+   "service": "reports",
+   "source": {
+    "id": "https://raw.githubusercontent.com/microsoftgraph/msgraph-metadata/6515412a38ee4efb99669442b697df15b7f55c36/openapi/beta/openapi.yaml",
+    "operation_id": "reports.ListServicePrincipalSignInActivities",
+    "upstream": "https://raw.githubusercontent.com/microsoftgraph/msgraph-metadata/6515412a38ee4efb99669442b697df15b7f55c36/openapi/beta/openapi.yaml"
+   }
+  },
+  {
    "api_version": "v1.0",
    "base_url": "https://graph.microsoft.com/v1.0",
    "description": "List roleAssignmentSchedules",
@@ -8002,6 +8534,202 @@
     "id": "https://raw.githubusercontent.com/microsoftgraph/msgraph-metadata/1fd0ef510f79f3dadb3e083bdebc9496f939a11c/openapi/v1.0/openapi.yaml",
     "operation_id": "servicePrincipals.servicePrincipal.ListServicePrincipal",
     "upstream": "https://raw.githubusercontent.com/microsoftgraph/msgraph-metadata/1fd0ef510f79f3dadb3e083bdebc9496f939a11c/openapi/v1.0/openapi.yaml"
+   }
+  },
+  {
+   "api_version": "v1.0",
+   "base_url": "https://graph.microsoft.com/v1.0",
+   "description": "Get owners from servicePrincipals",
+   "documentation_url": null,
+   "id": "graph.service_principals.owners.list",
+   "long_running": null,
+   "maturity": "stable",
+   "method": "GET",
+   "operation": "list",
+   "pageable": {
+    "item_name": "value",
+    "next_link_name": "@odata.nextLink",
+    "operation_name": "listMore"
+   },
+   "parameters": [
+    {
+     "location": "path",
+     "name": "servicePrincipal-id",
+     "required": true,
+     "schema": {
+      "type": "string"
+     },
+     "serialization": {
+      "allow_reserved": false,
+      "collection_format": null,
+      "explode": null,
+      "style": null
+     }
+    },
+    {
+     "location": "header",
+     "name": "ConsistencyLevel",
+     "required": false,
+     "schema": {
+      "type": "string"
+     },
+     "serialization": {
+      "allow_reserved": false,
+      "collection_format": null,
+      "explode": null,
+      "style": null
+     }
+    },
+    {
+     "location": "query",
+     "name": "$top",
+     "required": false,
+     "schema": {
+      "minimum": 0,
+      "type": "integer"
+     },
+     "serialization": {
+      "allow_reserved": false,
+      "collection_format": null,
+      "explode": false,
+      "style": "form"
+     }
+    },
+    {
+     "location": "query",
+     "name": "$skip",
+     "required": false,
+     "schema": {
+      "minimum": 0,
+      "type": "integer"
+     },
+     "serialization": {
+      "allow_reserved": false,
+      "collection_format": null,
+      "explode": false,
+      "style": "form"
+     }
+    },
+    {
+     "location": "query",
+     "name": "$search",
+     "required": false,
+     "schema": {
+      "type": "string"
+     },
+     "serialization": {
+      "allow_reserved": false,
+      "collection_format": null,
+      "explode": false,
+      "style": "form"
+     }
+    },
+    {
+     "location": "query",
+     "name": "$filter",
+     "required": false,
+     "schema": {
+      "type": "string"
+     },
+     "serialization": {
+      "allow_reserved": false,
+      "collection_format": null,
+      "explode": false,
+      "style": "form"
+     }
+    },
+    {
+     "location": "query",
+     "name": "$count",
+     "required": false,
+     "schema": {
+      "type": "boolean"
+     },
+     "serialization": {
+      "allow_reserved": false,
+      "collection_format": null,
+      "explode": false,
+      "style": "form"
+     }
+    },
+    {
+     "location": "query",
+     "name": "$orderby",
+     "required": false,
+     "schema": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "uniqueItems": true
+     },
+     "serialization": {
+      "allow_reserved": false,
+      "collection_format": null,
+      "explode": false,
+      "style": "form"
+     }
+    },
+    {
+     "location": "query",
+     "name": "$select",
+     "required": false,
+     "schema": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "uniqueItems": true
+     },
+     "serialization": {
+      "allow_reserved": false,
+      "collection_format": null,
+      "explode": false,
+      "style": "form"
+     }
+    },
+    {
+     "location": "query",
+     "name": "$expand",
+     "required": false,
+     "schema": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "uniqueItems": true
+     },
+     "serialization": {
+      "allow_reserved": false,
+      "collection_format": null,
+      "explode": false,
+      "style": "form"
+     }
+    }
+   ],
+   "path": "/servicePrincipals/{servicePrincipal-id}/owners",
+   "preview": false,
+   "product": "graph",
+   "request_body": null,
+   "resource": "service_principals.owners",
+   "responses": {
+    "2XX": {
+     "description": ""
+    },
+    "4XX": {
+     "description": ""
+    },
+    "5XX": {
+     "description": ""
+    }
+   },
+   "risk": "read_only",
+   "security": [],
+   "service": "service_principals",
+   "source": {
+    "id": "https://raw.githubusercontent.com/microsoftgraph/msgraph-metadata/6515412a38ee4efb99669442b697df15b7f55c36/openapi/v1.0/openapi.yaml",
+    "operation_id": "servicePrincipals.ListOwners",
+    "upstream": "https://raw.githubusercontent.com/microsoftgraph/msgraph-metadata/6515412a38ee4efb99669442b697df15b7f55c36/openapi/v1.0/openapi.yaml"
    }
   },
   {

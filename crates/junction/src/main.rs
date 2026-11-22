@@ -73,6 +73,9 @@ enum Command {
     Check(junction_check::cli::CheckArgs),
     /// Long-term audit and evidence archive in customer-owned immutable storage.
     Archive(junction_archive::cli::ArchiveArgs),
+    /// Connected-app and OAuth governance: inventory enterprise apps, OAuth
+    /// clients, permissions and consent grants with risk flags (read-only).
+    Apps(junction_check::governance::cli::AppsArgs),
     /// Explore the API catalog in an interactive Ratatui terminal interface.
     Tui {
         #[arg(long)]
@@ -788,6 +791,25 @@ async fn run() -> Result<()> {
         let env = check_host::Environment::new(cli.contexts_directory.clone());
         let result = junction_archive::cli::run(args, &env).await?;
         return output_options.emit(&result);
+    }
+    if let Command::Apps(args) = cli.command {
+        let env = check_host::Environment::new(cli.contexts_directory.clone());
+        let mut stdout = std::io::stdout().lock();
+        let code = match junction_check::governance::cli::run(args, cli.context, &env, &mut stdout)
+            .await
+        {
+            Ok(code) => code,
+            Err(error) => {
+                eprintln!(
+                    "{}",
+                    serde_json::json!({"error":"apps_failed","message":format!("{error:#}")})
+                );
+                junction_check::cli::exit::ERROR
+            }
+        };
+        use std::io::Write as _;
+        stdout.flush()?;
+        std::process::exit(code);
     }
     if let Command::Check(args) = cli.command {
         let env = check_host::Environment::new(cli.contexts_directory.clone());
@@ -1935,6 +1957,7 @@ async fn run() -> Result<()> {
         | Command::Context { .. }
         | Command::Check(_)
         | Command::Archive(_)
+        | Command::Apps(_)
         | Command::Watch(_) => unreachable!(),
     };
     output_options.emit(&output)?;
