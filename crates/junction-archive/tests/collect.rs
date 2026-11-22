@@ -559,3 +559,112 @@ async fn graph_records_stored_before_a_failure_are_not_stored_again() {
     .await;
     assert_eq!(stored.len(), 1);
 }
+
+#[tokio::test]
+async fn defender_alert_updates_are_archived_as_versions() {
+    let dir = tempfile::tempdir().unwrap();
+    let store = LocalStore::new(&dir.path().join("store")).unwrap();
+    let mut cp = Checkpoint::open(&dir.path().join("state"), TENANT).unwrap();
+    let alert = |updated: &str, status: &str| {
+        json!({"id": "alert-1", "tenantId": TENANT, "status": status, "severity": "high",
+               "category": "InitialAccess", "createdDateTime": "2026-11-16T01:00:00Z",
+               "lastUpdateDateTime": updated, "evidence": []})
+    };
+    let up = Mock::new();
+    // Routes match the window's start date in the $filter, so each version is
+    // returned only for the window that contains its lastUpdateDateTime.
+    up.route(
+        Api::Graph,
+        "GET",
+        "/v1.0/security/alerts_v2",
+        Some("ge+2026-11-16"),
+        vec![ok(json!({"value": [alert("2026-11-16T01:05:00Z", "new")]}))],
+    )
+    .route(
+        Api::Graph,
+        "GET",
+        "/v1.0/security/alerts_v2",
+        Some("ge+2026-11-21"),
+        vec![ok(
+            json!({"value": [alert("2026-11-21T22:00:00Z", "resolved")]}),
+        )],
+    )
+    .route(
+        Api::Graph,
+        "GET",
+        "/v1.0/security/alerts_v2",
+        None,
+        vec![ok(json!({"value": []}))],
+    );
+    let spec = graph_spec("graph:alerts_v2").unwrap();
+    let out = collect_graph(&up, &store, &mut cp, spec, "run-1", now(), &options())
+        .await
+        .unwrap();
+    assert_eq!(out.status, Status::Ok, "{out:?}");
+    let stored = records_in(
+        &store,
+        &format!("v1/tenant={TENANT}/source=graph-alerts_v2/"),
+    )
+    .await;
+    let statuses: Vec<&str> = stored
+        .iter()
+        .map(|r| r["raw"]["status"].as_str().unwrap())
+        .collect();
+    assert_eq!(stored.len(), 2, "both versions are kept: {statuses:?}");
+    assert!(statuses.contains(&"new") && statuses.contains(&"resolved"));
+    let calls = up.calls.lock().unwrap();
+    assert!(
+        calls[0].2.query().unwrap().contains("lastUpdateDateTime"),
+        "windowed on lastUpdateDateTime"
+    );
+}
+
+#[tokio::test]
+async fn defender_permission_failure_names_the_permission_and_others_continue() {
+    let dir = tempfile::tempdir().unwrap();
+    let store = LocalStore::new(&dir.path().join("store")).unwrap();
+    let mut cp = Checkpoint::open(&dir.path().join("state"), TENANT).unwrap();
+    let up = Mock::new();
+    up.route(
+        Api::Graph,
+        "GET",
+        "/v1.0/security/incidents",
+        None,
+        vec![common::err_msg(
+            403,
+            Some("Forbidden"),
+            "Missing role permissions on the request",
+        )],
+    )
+    .route(
+        Api::Graph,
+        "GET",
+        "/v1.0/auditLogs/directoryAudits",
+        None,
+        vec![ok(json!({"value": []}))],
+    );
+    let outcomes = junction_archive::collect::collect_all(
+        &up,
+        &store,
+        &mut cp,
+        &[
+            "graph:incidents".to_owned(),
+            "graph:directoryAudits".to_owned(),
+        ],
+        now(),
+        &options(),
+    )
+    .await;
+    assert_eq!(outcomes[0].status, Status::Failed);
+    let detail = outcomes[0].detail.as_deref().unwrap();
+    assert!(detail.contains("SecurityIncident.Read.All"), "{detail}");
+    assert!(
+        cp.get("graph:incidents")
+            .unwrap()
+            .unavailable
+            .as_deref()
+            .unwrap()
+            .starts_with("requires_permission")
+    );
+    assert_eq!(outcomes[1].status, Status::Ok, "other sources keep running");
+}

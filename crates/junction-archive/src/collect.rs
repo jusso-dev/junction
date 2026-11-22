@@ -141,6 +141,8 @@ pub struct GraphSpec {
     /// Field filtered and windowed on.
     pub time_field: &'static str,
     pub page_size: &'static str,
+    /// Records change over time; each update is archived as a new version.
+    pub versioned: bool,
 }
 
 pub const GRAPH_SOURCES: &[GraphSpec] = &[
@@ -149,17 +151,22 @@ pub const GRAPH_SOURCES: &[GraphSpec] = &[
         path: "/v1.0/auditLogs/directoryAudits",
         time_field: "activityDateTime",
         page_size: "500",
+        versioned: false,
     },
     GraphSpec {
         source: "graph:signIns",
         path: "/v1.0/auditLogs/signIns",
         time_field: "createdDateTime",
         page_size: "1000",
+        versioned: false,
     },
 ];
 
 pub fn graph_spec(source: &str) -> Option<&'static GraphSpec> {
-    GRAPH_SOURCES.iter().find(|s| s.source == source)
+    GRAPH_SOURCES
+        .iter()
+        .chain(crate::defender::SOURCES)
+        .find(|s| s.source == source)
 }
 
 /// Normalise one Graph record into an archive record, or None to reject it.
@@ -169,6 +176,9 @@ fn graph_record(
     raw: &Value,
     now: Instant,
 ) -> Option<ArchiveRecord> {
+    if spec.versioned {
+        return crate::defender::record(tenant, spec, raw, now);
+    }
     let event = junction_watch::graph::normalise(tenant, spec.source, raw, now)?;
     Some(ArchiveRecord::from_event(&event, raw, None))
 }
@@ -293,19 +303,61 @@ fn paused(state: &SourceState, now: Instant) -> Option<String> {
     })
 }
 
+/// Whether the access token carries the app role `source` needs. Asked only
+/// after a 403, so a missing role is named instead of guessed. None if unknown.
+async fn role_granted(up: &impl Upstream, source: &str) -> Option<bool> {
+    let spec = crate::catalog::source(source)?;
+    let api = if source.starts_with("o365:") {
+        Api::ManagementActivity
+    } else {
+        Api::Graph
+    };
+    let roles = up.granted_roles(api).await.ok()?;
+    Some(roles.iter().any(|r| r == spec.permission))
+}
+
 /// Record why a source failed, and when to try again. Only a failure of the
 /// source itself (`whole_source`: a listing or Graph page) may mark it
 /// unavailable and pause it for a day; one content blob failing never does.
-fn note_failure(
+async fn fail(
+    up: &impl Upstream,
     state: &mut SourceState,
     error: &CallError,
     now: Instant,
     outcome: &mut Outcome,
     whole_source: bool,
 ) {
+    let has_role = if error.status == Some(403) {
+        role_granted(up, &outcome.source).await
+    } else {
+        None
+    };
+    note_failure(state, error, has_role, now, outcome, whole_source);
+}
+
+fn note_failure(
+    state: &mut SourceState,
+    error: &CallError,
+    has_role: Option<bool>,
+    now: Instant,
+    outcome: &mut Outcome,
+    whole_source: bool,
+) {
     outcome.status = Status::Failed;
-    outcome.detail = Some(error.summary());
-    let reason = classify(error, None);
+    let reason = classify(error, has_role);
+    outcome.detail = Some(
+        match (reason.state(), crate::catalog::source(&outcome.source)) {
+            (junction_watch::capability::CapabilityState::RequiresPermission, Some(spec)) => {
+                format!(
+                    "{}: grant the {} application permission ({}) and give admin consent",
+                    error.summary(),
+                    spec.permission,
+                    spec.resource
+                )
+            }
+            _ => error.summary(),
+        },
+    );
     if whole_source && reason.state().is_settled_negative() {
         state.unavailable = Some(format!(
             "{} ({})",
@@ -370,7 +422,7 @@ pub async fn collect_management(
             match list_window(up, content_type, window_start, window_end, &options.backoff).await {
                 Ok(listing) => listing,
                 Err(e) => {
-                    note_failure(checkpoint.source(&source), &e, now, &mut outcome, true);
+                    fail(up, checkpoint.source(&source), &e, now, &mut outcome, true).await;
                     break;
                 }
             };
@@ -434,7 +486,7 @@ pub async fn collect_management(
                     archived_here.push((item.id.clone(), item.created.clone()));
                 }
                 Err(e) if is_throttle(&e) => {
-                    note_failure(checkpoint.source(&source), &e, now, &mut outcome, false);
+                    fail(up, checkpoint.source(&source), &e, now, &mut outcome, false).await;
                     break 'windows;
                 }
                 Err(e) if e.is_transient() => {
@@ -454,14 +506,14 @@ pub async fn collect_management(
                         outcome.quarantined_blobs += 1;
                         archived_here.push((item.id.clone(), item.created.clone()));
                     } else {
-                        note_failure(checkpoint.source(&source), &e, now, &mut outcome, false);
+                        fail(up, checkpoint.source(&source), &e, now, &mut outcome, false).await;
                         break 'windows;
                     }
                 }
                 // Credential and permission failures stop the run without
                 // touching the blob; the next listing re-tests access.
                 Err(e) => {
-                    note_failure(checkpoint.source(&source), &e, now, &mut outcome, false);
+                    fail(up, checkpoint.source(&source), &e, now, &mut outcome, false).await;
                     break 'windows;
                 }
             }
@@ -643,7 +695,7 @@ pub async fn collect_graph(
         {
             Ok(()) => {}
             Err(WindowError::Call(e)) => {
-                note_failure(checkpoint.source(source), &e, now, &mut outcome, true);
+                fail(up, checkpoint.source(source), &e, now, &mut outcome, true).await;
                 break;
             }
             Err(WindowError::Budget) => {
