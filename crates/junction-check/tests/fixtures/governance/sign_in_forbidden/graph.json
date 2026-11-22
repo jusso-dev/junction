@@ -197,6 +197,22 @@
               "createdDateTime": "2021-01-01T00:00:00Z",
               "passwordCredentials": [],
               "keyCredentials": []
+            },
+            {
+              "id": "00000000-0000-4000-a000-000000000212",
+              "appId": "00000000-0000-4000-a000-000000000112",
+              "displayName": "Partner Portal Connector",
+              "signInAudience": "AzureADMultipleOrgs",
+              "createdDateTime": "2024-06-01T00:00:00Z",
+              "passwordCredentials": [
+                {
+                  "keyId": "00000000-0000-4000-a000-000000000412",
+                  "displayName": "partner",
+                  "hint": "Qq7",
+                  "endDateTime": "2027-06-01T00:00:00Z"
+                }
+              ],
+              "keyCredentials": []
             }
           ]
         }
@@ -331,7 +347,6 @@
           "value": [
             {
               "id": "00000000-0000-4000-a000-000000000007",
-              "appId": "00000000-0000-4000-a000-000000000107",
               "displayName": "Contoso Calendar Sync",
               "riskLevel": "high",
               "riskState": "atRisk"
@@ -422,6 +437,52 @@
       {
         "body": {
           "value": []
+        }
+      }
+    ]
+  },
+  {
+    "operation": "graph.applications.owners.list",
+    "match": {
+      "parameters": {
+        "application-id": "00000000-0000-4000-a000-000000000212"
+      }
+    },
+    "responses": [
+      {
+        "body": {
+          "value": [
+            {
+              "@odata.type": "#microsoft.graph.user",
+              "id": "00000000-0000-4000-a000-000000000606",
+              "displayName": "Partner Lead",
+              "userPrincipalName": "partner.lead@contoso.example",
+              "userType": "Member"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "operation": "graph.service_principals.owners.list",
+    "match": {
+      "parameters": {
+        "servicePrincipal-id": "00000000-0000-4000-a000-000000000008"
+      }
+    },
+    "responses": [
+      {
+        "body": {
+          "value": [
+            {
+              "@odata.type": "#microsoft.graph.user",
+              "id": "00000000-0000-4000-a000-000000000607",
+              "displayName": "Mail Admin",
+              "userPrincipalName": "mail.admin@contoso.example",
+              "userType": "Member"
+            }
+          ]
         }
       }
     ]

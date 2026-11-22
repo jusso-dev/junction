@@ -1,0 +1,572 @@
+[
+  {
+    "operation": "graph.service_principals.list",
+    "responses": [
+      {
+        "body": {
+          "value": [
+            {
+              "id": "00000000-0000-4000-a000-000000000001",
+              "appId": "00000003-0000-0000-c000-000000000000",
+              "displayName": "Microsoft Graph",
+              "servicePrincipalType": "Application",
+              "accountEnabled": true,
+              "appOwnerOrganizationId": "f8cdef31-a31e-4b4a-93e4-5f571e91255a",
+              "appRoleAssignmentRequired": false,
+              "passwordCredentials": [],
+              "keyCredentials": [],
+              "appRoles": [
+                {
+                  "id": "00000000-0000-4000-a000-000000000901",
+                  "value": "Mail.Read"
+                },
+                {
+                  "id": "00000000-0000-4000-a000-000000000902",
+                  "value": "Directory.ReadWrite.All"
+                },
+                {
+                  "id": "00000000-0000-4000-a000-000000000903",
+                  "value": "User.Read.All"
+                },
+                {
+                  "id": "00000000-0000-4000-a000-000000000904",
+                  "value": "Sites.ReadWrite.All"
+                }
+              ]
+            },
+            {
+              "id": "00000000-0000-4000-a000-000000000002",
+              "appId": "00000000-0000-4000-a000-000000000102",
+              "displayName": "Fabrikam Mail Archive",
+              "servicePrincipalType": "Application",
+              "accountEnabled": true,
+              "appOwnerOrganizationId": "00000000-0000-4000-8000-0000000000e1",
+              "verifiedPublisher": {
+                "displayName": "Fabrikam Ltd"
+              },
+              "appRoleAssignmentRequired": true,
+              "passwordCredentials": [],
+              "keyCredentials": [],
+              "appRoles": []
+            },
+            {
+              "id": "00000000-0000-4000-a000-000000000003",
+              "appId": "00000000-0000-4000-a000-000000000103",
+              "displayName": "Free PDF Helper",
+              "servicePrincipalType": "Application",
+              "accountEnabled": true,
+              "appOwnerOrganizationId": "00000000-0000-4000-8000-0000000000e1",
+              "appRoleAssignmentRequired": false,
+              "passwordCredentials": [],
+              "keyCredentials": [],
+              "appRoles": []
+            },
+            {
+              "id": "00000000-0000-4000-a000-000000000004",
+              "appId": "00000000-0000-4000-a000-000000000104",
+              "displayName": "Legacy Provisioning Script",
+              "servicePrincipalType": "Application",
+              "accountEnabled": true,
+              "appOwnerOrganizationId": "00000000-0000-4000-8000-000000000001",
+              "appRoleAssignmentRequired": false,
+              "passwordCredentials": [
+                {
+                  "keyId": "00000000-0000-4000-a000-000000000401",
+                  "displayName": "sp-secret",
+                  "hint": "Zx9",
+                  "endDateTime": "2027-06-01T00:00:00Z"
+                }
+              ],
+              "keyCredentials": [],
+              "appRoles": []
+            },
+            {
+              "id": "00000000-0000-4000-a000-000000000005",
+              "appId": "00000000-0000-4000-a000-000000000105",
+              "displayName": "Old HR Sync",
+              "servicePrincipalType": "Application",
+              "accountEnabled": true,
+              "appOwnerOrganizationId": "00000000-0000-4000-8000-000000000001",
+              "appRoleAssignmentRequired": false,
+              "passwordCredentials": [],
+              "keyCredentials": [],
+              "appRoles": []
+            },
+            {
+              "id": "00000000-0000-4000-a000-000000000006",
+              "appId": "00000000-0000-4000-a000-000000000106",
+              "displayName": "Retired Reporting App",
+              "servicePrincipalType": "Application",
+              "accountEnabled": false,
+              "appOwnerOrganizationId": "00000000-0000-4000-8000-000000000001",
+              "appRoleAssignmentRequired": true,
+              "passwordCredentials": [],
+              "keyCredentials": [],
+              "appRoles": []
+            },
+            {
+              "id": "00000000-0000-4000-a000-000000000007",
+              "appId": "00000000-0000-4000-a000-000000000107",
+              "displayName": "Contoso Calendar Sync",
+              "servicePrincipalType": "Application",
+              "accountEnabled": true,
+              "appOwnerOrganizationId": "00000000-0000-4000-8000-0000000000e1",
+              "verifiedPublisher": {
+                "displayName": "Calendar Co"
+              },
+              "appRoleAssignmentRequired": false,
+              "passwordCredentials": [],
+              "keyCredentials": [],
+              "appRoles": []
+            },
+            {
+              "id": "00000000-0000-4000-a000-000000000008",
+              "appId": "00000000-0000-4000-a000-000000000108",
+              "displayName": "Office 365 Exchange Online",
+              "servicePrincipalType": "Application",
+              "accountEnabled": true,
+              "appOwnerOrganizationId": "f8cdef31-a31e-4b4a-93e4-5f571e91255a",
+              "appRoleAssignmentRequired": false,
+              "passwordCredentials": [],
+              "keyCredentials": [],
+              "appRoles": []
+            },
+            {
+              "id": "00000000-0000-4000-a000-000000000009",
+              "appId": "00000000-0000-4000-a000-000000000109",
+              "displayName": "mi-backup-runner",
+              "servicePrincipalType": "ManagedIdentity",
+              "accountEnabled": true,
+              "appRoleAssignmentRequired": false,
+              "passwordCredentials": [],
+              "keyCredentials": [],
+              "appRoles": []
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "operation": "graph.applications.list",
+    "responses": [
+      {
+        "body": {
+          "value": [
+            {
+              "id": "00000000-0000-4000-a000-000000000204",
+              "appId": "00000000-0000-4000-a000-000000000104",
+              "displayName": "Legacy Provisioning Script",
+              "signInAudience": "AzureADMyOrg",
+              "createdDateTime": "2023-01-10T00:00:00Z",
+              "passwordCredentials": [
+                {
+                  "keyId": "00000000-0000-4000-a000-000000000402",
+                  "displayName": "app-secret",
+                  "hint": "Ab1",
+                  "endDateTime": "2027-01-01T00:00:00Z"
+                }
+              ],
+              "keyCredentials": []
+            },
+            {
+              "id": "00000000-0000-4000-a000-000000000205",
+              "appId": "00000000-0000-4000-a000-000000000105",
+              "displayName": "Old HR Sync",
+              "signInAudience": "AzureADMyOrg",
+              "createdDateTime": "2022-03-01T00:00:00Z",
+              "passwordCredentials": [
+                {
+                  "keyId": "00000000-0000-4000-a000-000000000403",
+                  "endDateTime": "2025-02-01T00:00:00Z"
+                }
+              ],
+              "keyCredentials": [
+                {
+                  "keyId": "00000000-0000-4000-a000-000000000404",
+                  "customKeyIdentifier": "QUJD",
+                  "endDateTime": "2025-03-01T00:00:00Z"
+                }
+              ]
+            },
+            {
+              "id": "00000000-0000-4000-a000-000000000206",
+              "appId": "00000000-0000-4000-a000-000000000106",
+              "displayName": "Retired Reporting App",
+              "signInAudience": "AzureADMyOrg",
+              "createdDateTime": "2021-01-01T00:00:00Z",
+              "passwordCredentials": [],
+              "keyCredentials": []
+            },
+            {
+              "id": "00000000-0000-4000-a000-000000000212",
+              "appId": "00000000-0000-4000-a000-000000000112",
+              "displayName": "Partner Portal Connector",
+              "signInAudience": "AzureADMultipleOrgs",
+              "createdDateTime": "2024-06-01T00:00:00Z",
+              "passwordCredentials": [
+                {
+                  "keyId": "00000000-0000-4000-a000-000000000412",
+                  "displayName": "partner",
+                  "hint": "Qq7",
+                  "endDateTime": "2027-06-01T00:00:00Z"
+                }
+              ],
+              "keyCredentials": []
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "operation": "graph.oauth2permission_grants.list",
+    "responses": [
+      {
+        "body": {
+          "value": [
+            {
+              "id": "grant-pdf-all",
+              "clientId": "00000000-0000-4000-a000-000000000003",
+              "consentType": "AllPrincipals",
+              "principalId": null,
+              "resourceId": "00000000-0000-4000-a000-000000000001",
+              "scope": "openid profile Files.ReadWrite.All offline_access"
+            },
+            {
+              "id": "grant-cal-guest",
+              "clientId": "00000000-0000-4000-a000-000000000007",
+              "consentType": "Principal",
+              "principalId": "00000000-0000-4000-a000-000000000601",
+              "resourceId": "00000000-0000-4000-a000-000000000001",
+              "scope": "Calendars.ReadWrite User.Read"
+            },
+            {
+              "id": "grant-cal-member",
+              "clientId": "00000000-0000-4000-a000-000000000007",
+              "consentType": "Principal",
+              "principalId": "00000000-0000-4000-a000-000000000602",
+              "resourceId": "00000000-0000-4000-a000-000000000001",
+              "scope": "User.Read"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "operation": "graph.users.list",
+    "match": {
+      "parameters": {
+        "$filter": "userType eq 'Guest'"
+      }
+    },
+    "responses": [
+      {
+        "body": {
+          "value": [
+            {
+              "id": "00000000-0000-4000-a000-000000000601",
+              "userPrincipalName": "vendor_fabrikam.example#EXT#@contoso.example",
+              "userType": "Guest"
+            },
+            {
+              "id": "00000000-0000-4000-a000-000000000603",
+              "userPrincipalName": "contractor_fabrikam.example#EXT#@contoso.example",
+              "userType": "Guest"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "operation": "graph.service_principals.app_role_assigned_to.list",
+    "match": {
+      "parameters": {
+        "servicePrincipal-id": "00000000-0000-4000-a000-000000000001"
+      }
+    },
+    "responses": [
+      {
+        "body": {
+          "value": [
+            {
+              "id": "asg-mailread-2",
+              "principalId": "00000000-0000-4000-a000-000000000002",
+              "principalType": "ServicePrincipal",
+              "appRoleId": "00000000-0000-4000-a000-000000000901",
+              "resourceId": "00000000-0000-4000-a000-000000000001",
+              "createdDateTime": "2025-05-01T00:00:00Z"
+            },
+            {
+              "id": "asg-dirrw-4",
+              "principalId": "00000000-0000-4000-a000-000000000004",
+              "principalType": "ServicePrincipal",
+              "appRoleId": "00000000-0000-4000-a000-000000000902",
+              "resourceId": "00000000-0000-4000-a000-000000000001",
+              "createdDateTime": "2023-01-11T00:00:00Z"
+            }
+          ],
+          "@odata.nextLink": "fixture:assignments-2"
+        }
+      }
+    ]
+  },
+  {
+    "url": "fixture:assignments-2",
+    "responses": [
+      {
+        "body": {
+          "value": [
+            {
+              "id": "asg-userread-5",
+              "principalId": "00000000-0000-4000-a000-000000000005",
+              "principalType": "ServicePrincipal",
+              "appRoleId": "00000000-0000-4000-a000-000000000903",
+              "resourceId": "00000000-0000-4000-a000-000000000001",
+              "createdDateTime": "2022-03-02T00:00:00Z"
+            },
+            {
+              "id": "asg-user-assignment",
+              "principalId": "00000000-0000-4000-a000-000000000500",
+              "principalType": "User",
+              "appRoleId": "00000000-0000-4000-a000-000000000901",
+              "resourceId": "00000000-0000-4000-a000-000000000001"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "operation": "graph.identity_protection.risky_service_principals.list",
+    "responses": [
+      {
+        "body": {
+          "value": [
+            {
+              "id": "00000000-0000-4000-a000-000000000007",
+              "displayName": "Contoso Calendar Sync",
+              "riskLevel": "high",
+              "riskState": "atRisk"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "operation": "graph.reports.service_principal_sign_in_activities.list",
+    "responses": [
+      {
+        "body": {
+          "value": [
+            {
+              "id": "s2",
+              "appId": "00000000-0000-4000-a000-000000000102",
+              "lastSignInActivity": {
+                "lastSignInDateTime": "2026-10-20T08:00:00Z"
+              }
+            },
+            {
+              "id": "s4",
+              "appId": "00000000-0000-4000-a000-000000000104",
+              "lastSignInActivity": {
+                "lastSignInDateTime": "2026-03-01T08:00:00Z"
+              }
+            },
+            {
+              "id": "s5",
+              "appId": "00000000-0000-4000-a000-000000000105",
+              "lastSignInActivity": {
+                "lastSignInDateTime": "2025-01-15T08:00:00Z"
+              }
+            },
+            {
+              "id": "s7",
+              "appId": "00000000-0000-4000-a000-000000000107",
+              "lastSignInActivity": {
+                "lastSignInDateTime": "2026-10-24T08:00:00Z"
+              }
+            },
+            {
+              "id": "s9",
+              "appId": "00000000-0000-4000-a000-000000000109",
+              "lastSignInActivity": {
+                "lastSignInDateTime": "2026-10-24T08:00:00Z"
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "operation": "graph.service_principals.owners.list",
+    "responses": [
+      {
+        "body": {
+          "value": []
+        }
+      }
+    ]
+  },
+  {
+    "operation": "graph.applications.owners.list",
+    "responses": [
+      {
+        "body": {
+          "value": []
+        }
+      }
+    ]
+  },
+  {
+    "operation": "graph.applications.owners.list",
+    "match": {
+      "parameters": {
+        "application-id": "00000000-0000-4000-a000-000000000205"
+      }
+    },
+    "responses": [
+      {
+        "status": 403,
+        "error": {
+          "code": "Authorization_RequestDenied",
+          "message": "Insufficient privileges to complete the operation."
+        }
+      }
+    ]
+  },
+  {
+    "operation": "graph.service_principals.owners.list",
+    "match": {
+      "parameters": {
+        "servicePrincipal-id": "00000000-0000-4000-a000-000000000005"
+      }
+    },
+    "responses": [
+      {
+        "body": {
+          "value": [
+            {
+              "@odata.type": "#microsoft.graph.user",
+              "id": "00000000-0000-4000-a000-000000000608",
+              "displayName": "Visiting Dev",
+              "userPrincipalName": "dev_fabrikam.example#EXT#@contoso.example",
+              "userType": "Guest"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "operation": "graph.service_principals.owners.list",
+    "match": {
+      "parameters": {
+        "servicePrincipal-id": "00000000-0000-4000-a000-000000000004"
+      }
+    },
+    "responses": [
+      {
+        "body": {
+          "value": []
+        }
+      }
+    ]
+  },
+  {
+    "operation": "graph.applications.owners.list",
+    "match": {
+      "parameters": {
+        "application-id": "00000000-0000-4000-a000-000000000204"
+      }
+    },
+    "responses": [
+      {
+        "body": {
+          "value": [
+            {
+              "@odata.type": "#microsoft.graph.user",
+              "id": "00000000-0000-4000-a000-000000000603",
+              "displayName": "Contractor",
+              "userPrincipalName": "contractor_fabrikam.example#EXT#@contoso.example",
+              "userType": "Guest"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "operation": "graph.applications.owners.list",
+    "match": {
+      "parameters": {
+        "application-id": "00000000-0000-4000-a000-000000000212"
+      }
+    },
+    "responses": [
+      {
+        "body": {
+          "value": [
+            {
+              "@odata.type": "#microsoft.graph.user",
+              "id": "00000000-0000-4000-a000-000000000606",
+              "displayName": "Partner Lead",
+              "userPrincipalName": "partner.lead@contoso.example",
+              "userType": "Member"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "operation": "graph.service_principals.owners.list",
+    "match": {
+      "parameters": {
+        "servicePrincipal-id": "00000000-0000-4000-a000-000000000008"
+      }
+    },
+    "responses": [
+      {
+        "body": {
+          "value": [
+            {
+              "@odata.type": "#microsoft.graph.user",
+              "id": "00000000-0000-4000-a000-000000000607",
+              "displayName": "Mail Admin",
+              "userPrincipalName": "mail.admin@contoso.example",
+              "userType": "Member"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "operation": "graph.applications.owners.list",
+    "match": {
+      "parameters": {
+        "application-id": "00000000-0000-4000-a000-000000000206"
+      }
+    },
+    "responses": [
+      {
+        "body": {
+          "value": [
+            {
+              "@odata.type": "#microsoft.graph.user",
+              "id": "00000000-0000-4000-a000-000000000604",
+              "displayName": "Ops Lead",
+              "userPrincipalName": "ops.lead@contoso.example",
+              "userType": "Member"
+            }
+          ]
+        }
+      }
+    ]
+  }
+]

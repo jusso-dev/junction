@@ -2,10 +2,11 @@
 //!
 //! Each flag is justified from Graph data alone and documented in [`FLAGS`]
 //! (what it reads, why it matters and how to fix it). Flags never fire on
-//! missing data: when sign-in activity, owners, guests or risk could not be
-//! read (an inventory [`super::inventory::Gap`]), the flags that depend on it
-//! are not evaluated.
-use super::inventory::{App, Inventory, OwnerTenant, Publisher};
+//! missing data: when sign-in activity, guests or risk could not be read (an
+//! inventory [`super::inventory::Gap`]), or one app's owner lookup failed
+//! (`owners_unread`), the flags that would need that data are not evaluated.
+//! Positive evidence that was read (a guest owner) is still reported.
+use super::inventory::{App, Inventory, OwnerTenant, Publisher, SignInData};
 use crate::config::CheckConfig;
 use crate::model::Severity;
 use junction_watch::clock::Instant;
@@ -342,19 +343,29 @@ pub fn evaluate(app: &App, inventory: &Inventory, settings: Settings, now: Insta
     }
 
     // Sign-in recency, only when the data was readable.
-    if !inventory.gap("sign_in_activity") && app.enabled {
+    // Sign-in recency, only when the report was read.
+    if app.sign_in_data != SignInData::Unavailable && app.enabled {
         let cutoff = now.minus(Duration::from_secs(settings.unused_days * 86_400));
         let last = app
             .last_sign_in
             .as_deref()
             .and_then(|s| Instant::parse(s).ok());
         let stale = last.is_none_or(|l| l < cutoff);
-        // Apps younger than the period cannot be called unused.
-        let old_enough = app
+        // An app must be known to be older than the period to be called
+        // unused. Its age is known from the local registration's creation date
+        // or, failing that, the earliest application permission grant. External
+        // apps with neither have an unknown age and are never flagged here.
+        let known_since = app
             .created_at
-            .as_deref()
-            .and_then(|c| Instant::parse(c).ok())
-            .is_none_or(|c| c < cutoff);
+            .iter()
+            .chain(
+                app.application_permissions
+                    .iter()
+                    .filter_map(|p| p.granted_at.as_ref()),
+            )
+            .filter_map(|d| Instant::parse(d).ok())
+            .min();
+        let old_enough = known_since.is_some_and(|c| c < cutoff);
         if stale && old_enough {
             let seen = match &app.last_sign_in {
                 Some(at) => format!("last sign-in {}", date(at)),
@@ -401,7 +412,9 @@ pub fn evaluate(app: &App, inventory: &Inventory, settings: Settings, now: Insta
         ));
     }
 
-    if !inventory.gap("owners") {
+    {
+        // Guest owners that were read are evidence even if another owner
+        // lookup for this app failed.
         let guests: Vec<String> = app
             .owners
             .iter()
@@ -424,8 +437,10 @@ pub fn evaluate(app: &App, inventory: &Inventory, settings: Settings, now: Insta
                 guests,
             ));
         }
+        // Ownerless only when this app's registration-owner lookup succeeded.
         if app.owner_tenant == OwnerTenant::Home
             && app.application_id.is_some()
+            && !app.owners_unread.iter().any(|o| o == "application")
             && !app.owners.iter().any(|o| o.of == "application")
         {
             flags.push(flag(

@@ -247,7 +247,17 @@ pub async fn run(
                 ListFormat::Json => serde_json::to_string_pretty(super::flags::FLAGS)? + "\n",
                 ListFormat::Table => super::flags::FLAGS
                     .iter()
-                    .map(|f| format!("{:<32} {:<8} {}\n", f.id, f.severity.as_str(), f.title))
+                    .map(|f| {
+                        format!(
+                            "{} ({})\n  {}\n  Reads: {}\n  Why:   {}\n  Fix:   {}\n\n",
+                            f.id,
+                            f.severity.as_str(),
+                            f.title,
+                            f.reads,
+                            f.why,
+                            f.fix
+                        )
+                    })
                     .collect(),
             };
             out.write_all(text.as_bytes())?;

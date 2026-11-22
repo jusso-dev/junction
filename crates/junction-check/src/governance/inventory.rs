@@ -110,11 +110,17 @@ pub struct Inventory {
     #[serde(default)]
     pub gaps: Vec<Gap>,
     pub apps: Vec<App>,
+    /// App registrations in this tenant with no service principal here.
+    #[serde(default)]
+    pub registrations_without_service_principal: Vec<Registration>,
 }
 
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct Summary {
     pub apps: usize,
+    /// App registrations with no service principal in this tenant.
+    #[serde(default)]
+    pub registrations_without_service_principal: usize,
     pub home_tenant: usize,
     pub external: usize,
     pub microsoft: usize,
@@ -214,6 +220,37 @@ pub struct DelegatedGrant {
     pub principal_guest: Option<bool>,
 }
 
+/// Where a `last_sign_in` value comes from.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum SignInData {
+    /// The report lists a sign-in for this app.
+    Recorded,
+    /// The report was read and lists no sign-in for this app.
+    NoneRecorded,
+    /// The report could not be read (see the `sign_in_activity` gap).
+    Unavailable,
+}
+
+/// An app registration in this tenant with no service principal here, so it
+/// holds no permissions or grants in this tenant but its credentials and
+/// owners still matter (for example a multi-tenant app offered to others).
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct Registration {
+    pub application_id: String,
+    pub app_id: String,
+    pub display_name: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sign_in_audience: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub created_at: Option<String>,
+    pub credentials: Vec<Credential>,
+    pub owners: Vec<Owner>,
+    /// True when the owner lookup failed, so `owners` may be incomplete.
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    pub owners_unread: bool,
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Risk {
     pub level: String,
@@ -243,10 +280,16 @@ pub struct App {
     pub owners: Vec<Owner>,
     pub application_permissions: Vec<AppPermission>,
     pub delegated_grants: Vec<DelegatedGrant>,
-    /// Last sign-in in any role; `None` when none is recorded or the data is
-    /// unavailable (see [`Inventory::gaps`]).
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    /// Owner lookups that failed for this app (`application` or
+    /// `service_principal`). Owners from the other lookup are still listed.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub owners_unread: Vec<String>,
+    /// Last sign-in in any role; always present, `null` when none is recorded
+    /// or the report could not be read (see `sign_in_data`).
+    #[serde(default)]
     pub last_sign_in: Option<String>,
+    /// Whether `last_sign_in` is a reading, a reading of nothing, or missing.
+    pub sign_in_data: SignInData,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub risk: Option<Risk>,
     #[serde(default)]
@@ -279,6 +322,9 @@ impl Inventory {
     pub fn summarise(&mut self) {
         let mut s = Summary {
             apps: self.apps.len(),
+            registrations_without_service_principal: self
+                .registrations_without_service_principal
+                .len(),
             ..Summary::default()
         };
         for app in &self.apps {
@@ -578,12 +624,16 @@ pub async fn collect(ctx: &CheckContext) -> Result<Inventory, CollectError> {
         .filter_map(|a| Some((a["appId"].as_str()?.to_lowercase(), a)))
         .collect();
 
-    // Owners: app registrations in this tenant and non-Microsoft service principals.
-    let mut owner_targets: Vec<(String, &'static str, String)> = vec![]; // (sp id, of, object id)
+    // Owners of every service principal (including Microsoft first-party ones,
+    // which can still be given owners here) and of every app registration.
+    // Targets are keyed by service principal id, or by `app:<object id>` for
+    // registrations with no service principal in this tenant.
+    let sp_app_ids: BTreeSet<String> = sps
+        .iter()
+        .filter_map(|sp| sp["appId"].as_str().map(str::to_lowercase))
+        .collect();
+    let mut owner_targets: Vec<(String, &'static str, String)> = vec![]; // (key, of, object id)
     for sp in &sps {
-        if is_microsoft_owned(sp) {
-            continue;
-        }
         let Some(id) = sp["id"].as_str() else {
             continue;
         };
@@ -594,6 +644,17 @@ pub async fn collect(ctx: &CheckContext) -> Result<Inventory, CollectError> {
             && let Some(app_object) = app["id"].as_str()
         {
             owner_targets.push((id.to_lowercase(), "application", app_object.to_owned()));
+        }
+    }
+    for (app_id, reg) in &registrations {
+        if !sp_app_ids.contains(app_id)
+            && let Some(object) = reg["id"].as_str()
+        {
+            owner_targets.push((
+                format!("app:{}", object.to_lowercase()),
+                "application",
+                object.to_owned(),
+            ));
         }
     }
     let owner_results: Vec<Result<Vec<Value>, CallFailure>> = fan_out(
@@ -611,15 +672,22 @@ pub async fn collect(ctx: &CheckContext) -> Result<Inventory, CollectError> {
             .collect(),
     )
     .await;
+    // Successful lookups are always kept; a failed one is recorded against
+    // that app and source, so it never erases owners read elsewhere.
     let mut owners: BTreeMap<String, Vec<Owner>> = BTreeMap::new();
+    let mut owners_unread: BTreeMap<String, Vec<String>> = BTreeMap::new();
     let mut owner_gap = None;
-    for ((sp, of, _), result) in owner_targets.iter().zip(owner_results) {
+    for ((key, of, _), result) in owner_targets.iter().zip(owner_results) {
         match result {
             Ok(rows) => owners
-                .entry(sp.clone())
+                .entry(key.clone())
                 .or_default()
                 .extend(rows.iter().map(|o| owner(o, of))),
             Err(f) => {
+                owners_unread
+                    .entry(key.clone())
+                    .or_default()
+                    .push((*of).to_owned());
                 owner_gap.get_or_insert_with(|| reason(&f));
             }
         }
@@ -629,31 +697,32 @@ pub async fn collect(ctx: &CheckContext) -> Result<Inventory, CollectError> {
             area: "owners".into(),
             reason,
         });
-        owners.clear();
     }
 
-    // Sign-in recency (Entra ID P1 or P2), by app id.
-    let sign_ins: BTreeMap<String, String> =
+    // Sign-in recency (Entra ID P1 or P2), by app id. `None` when unreadable.
+    let sign_ins: Option<BTreeMap<String, String>> =
         match ctx.list_with(SIGN_IN_ACTIVITY.operation, json!({})).await {
-            Ok(rows) => rows
-                .iter()
-                .filter_map(|r| {
-                    let at = r
-                        .pointer("/lastSignInActivity/lastSignInDateTime")
-                        .and_then(Value::as_str)?;
-                    Some((r["appId"].as_str()?.to_lowercase(), at.to_owned()))
-                })
-                .collect(),
+            Ok(rows) => Some(
+                rows.iter()
+                    .filter_map(|r| {
+                        let at = r
+                            .pointer("/lastSignInActivity/lastSignInDateTime")
+                            .and_then(Value::as_str)?;
+                        Some((r["appId"].as_str()?.to_lowercase(), at.to_owned()))
+                    })
+                    .collect(),
+            ),
             Err(f) => {
                 gaps.push(Gap {
                     area: "sign_in_activity".into(),
                     reason: reason(&f),
                 });
-                BTreeMap::new()
+                None
             }
         };
 
-    // Workload identity risk (Workload Identities Premium), by app id.
+    // Workload identity risk (Workload Identities Premium), keyed by the
+    // service principal object id (`id`); Graph documents `appId` as optional.
     let risks: BTreeMap<String, Risk> = match ctx
         .list_with(RISKY_SERVICE_PRINCIPALS.operation, json!({}))
         .await
@@ -662,7 +731,7 @@ pub async fn collect(ctx: &CheckContext) -> Result<Inventory, CollectError> {
             .iter()
             .filter_map(|r| {
                 Some((
-                    r["appId"].as_str()?.to_lowercase(),
+                    r["id"].as_str()?.to_lowercase(),
                     Risk {
                         level: s(r, "riskLevel").unwrap_or_default(),
                         state: s(r, "riskState").unwrap_or_default(),
@@ -719,6 +788,14 @@ pub async fn collect(ctx: &CheckContext) -> Result<Inventory, CollectError> {
         let mut app_owners = owners.remove(&key).unwrap_or_default();
         app_owners.sort();
         app_owners.dedup();
+        let last_sign_in = sign_ins
+            .as_ref()
+            .and_then(|m| m.get(&app_id.to_lowercase()).cloned());
+        let sign_in_data = match (&sign_ins, &last_sign_in) {
+            (None, _) => SignInData::Unavailable,
+            (Some(_), Some(_)) => SignInData::Recorded,
+            (Some(_), None) => SignInData::NoneRecorded,
+        };
         apps.push(App {
             service_principal_id: id.to_owned(),
             display_name: s(sp, "displayName").unwrap_or_else(|| "Unknown".into()),
@@ -735,10 +812,12 @@ pub async fn collect(ctx: &CheckContext) -> Result<Inventory, CollectError> {
             created_at: registration.and_then(|r| s(r, "createdDateTime")),
             credentials: creds,
             owners: app_owners,
+            owners_unread: owners_unread.remove(&key).unwrap_or_default(),
             application_permissions: app_permissions,
             delegated_grants: grants,
-            last_sign_in: sign_ins.get(&app_id.to_lowercase()).cloned(),
-            risk: risks.get(&app_id.to_lowercase()).cloned(),
+            last_sign_in,
+            sign_in_data,
+            risk: risks.get(&key).cloned(),
             flags: vec![],
             app_id,
         });
@@ -749,6 +828,37 @@ pub async fn collect(ctx: &CheckContext) -> Result<Inventory, CollectError> {
             .cmp(&b.display_name.to_lowercase())
             .then_with(|| a.service_principal_id.cmp(&b.service_principal_id))
     });
+    let mut unmatched = vec![];
+    for (app_id, reg) in &registrations {
+        if sp_app_ids.contains(app_id) {
+            continue;
+        }
+        let Some(object) = reg["id"].as_str() else {
+            continue;
+        };
+        let key = format!("app:{}", object.to_lowercase());
+        let mut reg_owners = owners.remove(&key).unwrap_or_default();
+        reg_owners.sort();
+        reg_owners.dedup();
+        let mut creds = credentials(reg, "application", now);
+        creds.sort();
+        unmatched.push(Registration {
+            application_id: object.to_owned(),
+            app_id: s(reg, "appId").unwrap_or_default(),
+            display_name: s(reg, "displayName").unwrap_or_else(|| "Unknown".into()),
+            sign_in_audience: s(reg, "signInAudience"),
+            created_at: s(reg, "createdDateTime"),
+            credentials: creds,
+            owners: reg_owners,
+            owners_unread: owners_unread.contains_key(&key),
+        });
+    }
+    unmatched.sort_by(|a, b| {
+        a.display_name
+            .to_lowercase()
+            .cmp(&b.display_name.to_lowercase())
+            .then_with(|| a.application_id.cmp(&b.application_id))
+    });
     let mut inventory = Inventory {
         schema_version: SCHEMA_VERSION,
         tenant_id: tenant,
@@ -757,6 +867,7 @@ pub async fn collect(ctx: &CheckContext) -> Result<Inventory, CollectError> {
         summary: Summary::default(),
         gaps,
         apps,
+        registrations_without_service_principal: unmatched,
     };
     inventory.summarise();
     Ok(inventory)

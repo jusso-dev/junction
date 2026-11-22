@@ -88,11 +88,11 @@ pub fn permissions_label(app: &App) -> String {
     }
 }
 
-pub fn sign_in_label(app: &App, inventory: &Inventory) -> String {
-    match &app.last_sign_in {
-        Some(at) => at.get(..10).unwrap_or(at).to_owned(),
-        None if inventory.gap("sign_in_activity") => "unavailable".into(),
-        None => "none recorded".into(),
+pub fn sign_in_label(app: &App, _inventory: &Inventory) -> String {
+    match (&app.last_sign_in, app.sign_in_data) {
+        (_, super::inventory::SignInData::Unavailable) => "unavailable".into(),
+        (Some(at), _) => at.get(..10).unwrap_or(at).to_owned(),
+        (None, _) => "none recorded".into(),
     }
 }
 

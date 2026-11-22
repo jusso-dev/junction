@@ -100,13 +100,14 @@ async fn inventory_joins_permissions_grants_owners_and_sign_ins() {
 #[tokio::test]
 async fn every_flag_fires_on_the_app_built_for_it() {
     let inv = inventory("tenant").await.unwrap();
+    // External, delegated grants only: its age is unknown, so no sign-in
+    // recency flag even though no sign-in is recorded.
     assert_eq!(
         flag_ids(&inv, "Free PDF Helper"),
         set(&[
             "critical_permission",
             "tenant_wide_delegated",
             "overbroad_scope",
-            "privileged_no_recent_sign_in",
             "unverified_publisher_external"
         ])
     );
@@ -202,4 +203,94 @@ async fn inventory_json_carries_no_secret_material() {
 fn governance_fixtures_are_synthetic() {
     let problems = scan_fixture_tree(&fixtures_root().join("governance"));
     assert!(problems.is_empty(), "{problems:#?}");
+}
+
+// --- review follow-ups on #59 ------------------------------------------------------
+
+#[tokio::test]
+async fn sign_in_state_is_explicit_in_json() {
+    use junction_check::governance::inventory::SignInData;
+    let read = inventory("tenant").await.unwrap();
+    let pdf = read.app("00000000-0000-4000-a000-000000000003").unwrap();
+    assert_eq!(pdf.sign_in_data, SignInData::NoneRecorded);
+    let legacy = read.app("00000000-0000-4000-a000-000000000104").unwrap();
+    assert_eq!(legacy.sign_in_data, SignInData::Recorded);
+
+    let refused = inventory("sign_in_forbidden").await.unwrap();
+    let json = serde_json::to_value(&refused).unwrap();
+    for app in json["apps"].as_array().unwrap() {
+        assert!(
+            app.get("last_sign_in")
+                .is_some_and(serde_json::Value::is_null),
+            "{app}"
+        );
+        assert_eq!(app["sign_in_data"], "unavailable");
+    }
+    let json = serde_json::to_value(&read).unwrap();
+    let pdf = json["apps"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .find(|a| a["display_name"] == "Free PDF Helper")
+        .unwrap();
+    assert!(pdf["last_sign_in"].is_null());
+    assert_eq!(pdf["sign_in_data"], "none_recorded");
+}
+
+#[tokio::test]
+async fn one_failed_owner_lookup_keeps_owners_read_elsewhere() {
+    let inv = inventory("owners_partial").await.unwrap();
+    assert!(inv.gap("owners"));
+    let hr = inv.app("00000000-0000-4000-a000-000000000105").unwrap();
+    assert_eq!(hr.owners_unread, ["application"]);
+    // The guest owner read from the service principal is still evidence...
+    assert!(
+        hr.owners
+            .iter()
+            .any(|o| o.guest && o.of == "service_principal")
+    );
+    let ids = flag_ids(&inv, "Old HR Sync");
+    assert!(ids.contains("guest_owned"), "{ids:?}");
+    // ...but with its registration owners unread it is never called ownerless.
+    assert!(!ids.contains("ownerless"), "{ids:?}");
+    // Other apps' owners survive the failure.
+    let legacy = inv.app("00000000-0000-4000-a000-000000000104").unwrap();
+    assert!(legacy.owners_unread.is_empty());
+    assert!(flag_ids(&inv, "Legacy Provisioning Script").contains("guest_owned"));
+}
+
+#[tokio::test]
+async fn microsoft_service_principal_owners_are_collected() {
+    let inv = inventory("tenant").await.unwrap();
+    let exo = inv.app("00000000-0000-4000-a000-000000000108").unwrap();
+    assert!(exo.is_microsoft());
+    assert_eq!(exo.owners.len(), 1);
+    assert_eq!(exo.owners[0].of, "service_principal");
+}
+
+#[tokio::test]
+async fn risk_joins_by_object_id_without_app_id() {
+    let inv = inventory("tenant").await.unwrap();
+    let cal = inv.app("00000000-0000-4000-a000-000000000007").unwrap();
+    let risk = cal.risk.as_ref().expect("risk kept without appId");
+    assert_eq!(
+        (risk.level.as_str(), risk.state.as_str()),
+        ("high", "atRisk")
+    );
+}
+
+#[tokio::test]
+async fn registrations_without_a_service_principal_are_inventoried() {
+    let inv = inventory("tenant").await.unwrap();
+    assert_eq!(inv.summary.registrations_without_service_principal, 1);
+    let reg = &inv.registrations_without_service_principal[0];
+    assert_eq!(reg.display_name, "Partner Portal Connector");
+    assert_eq!(reg.application_id, "00000000-0000-4000-a000-000000000212");
+    assert_eq!(reg.sign_in_audience.as_deref(), Some("AzureADMultipleOrgs"));
+    assert_eq!(reg.owners.len(), 1);
+    assert_eq!(reg.credentials.len(), 1);
+    // Not invented as a service principal row.
+    assert!(inv.apps.iter().all(|a| a.app_id != reg.app_id));
+    let text = serde_json::to_string(reg).unwrap();
+    assert!(!text.contains("Qq7"), "credential hint leaked");
 }
