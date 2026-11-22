@@ -255,6 +255,19 @@ fn validate_retention(days: u32) -> Result<()> {
     Ok(())
 }
 
+/// A filesystem path as a TOML string. A literal (single-quoted) string keeps
+/// Windows backslashes as written; a basic string would read `\U` in
+/// `C:\Users` as a Unicode escape. Paths containing a single quote or a line
+/// break fall back to an escaped basic string.
+pub fn toml_path(path: &Path) -> String {
+    let text = path.to_string_lossy();
+    if text.contains(['\'', '\n', '\r']) {
+        toml::Value::String(text.into_owned()).to_string()
+    } else {
+        format!("'{text}'")
+    }
+}
+
 /// Create `path` with `contents` (mode 0600) only if it does not exist.
 pub fn write_new_private(path: &Path, contents: &str) -> Result<()> {
     use std::io::Write;
@@ -287,6 +300,26 @@ mod tests {
         config.validate().unwrap();
         assert_eq!(config.retention_days(), Some(365));
         assert_eq!(config.sources.len(), 6);
+    }
+
+    #[test]
+    fn windows_paths_survive_toml() {
+        for raw in [
+            r"C:\Users\RUNNER~1\AppData\Local\Temp\.tmpg8tU0i",
+            r"\\server\share\archive",
+            "/tmp/plain",
+            "/tmp/it's here",
+        ] {
+            let text = format!(
+                "tenant_id = \"{T}\"\n[storage]\nkind = \"local\"\npath = {}\n",
+                toml_path(Path::new(raw))
+            );
+            let config: ArchiveConfig = toml::from_str(&text).unwrap();
+            match config.storage {
+                StorageConfig::Local { path } => assert_eq!(path, Path::new(raw)),
+                _ => panic!("local storage expected"),
+            }
+        }
     }
 
     #[test]

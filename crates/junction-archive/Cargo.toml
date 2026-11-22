@@ -19,7 +19,8 @@ anyhow.workspace = true
 clap.workspace = true
 tokio = { version = "1", features = ["macros", "rt-multi-thread", "time", "sync"] }
 reqwest = { version = "0.12", default-features = false, features = ["rustls-tls"] }
-url = "2"
+# 2.5.9 fixes RUSTSEC-2026-0592 (stack overflow in Url::origin on nested blob: URLs).
+url = "2.5.9"
 toml = "0.8"
 sha2 = "0.11"
 ring = "0.17.14"

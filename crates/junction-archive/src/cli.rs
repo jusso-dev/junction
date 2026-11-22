@@ -196,8 +196,8 @@ mod tests {
     async fn doctor_flags_a_local_store_as_not_immutable() {
         let dir = tempfile::tempdir().unwrap();
         let config: ArchiveConfig = toml::from_str(&format!(
-            "tenant_id = \"11111111-1111-4111-8111-111111111111\"\n[storage]\nkind = \"local\"\npath = \"{}\"\n",
-            dir.path().display()
+            "tenant_id = \"11111111-1111-4111-8111-111111111111\"\n[storage]\nkind = \"local\"\npath = {}\n",
+            crate::config::toml_path(dir.path())
         ))
         .unwrap();
         let store = LocalStore::new(dir.path()).unwrap();
