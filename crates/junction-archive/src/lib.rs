@@ -15,4 +15,5 @@ pub mod config;
 pub mod defender;
 pub mod manifest;
 pub mod record;
+pub mod search;
 pub mod store;
