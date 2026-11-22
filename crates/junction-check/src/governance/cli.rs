@@ -21,11 +21,14 @@ use std::sync::Arc;
   junction apps inventory --context contoso
   junction apps inventory --context contoso --flagged-only --min-severity high
   junction apps inventory --context contoso --format json --output apps.json
+  junction apps baseline save --context contoso --output contoso-baseline.json
+  junction apps diff --context contoso --baseline contoso-baseline.json --fail-on-drift
+  junction apps export --context contoso --baseline contoso-baseline.json --output evidence/
   junction apps flags
   junction apps permissions
 
 Reads run under Junction's read-only policy, whatever policy the context uses.
-Exit codes: 0 done, 1 --fail-on threshold breached, 2 error.")]
+Exit codes: 0 done, 1 --fail-on threshold or --fail-on-drift breached, 2 error.")]
 pub struct AppsArgs {
     #[command(subcommand)]
     pub command: AppsCommand,
@@ -35,6 +38,15 @@ pub struct AppsArgs {
 pub enum AppsCommand {
     /// Inventory enterprise apps, OAuth clients, permissions, consent grants and owners, with risk flags.
     Inventory(Box<InventoryArgs>),
+    /// Save the current inventory as an approved baseline for later drift checks.
+    Baseline {
+        #[command(subcommand)]
+        command: BaselineCommand,
+    },
+    /// Show what changed since an approved baseline.
+    Diff(Box<DiffArgs>),
+    /// Write an evidence pack (Markdown, JSON, CSV and a SHA-256 manifest).
+    Export(Box<ExportArgs>),
     /// Describe every risk flag: what it reads, why it matters and how to fix it.
     Flags {
         #[arg(long, value_enum, default_value = "table")]
@@ -45,6 +57,59 @@ pub enum AppsCommand {
         #[arg(long, value_enum, default_value = "table")]
         format: ListFormat,
     },
+}
+
+#[derive(Subcommand, Debug)]
+pub enum BaselineCommand {
+    /// Read the tenant and write a baseline file.
+    Save(Box<BaselineArgs>),
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct BaselineArgs {
+    #[command(flatten)]
+    pub source: Source,
+    /// Baseline file to write.
+    #[arg(long)]
+    pub output: PathBuf,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, ValueEnum)]
+pub enum DiffFormat {
+    Json,
+    Markdown,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct DiffArgs {
+    #[command(flatten)]
+    pub source: Source,
+    /// Approved baseline from `junction apps baseline save`.
+    #[arg(long)]
+    pub baseline: PathBuf,
+    #[arg(long, value_enum, default_value = "markdown")]
+    pub format: DiffFormat,
+    #[arg(long)]
+    pub output: Option<PathBuf>,
+    /// Exit 1 when apps were added or gained permissions, scopes or owners.
+    #[arg(long)]
+    pub fail_on_drift: bool,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct ExportArgs {
+    #[command(flatten)]
+    pub source: Source,
+    /// Directory to write the evidence pack into.
+    #[arg(long)]
+    pub output: PathBuf,
+    /// Include drift against this approved baseline.
+    #[arg(long)]
+    pub baseline: Option<PathBuf>,
+}
+
+fn read_baseline(path: &Path) -> Result<super::baseline::Baseline> {
+    super::baseline::Baseline::parse(&std::fs::read_to_string(path).context("reading --baseline")?)
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, ValueEnum)]
@@ -266,6 +331,58 @@ pub async fn run(
             } else {
                 exit::OK
             })
+        }
+        AppsCommand::Baseline {
+            command: BaselineCommand::Save(args),
+        } => {
+            let context = one_context(&contexts)?;
+            let inventory = collect(context, &args.source, Some(env), None).await?;
+            let baseline = super::baseline::Baseline::from_inventory(&inventory)?;
+            write_output(
+                &args.output,
+                (serde_json::to_string_pretty(&baseline)? + "\n").as_bytes(),
+            )?;
+            out.write_all(
+                (serde_json::to_string_pretty(&json!({
+                    "status": "saved",
+                    "tenant_id": baseline.tenant_id,
+                    "apps": baseline.apps.len(),
+                    "digest": baseline.digest,
+                }))? + "\n")
+                    .as_bytes(),
+            )?;
+            Ok(exit::OK)
+        }
+        AppsCommand::Diff(args) => {
+            let context = one_context(&contexts)?;
+            let baseline = read_baseline(&args.baseline)?;
+            let inventory = collect(context, &args.source, Some(env), None).await?;
+            let drift = super::baseline::diff(&baseline, &inventory)?;
+            let text = match args.format {
+                DiffFormat::Json => serde_json::to_string_pretty(&drift)? + "\n",
+                DiffFormat::Markdown => super::baseline::markdown(&drift),
+            };
+            match &args.output {
+                Some(path) => write_output(path, text.as_bytes())?,
+                None => out.write_all(text.as_bytes())?,
+            }
+            Ok(if args.fail_on_drift && drift.widened() {
+                exit::THRESHOLD
+            } else {
+                exit::OK
+            })
+        }
+        AppsCommand::Export(args) => {
+            let context = one_context(&contexts)?;
+            // Read the baseline first so a bad file fails before any tenant call.
+            let baseline = args.baseline.as_deref().map(read_baseline).transpose()?;
+            let inventory = collect(context, &args.source, Some(env), None).await?;
+            let drift = baseline
+                .map(|b| super::baseline::diff(&b, &inventory))
+                .transpose()?;
+            let manifest = super::export::write(&args.output, &inventory, drift.as_ref())?;
+            out.write_all((serde_json::to_string_pretty(&manifest)? + "\n").as_bytes())?;
+            Ok(exit::OK)
         }
         AppsCommand::Flags { format } => {
             let text = match format {
