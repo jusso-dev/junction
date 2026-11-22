@@ -238,6 +238,30 @@ fn mcp_inventory_matches_the_cli_and_needs_the_context_flag() {
     assert_eq!(replies[0]["isError"], false, "{}", replies[0]);
     assert_eq!(replies[0]["structuredContent"], cli);
 
+    // Filters match between the CLI and MCP, and summary stays tenant-wide.
+    let cli_filtered: Value = serde_json::from_slice(
+        &apps(
+            "tenant",
+            &[
+                "inventory",
+                "--format",
+                "json",
+                "--flagged-only",
+                "--min-severity",
+                "critical",
+            ],
+        )
+        .stdout,
+    )
+    .unwrap();
+    assert_eq!(cli_filtered["apps"].as_array().unwrap().len(), 3);
+    assert_eq!(cli_filtered["filter"]["apps_returned"], 3);
+    assert_eq!(cli_filtered["summary"]["apps"], 13);
+    let filtered = serde_json::json!({"name":"junction_apps_inventory","arguments":
+        {"context":"tenant","flagged_only":true,"min_severity":"critical"}});
+    let replies = mcp(&["--allow-check-contexts"], &[filtered]);
+    assert_eq!(replies[0]["structuredContent"], cli_filtered);
+
     // Without the operator flag agents cannot name another context.
     let refused = mcp(&[], &[call]);
     assert_eq!(

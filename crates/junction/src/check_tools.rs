@@ -411,13 +411,8 @@ impl CheckTools {
                         .and_then(junction_check::model::Severity::parse),
                     include_microsoft: true,
                 };
-                // Filter like the CLI but keep the inventory's order, so the
-                // tool returns exactly what `--format json` prints.
-                let mut value = serde_json::to_value(&inventory)?;
-                let kept: Vec<&junction_check::governance::inventory::App> =
-                    inventory.apps.iter().filter(|a| view.keeps(a)).collect();
-                value["apps"] = serde_json::to_value(kept)?;
-                Ok(value)
+                // The same JSON as `--format json` with the same filters.
+                Ok(junction_check::governance::report::json(&inventory, &view))
             }
             _ => Err(fail("unknown_tool", "Unknown check tool.")),
         }

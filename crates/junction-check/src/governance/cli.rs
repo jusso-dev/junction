@@ -282,7 +282,7 @@ pub(crate) fn write_output(path: &Path, bytes: &[u8]) -> Result<()> {
 fn render(inventory: &Inventory, format: Format, view: &View) -> Result<String> {
     Ok(match format {
         Format::Table => report::table(inventory, view),
-        Format::Json => serde_json::to_string_pretty(inventory)? + "\n",
+        Format::Json => serde_json::to_string_pretty(&report::json(inventory, view))? + "\n",
         Format::Markdown => report::markdown(inventory, view),
         Format::Html => report::html(inventory, view),
     })

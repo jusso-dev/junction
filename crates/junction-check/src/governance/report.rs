@@ -237,19 +237,19 @@ fn severity_counts(inventory: &Inventory) -> String {
 /// Markdown report: summary, gaps, a table of apps, then per-app details for
 /// flagged apps with each flag's evidence and suggested fix.
 pub fn markdown(inventory: &Inventory, view: &View) -> String {
-    use super::export::{md_cell, md_text};
+    use super::export::{md_cell, md_id, md_text};
     let s = &inventory.summary;
     let mut out = format!(
         "# Connected apps\n\nTenant `{}`{}, inventory captured {}.\n\n\
          {} apps: {} registered in this tenant, {} from other organisations, {} Microsoft first-party. \
          Flagged by highest severity: {}.\n\n",
-        inventory.tenant_id,
+        md_id(&inventory.tenant_id),
         inventory
             .label
             .as_deref()
             .map(|l| format!(" ({})", md_text(l)))
             .unwrap_or_default(),
-        inventory.captured_at,
+        md_text(&inventory.captured_at),
         s.apps,
         s.home_tenant,
         s.external,
@@ -291,8 +291,8 @@ pub fn markdown(inventory: &Inventory, view: &View) -> String {
             out.push_str(&format!(
                 "\n### {}\n\nApp id `{}`, service principal `{}`. {} app, publisher {}.\n\n",
                 md_text(&app.display_name),
-                app.app_id,
-                app.service_principal_id,
+                md_id(&app.app_id),
+                md_id(&app.service_principal_id),
                 owner_label(app),
                 md_text(&publisher_label(app))
             ));
@@ -407,4 +407,32 @@ pub fn html(inventory: &Inventory, view: &View) -> String {
         escape(DISCLAIMER)
     ));
     out
+}
+
+/// The inventory as JSON with `view`'s filters applied to `apps` (inventory
+/// order kept). `summary` always describes the whole tenant; when a filter is
+/// active, `filter` records it with the number of apps returned, so the two
+/// counts are never confused. CLI `--format json`, MCP and HTTP all use this.
+pub fn json(inventory: &Inventory, view: &View) -> serde_json::Value {
+    let mut value = serde_json::to_value(inventory).expect("inventory serialises");
+    let json_view = View {
+        // JSON always includes Microsoft first-party apps unless filtered out
+        // by severity; the table hides them only to reduce noise.
+        include_microsoft: true,
+        ..*view
+    };
+    if json_view.flagged_only || json_view.min_severity.is_some() {
+        let kept: Vec<&App> = inventory
+            .apps
+            .iter()
+            .filter(|a| json_view.keeps(a))
+            .collect();
+        value["filter"] = serde_json::json!({
+            "flagged_only": json_view.flagged_only,
+            "min_severity": json_view.min_severity.map(|s| s.as_str()),
+            "apps_returned": kept.len(),
+        });
+        value["apps"] = serde_json::to_value(kept).expect("apps serialise");
+    }
+    value
 }
