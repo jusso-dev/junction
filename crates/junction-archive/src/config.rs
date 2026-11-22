@@ -119,7 +119,10 @@ impl ArchiveConfig {
         if text.len() > 64 * 1024 {
             bail!("archive configuration too large");
         }
-        let config: Self = toml::from_str(&text).context("invalid archive configuration")?;
+        let mut config: Self = toml::from_str(&text).context("invalid archive configuration")?;
+        // Object keys and checkpoints use the tenant id verbatim; one casing
+        // everywhere keeps a re-cased configuration pointing at the same data.
+        config.tenant_id = config.tenant_id.to_ascii_lowercase();
         config.validate()?;
         Ok(config)
     }
@@ -152,6 +155,11 @@ impl ArchiveConfig {
         Ok(())
     }
 
+    /// Whether the backend reports per-object retention (Azure does, R2 does not).
+    pub fn reports_retention(&self) -> bool {
+        matches!(self.storage, StorageConfig::AzureBlob { .. })
+    }
+
     pub fn retention_days(&self) -> Option<u32> {
         match &self.storage {
             StorageConfig::AzureBlob { retention_days, .. }
@@ -172,8 +180,10 @@ impl ArchiveConfig {
                 ..
             } => {
                 let endpoints = self.cloud.endpoints()?;
+                // The storage identity uses the same environment credential
+                // (and so the same Entra tenant) as the collector.
                 let tokens = EnvironmentTokens::new(
-                    &storage_tenant(&self.tenant_id),
+                    &self.tenant_id,
                     &endpoints.authority,
                     *auth,
                     "archive-storage",
@@ -236,16 +246,6 @@ retention_days = {DEFAULT_RETENTION_DAYS}
 "#
         )
     }
-}
-
-/// The storage identity is in the same Entra tenant as the collector unless
-/// `JUNCTION_ARCHIVE_STORAGE_TENANT_ID` names another one (for example a
-/// separate security subscription's tenant).
-fn storage_tenant(default: &str) -> String {
-    std::env::var("JUNCTION_ARCHIVE_STORAGE_TENANT_ID")
-        .ok()
-        .filter(|v| junction_watch::store::validate_tenant(v).is_ok())
-        .unwrap_or_else(|| default.to_owned())
 }
 
 fn validate_retention(days: u32) -> Result<()> {

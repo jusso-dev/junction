@@ -83,6 +83,8 @@ async fn azure_put_is_create_only() {
             &[("x-ms-error-code", "AuthorizationPermissionMismatch")],
             "secret detail",
         ),
+        reply(409, &[("x-ms-error-code", "ContainerBeingDeleted")], ""),
+        reply(412, &[("x-ms-error-code", "LeaseIdMissing")], ""),
     ]);
     let store = azure(script.clone());
     assert_eq!(
@@ -115,6 +117,15 @@ async fn azure_put_is_create_only() {
         error,
         "archive write failed: HTTP 403 AuthorizationPermissionMismatch"
     );
+    // Other 409 and 412 codes are failures, never a silent "already stored".
+    for _ in 0..2 {
+        assert!(
+            store
+                .put_new(KEY, b"x".to_vec(), "application/gzip")
+                .await
+                .is_err()
+        );
+    }
     let seen = script.seen();
     let put = &seen[0];
     assert_eq!(put.method, "PUT");
@@ -338,4 +349,54 @@ fn r2_inputs_are_validated() {
         )
         .is_err()
     );
+}
+
+#[tokio::test]
+async fn doctor_is_unhealthy_on_an_unprotected_container_with_the_collector_role() {
+    use junction_archive::{cli::doctor, config::ArchiveConfig};
+    let config: ArchiveConfig = toml::from_str(
+        "tenant_id = \"11111111-1111-4111-8111-111111111111\"\n[storage]\nkind = \"azure_blob\"\naccount_url = \"https://acct.blob.core.windows.net/\"\ncontainer = \"junction-archive\"\n",
+    )
+    .unwrap();
+    let now = Instant::parse("2026-11-22T00:00:00Z").unwrap();
+    // No immutability: the delete is refused only by RBAC, and no retention is reported.
+    let script = Script::new(vec![
+        reply(201, &[], ""),
+        reply(409, &[("x-ms-error-code", "BlobAlreadyExists")], ""),
+        reply(
+            200,
+            &[],
+            "junction archive doctor canary 2026-11-22T00:00:00.000Z\n",
+        ),
+        reply(
+            403,
+            &[("x-ms-error-code", "AuthorizationPermissionMismatch")],
+            "",
+        ),
+        reply(200, &[], ""),
+    ]);
+    let report = doctor(&config, &azure(script), now).await.unwrap();
+    assert_eq!(report["healthy"], false, "{report:#}");
+
+    // Protected container: retention is reported far enough ahead.
+    let script = Script::new(vec![
+        reply(201, &[], ""),
+        reply(409, &[("x-ms-error-code", "BlobAlreadyExists")], ""),
+        reply(
+            200,
+            &[],
+            "junction archive doctor canary 2026-11-22T00:00:00.000Z\n",
+        ),
+        reply(409, &[("x-ms-error-code", "BlobImmutableDueToPolicy")], ""),
+        reply(
+            200,
+            &[(
+                "x-ms-immutability-policy-until-date",
+                "Mon, 22 Nov 2027 00:00:00 GMT",
+            )],
+            "",
+        ),
+    ]);
+    let report = doctor(&config, &azure(script), now).await.unwrap();
+    assert_eq!(report["healthy"], true, "{report:#}");
 }

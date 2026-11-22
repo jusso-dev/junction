@@ -37,6 +37,20 @@ pub enum PutOutcome {
     AlreadyExists,
 }
 
+/// What happened when `doctor` tried to delete its canary.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum DeleteProbe {
+    /// The storage service refused because of retention or a legal hold.
+    RefusedByImmutability,
+    /// The delete succeeded: the store is not immutable.
+    Deleted,
+    /// The caller may not delete (for example the collector role has no
+    /// delete action). This says nothing about immutability.
+    NotPermitted(String),
+    /// Some other answer; the store's protection is unknown.
+    Other(String),
+}
+
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct HoldOutcome {
     /// How the hold was applied: `legal_hold_flag` or `copied_to_hold_prefix`.
@@ -65,8 +79,8 @@ pub trait ObjectStore: Send + Sync {
     /// an administrator; Junction only records the release.
     fn release<'a>(&'a self, key: &'a str) -> BoxFut<'a, Result<()>>;
     /// Try to delete `key`. Used only by `doctor` on its own canary, to prove
-    /// the storage refuses deletion. Returns true if the delete was refused.
-    fn delete_refused<'a>(&'a self, key: &'a str) -> BoxFut<'a, Result<bool>>;
+    /// the storage itself (not a missing permission) refuses deletion.
+    fn delete_probe<'a>(&'a self, key: &'a str) -> BoxFut<'a, Result<DeleteProbe>>;
     /// Retention reported by the service for `key`, if it reports one.
     fn retention_until<'a>(&'a self, key: &'a str) -> BoxFut<'a, Result<Option<String>>>;
 }
@@ -147,7 +161,13 @@ impl LocalStore {
         if let Some(parent) = path.parent() {
             std::fs::create_dir_all(parent)?;
         }
-        let tmp = path.with_extension(format!("tmp-{}", std::process::id()));
+        // A unique sibling name, so a temporary file left by a crash never
+        // blocks a later write of the same key.
+        let mut nonce = [0u8; 8];
+        getrandom::fill(&mut nonce).map_err(|_| anyhow::anyhow!("randomness unavailable"))?;
+        let mut tmp_name = path.file_name().unwrap_or_default().to_os_string();
+        tmp_name.push(format!(".tmp-{}", hex(&nonce)));
+        let tmp = path.with_file_name(tmp_name);
         {
             let mut file = std::fs::OpenOptions::new()
                 .write(true)
@@ -240,9 +260,10 @@ impl ObjectStore for LocalStore {
     fn release<'a>(&'a self, _: &'a str) -> BoxFut<'a, Result<()>> {
         Box::pin(async move { Ok(()) })
     }
-    fn delete_refused<'a>(&'a self, _: &'a str) -> BoxFut<'a, Result<bool>> {
-        // A local directory cannot refuse its owner. Report it as such.
-        Box::pin(async move { Ok(false) })
+    fn delete_probe<'a>(&'a self, _: &'a str) -> BoxFut<'a, Result<DeleteProbe>> {
+        // A local directory cannot refuse its owner. Report it as such without
+        // removing the canary.
+        Box::pin(async move { Ok(DeleteProbe::Deleted) })
     }
     fn retention_until<'a>(&'a self, _: &'a str) -> BoxFut<'a, Result<Option<String>>> {
         Box::pin(async move { Ok(None) })
@@ -413,7 +434,7 @@ fn failure(what: &str, reply: &HttpReply) -> anyhow::Error {
     let code = reply
         .header("x-ms-error-code")
         .map(str::to_owned)
-        .or_else(|| xml_first(&reply.body, "Code"))
+        .or_else(|| xml_first(&reply.body, "Code").ok().flatten())
         .filter(|c| c.len() <= 64 && c.bytes().all(|b| b.is_ascii_alphanumeric()));
     match code {
         Some(code) => anyhow::anyhow!("{what} failed: HTTP {} {code}", reply.status),
@@ -462,21 +483,28 @@ fn xml_texts(body: &[u8], parent: Option<&str>, name: &str) -> Result<Vec<String
                     value.push_str(&t.xml10_content());
                 }
             }
-            Event::GeneralRef(r) => {
+            Event::CData(t) => {
                 if let Some(value) = current.as_mut() {
-                    let c = r
-                        .resolve_char_ref()
-                        .ok()
-                        .flatten()
-                        .or(match r.as_ref() {
-                            "amp" => Some('&'),
-                            "lt" => Some('<'),
-                            "gt" => Some('>'),
-                            "quot" => Some('"'),
-                            "apos" => Some('\''),
-                            _ => None,
-                        })
-                        .ok_or_else(|| anyhow::anyhow!("unsupported XML entity"))?;
+                    value.push_str(&t.xml10_content());
+                }
+            }
+            Event::GeneralRef(r) => {
+                // Resolved everywhere, so a bad entity in any element (a
+                // continuation marker included) fails the listing.
+                let c = r
+                    .resolve_char_ref()
+                    .ok()
+                    .flatten()
+                    .or(match r.as_ref() {
+                        "amp" => Some('&'),
+                        "lt" => Some('<'),
+                        "gt" => Some('>'),
+                        "quot" => Some('"'),
+                        "apos" => Some('\''),
+                        _ => None,
+                    })
+                    .ok_or_else(|| anyhow::anyhow!("unsupported XML entity"))?;
+                if let Some(value) = current.as_mut() {
                     value.push(c);
                 }
             }
@@ -488,8 +516,10 @@ fn xml_texts(body: &[u8], parent: Option<&str>, name: &str) -> Result<Vec<String
     Ok(out)
 }
 
-fn xml_first(body: &[u8], name: &str) -> Option<String> {
-    xml_texts(body, None, name).ok()?.into_iter().next()
+/// First element named `name`. A malformed document is an error, never
+/// "absent", so a broken page cannot silently end a listing.
+fn xml_first(body: &[u8], name: &str) -> Result<Option<String>> {
+    Ok(xml_texts(body, None, name)?.into_iter().next())
 }
 
 // ---------------------------------------------------------------------------
@@ -498,6 +528,10 @@ fn xml_first(body: &[u8], name: &str) -> Option<String> {
 /// Supplies Entra access tokens for Azure Storage.
 pub trait TokenSource: Send + Sync {
     fn token(&self) -> BoxFut<'_, Result<Zeroizing<String>>>;
+    /// Drop any cached token after the service rejected it (HTTP 401).
+    fn invalidate(&self) -> BoxFut<'_, ()> {
+        Box::pin(async {})
+    }
 }
 
 /// A fixed token, for tests.
@@ -562,6 +596,11 @@ impl TokenSource for EnvironmentTokens {
             Ok(value)
         })
     }
+    fn invalidate(&self) -> BoxFut<'_, ()> {
+        Box::pin(async move {
+            *self.cached.lock().await = None;
+        })
+    }
 }
 
 /// Azure Blob container with version-level immutability enabled by the operator.
@@ -624,7 +663,8 @@ impl AzureBlobStore {
         body: Vec<u8>,
     ) -> Result<HttpReply> {
         let token = self.tokens.token().await?;
-        self.retry
+        let reply = self
+            .retry
             .send(self.http.as_ref(), || {
                 let mut headers = vec![
                     (
@@ -645,7 +685,12 @@ impl AzureBlobStore {
                     body: body.clone(),
                 })
             })
-            .await
+            .await;
+        if reply.as_ref().is_ok_and(|r| r.status == 401) {
+            // The token was revoked or expired early; the next call fetches a new one.
+            self.tokens.invalidate().await;
+        }
+        reply
     }
 }
 
@@ -705,10 +750,15 @@ impl ObjectStore for AzureBlobStore {
                     bytes,
                 )
                 .await?;
-            match reply.status {
-                201 => Ok(PutOutcome::Created),
-                // If-None-Match: * on an existing blob.
-                409 | 412 => Ok(PutOutcome::AlreadyExists),
+            let code = reply.header("x-ms-error-code").unwrap_or_default();
+            match (reply.status, code) {
+                (201, _) => Ok(PutOutcome::Created),
+                // If-None-Match: * on an existing blob. Any other 409 or 412
+                // (lease held, container being deleted, ...) means nothing was
+                // stored, and must not be mistaken for a replay.
+                (409, "BlobAlreadyExists") | (412, "ConditionNotMet") => {
+                    Ok(PutOutcome::AlreadyExists)
+                }
                 _ => Err(failure("archive write", &reply)),
             }
         })
@@ -751,7 +801,7 @@ impl ObjectStore for AzureBlobStore {
                         keys.push(key);
                     }
                 }
-                match xml_first(&reply.body, "NextMarker").filter(|m| !m.is_empty()) {
+                match xml_first(&reply.body, "NextMarker")?.filter(|m| !m.is_empty()) {
                     Some(next) if Some(&next) != marker.as_ref() => marker = Some(next),
                     Some(_) => bail!("archive listing did not advance"),
                     None => {
@@ -801,12 +851,23 @@ impl ObjectStore for AzureBlobStore {
             Ok(())
         })
     }
-    fn delete_refused<'a>(&'a self, key: &'a str) -> BoxFut<'a, Result<bool>> {
+    fn delete_probe<'a>(&'a self, key: &'a str) -> BoxFut<'a, Result<DeleteProbe>> {
         Box::pin(async move {
             let reply = self
                 .request("DELETE", self.url(Some(key), &[])?, &[], vec![])
                 .await?;
-            Ok(!reply.success())
+            let code = reply
+                .header("x-ms-error-code")
+                .unwrap_or_default()
+                .to_owned();
+            Ok(match (reply.status, code.as_str()) {
+                (200..=299, _) => DeleteProbe::Deleted,
+                (409, "BlobImmutableDueToPolicy" | "BlobImmutableDueToLegalHold") => {
+                    DeleteProbe::RefusedByImmutability
+                }
+                (401 | 403, _) => DeleteProbe::NotPermitted(failure("delete", &reply).to_string()),
+                _ => DeleteProbe::Other(failure("delete", &reply).to_string()),
+            })
         })
     }
     fn retention_until<'a>(&'a self, key: &'a str) -> BoxFut<'a, Result<Option<String>>> {
@@ -986,7 +1047,7 @@ impl ObjectStore for R2Store {
                 412 => Ok(PutOutcome::AlreadyExists),
                 // The bucket lock check runs before If-None-Match, so an existing
                 // locked object answers 409 ObjectLockedByBucketPolicy.
-                409 if xml_first(&reply.body, "Code").as_deref()
+                409 if xml_first(&reply.body, "Code").ok().flatten().as_deref()
                     == Some("ObjectLockedByBucketPolicy") =>
                 {
                     Ok(PutOutcome::AlreadyExists)
@@ -1028,9 +1089,9 @@ impl ObjectStore for R2Store {
                         keys.push(key);
                     }
                 }
-                let truncated = xml_first(&reply.body, "IsTruncated").as_deref() == Some("true");
+                let truncated = xml_first(&reply.body, "IsTruncated")?.as_deref() == Some("true");
                 let next =
-                    xml_first(&reply.body, "NextContinuationToken").filter(|t| !t.is_empty());
+                    xml_first(&reply.body, "NextContinuationToken")?.filter(|t| !t.is_empty());
                 match (truncated, next) {
                     (true, Some(next)) if Some(&next) != token.as_ref() => token = Some(next),
                     (true, _) => bail!("archive listing did not advance"),
@@ -1061,12 +1122,18 @@ impl ObjectStore for R2Store {
     fn release<'a>(&'a self, _: &'a str) -> BoxFut<'a, Result<()>> {
         Box::pin(async move { Ok(()) })
     }
-    fn delete_refused<'a>(&'a self, key: &'a str) -> BoxFut<'a, Result<bool>> {
+    fn delete_probe<'a>(&'a self, key: &'a str) -> BoxFut<'a, Result<DeleteProbe>> {
         Box::pin(async move {
             let reply = self
                 .request("DELETE", self.url(Some(key), &[])?, &[], vec![])
                 .await?;
-            Ok(!reply.success())
+            let code = xml_first(&reply.body, "Code")?.unwrap_or_default();
+            Ok(match (reply.status, code.as_str()) {
+                (200..=299, _) => DeleteProbe::Deleted,
+                (409, "ObjectLockedByBucketPolicy") => DeleteProbe::RefusedByImmutability,
+                (401 | 403, _) => DeleteProbe::NotPermitted(failure("delete", &reply).to_string()),
+                _ => DeleteProbe::Other(failure("delete", &reply).to_string()),
+            })
         })
     }
     fn retention_until<'a>(&'a self, _: &'a str) -> BoxFut<'a, Result<Option<String>>> {
@@ -1142,7 +1209,11 @@ pub fn sign_v4(
         None => url.host_str().unwrap_or_default().to_owned(),
     };
     let payload = sha256_hex(body);
-    headers.retain(|(k, _)| !k.eq_ignore_ascii_case("authorization"));
+    headers.retain(|(k, _)| {
+        !["authorization", "x-amz-date", "x-amz-content-sha256"]
+            .iter()
+            .any(|h| k.eq_ignore_ascii_case(h))
+    });
     if !headers.iter().any(|(k, _)| k.eq_ignore_ascii_case("host")) {
         headers.push(("host".into(), host));
     }
@@ -1174,16 +1245,17 @@ pub fn sign_v4(
         .map(|(k, v)| format!("{k}={v}"))
         .collect::<Vec<_>>()
         .join("&");
-    let mut canonical: Vec<(String, String)> = headers
-        .iter()
-        .map(|(k, v)| {
-            (
-                k.to_ascii_lowercase(),
-                v.split_whitespace().collect::<Vec<_>>().join(" "),
-            )
-        })
-        .collect();
-    canonical.sort();
+    // One canonical line per lower-case name; repeated names are joined with
+    // commas in the order given, as SigV4 requires.
+    let mut merged: std::collections::BTreeMap<String, Vec<String>> = Default::default();
+    for (k, v) in headers.iter() {
+        merged
+            .entry(k.to_ascii_lowercase())
+            .or_default()
+            .push(v.split_whitespace().collect::<Vec<_>>().join(" "));
+    }
+    let canonical: Vec<(String, String)> =
+        merged.into_iter().map(|(k, v)| (k, v.join(","))).collect();
     let canonical_headers: String = canonical
         .iter()
         .map(|(k, v)| format!("{k}:{v}\n"))
@@ -1329,7 +1401,21 @@ mod tests {
             xml_texts(body, Some("Blob"), "Name").unwrap(),
             ["v1/a&b", "v1/c"]
         );
-        assert_eq!(xml_first(body, "NextMarker").as_deref(), Some("m2"));
+        assert_eq!(
+            xml_first(body, "NextMarker").unwrap().as_deref(),
+            Some("m2")
+        );
+        // A bad entity outside the element being read still fails the page.
+        assert!(xml_first(b"<a><NextMarker>&bogus;</NextMarker></a>", "Name").is_err());
+        assert_eq!(
+            xml_first(
+                b"<a><NextMarker><![CDATA[m&3]]></NextMarker></a>",
+                "NextMarker"
+            )
+            .unwrap()
+            .as_deref(),
+            Some("m&3")
+        );
         assert!(xml_texts(b"<!DOCTYPE x [<!ENTITY e \"x\">]><a>&e;</a>", None, "a").is_err());
     }
 

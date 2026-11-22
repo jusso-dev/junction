@@ -2,7 +2,7 @@
 use crate::{
     catalog,
     config::{ArchiveConfig, write_new_private},
-    store::{ObjectStore, PutOutcome},
+    store::{DeleteProbe, ObjectStore, PutOutcome},
 };
 use anyhow::Result;
 use clap::Subcommand;
@@ -47,7 +47,10 @@ pub async fn run(args: ArchiveArgs) -> Result<Value> {
 
 fn init(path: &std::path::Path, tenant_id: &str) -> Result<Value> {
     junction_watch::store::validate_tenant(tenant_id)?;
-    write_new_private(path, &ArchiveConfig::example(tenant_id))?;
+    write_new_private(
+        path,
+        &ArchiveConfig::example(&tenant_id.to_ascii_lowercase()),
+    )?;
     Ok(json!({
         "config": path.display().to_string(),
         "next_steps": [
@@ -113,16 +116,29 @@ pub async fn doctor(
             Some(matches!(second, Ok(PutOutcome::AlreadyExists)) && kept),
             "a second put to the same key must not replace the object",
         ));
-        let refused = store.delete_refused(&key).await;
-        checks.push(check(
-            "delete_refused",
-            refused.as_ref().ok().copied(),
-            match refused {
-                Ok(true) => "the storage service refused to delete the canary".to_owned(),
-                Ok(false) => "the canary could be deleted: the store is NOT immutable".to_owned(),
-                Err(e) => format!("{e:#}"),
-            },
-        ));
+        let probe = store.delete_probe(&key).await;
+        let (ok, detail) = match probe {
+            Ok(DeleteProbe::RefusedByImmutability) => (
+                Some(true),
+                "the storage service refused to delete the canary because of retention".to_owned(),
+            ),
+            Ok(DeleteProbe::Deleted) => (
+                Some(false),
+                "the canary could be deleted: the store is NOT immutable".to_owned(),
+            ),
+            // A role without delete proves nothing about immutability; the
+            // retention check below then decides.
+            Ok(DeleteProbe::NotPermitted(why)) => (
+                None,
+                format!(
+                    "this identity may not delete ({why}); immutability is shown by the retention check"
+                ),
+            ),
+            Ok(DeleteProbe::Other(why)) => (Some(false), why),
+            Err(e) => (Some(false), format!("{e:#}")),
+        };
+        let delete_proven = ok == Some(true);
+        checks.push(check("delete_refused", ok, detail));
         if let Some(days) = config.retention_days() {
             match store.retention_until(&key).await {
                 Ok(Some(until)) => {
@@ -134,22 +150,36 @@ pub async fn doctor(
                     });
                     checks.push(check(
                         "retention",
-                        ok,
+                        Some(ok.unwrap_or(false)),
                         format!("service reports retention until {until}; configured {days} days"),
                     ));
                 }
+                // Azure always reports retention on a protected blob, so its
+                // absence means the container has no immutability policy.
+                Ok(None) if config.reports_retention() => checks.push(check(
+                    "retention",
+                    Some(false),
+                    "the container reports no immutability policy on the canary: archived objects are NOT protected",
+                )),
+                // R2 locks are bucket rules; only a refused delete proves them.
                 Ok(None) => checks.push(check(
                     "retention",
-                    None,
-                    format!("the service does not report per-object retention; confirm the bucket lock rule keeps objects for {days} days"),
+                    delete_proven.then_some(true),
+                    format!("R2 does not report per-object retention; confirm the v1/ bucket lock rule keeps objects for {days} days"),
                 )),
                 Err(e) => checks.push(check("retention", Some(false), format!("{e:#}"))),
             }
         }
     }
-    let healthy = checks
-        .iter()
-        .all(|c| c["status"] == "pass" || c["status"] == "unknown");
+    // Immutability must be shown by at least one check: a refused delete or a
+    // reported retention date. Two "unknown" results are not healthy.
+    let proven = checks.iter().any(|c| {
+        (c["check"] == "delete_refused" || c["check"] == "retention") && c["status"] == "pass"
+    });
+    let healthy = proven
+        && checks
+            .iter()
+            .all(|c| c["status"] == "pass" || c["status"] == "unknown");
     Ok(json!({
         "store": store.describe(),
         "healthy": healthy,
