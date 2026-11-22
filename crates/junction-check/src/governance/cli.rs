@@ -21,6 +21,7 @@ use std::sync::Arc;
   junction apps inventory --context contoso
   junction apps inventory --context contoso --flagged-only --min-severity high
   junction apps inventory --context contoso --format json --output apps.json
+  junction apps inventory --context contoso --format html --output apps.html
   junction apps baseline save --context contoso --output contoso-baseline.json
   junction apps diff --context contoso --baseline contoso-baseline.json --fail-on-drift
   junction apps export --context contoso --baseline contoso-baseline.json --output evidence/
@@ -116,6 +117,8 @@ fn read_baseline(path: &Path) -> Result<super::baseline::Baseline> {
 pub enum Format {
     Table,
     Json,
+    Markdown,
+    Html,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, ValueEnum)]
@@ -279,7 +282,9 @@ pub(crate) fn write_output(path: &Path, bytes: &[u8]) -> Result<()> {
 fn render(inventory: &Inventory, format: Format, view: &View) -> Result<String> {
     Ok(match format {
         Format::Table => report::table(inventory, view),
-        Format::Json => serde_json::to_string_pretty(inventory)? + "\n",
+        Format::Json => serde_json::to_string_pretty(&report::json(inventory, view))? + "\n",
+        Format::Markdown => report::markdown(inventory, view),
+        Format::Html => report::html(inventory, view),
     })
 }
 

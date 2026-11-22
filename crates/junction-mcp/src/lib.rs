@@ -113,6 +113,17 @@ pub fn tools() -> Value {
             true,
         ),
         (
+            "junction_apps_inventory",
+            "Read-only inventory of one tenant's connected apps: enterprise apps, OAuth clients, application permissions, consent grants and owners, with documented risk flags. Never revokes or changes anything.",
+            schema(
+                json!({"context":context_name.clone(),
+                "flagged_only":{"type":"boolean"},
+                "min_severity":{"type":"string","enum":["critical","high","medium","low"]}}),
+                json!([]),
+            ),
+            true,
+        ),
+        (
             "junction_check_attestations",
             "List manual checks awaiting a person's answer. Submitting an answer is refused unless the operator started the host with --allow-attest.",
             schema(

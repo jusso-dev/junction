@@ -451,18 +451,22 @@ fn owner(object: &Value, of: &str, guests: Option<&BTreeSet<String>>) -> Owner {
 }
 
 /// Run `calls` with bounded concurrency, keeping input order.
-async fn fan_out<'a, T>(
+///
+/// The indexed futures are built eagerly into boxed `Send` futures, so no
+/// closure lives in the returned future's state: closures there defeat the
+/// `Send` proof MCP and HTTP hosts need to spawn the inventory (see the same
+/// note in [`crate::runner`]).
+async fn fan_out<'a, T: Send + 'a>(
     calls: Vec<crate::gateway::BoxFut<'a, Result<T, CallFailure>>>,
 ) -> Vec<Result<T, CallFailure>> {
-    let mut indexed: Vec<(usize, Result<T, CallFailure>)> = futures_util::stream::iter(
-        calls
-            .into_iter()
-            .enumerate()
-            .map(|(i, f)| async move { (i, f.await) }),
-    )
-    .buffer_unordered(FAN_OUT)
-    .collect()
-    .await;
+    let mut pending: Vec<crate::gateway::BoxFut<'a, (usize, Result<T, CallFailure>)>> = vec![];
+    for (i, call) in calls.into_iter().enumerate() {
+        pending.push(Box::pin(async move { (i, call.await) }));
+    }
+    let mut indexed: Vec<(usize, Result<T, CallFailure>)> = futures_util::stream::iter(pending)
+        .buffer_unordered(FAN_OUT)
+        .collect()
+        .await;
     indexed.sort_by_key(|(i, _)| *i);
     indexed.into_iter().map(|(_, r)| r).collect()
 }

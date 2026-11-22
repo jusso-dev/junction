@@ -71,6 +71,12 @@ pub fn route(method: &str, target: &str, body: &[u8]) -> Result<Route, HttpError
         "/v1/batch" => ("/v1/batch", "POST", Some("junction_batch"), None),
         "/v1/checks" => ("/v1/checks", "GET", Some("junction_check_list"), None),
         "/v1/checks/run" => ("/v1/checks/run", "POST", Some("junction_check_run"), None),
+        "/v1/apps/inventory" => (
+            "/v1/apps/inventory",
+            "GET",
+            Some("junction_apps_inventory"),
+            None,
+        ),
         // Reading pending answers is GET; submitting one (host flag permitting) is POST.
         "/v1/checks/attestations" => (
             "/v1/checks/attestations",

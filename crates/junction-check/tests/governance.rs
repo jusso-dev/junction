@@ -608,3 +608,44 @@ async fn renaming_a_resource_is_not_drift_but_moving_tenants_is() {
     assert!(drift.changed[0].properties[0].starts_with("owner_tenant: "));
     assert!(drift.widened(), "a change of owning tenant needs review");
 }
+
+// --- reports (#48) -------------------------------------------------------------
+
+#[tokio::test]
+async fn reports_escape_hostile_tenant_text() {
+    use junction_check::governance::report::{self, View};
+    let mut inv = inventory("tenant").await.unwrap();
+    let hostile = "<img src=x onerror=alert(1)>|**bold**";
+    let app = inv
+        .apps
+        .iter_mut()
+        .find(|a| a.display_name == "Free PDF Helper")
+        .unwrap();
+    app.display_name = hostile.into();
+    let view = View::default();
+
+    let html = report::html(&inv, &view);
+    assert!(
+        !html.contains("<img"),
+        "raw HTML from the tenant reached the page"
+    );
+    assert!(html.contains("&lt;img src=x onerror=alert(1)&gt;"));
+    assert!(!html.contains("<script"));
+
+    let md = report::markdown(&inv, &view);
+    // Every `<` and `|` from the tenant is backslash-escaped: no raw HTML, and
+    // a pipe in a name cannot split the Markdown table row.
+    let unescaped = |line: &str, c: char| {
+        let chars: Vec<char> = line.chars().collect();
+        (0..chars.len())
+            .filter(|&i| chars[i] == c && (i == 0 || chars[i - 1] != '\\'))
+            .count()
+    };
+    assert!(md.lines().all(|l| unescaped(l, '<') == 0), "{md}");
+    let row = md.lines().find(|l| l.contains("onerror")).expect("app row");
+    assert_eq!(unescaped(row, '|'), 8, "{row}");
+    assert!(!md.contains("**bold**"));
+
+    let table = report::table(&inv, &view);
+    assert!(!table.contains('\u{1b}'));
+}
