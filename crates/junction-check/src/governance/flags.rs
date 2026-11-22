@@ -34,8 +34,14 @@ pub enum Tier {
 pub struct TierEntry {
     pub permission: String,
     pub reason: String,
+    /// Narrower alternative when held as an application permission.
     #[serde(default)]
     pub narrower: Option<String>,
+    /// Narrower alternative when held as a tenant-wide delegated grant, where
+    /// application-only advice (Exchange RBAC for Applications, Sites.Selected)
+    /// does not apply. `None` means no narrower delegated scope is advised.
+    #[serde(default)]
+    pub narrower_delegated: Option<String>,
 }
 
 #[derive(Debug, Clone, Deserialize)]
@@ -303,7 +309,12 @@ pub fn evaluate(app: &App, inventory: &Inventory, settings: Settings, now: Insta
         .into_iter()
         .filter_map(|(p, label)| {
             let (_, entry) = tiers.lookup(&p)?;
-            Some(format!("{label}: use {}", entry.narrower.as_ref()?))
+            let advice = if label.ends_with(", application)") {
+                entry.narrower.as_ref()
+            } else {
+                entry.narrower_delegated.as_ref()
+            }?;
+            Some(format!("{label}: use {advice}"))
         })
         .collect();
     if !overbroad.is_empty() {
@@ -342,7 +353,6 @@ pub fn evaluate(app: &App, inventory: &Inventory, settings: Settings, now: Insta
         ));
     }
 
-    // Sign-in recency, only when the data was readable.
     // Sign-in recency, only when the report was read.
     if app.sign_in_data != SignInData::Unavailable && app.enabled {
         let cutoff = now.minus(Duration::from_secs(settings.unused_days * 86_400));
@@ -352,9 +362,10 @@ pub fn evaluate(app: &App, inventory: &Inventory, settings: Settings, now: Insta
             .and_then(|s| Instant::parse(s).ok());
         let stale = last.is_none_or(|l| l < cutoff);
         // An app must be known to be older than the period to be called
-        // unused. Its age is known from the local registration's creation date
-        // or, failing that, the earliest application permission grant. External
-        // apps with neither have an unknown age and are never flagged here.
+        // unused. Its age is known from the local registration's creation date,
+        // the earliest application permission grant, or a recorded (old)
+        // sign-in. External apps with none of these have an unknown age and
+        // are never flagged here.
         let known_since = app
             .created_at
             .iter()
@@ -363,6 +374,7 @@ pub fn evaluate(app: &App, inventory: &Inventory, settings: Settings, now: Insta
                     .iter()
                     .filter_map(|p| p.granted_at.as_ref()),
             )
+            .chain(app.last_sign_in.iter())
             .filter_map(|d| Instant::parse(d).ok())
             .min();
         let old_enough = known_since.is_some_and(|c| c < cutoff);
@@ -418,7 +430,7 @@ pub fn evaluate(app: &App, inventory: &Inventory, settings: Settings, now: Insta
         let guests: Vec<String> = app
             .owners
             .iter()
-            .filter(|o| o.guest)
+            .filter(|o| o.guest == Some(true))
             .map(|o| {
                 format!(
                     "{} (owner of the {})",
@@ -502,8 +514,19 @@ pub fn evaluate(app: &App, inventory: &Inventory, settings: Settings, now: Insta
         }
     }
 
+    // Skip apps that still sign in: they authenticate some other way (for
+    // example federated identity credentials or a managed identity), so the
+    // expired secrets are leftovers, not a sign the app is dead.
+    let recently_active = app.sign_in_data == SignInData::Recorded
+        && app
+            .last_sign_in
+            .as_deref()
+            .and_then(|s| Instant::parse(s).ok())
+            .is_some_and(|l| l >= now.minus(Duration::from_secs(settings.unused_days * 86_400)));
     if app.owner_tenant == OwnerTenant::Home
         && app.enabled
+        && !app.federated_credentials
+        && !recently_active
         && !app.credentials.is_empty()
         && app.credentials.iter().all(|c| c.expired)
         && (!app.application_permissions.is_empty() || !app.delegated_grants.is_empty())
@@ -519,7 +542,10 @@ pub fn evaluate(app: &App, inventory: &Inventory, settings: Settings, now: Insta
     }
 
     if let Some(risk) = &app.risk
-        && !matches!(risk.state.as_str(), "remediated" | "dismissed" | "")
+        && !matches!(
+            risk.state.as_str(),
+            "remediated" | "dismissed" | "confirmedSafe" | "none" | ""
+        )
         && !matches!(risk.level.as_str(), "none" | "hidden" | "")
     {
         let mut f = flag(

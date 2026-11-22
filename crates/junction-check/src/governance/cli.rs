@@ -171,19 +171,44 @@ pub async fn collect(
     .map_err(|e| anyhow::anyhow!("the inventory could not be read: {e}"))
 }
 
+/// Write `bytes` to `path` atomically. The temporary file has a random name,
+/// is created new (never through an existing file or symlink) and, on Unix,
+/// is readable only by the owner, because outputs hold tenant data.
 pub(crate) fn write_output(path: &Path, bytes: &[u8]) -> Result<()> {
+    use std::io::Write as _;
     let parent = path
         .parent()
         .filter(|p| !p.as_os_str().is_empty())
         .unwrap_or_else(|| Path::new("."));
     std::fs::create_dir_all(parent)?;
+    let mut random = [0u8; 8];
+    getrandom::fill(&mut random).map_err(|_| anyhow::anyhow!("random source unavailable"))?;
     let temp = parent.join(format!(
-        ".{}.tmp",
-        path.file_name().and_then(|n| n.to_str()).unwrap_or("apps")
+        ".{}.{}.tmp",
+        path.file_name().and_then(|n| n.to_str()).unwrap_or("apps"),
+        random
+            .iter()
+            .map(|b| format!("{b:02x}"))
+            .collect::<String>()
     ));
-    std::fs::write(&temp, bytes)?;
-    std::fs::rename(&temp, path)?;
-    Ok(())
+    let mut options = std::fs::OpenOptions::new();
+    options.write(true).create_new(true);
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::OpenOptionsExt;
+        options.mode(0o600);
+    }
+    let written = (|| -> Result<()> {
+        let mut file = options.open(&temp).context("creating the output file")?;
+        file.write_all(bytes)?;
+        file.sync_all()?;
+        std::fs::rename(&temp, path)?;
+        Ok(())
+    })();
+    if written.is_err() {
+        let _ = std::fs::remove_file(&temp);
+    }
+    written
 }
 
 fn render(inventory: &Inventory, format: Format, view: &View) -> Result<String> {

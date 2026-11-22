@@ -44,14 +44,14 @@ async fn inventory_joins_permissions_grants_owners_and_sign_ins() {
     let inv = inventory("tenant").await.unwrap();
     assert_eq!(inv.schema_version, 1);
     assert!(inv.gaps.is_empty(), "{:?}", inv.gaps);
-    assert_eq!(inv.summary.apps, 9);
+    assert_eq!(inv.summary.apps, 13);
     assert_eq!(
         (
             inv.summary.home_tenant,
             inv.summary.external,
             inv.summary.microsoft
         ),
-        (3, 3, 2)
+        (4, 5, 3)
     );
 
     // Application permissions are resolved to names across a paged listing,
@@ -70,7 +70,8 @@ async fn inventory_joins_permissions_grants_owners_and_sign_ins() {
         .iter()
         .map(|a| a.application_permissions.len())
         .sum();
-    assert_eq!(total, 3);
+    // Graph: Mail.Read, Directory.ReadWrite.All, two User.Read.All; Exchange: IMAP.AccessAsApp.
+    assert_eq!(total, 5);
 
     // Delegated grants: tenant-wide and per-user, with guest consenters marked.
     let pdf = inv.app("00000000-0000-4000-a000-000000000003").unwrap();
@@ -91,7 +92,7 @@ async fn inventory_joins_permissions_grants_owners_and_sign_ins() {
     // Owners of the app registration, guest detection and sign-in recency.
     let legacy = inv.app("00000000-0000-4000-a000-000000000104").unwrap();
     assert_eq!(legacy.owners.len(), 1);
-    assert!(legacy.owners[0].guest);
+    assert_eq!(legacy.owners[0].guest, Some(true));
     assert_eq!(legacy.owners[0].of, "application");
     assert_eq!(legacy.last_sign_in.as_deref(), Some("2026-03-01T08:00:00Z"));
     assert_eq!(legacy.credentials.len(), 2);
@@ -101,13 +102,14 @@ async fn inventory_joins_permissions_grants_owners_and_sign_ins() {
 async fn every_flag_fires_on_the_app_built_for_it() {
     let inv = inventory("tenant").await.unwrap();
     // External, delegated grants only: its age is unknown, so no sign-in
-    // recency flag even though no sign-in is recorded.
+    // recency flag even though no sign-in is recorded. Files.ReadWrite.All is
+    // delegated here, so the application-only advice (Sites.Selected) does
+    // not apply and no overbroad_scope flag is raised.
     assert_eq!(
         flag_ids(&inv, "Free PDF Helper"),
         set(&[
             "critical_permission",
             "tenant_wide_delegated",
-            "overbroad_scope",
             "unverified_publisher_external"
         ])
     );
@@ -138,12 +140,21 @@ async fn every_flag_fires_on_the_app_built_for_it() {
         flag_ids(&inv, "Contoso Calendar Sync"),
         set(&["risky_service_principal", "guest_consented"])
     );
+    // IMAP.AccessAsApp is classified; the confirmed-safe risk is not a flag.
+    assert_eq!(
+        flag_ids(&inv, "Mail Migration Tool"),
+        set(&["critical_permission", "overbroad_scope"])
+    );
+    // Federated credentials and recent sign-ins: expired leftovers are not a flag.
+    assert_eq!(flag_ids(&inv, "CI Deployer"), set(&["overbroad_scope"]));
     // Disabled, Microsoft first-party and recently used apps stay clean.
     for clean in [
         "Retired Reporting App",
         "Office 365 Exchange Online",
+        "Office 365 Exchange Online API",
         "Microsoft Graph",
         "mi-backup-runner",
+        "Northwind HR Portal",
     ] {
         assert!(flag_ids(&inv, clean).is_empty(), "{clean}");
     }
@@ -247,7 +258,7 @@ async fn one_failed_owner_lookup_keeps_owners_read_elsewhere() {
     assert!(
         hr.owners
             .iter()
-            .any(|o| o.guest && o.of == "service_principal")
+            .any(|o| o.guest == Some(true) && o.of == "service_principal")
     );
     let ids = flag_ids(&inv, "Old HR Sync");
     assert!(ids.contains("guest_owned"), "{ids:?}");
@@ -293,4 +304,132 @@ async fn registrations_without_a_service_principal_are_inventoried() {
     assert!(inv.apps.iter().all(|a| a.app_id != reg.app_id));
     let text = serde_json::to_string(reg).unwrap();
     assert!(!text.contains("Qq7"), "credential hint leaked");
+}
+
+// --- adversarial review follow-ups on #59 ----------------------------------------------
+
+#[tokio::test]
+async fn user_only_app_roles_are_never_listed_as_app_permissions() {
+    // The fixture answers the user-only SSO resource with a 500: listing it
+    // would fail the whole inventory.
+    let inv = inventory("tenant").await.unwrap();
+    let sso = inv.app("00000000-0000-4000-a000-000000000013").unwrap();
+    assert!(sso.application_permissions.is_empty());
+    let imap = inv.app("00000000-0000-4000-a000-000000000015").unwrap();
+    assert_eq!(
+        imap.application_permissions[0].permission,
+        "IMAP.AccessAsApp"
+    );
+}
+
+#[tokio::test]
+async fn id_only_owner_stubs_leave_guest_status_unknown() {
+    let inv = inventory("owner_stubs").await.unwrap();
+    assert!(inv.gap("guests"));
+    let legacy = inv.app("00000000-0000-4000-a000-000000000104").unwrap();
+    assert_eq!(legacy.owners.len(), 1);
+    assert_eq!(
+        legacy.owners[0].guest, None,
+        "a stub is not evidence of a member"
+    );
+    // Unknown guest status is never a guest flag, and never a false clean either:
+    // the guests gap names the permission to grant.
+    assert!(!flags::counts(&inv).contains_key("guest_owned"));
+    let gap = inv.gaps.iter().find(|g| g.area == "guests").unwrap();
+    assert_eq!(gap.reason.missing_permissions, ["User.Read.All"]);
+}
+
+#[tokio::test]
+async fn owners_are_cross_checked_against_the_guest_list() {
+    // The owner object says nothing about userType, but the id is a listed guest.
+    let inv = inventory("tenant").await.unwrap();
+    let legacy = inv.app("00000000-0000-4000-a000-000000000104").unwrap();
+    assert_eq!(legacy.owners[0].guest, Some(true));
+}
+
+#[test]
+fn every_microsoft_cloud_first_party_owner_is_recognised() {
+    use junction_check::packs::apps::is_microsoft_owned;
+    for tenant in [
+        "f8cdef31-a31e-4b4a-93e4-5f571e91255a",
+        "33e01921-4d64-4f8c-a055-5bdaffd5e33d",
+        "cab8a31a-1906-4287-a0d8-4eef66b95f6e",
+        "a55a4d5b-9241-49b1-b4ff-befa8db00269",
+    ] {
+        assert!(
+            is_microsoft_owned(&serde_json::json!({"appOwnerOrganizationId": tenant})),
+            "{tenant}"
+        );
+    }
+    assert!(!is_microsoft_owned(
+        &serde_json::json!({"appOwnerOrganizationId": "00000000-0000-4000-8000-0000000000e1"})
+    ));
+}
+
+#[test]
+fn consent_and_mailbox_protocol_permissions_are_classified() {
+    use junction_check::governance::flags::{Tier, Tiers};
+    let tiers = Tiers::embedded();
+    for p in [
+        "DelegatedPermissionGrant.ReadWrite.All",
+        "Policy.ReadWrite.PermissionGrant",
+        "IMAP.AccessAsApp",
+        "POP.AccessAsApp",
+        "SMTP.SendAsApp",
+    ] {
+        assert_eq!(tiers.lookup(p).map(|(t, _)| t), Some(Tier::Critical), "{p}");
+    }
+    // Application-only advice is never offered for delegated grants.
+    let mail = tiers.lookup("Mail.Read").unwrap().1;
+    assert!(mail.narrower.is_some() && mail.narrower_delegated.is_none());
+}
+
+#[tokio::test]
+async fn governed_gateway_waits_for_the_local_request_limit() {
+    use junction_check::gateway::{
+        BoxFut, CallError, FailureKind, Gateway, GatewayError, Governed, Listing,
+    };
+    use std::sync::atomic::{AtomicUsize, Ordering};
+    struct Throttled(AtomicUsize);
+    impl Gateway for Throttled {
+        fn tenant_id(&self) -> &str {
+            TENANT
+        }
+        fn get<'a>(
+            &'a self,
+            _: &'a str,
+            _: serde_json::Value,
+        ) -> BoxFut<'a, Result<serde_json::Value, GatewayError>> {
+            Box::pin(async { Ok(serde_json::Value::Null) })
+        }
+        fn list<'a>(
+            &'a self,
+            _: &'a str,
+            _: serde_json::Value,
+        ) -> BoxFut<'a, Result<Listing, GatewayError>> {
+            Box::pin(async move {
+                // Refused locally far more times than the upstream retry budget.
+                if self.0.fetch_add(1, Ordering::SeqCst) < 12 {
+                    Err(GatewayError::Call(CallError::other(
+                        FailureKind::LocalThrottle,
+                        "request admission rejected",
+                    )))
+                } else {
+                    Ok(Listing::default())
+                }
+            })
+        }
+    }
+    tokio::time::pause();
+    let inner = Arc::new(Throttled(AtomicUsize::new(0)));
+    let governed = Governed::new(
+        inner.clone(),
+        1,
+        junction_watch::backoff::Backoff::default(),
+    );
+    let result = governed
+        .list("graph.service_principals.list", serde_json::json!({}))
+        .await;
+    assert!(result.is_ok(), "local throttling is paced, not a failure");
+    assert_eq!(inner.0.load(Ordering::SeqCst), 13);
 }

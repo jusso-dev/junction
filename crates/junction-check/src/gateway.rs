@@ -125,6 +125,11 @@ pub fn items_of(body: Value) -> Vec<Value> {
     }
 }
 
+/// Wait between retries after Junction's local request limit refused a call.
+const LOCAL_THROTTLE_STEP: Duration = Duration::from_secs(2);
+/// Longest total wait for the local request limit (more than one window).
+const LOCAL_THROTTLE_BUDGET: Duration = Duration::from_secs(90);
+
 /// Per-host concurrency and throttling-aware retries around any gateway.
 pub struct Governed {
     inner: Arc<dyn Gateway>,
@@ -156,12 +161,25 @@ impl Governed {
     {
         let semaphore = self.semaphore(operation);
         let mut attempt = 0;
+        // Junction's own request governor (requests per minute) refuses rather
+        // than queues. Wait for its one-minute window to move on, separately
+        // from the upstream retry budget, so a large tenant is paced instead of
+        // failing; give up only after waiting longer than a full window.
+        let mut paced = Duration::ZERO;
         loop {
             let result = {
                 let _permit = semaphore.acquire().await.expect("semaphore open");
                 call().await
             };
             match result {
+                Err(GatewayError::Call(error))
+                    if error.kind == FailureKind::LocalThrottle
+                        && paced < LOCAL_THROTTLE_BUDGET =>
+                {
+                    let wait = LOCAL_THROTTLE_STEP;
+                    tokio::time::sleep(wait).await;
+                    paced += wait;
+                }
                 Err(GatewayError::Call(error))
                     if error.is_transient()
                         && attempt + 1 < self.backoff.attempts

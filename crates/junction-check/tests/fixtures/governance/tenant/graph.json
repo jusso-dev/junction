@@ -18,19 +18,31 @@
               "appRoles": [
                 {
                   "id": "00000000-0000-4000-a000-000000000901",
-                  "value": "Mail.Read"
+                  "value": "Mail.Read",
+                  "allowedMemberTypes": [
+                    "Application"
+                  ]
                 },
                 {
                   "id": "00000000-0000-4000-a000-000000000902",
-                  "value": "Directory.ReadWrite.All"
+                  "value": "Directory.ReadWrite.All",
+                  "allowedMemberTypes": [
+                    "Application"
+                  ]
                 },
                 {
                   "id": "00000000-0000-4000-a000-000000000903",
-                  "value": "User.Read.All"
+                  "value": "User.Read.All",
+                  "allowedMemberTypes": [
+                    "Application"
+                  ]
                 },
                 {
                   "id": "00000000-0000-4000-a000-000000000904",
-                  "value": "Sites.ReadWrite.All"
+                  "value": "Sites.ReadWrite.All",
+                  "allowedMemberTypes": [
+                    "Application"
+                  ]
                 }
               ]
             },
@@ -132,6 +144,76 @@
               "appRoles": []
             },
             {
+              "id": "00000000-0000-4000-a000-000000000013",
+              "appId": "00000000-0000-4000-a000-000000000113",
+              "displayName": "Northwind HR Portal",
+              "servicePrincipalType": "Application",
+              "accountEnabled": true,
+              "appOwnerOrganizationId": "00000000-0000-4000-8000-0000000000e1",
+              "verifiedPublisher": {
+                "displayName": "Northwind"
+              },
+              "appRoleAssignmentRequired": true,
+              "passwordCredentials": [],
+              "keyCredentials": [],
+              "appRoles": [
+                {
+                  "id": "00000000-0000-4000-a000-000000000913",
+                  "value": "Employee",
+                  "allowedMemberTypes": [
+                    "User"
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "00000000-0000-4000-a000-000000000014",
+              "appId": "00000000-0000-4000-a000-000000000114",
+              "displayName": "CI Deployer",
+              "servicePrincipalType": "Application",
+              "accountEnabled": true,
+              "appOwnerOrganizationId": "00000000-0000-4000-8000-000000000001",
+              "appRoleAssignmentRequired": false,
+              "passwordCredentials": [],
+              "keyCredentials": [],
+              "appRoles": []
+            },
+            {
+              "id": "00000000-0000-4000-a000-000000000015",
+              "appId": "00000000-0000-4000-a000-000000000115",
+              "displayName": "Mail Migration Tool",
+              "servicePrincipalType": "Application",
+              "accountEnabled": true,
+              "appOwnerOrganizationId": "00000000-0000-4000-8000-0000000000e1",
+              "verifiedPublisher": {
+                "displayName": "Migrate Co"
+              },
+              "appRoleAssignmentRequired": true,
+              "passwordCredentials": [],
+              "keyCredentials": [],
+              "appRoles": []
+            },
+            {
+              "id": "00000000-0000-4000-a000-000000000016",
+              "appId": "00000002-0000-0ff1-ce00-000000000000",
+              "displayName": "Office 365 Exchange Online API",
+              "servicePrincipalType": "Application",
+              "accountEnabled": true,
+              "appOwnerOrganizationId": "f8cdef31-a31e-4b4a-93e4-5f571e91255a",
+              "appRoleAssignmentRequired": false,
+              "passwordCredentials": [],
+              "keyCredentials": [],
+              "appRoles": [
+                {
+                  "id": "00000000-0000-4000-a000-000000000916",
+                  "value": "IMAP.AccessAsApp",
+                  "allowedMemberTypes": [
+                    "Application"
+                  ]
+                }
+              ]
+            },
+            {
               "id": "00000000-0000-4000-a000-000000000009",
               "appId": "00000000-0000-4000-a000-000000000109",
               "displayName": "mi-backup-runner",
@@ -197,6 +279,26 @@
               "createdDateTime": "2021-01-01T00:00:00Z",
               "passwordCredentials": [],
               "keyCredentials": []
+            },
+            {
+              "id": "00000000-0000-4000-a000-000000000214",
+              "appId": "00000000-0000-4000-a000-000000000114",
+              "displayName": "CI Deployer",
+              "signInAudience": "AzureADMyOrg",
+              "createdDateTime": "2023-05-01T00:00:00Z",
+              "passwordCredentials": [
+                {
+                  "keyId": "00000000-0000-4000-a000-000000000414",
+                  "displayName": "old",
+                  "endDateTime": "2024-01-01T00:00:00Z"
+                }
+              ],
+              "keyCredentials": [],
+              "federatedIdentityCredentials": [
+                {
+                  "id": "00000000-0000-4000-a000-000000000714"
+                }
+              ]
             },
             {
               "id": "00000000-0000-4000-a000-000000000212",
@@ -333,8 +435,57 @@
               "principalType": "User",
               "appRoleId": "00000000-0000-4000-a000-000000000901",
               "resourceId": "00000000-0000-4000-a000-000000000001"
+            },
+            {
+              "id": "asg-ci-userread",
+              "principalId": "00000000-0000-4000-a000-000000000014",
+              "principalType": "ServicePrincipal",
+              "appRoleId": "00000000-0000-4000-a000-000000000903",
+              "resourceId": "00000000-0000-4000-a000-000000000001",
+              "createdDateTime": "2023-05-02T00:00:00Z"
             }
           ]
+        }
+      }
+    ]
+  },
+  {
+    "operation": "graph.service_principals.app_role_assigned_to.list",
+    "match": {
+      "parameters": {
+        "servicePrincipal-id": "00000000-0000-4000-a000-000000000016"
+      }
+    },
+    "responses": [
+      {
+        "body": {
+          "value": [
+            {
+              "id": "asg-imap-15",
+              "principalId": "00000000-0000-4000-a000-000000000015",
+              "principalType": "ServicePrincipal",
+              "appRoleId": "00000000-0000-4000-a000-000000000916",
+              "resourceId": "00000000-0000-4000-a000-000000000016",
+              "createdDateTime": "2025-01-01T00:00:00Z"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "operation": "graph.service_principals.app_role_assigned_to.list",
+    "match": {
+      "parameters": {
+        "servicePrincipal-id": "00000000-0000-4000-a000-000000000013"
+      }
+    },
+    "responses": [
+      {
+        "status": 500,
+        "error": {
+          "code": "unexpected",
+          "message": "user-only roles must not be listed"
         }
       }
     ]
@@ -350,6 +501,12 @@
               "displayName": "Contoso Calendar Sync",
               "riskLevel": "high",
               "riskState": "atRisk"
+            },
+            {
+              "id": "00000000-0000-4000-a000-000000000015",
+              "displayName": "Mail Migration Tool",
+              "riskLevel": "high",
+              "riskState": "confirmedSafe"
             }
           ]
         }
@@ -395,6 +552,20 @@
               "appId": "00000000-0000-4000-a000-000000000109",
               "lastSignInActivity": {
                 "lastSignInDateTime": "2026-10-24T08:00:00Z"
+              }
+            },
+            {
+              "id": "s14",
+              "appId": "00000000-0000-4000-a000-000000000114",
+              "lastSignInActivity": {
+                "lastSignInDateTime": "2026-10-23T08:00:00Z"
+              }
+            },
+            {
+              "id": "s15",
+              "appId": "00000000-0000-4000-a000-000000000115",
+              "lastSignInActivity": {
+                "lastSignInDateTime": "2026-10-22T08:00:00Z"
               }
             }
           ]
@@ -514,6 +685,29 @@
               "id": "00000000-0000-4000-a000-000000000607",
               "displayName": "Mail Admin",
               "userPrincipalName": "mail.admin@contoso.example",
+              "userType": "Member"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "operation": "graph.applications.owners.list",
+    "match": {
+      "parameters": {
+        "application-id": "00000000-0000-4000-a000-000000000214"
+      }
+    },
+    "responses": [
+      {
+        "body": {
+          "value": [
+            {
+              "@odata.type": "#microsoft.graph.user",
+              "id": "00000000-0000-4000-a000-000000000609",
+              "displayName": "Platform Team",
+              "userPrincipalName": "platform.team@contoso.example",
               "userType": "Member"
             }
           ]

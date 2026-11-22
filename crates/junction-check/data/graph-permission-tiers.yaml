@@ -8,13 +8,17 @@
 #   medium:   read directory-wide data or change a narrow class of objects.
 # Permissions not listed are `unclassified`, never assumed to be low.
 #
-# `narrower` names a less privileged alternative, which drives the `overbroad_scope` flag.
+# `narrower` names a less privileged alternative for an application permission, and
+# `narrower_delegated` one for a tenant-wide delegated grant; either drives the
+# `overbroad_scope` flag. Application-only options (Exchange RBAC for Applications,
+# Sites.Selected, Files.SelectedOperations.Selected) are never offered for delegated grants.
 # Values match case-insensitively and apply to whichever resource exposes them.
 
 critical:
   - permission: Directory.ReadWrite.All
     reason: Change any directory object, including users, groups and application credentials.
     narrower: User.ReadWrite.All or Group.ReadWrite.All for the objects actually managed
+    narrower_delegated: User.ReadWrite.All or Group.ReadWrite.All for the objects actually managed
   - permission: RoleManagement.ReadWrite.Directory
     reason: Assign any Entra ID role, including Global Administrator.
   - permission: AppRoleAssignment.ReadWrite.All
@@ -22,6 +26,7 @@ critical:
   - permission: Application.ReadWrite.All
     reason: Add credentials to any application and act as it.
     narrower: Application.ReadWrite.OwnedBy
+    narrower_delegated: Application.ReadWrite.OwnedBy
   - permission: RoleAssignmentSchedule.ReadWrite.Directory
     reason: Create active role assignments through PIM schedules.
   - permission: RoleEligibilitySchedule.ReadWrite.Directory
@@ -30,6 +35,10 @@ critical:
     reason: Change membership of role-assignable groups through PIM.
   - permission: UserAuthenticationMethod.ReadWrite.All
     reason: Add or reset authentication methods for any user, including administrators.
+  - permission: DelegatedPermissionGrant.ReadWrite.All
+    reason: Grant any app admin consent for all users to any delegated scope, including itself.
+  - permission: Policy.ReadWrite.PermissionGrant
+    reason: Change consent policies so users or apps can consent to any permission.
   - permission: Policy.ReadWrite.ConditionalAccess
     reason: Turn off or weaken Conditional Access for the whole tenant.
   - permission: Domain.ReadWrite.All
@@ -43,6 +52,15 @@ critical:
   - permission: full_access_as_app
     reason: Full EWS access to every mailbox.
     narrower: Microsoft Graph Mail permissions scoped with Exchange RBAC for Applications
+  - permission: IMAP.AccessAsApp
+    reason: Read and change every mailbox over IMAP as an application.
+    narrower: Exchange RBAC for Applications scoped to the mailboxes needed
+  - permission: POP.AccessAsApp
+    reason: Read every mailbox over POP as an application.
+    narrower: Exchange RBAC for Applications scoped to the mailboxes needed
+  - permission: SMTP.SendAsApp
+    reason: Send mail as any mailbox over SMTP as an application.
+    narrower: Exchange RBAC for Applications scoped to the sending mailboxes
   - permission: Exchange.ManageAsApp
     reason: Run Exchange Online PowerShell as an application, usually with an admin role.
   - permission: Files.ReadWrite.All
@@ -85,6 +103,7 @@ high:
   - permission: Group.ReadWrite.All
     reason: Change any group, including membership of security groups used for access.
     narrower: GroupMember.ReadWrite.All
+    narrower_delegated: GroupMember.ReadWrite.All
   - permission: GroupMember.ReadWrite.All
     reason: Change membership of any non-role-assignable group.
   - permission: Policy.ReadWrite.AuthenticationMethod
@@ -110,12 +129,15 @@ medium:
   - permission: Directory.Read.All
     reason: Read every directory object.
     narrower: User.Read.All or Group.Read.All for the objects actually read
+    narrower_delegated: User.Read.All or Group.Read.All for the objects actually read
   - permission: User.Read.All
     reason: Read every user's full profile.
     narrower: User.ReadBasic.All
+    narrower_delegated: User.ReadBasic.All
   - permission: Group.Read.All
     reason: Read every group and its content.
     narrower: GroupMember.Read.All
+    narrower_delegated: GroupMember.Read.All
   - permission: Mail.ReadBasic.All
     reason: Read mail metadata (sender, subject) in every mailbox.
   - permission: Contacts.ReadWrite

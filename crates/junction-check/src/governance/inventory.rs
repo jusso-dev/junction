@@ -184,7 +184,9 @@ pub struct Owner {
     pub display_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub user_principal_name: Option<String>,
-    pub guest: bool,
+    /// Whether the owner is a guest; `None` when Graph returned only an id stub
+    /// and guest users could not be listed, so it is not known.
+    pub guest: Option<bool>,
     /// `application` (app registration owner) or `service_principal`.
     pub of: String,
 }
@@ -277,6 +279,10 @@ pub struct App {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub created_at: Option<String>,
     pub credentials: Vec<Credential>,
+    /// The app registration has federated identity credentials (workload
+    /// identity federation), so it can sign in without a secret or certificate.
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    pub federated_credentials: bool,
     pub owners: Vec<Owner>,
     pub application_permissions: Vec<AppPermission>,
     pub delegated_grants: Vec<DelegatedGrant>,
@@ -415,19 +421,31 @@ fn credentials(object: &Value, on: &str, now: Instant) -> Vec<Credential> {
     out
 }
 
-fn owner(object: &Value, of: &str) -> Owner {
+/// One owner. `guests` (lower-case ids of guest users, when they could be
+/// listed) is authoritative; otherwise `userType` or an `#EXT#` UPN on the
+/// object decides, and an id-only stub (Graph omits user properties without
+/// `User.Read.All`) leaves guest status unknown.
+fn owner(object: &Value, of: &str, guests: Option<&BTreeSet<String>>) -> Owner {
     let kind = match object["@odata.type"].as_str() {
         Some("#microsoft.graph.user") => "user",
         Some("#microsoft.graph.servicePrincipal") => "service_principal",
         None if object.get("userPrincipalName").is_some() => "user",
         _ => "other",
     };
+    let id = s(object, "id").unwrap_or_default();
+    let described = object.get("userType").is_some() || object.get("userPrincipalName").is_some();
+    let guest = match (kind, guests) {
+        ("user", Some(guests)) => Some(guests.contains(&id.to_lowercase()) || is_guest(object)),
+        ("user", None) if described => Some(is_guest(object)),
+        ("user", None) => None,
+        _ => Some(false),
+    };
     Owner {
-        id: s(object, "id").unwrap_or_default(),
+        id,
         kind: kind.to_owned(),
         display_name: s(object, "displayName"),
         user_principal_name: s(object, "userPrincipalName"),
-        guest: kind == "user" && is_guest(object),
+        guest,
         of: of.to_owned(),
     }
 }
@@ -473,7 +491,8 @@ pub async fn collect(ctx: &CheckContext) -> Result<Inventory, CollectError> {
         .list_with(
             APPLICATIONS.operation,
             json!({"$select": ["id", "appId", "displayName", "signInAudience", "createdDateTime",
-                "passwordCredentials", "keyCredentials"]}),
+                "passwordCredentials", "keyCredentials"],
+                "$expand": ["federatedIdentityCredentials($select=id)"]}),
         )
         .await
         .map_err(required)?;
@@ -488,10 +507,19 @@ pub async fn collect(ctx: &CheckContext) -> Result<Inventory, CollectError> {
         let Some(id) = sp["id"].as_str() else {
             continue;
         };
+        // Only roles assignable to applications are application permissions;
+        // user-only roles (gallery SSO apps) can have huge assignment lists
+        // that are never app permissions, so their resources are not listed.
         let roles: BTreeMap<String, String> = sp["appRoles"]
             .as_array()
             .into_iter()
             .flatten()
+            .filter(|r| {
+                r["allowedMemberTypes"]
+                    .as_array()
+                    .is_some_and(|t| t.iter().any(|m| m.as_str() == Some("Application")))
+                    && r["value"].as_str().is_some_and(|v| !v.is_empty())
+            })
             .filter_map(|r| {
                 Some((
                     r["id"].as_str()?.to_lowercase(),
@@ -682,7 +710,7 @@ pub async fn collect(ctx: &CheckContext) -> Result<Inventory, CollectError> {
             Ok(rows) => owners
                 .entry(key.clone())
                 .or_default()
-                .extend(rows.iter().map(|o| owner(o, of))),
+                .extend(rows.iter().map(|o| owner(o, of, guests.as_ref()))),
             Err(f) => {
                 owners_unread
                     .entry(key.clone())
@@ -811,6 +839,11 @@ pub async fn collect(ctx: &CheckContext) -> Result<Inventory, CollectError> {
             application_id: registration.and_then(|r| s(r, "id")),
             created_at: registration.and_then(|r| s(r, "createdDateTime")),
             credentials: creds,
+            federated_credentials: registration.is_some_and(|r| {
+                r["federatedIdentityCredentials"]
+                    .as_array()
+                    .is_some_and(|f| !f.is_empty())
+            }),
             owners: app_owners,
             owners_unread: owners_unread.remove(&key).unwrap_or_default(),
             application_permissions: app_permissions,
