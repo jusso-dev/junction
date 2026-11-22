@@ -4,6 +4,7 @@ use crate::{
     checkpoint::Checkpoint,
     collect,
     config::{ArchiveConfig, write_new_private},
+    search,
     store::{DeleteProbe, ObjectStore, PutOutcome},
 };
 use anyhow::Result;
@@ -38,6 +39,81 @@ pub enum ArchiveCommand {
     Collect,
     /// Show checkpoints, paused sources and recent gaps from local state.
     Status,
+    /// Search archived records. Output is redacted unless --full is given.
+    Search(SearchArgs),
+}
+
+#[derive(clap::Args, Clone)]
+pub struct FilterArgs {
+    /// Start of the time range (RFC 3339, inclusive).
+    #[arg(long)]
+    pub from: String,
+    /// End of the time range (RFC 3339, exclusive).
+    #[arg(long)]
+    pub to: String,
+    /// Limit to a source (repeatable), for example graph:signIns.
+    #[arg(long = "source")]
+    pub sources: Vec<String>,
+    /// Exact operation, case-insensitive.
+    #[arg(long)]
+    pub operation: Option<String>,
+    /// Actor UPN, case-insensitive.
+    #[arg(long)]
+    pub actor: Option<String>,
+    /// Exact IP address.
+    #[arg(long)]
+    pub ip: Option<String>,
+    /// Case-insensitive text anywhere in the record.
+    #[arg(long)]
+    pub contains: Option<String>,
+}
+
+impl FilterArgs {
+    pub fn query(&self) -> search::Query {
+        search::Query {
+            from: self.from.clone(),
+            to: self.to.clone(),
+            sources: self.sources.clone(),
+            operation: self.operation.clone(),
+            actor: self.actor.clone(),
+            ip: self.ip.clone(),
+            contains: self.contains.clone(),
+        }
+    }
+}
+
+#[derive(clap::Args)]
+pub struct SearchArgs {
+    #[command(flatten)]
+    pub filter: FilterArgs,
+    /// Most records to return.
+    #[arg(long, default_value_t = search::DEFAULT_LIMIT)]
+    pub limit: usize,
+    /// Show full records, including UPNs, IP addresses and raw payloads.
+    #[arg(long)]
+    pub full: bool,
+    /// Confirm --full without a terminal prompt.
+    #[arg(long, requires = "full")]
+    pub yes: bool,
+}
+
+/// Ask before showing personal data. Refuses without a terminal unless `yes`.
+pub fn confirm_full(yes: bool, what: &str) -> Result<()> {
+    use std::io::{BufRead, IsTerminal, Write};
+    if yes {
+        return Ok(());
+    }
+    if !std::io::stdin().is_terminal() {
+        anyhow::bail!("{what} shows personal data; pass --yes to confirm when not at a terminal");
+    }
+    eprint!("{what} shows user names, IP addresses and raw audit records. Continue? [y/N] ");
+    std::io::stderr().flush()?;
+    let mut line = String::new();
+    std::io::stdin().lock().read_line(&mut line)?;
+    if !matches!(line.trim(), "y" | "Y" | "yes") {
+        anyhow::bail!("cancelled");
+    }
+    Ok(())
 }
 
 pub async fn run(args: ArchiveArgs) -> Result<Value> {
@@ -65,12 +141,40 @@ pub async fn run(args: ArchiveArgs) -> Result<Value> {
             .await;
             Ok(json!({"store": store.describe(), "sources": outcomes}))
         }
+        ArchiveCommand::Search(search_args) => {
+            let config = ArchiveConfig::load(&args.config)?;
+            if search_args.full {
+                confirm_full(search_args.yes, "--full")?;
+            }
+            let store = config.open_store()?;
+            run_search(store.as_ref(), &config.tenant_id, &search_args).await
+        }
         ArchiveCommand::Status => {
             let config = ArchiveConfig::load(&args.config)?;
             let checkpoint = Checkpoint::open(&config.state_directory, &config.tenant_id)?;
             Ok(status(&config, &checkpoint))
         }
     }
+}
+
+pub async fn run_search(store: &dyn ObjectStore, tenant: &str, args: &SearchArgs) -> Result<Value> {
+    let query = args.filter.query();
+    let results = search::search(store, tenant, &query, args.limit).await?;
+    let view = if args.full {
+        search::full
+    } else {
+        search::redacted
+    };
+    Ok(json!({
+        "query": query,
+        "records": results.records.iter().map(view).collect::<Vec<_>>(),
+        "count": results.records.len(),
+        "truncated": results.truncated,
+        "duplicates_removed": results.duplicates_removed,
+        "objects_read": results.objects_read.len(),
+        "problems": results.problems,
+        "redacted": !args.full,
+    }))
 }
 
 fn live_upstream(config: &ArchiveConfig) -> Result<LiveUpstream> {
