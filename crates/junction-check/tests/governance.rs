@@ -1013,3 +1013,60 @@ async fn future_dated_plans_and_oversized_inputs_are_refused() {
     plan.items[0].input["headers"] = serde_json::json!({});
     assert!(Plan::parse(&serde_json::to_string(&plan).unwrap()).is_err());
 }
+
+// --- docs (#50) ---------------------------------------------------------------
+
+fn doc(name: &str) -> String {
+    std::fs::read_to_string(
+        std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
+            .join("../../docs")
+            .join(name),
+    )
+    .unwrap()
+}
+
+#[test]
+fn governance_docs_have_no_em_dashes_and_name_every_permission() {
+    let guide = doc("APP-GOVERNANCE.md");
+    let security = doc("APP-GOVERNANCE-SECURITY.md");
+    let readme = std::fs::read_to_string(
+        std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../../README.md"),
+    )
+    .unwrap();
+    let section = readme
+        .split("## Connected-app governance")
+        .nth(1)
+        .and_then(|s| s.split("\n## ").next())
+        .expect("README section");
+    for (name, text) in [
+        ("APP-GOVERNANCE.md", guide.as_str()),
+        ("APP-GOVERNANCE-SECURITY.md", security.as_str()),
+        ("README section", section),
+    ] {
+        assert!(!text.contains('\u{2014}'), "{name} contains an em dash");
+        assert!(!text.contains('\u{2013}'), "{name} contains an en dash");
+    }
+    // Every read and write permission the code declares appears in the security doc.
+    for read in junction_check::governance::inventory::READS {
+        assert!(
+            security.contains(&format!("`{}`", read.permissions[0])),
+            "{}",
+            read.permissions[0]
+        );
+    }
+    for (op, permission) in apply::WRITE_PERMISSIONS {
+        assert!(security.contains(&format!("`{op}`")), "{op}");
+        assert!(
+            security.contains(&format!("`{permission}`")),
+            "{permission}"
+        );
+    }
+    // Every flag is documented in the guide.
+    for f in flags::FLAGS {
+        assert!(guide.contains(&format!("`{}`", f.id)), "{}", f.id);
+    }
+    assert!(
+        readme.contains("docs/APP-GOVERNANCE.md")
+            && readme.contains("docs/APP-GOVERNANCE-SECURITY.md")
+    );
+}
