@@ -482,7 +482,11 @@ async fn drift_reports_access_changes_and_ignores_activity() {
 
     let md = baseline::markdown(&drift);
     assert!(md.contains("added application permission: Microsoft Graph/Sites.ReadWrite.All"));
-    assert!(md.contains("Fabrikam Mail Archive -> Fabrikam Mail Archive v2"));
+    // `>` is escaped so tenant text cannot open a block quote or raw HTML.
+    assert!(
+        md.contains("Fabrikam Mail Archive -\\> Fabrikam Mail Archive v2"),
+        "{md}"
+    );
 }
 
 #[tokio::test]
@@ -510,6 +514,15 @@ async fn baselines_are_bound_to_their_tenant_and_content() {
             .to_string()
             .contains("tenant")
     );
+    // Editing the tenant or the capture time in the file breaks the digest, so
+    // a baseline cannot be relabelled for another tenant or backdated.
+    let relabelled = text.replace(TENANT, "00000000-0000-4000-8000-000000000002");
+    assert!(baseline::Baseline::parse(&relabelled).is_err());
+    let backdated = text.replace("2026-10-25T00:00:00.000Z", "2025-01-01T00:00:00.000Z");
+    assert!(baseline::Baseline::parse(&backdated).is_err());
+    // Unknown fields are refused rather than ignored.
+    let extra = text.replacen('{', "{\"note\":\"x\",", 1);
+    assert!(baseline::Baseline::parse(&extra).is_err());
 
     // Without owners, an inventory cannot become a baseline.
     let no_owners = inventory("owners_forbidden").await.unwrap();
@@ -567,4 +580,31 @@ async fn export_csv_neutralises_hostile_display_names() {
     let csv = export::apps_csv(&inv);
     assert!(csv.contains("\"'=HYPERLINK("), "{csv}");
     assert!(!csv.contains(",\"=HYPERLINK"));
+}
+
+#[tokio::test]
+async fn renaming_a_resource_is_not_drift_but_moving_tenants_is() {
+    let inv = inventory("tenant").await.unwrap();
+    let base = baseline::Baseline::from_inventory(&inv).unwrap();
+    let mut renamed = inv.clone();
+    for app in &mut renamed.apps {
+        for p in &mut app.application_permissions {
+            p.resource_name = "Graph (renamed)".into();
+        }
+        for g in &mut app.delegated_grants {
+            g.resource_name = "Graph (renamed)".into();
+        }
+    }
+    assert!(baseline::diff(&base, &renamed).unwrap().is_empty());
+
+    let mut moved = inv.clone();
+    let app = moved
+        .apps
+        .iter_mut()
+        .find(|a| a.display_name == "Fabrikam Mail Archive")
+        .unwrap();
+    app.owner_tenant = junction_check::governance::inventory::OwnerTenant::Home;
+    let drift = baseline::diff(&base, &moved).unwrap();
+    assert!(drift.changed[0].properties[0].starts_with("owner_tenant: "));
+    assert!(drift.widened(), "a change of owning tenant needs review");
 }

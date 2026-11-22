@@ -24,17 +24,19 @@ pub const FILES: &[&str] = &[
 ];
 
 /// A CSV cell: quoted, with formula-looking values neutralised so
-/// spreadsheets never evaluate tenant-supplied text.
+/// spreadsheets never evaluate tenant-supplied text. Spreadsheets skip leading
+/// whitespace and control characters before deciding a cell is a formula, so
+/// the check looks past them, and a leading tab or carriage return is itself
+/// neutralised.
 pub fn csv_cell(value: &str) -> String {
     let clean: String = value
         .chars()
         .map(|c| if c.is_control() { ' ' } else { c })
         .collect();
-    let neutral = if clean.starts_with(['=', '+', '-', '@']) {
-        format!("'{clean}")
-    } else {
-        clean
-    };
+    let formula = clean.trim_start().starts_with([
+        '=', '+', '-', '@', '\u{FF1D}', '\u{FF0B}', '\u{FF0D}', '\u{FF20}',
+    ]) || value.starts_with(['\t', '\r', '\n']);
+    let neutral = if formula { format!("'{clean}") } else { clean };
     format!("\"{}\"", neutral.replace('"', "\"\""))
 }
 
@@ -57,29 +59,38 @@ fn csv(header: &[&str], rows: Vec<Vec<String>>) -> String {
     out
 }
 
-/// A Markdown table cell: no pipes, newlines or HTML.
-pub fn md_cell(value: &str) -> String {
-    value
-        .chars()
-        .map(|c| match c {
-            '|' => '/',
-            '<' => '(',
-            '>' => ')',
-            c if c.is_control() => ' ',
-            c => c,
-        })
-        .collect()
+/// Markdown text that renders as plain text: every character that can open
+/// Markdown or HTML syntax (links, images, emphasis, code, headings, block
+/// quotes, tables, entities, raw HTML) is backslash-escaped, and line breaks and control
+/// characters become spaces, so tenant-supplied names cannot add links, load
+/// images or break the layout.
+pub fn md_text(value: &str) -> String {
+    let mut out = String::with_capacity(value.len());
+    for c in value.chars() {
+        match c {
+            '\\' | '`' | '*' | '_' | '[' | ']' | '(' | ')' | '#' | '!' | '|' | '<' | '>' | '~'
+            | '&' => {
+                out.push('\\');
+                out.push(c);
+            }
+            c if c.is_control() => out.push(' '),
+            c => out.push(c),
+        }
+    }
+    out
 }
 
-/// Markdown body text: no raw HTML, line breaks or control characters.
-pub fn md_text(value: &str) -> String {
+/// A Markdown table cell: the same escaping as [`md_text`].
+pub fn md_cell(value: &str) -> String {
+    md_text(value)
+}
+
+/// An identifier inside a code span: only characters that occur in object ids
+/// and GUIDs are kept, so it can never close the span.
+pub fn md_id(value: &str) -> String {
     value
         .chars()
-        .map(|c| match c {
-            '<' => '(',
-            c if c.is_control() => ' ',
-            c => c,
-        })
+        .filter(|c| c.is_ascii_alphanumeric() || matches!(c, '-' | '_' | '.'))
         .collect()
 }
 
@@ -249,12 +260,12 @@ pub fn readme(inv: &Inventory, drift: Option<&Drift>) -> String {
          | Holding application permissions | {} |\n\
          | Holding admin consent for all users | {} |\n\
          | Holding per-user consent | {} |\n",
-        inv.tenant_id,
+        md_id(&inv.tenant_id),
         inv.label
             .as_deref()
             .map(|l| format!(" ({})", md_cell(l)))
             .unwrap_or_default(),
-        inv.captured_at,
+        md_text(&inv.captured_at),
         env!("CARGO_PKG_VERSION"),
         s.apps,
         s.home_tenant,
@@ -323,7 +334,7 @@ pub fn readme(inv: &Inventory, drift: Option<&Drift>) -> String {
     if let Some(d) = drift {
         out.push_str(&format!(
             "\n## Drift since the approved baseline\n\nBaseline captured {}: {} added, {} removed, {} changed. Details in `drift.md` and `drift.json`.\n",
-            d.baseline_captured_at,
+            md_text(&d.baseline_captured_at),
             d.added.len(),
             d.removed.len(),
             d.changed.len()
@@ -390,10 +401,18 @@ mod tests {
         assert_eq!(csv_cell("@SUM(A1)"), "\"'@SUM(A1)\"");
         assert_eq!(csv_cell("Mail.Read"), "\"Mail.Read\"");
         assert_eq!(csv_cell("a\nb"), "\"a b\"");
+        // Leading whitespace or control characters do not hide a formula.
+        assert_eq!(csv_cell("  =1+1"), "\"'  =1+1\"");
+        assert_eq!(csv_cell("\t=CMD"), "\"' =CMD\"");
+        assert_eq!(csv_cell("\rtext"), "\"' text\"");
+        assert_eq!(csv_cell("\u{FF1D}1+1"), "\"'\u{FF1D}1+1\"");
     }
 
     #[test]
     fn markdown_cells_cannot_break_tables_or_inject_html() {
-        assert_eq!(md_cell("a|b<script>\n"), "a/b(script) ");
+        assert_eq!(md_cell("a|b<script>\n"), "a\\|b\\<script\\> ");
+        let link = md_text("![x](https://attacker.example/p.png)[Fix](https://phish.example)");
+        assert!(!link.contains("]("), "{link}");
+        assert_eq!(md_id("abc`) [x](y"), "abcxy");
     }
 }

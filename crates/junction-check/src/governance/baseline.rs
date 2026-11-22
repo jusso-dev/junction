@@ -8,24 +8,33 @@
 //!
 //! Apps are keyed by service principal object id. An app deleted and
 //! re-created under the same name shows as one removed and one added.
+//! Permissions and scopes are keyed by the resource's app id, not its display
+//! name, so renaming a resource is not drift and two resources with the same
+//! name never collide. Owners are keyed by object id only: guest status
+//! depends on whether User.Read.All was granted, so it is reported by the
+//! `guest_owned` flag rather than as drift.
 use super::inventory::{App, Inventory, OwnerTenant};
 use anyhow::{Result, bail};
 use serde::{Deserialize, Serialize};
 use std::collections::{BTreeMap, BTreeSet};
 
-pub const BASELINE_VERSION: u32 = 1;
+/// Version 2 keys permissions by resource app id and digests the whole file.
+pub const BASELINE_VERSION: u32 = 2;
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
 pub struct Baseline {
     pub baseline_version: u32,
     pub tenant_id: String,
     pub captured_at: String,
-    /// SHA-256 of the canonical JSON of `apps`, to detect edits.
+    /// SHA-256 of the canonical JSON of every other field (version, tenant,
+    /// capture time and apps), so no part of the file can be edited unseen.
     pub digest: String,
     pub apps: BTreeMap<String, Snapshot>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
 pub struct Snapshot {
     pub app_id: String,
     pub display_name: String,
@@ -34,14 +43,17 @@ pub struct Snapshot {
     pub publisher: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sign_in_audience: Option<String>,
-    /// Owner object ids, with `guest:` prefixed for guests.
+    /// Owner object ids (lower case).
     pub owners: BTreeSet<String>,
-    /// `Resource/Permission` for application permissions.
+    /// `resource-app-id/Permission` for application permissions.
     pub application_permissions: BTreeSet<String>,
-    /// `Resource/scope` for admin consent (all users).
+    /// `resource-app-id/scope` for admin consent (all users).
     pub admin_delegated: BTreeSet<String>,
-    /// `principal-id: Resource/scope` for per-user consent.
+    /// `principal-id: resource-app-id/scope` for per-user consent.
     pub user_delegated: BTreeSet<String>,
+    /// Resource app id to display name, for readable drift output only.
+    #[serde(default)]
+    pub resources: BTreeMap<String, String>,
 }
 
 fn publisher(app: &App) -> String {
@@ -56,15 +68,28 @@ impl Snapshot {
     pub fn of(app: &App) -> Self {
         let mut admin = BTreeSet::new();
         let mut user = BTreeSet::new();
+        let mut resources = BTreeMap::new();
+        let key = |app_id: &str, id: &str| {
+            if app_id.is_empty() {
+                id.to_lowercase()
+            } else {
+                app_id.to_lowercase()
+            }
+        };
         for g in &app.delegated_grants {
+            let resource = key(&g.resource_app_id, &g.resource_id);
+            resources.insert(resource.clone(), g.resource_name.clone());
             for scope in &g.scopes {
-                let item = format!("{}/{scope}", g.resource_name);
+                let item = format!("{resource}/{scope}");
                 if g.consent_type == "AllPrincipals" {
                     admin.insert(item);
                 } else {
                     user.insert(format!(
                         "{}: {item}",
-                        g.principal_id.as_deref().unwrap_or("unknown")
+                        g.principal_id
+                            .as_deref()
+                            .unwrap_or("unknown")
+                            .to_lowercase()
                     ));
                 }
             }
@@ -76,31 +101,37 @@ impl Snapshot {
             owner_tenant: app.owner_tenant,
             publisher: publisher(app),
             sign_in_audience: app.sign_in_audience.clone(),
-            owners: app
-                .owners
-                .iter()
-                .map(|o| {
-                    if o.guest == Some(true) {
-                        format!("guest:{}", o.id)
-                    } else {
-                        o.id.clone()
-                    }
-                })
-                .collect(),
+            owners: app.owners.iter().map(|o| o.id.to_lowercase()).collect(),
             application_permissions: app
                 .application_permissions
                 .iter()
-                .map(|p| format!("{}/{}", p.resource_name, p.permission))
+                .map(|p| {
+                    let resource = key(&p.resource_app_id, &p.resource_id);
+                    resources.insert(resource.clone(), p.resource_name.clone());
+                    format!("{resource}/{}", p.permission)
+                })
                 .collect(),
             admin_delegated: admin,
             user_delegated: user,
+            resources,
         }
     }
 }
 
-fn digest(apps: &BTreeMap<String, Snapshot>) -> String {
+fn digest(
+    version: u32,
+    tenant: &str,
+    captured_at: &str,
+    apps: &BTreeMap<String, Snapshot>,
+) -> String {
     use sha2::{Digest, Sha256};
-    let canonical = serde_json::to_vec(apps).expect("snapshots serialise");
+    let canonical = serde_json::to_vec(&serde_json::json!({
+        "baseline_version": version,
+        "tenant_id": tenant.to_ascii_lowercase(),
+        "captured_at": captured_at,
+        "apps": apps,
+    }))
+    .expect("snapshots serialise");
     junction_watch::event::hex(&Sha256::digest(&canonical))
 }
 
@@ -122,7 +153,12 @@ impl Baseline {
             baseline_version: BASELINE_VERSION,
             tenant_id: inventory.tenant_id.clone(),
             captured_at: inventory.captured_at.clone(),
-            digest: digest(&apps),
+            digest: digest(
+                BASELINE_VERSION,
+                &inventory.tenant_id,
+                &inventory.captured_at,
+                &apps,
+            ),
             apps,
         })
     }
@@ -136,7 +172,14 @@ impl Baseline {
         if baseline.baseline_version != BASELINE_VERSION {
             bail!("unsupported baseline version {}", baseline.baseline_version);
         }
-        if baseline.digest != digest(&baseline.apps) {
+        if baseline.digest
+            != digest(
+                baseline.baseline_version,
+                &baseline.tenant_id,
+                &baseline.captured_at,
+                &baseline.apps,
+            )
+        {
             bail!("the baseline digest does not match its content; it was edited or corrupted");
         }
         Ok(baseline)
@@ -185,10 +228,11 @@ impl Changed {
             || !self.application_permissions.added.is_empty()
             || !self.admin_delegated.added.is_empty()
             || !self.user_delegated.added.is_empty()
-            || self
-                .properties
-                .iter()
-                .any(|p| p.starts_with("enabled: false"))
+            || self.properties.iter().any(|p| {
+                p.starts_with("enabled: false")
+                    || p.starts_with("app_id: ")
+                    || p.starts_with("owner_tenant: ")
+            })
     }
 }
 
@@ -225,14 +269,41 @@ impl Drift {
     }
 }
 
+/// `resource-app-id/name` as `Resource display name/name` for output.
+fn label(item: &str, names: &BTreeMap<String, String>) -> String {
+    // Per-user items are `principal: resource/scope`.
+    let (prefix, rest) = match item.split_once(": ") {
+        Some((p, r)) => (format!("{p}: "), r),
+        None => (String::new(), item),
+    };
+    match rest.split_once('/') {
+        Some((resource, name)) => format!(
+            "{prefix}{}/{name}",
+            names.get(resource).map(String::as_str).unwrap_or(resource)
+        ),
+        None => item.to_owned(),
+    }
+}
+
+fn labels(items: &BTreeSet<String>, names: &BTreeMap<String, String>) -> BTreeSet<String> {
+    items.iter().map(|i| label(i, names)).collect()
+}
+
+fn labelled(changes: Changes, names: &BTreeMap<String, String>) -> Changes {
+    Changes {
+        added: changes.added.iter().map(|i| label(i, names)).collect(),
+        removed: changes.removed.iter().map(|i| label(i, names)).collect(),
+    }
+}
+
 fn app_ref(id: &str, s: &Snapshot) -> AppRef {
     AppRef {
         service_principal_id: id.to_owned(),
         app_id: s.app_id.clone(),
         display_name: s.display_name.clone(),
         owner_tenant: s.owner_tenant,
-        application_permissions: s.application_permissions.clone(),
-        admin_delegated: s.admin_delegated.clone(),
+        application_permissions: labels(&s.application_permissions, &s.resources),
+        admin_delegated: labels(&s.admin_delegated, &s.resources),
     }
 }
 
@@ -289,17 +360,39 @@ pub fn diff(baseline: &Baseline, current: &Inventory) -> Result<Drift> {
             before.sign_in_audience.clone().unwrap_or_default(),
             after.sign_in_audience.clone().unwrap_or_default(),
         );
+        scalar(
+            "app_id",
+            before.app_id.to_lowercase(),
+            after.app_id.to_lowercase(),
+        );
+        scalar(
+            "owner_tenant",
+            format!("{:?}", before.owner_tenant).to_lowercase(),
+            format!("{:?}", after.owner_tenant).to_lowercase(),
+        );
+        // Names for output: current names first, then the baseline's.
+        let mut names = before.resources.clone();
+        names.extend(after.resources.clone());
         let changed = Changed {
             service_principal_id: id.clone(),
             display_name: after.display_name.clone(),
             properties,
             owners: Changes::of(&before.owners, &after.owners),
-            application_permissions: Changes::of(
-                &before.application_permissions,
-                &after.application_permissions,
+            application_permissions: labelled(
+                Changes::of(
+                    &before.application_permissions,
+                    &after.application_permissions,
+                ),
+                &names,
             ),
-            admin_delegated: Changes::of(&before.admin_delegated, &after.admin_delegated),
-            user_delegated: Changes::of(&before.user_delegated, &after.user_delegated),
+            admin_delegated: labelled(
+                Changes::of(&before.admin_delegated, &after.admin_delegated),
+                &names,
+            ),
+            user_delegated: labelled(
+                Changes::of(&before.user_delegated, &after.user_delegated),
+                &names,
+            ),
         };
         if !(changed.properties.is_empty()
             && changed.owners.is_empty()
@@ -334,12 +427,13 @@ pub fn diff(baseline: &Baseline, current: &Inventory) -> Result<Drift> {
 pub fn markdown(drift: &Drift) -> String {
     let esc = super::export::md_cell;
     let text = super::export::md_text;
+    let id = super::export::md_id;
     let mut out = format!(
         "# Connected-app drift\n\nTenant `{}`. Baseline captured {} (digest `{}`), compared with the inventory captured {}.\n\n",
-        drift.tenant_id,
-        drift.baseline_captured_at,
-        &drift.baseline_digest[..16.min(drift.baseline_digest.len())],
-        drift.current_captured_at
+        id(&drift.tenant_id),
+        text(&drift.baseline_captured_at),
+        id(&drift.baseline_digest[..16.min(drift.baseline_digest.len())]),
+        text(&drift.current_captured_at)
     );
     if drift.is_empty() {
         out.push_str("No changes since the baseline.\n");
@@ -370,7 +464,7 @@ pub fn markdown(drift: &Drift) -> String {
             out.push_str(&format!(
                 "| {} | `{}` | {:?} | {} | {} |\n",
                 esc(&a.display_name),
-                a.app_id,
+                id(&a.app_id),
                 a.owner_tenant,
                 esc(&join(&a.application_permissions)),
                 esc(&join(&a.admin_delegated))
