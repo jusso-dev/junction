@@ -77,8 +77,8 @@ pub mod docs {
                     "No inventory (grants are required)",
                 ),
                 "User.Read.All" => (
-                    "Which users are guests, for guest consent",
-                    "`guest_consented` not evaluated",
+                    "Which users are guests (guest consent, and guest status of owners Graph returns as id-only stubs)",
+                    "`guest_consented` not evaluated; owners returned as id-only stubs have unknown guest status, so `guest_owned` may be incomplete",
                 ),
                 "AuditLog.Read.All" => (
                     "Service principal sign-in activity (Entra ID P1 or P2)",

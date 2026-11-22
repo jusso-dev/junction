@@ -49,7 +49,7 @@ For each service principal (`apps[]`):
 | `publisher` | `microsoft`, `verified` (with the publisher name) or `unverified`. |
 | `sign_in_audience`, `assignment_required` | Who can sign in, and whether users must be assigned. |
 | `credentials` | Secrets and certificates on the app registration and on the service principal: type, key id, name, end date, expired. **Never the value**, hint or key identifier. |
-| `owners`, `owners_unread` | Owners of the app registration and of the service principal, with guests marked. `owners_unread` names a lookup that failed for this app. |
+| `owners`, `owners_unread` | Owners of the app registration and of the service principal. `guest` is `true`, `false`, or `null` when Graph returned only an id (without `User.Read.All`) and guest status is unknown. `owners_unread` names a lookup that failed for this app. |
 | `application_permissions` | App roles granted to the app (for example `Mail.Read` on Microsoft Graph), resolved to names for every resource, with the assignment id. |
 | `delegated_grants` | Consent grants: `AllPrincipals` (admin consent for everyone) or `Principal` (one user), scopes, and whether the consenting user is a guest. |
 | `last_sign_in`, `sign_in_data` | Last sign-in in any role, and whether it was `recorded`, `none_recorded` or `unavailable` (report not readable). |
@@ -71,16 +71,27 @@ If a read is refused, the inventory records the gap and does not evaluate the fl
 - A failed owner lookup for one app is recorded against that app. Owners read for other apps, and
   guest owners read from the other lookup, are kept. `ownerless` needs that app's registration-owner
   lookup to have succeeded.
-- An app is only called unused when its age is known (local creation date or earliest permission
-  grant). External apps with neither are not flagged as unused.
+- Without `User.Read.All`, Graph returns owners as id-only stubs. Their guest status is `null`
+  (unknown), never "member", and the `guests` gap names the permission to grant.
+- An app is only called unused when its age is known (local creation date, earliest permission
+  grant or a recorded old sign-in). External apps with none of these are not flagged as unused.
+- `expired_credentials_only` is not raised for apps with federated identity credentials or a recent
+  sign-in: they authenticate another way, so expired secrets there are leftovers.
+- Only app roles assignable to applications are read as application permissions, so huge
+  user-assignment lists on single sign-on apps are never fetched.
+- Junction paces itself against its own request-per-minute limit, so a large tenant takes longer
+  rather than producing gaps.
 
 ## Risk flags
 
 Permission impact comes from a reviewed file,
 [`graph-permission-tiers.yaml`](../crates/junction-check/data/graph-permission-tiers.yaml), which gives
 each permission a tier (`critical`, `high` or `medium`), a reason and, where one exists, a narrower
-alternative. Permissions not in the file are `unclassified`, never assumed to be low. Microsoft
-first-party apps are inventoried but never flagged as unused or for their publisher.
+alternative. Narrower advice is kept separately for application permissions and for delegated
+grants, so application-only options (Exchange RBAC for Applications, `Sites.Selected`) are never
+suggested for a delegated grant. Permissions not in the file are `unclassified`, never assumed to
+be low. Microsoft first-party apps are inventoried but never flagged as unused or for their
+publisher; first-party owners are recognised in the public, US Government and China clouds.
 
 Thresholds go in a TOML file passed with `--config`:
 
@@ -127,8 +138,11 @@ changed apps. `--fail-on-drift` exits 1 when apps were added or gained permissio
 owners.
 
 Apps are matched by service principal object id. An app deleted and re-created under the same name
-shows as one removed and one added. The baseline file carries a SHA-256 of its content: an edited
-file, or a baseline from another tenant, is refused. An inventory whose owners could not be read
+shows as one removed and one added. Permissions are matched by the resource's app id, so renaming a
+resource is not drift. Changes to an app's app id or owning tenant are reported and count as widened
+access. The baseline file carries a SHA-256 of its whole content (version, tenant, capture time and
+apps): an edited, relabelled or backdated file, or a baseline from another tenant, is refused.
+Baselines saved before version 2 must be saved again. An inventory whose owners could not be read
 cannot become a baseline.
 
 ## Evidence pack
@@ -148,8 +162,10 @@ control and privileged access:
 | `drift.json`, `drift.md` | Drift against the baseline, when one is given. |
 | `manifest.json` | SHA-256 and size of every file. |
 
-CSV cells that start with `=`, `+`, `-` or `@` get a leading quote, so a hostile display name cannot
-run as a spreadsheet formula. The pack is not signed; sign or archive it with your own tooling.
+CSV cells that look like a formula (`=`, `+`, `-` or `@`, including after leading spaces or control
+characters, and their full-width forms) get a leading quote, so a hostile display name cannot run as
+a spreadsheet formula. Markdown output escapes every character that could open a link, image,
+emphasis, code, heading, quote, table or HTML, so names render as plain text. The pack is not signed; sign or archive it with your own tooling.
 Results indicate alignment; they are not a formal IRAP assessment.
 
 ## Revoke or restrict (human approved)
@@ -180,12 +196,18 @@ Each plan item records the exact operation and input, its risk class, why it was
 app's flags), a rollback note and the state it expects. `apply` refuses:
 
 - any item whose target changed since the plan was made, or no longer exists;
-- a plan for another tenant, or more than 24 hours old;
+- any item whose request does not match what Junction rebuilds from the live tenant: the plan is
+  not trusted, so an edited target id, a different app or a scope list that is not a strict subset
+  of the live grant's scopes is refused;
+- any item for a Microsoft first-party app;
+- a plan for another tenant, more than 24 hours old, or dated in the future;
+- a context that reaches a different tenant from the plan's;
 - any operation your `--policy` deny rules or tenant allow-list forbid. These are checked before the
   tenant is read and cannot be approved away.
 
-A declined or failed item stops the run. Microsoft first-party apps are never planned. Use a
-separate context, with the write permissions in
+The terminal prompt describes each change from the fresh inventory, not from the plan file. A
+declined or failed item stops the run. Microsoft first-party apps are never planned. Use a
+separate context, with the write permissions and the two core read permissions in
 [APP-GOVERNANCE-SECURITY.md](APP-GOVERNANCE-SECURITY.md#write-permissions), for `apply`.
 
 ## MCP and HTTP
@@ -195,7 +217,9 @@ Agents can read the inventory, never change it:
 - MCP tool `junction_apps_inventory` (`context`, `flagged_only`, `min_severity`)
 - HTTP `GET /v1/apps/inventory` with the same query parameters
 
-Both return exactly what `--format json` prints. They follow the same context rules as checks:
+Both return exactly what `--format json` prints for the same filters. `summary` always describes the
+whole tenant; when `flagged_only` or `min_severity` is set, a `filter` object records it with the
+number of apps returned. They follow the same context rules as checks:
 without `--allow-check-contexts`, agents can only read the host's own context. There is no plan,
 apply or revoke tool or route.
 

@@ -32,7 +32,7 @@ certificate set-up). `junction apps permissions` prints the same list.
 | `AuditLog.Read.All` | Microsoft Graph application | Service principal sign-in activity (Entra ID P1 or P2) | `graph.reports.service_principal_sign_in_activities.list` | `sign_in_data` is `unavailable`; `unused` and `privileged_no_recent_sign_in` not evaluated |
 | `DelegatedPermissionGrant.Read.All` | Microsoft Graph application | Admin and per-user delegated consent grants | `graph.oauth2permission_grants.list` | No inventory (grants are required) |
 | `IdentityRiskyServicePrincipal.Read.All` | Microsoft Graph application | Workload identity risk (Workload Identities Premium) | `graph.identity_protection.risky_service_principals.list` | `risky_service_principal` not evaluated |
-| `User.Read.All` | Microsoft Graph application | Which users are guests, for guest consent | `graph.users.list` | `guest_consented` not evaluated |
+| `User.Read.All` | Microsoft Graph application | Which users are guests (guest consent, and guest status of owners Graph returns as id-only stubs) | `graph.users.list` | `guest_consented` not evaluated; owners returned as id-only stubs have unknown guest status, so `guest_owned` may be incomplete |
 <!-- generated:app-read-permissions:end -->
 
 `Application.Read.All` and `DelegatedPermissionGrant.Read.All` are enough for a useful inventory.
@@ -71,10 +71,12 @@ the inventory, ideally only when a change is planned:
   Global Administrator. Prefer delegated access by a person who activates **Cloud Application
   Administrator** through PIM for the change window, or a short-lived application credential that
   you remove afterwards.
-- Grant only the permissions for the actions you plan. A missing permission makes that item fail
-  with a 403 and stops the run; nothing else is affected.
-- The write identity does not need any read permission beyond those above. `apply` re-reads the
-  tenant with the same context before sending anything.
+- Grant only the write permissions for the actions you plan. A missing write permission makes that
+  item fail with a 403 and stops the run; nothing else is affected.
+- The write identity **also needs the two core read permissions**, `Application.Read.All` and
+  `DelegatedPermissionGrant.Read.All`, because `apply` re-reads the tenant with the same context
+  and rebuilds every request from the live objects before sending anything. The optional read
+  permissions (guests, sign-in activity, risk) are not needed for `apply`.
 
 ## What is written, and where
 
@@ -90,26 +92,37 @@ the inventory, ideally only when a change is planned:
 
 Local files can hold tenant data: app names, ids, owner user principal names and permission
 details, but never credential values. Store them like any other security evidence. Output files are
-written atomically into place, and no tokens, request bodies or secrets are written to them.
+written atomically through a new, randomly named temporary file that only your user can read (mode
+0600 on Unix), and no tokens, request bodies or secrets are written to them.
 
 ## How approvals work
 
 `apply` reuses Junction's existing approval machinery ([APPROVALS.md](APPROVALS.md)). For each item,
 in order:
 
-1. **Plan validation.** The plan file is parsed strictly. Each item's input must match its action
-   exactly. A grant update may only set `scope`. A service principal update may only set
-   `accountEnabled` to `false`. Anything else is refused before the tenant is contacted.
+1. **Plan validation.** The plan file is parsed strictly. Each item's input must have exactly the
+   shape its action allows, with no extra keys, and its target ids must be the ones the item says
+   it expects. A grant update may only set `scope`, to a strict subset of the scopes the grant
+   held. A service principal update may only set `accountEnabled` to `false`. Anything else is
+   refused before the tenant is contacted.
 2. **Policy.** Apply runs under your `--policy` (or the default), with its deny rules, tenant
    allow-list and limits kept, upgraded to safe-write only so items qualify for approval. If a deny
-   rule matches any operation in the plan, or the tenant is not allowed, apply stops before reading
-   the tenant. A deny rule can never be approved away.
-3. **Freshness.** The tenant is read again. Items whose target changed or no longer exists are
-   refused. Plans for another tenant, or older than 24 hours, are refused as a whole.
+   rule matches any operation in the plan, the tenant is not allowed, or the context reaches a
+   different tenant from the plan's, apply stops before reading the tenant. The re-read itself also
+   runs under your policy. A deny rule can never be approved away.
+3. **Freshness, with the plan's request rebuilt.** The tenant is read again. For every item, apply
+   rebuilds the exact request from the live object the item expects and requires the plan's input
+   to equal it, so a hand-edited target, a different app or a widened scope list is refused.
+   Narrowing may only remove scopes from the live grant. Items whose target changed, no longer
+   exists or is a Microsoft first-party app are refused. Plans for another tenant, older than 24
+   hours or dated more than five minutes in the future are refused as a whole.
 4. **Terminal confirmation.** Each remaining item is shown on the controlling terminal: operation,
-   risk, why, rollback, request, tenant, cloud, endpoint, audience, credential profile and the exact
-   input. You retype the operation id and a fresh one-time code. The prompt reads from `/dev/tty`
-   (`CONIN$` on Windows), never from stdin or arguments, so piped input cannot approve it.
+   risk, the change described from the **fresh inventory** (app name, app id, service principal id,
+   owning tenant and what is removed or kept), request, tenant, cloud, endpoint, audience,
+   credential profile and the exact input. The plan's own "why" and rollback notes are shown last,
+   labelled as plan notes, because anyone who can edit the plan can write them. You retype the
+   operation id and a fresh one-time code. The prompt reads from `/dev/tty` (`CONIN$` on Windows),
+   never from stdin or arguments, so piped input cannot approve it.
 5. **Single-use grant.** Only after confirmation is an approval grant issued. It is bound to that
    exact operation, input, tenant, endpoint, audience, credential profile and policy, lasts at most
    five minutes and is consumed by `Executor::execute_with_approval`, which re-checks every binding
@@ -140,9 +153,10 @@ approvals (`junction approvals issue`) do not cover `apply`.
 - **The operator terminal is the trust boundary.** A process that controls your pseudo-terminal can
   type into it. Do not run agents with access to the terminal where you approve changes (see
   [APPROVALS.md](APPROVALS.md)).
-- **Plan files are untrusted input.** Anyone who can edit a plan can change what you are asked to
-  approve. Apply re-validates every item and shows the exact input, but read the prompt, not the
-  file name. Keep plans in a directory only you can write to.
+- **Plan files are untrusted input.** Apply never trusts a plan's targets: every request is rebuilt
+  from the live tenant and must match, and the prompt describes the live target. A tampered plan
+  can at most fail, or carry misleading "why" and rollback notes, which the prompt labels as plan
+  notes. Keep plans in a directory only you can write to anyway.
 - **Freshness is checked at the start.** Apply compares the plan with the tenant once, before the
   first item. A change made by someone else during the run is not detected item by item.
 - **Revoking access is not a security investigation.** If an app is suspected compromised, also
