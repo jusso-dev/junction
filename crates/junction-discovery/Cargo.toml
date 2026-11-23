@@ -13,7 +13,7 @@ junction-schema = { path = "../junction-schema" }
 serde.workspace = true
 toml = "0.8"
 url = "2"
-serde-saphyr = "1"
+serde-saphyr = "2"
 reqwest = { version = "0.12", default-features = false, features = ["rustls-tls"] }
 sha2 = "0.11"
 quick-xml = "0.42"
