@@ -5,10 +5,10 @@
       "receipt": {
         "bytes": 23221,
         "path": "specification/common-types/resource-management/v5/types.json",
-        "revision": "be93aca8c35ada896dd7fd6c7f65b1a9f766e84c",
+        "revision": "4183a9a4a505e05eff5d736176416ba76a2f672c",
         "sha256": "66767620b8edfbc04093c76b78d168cc59822cd9da1e726d35a9d45b73e642c1",
         "source": "sentinel",
-        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/be93aca8c35ada896dd7fd6c7f65b1a9f766e84c/specification/common-types/resource-management/v5/types.json"
+        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/4183a9a4a505e05eff5d736176416ba76a2f672c/specification/common-types/resource-management/v5/types.json"
       },
       "status": "dependency"
     }
@@ -18,10 +18,10 @@
       "receipt": {
         "bytes": 584186,
         "path": "specification/securityinsights/resource-manager/Microsoft.SecurityInsights/SecurityInsights/stable/2025-09-01/openapi.json",
-        "revision": "be93aca8c35ada896dd7fd6c7f65b1a9f766e84c",
+        "revision": "4183a9a4a505e05eff5d736176416ba76a2f672c",
         "sha256": "792f337b834a7a932206ab90e473245c46a0045364b2814d0c9ef452eca896a2",
         "source": "sentinel",
-        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/be93aca8c35ada896dd7fd6c7f65b1a9f766e84c/specification/securityinsights/resource-manager/Microsoft.SecurityInsights/SecurityInsights/stable/2025-09-01/openapi.json"
+        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/4183a9a4a505e05eff5d736176416ba76a2f672c/specification/securityinsights/resource-manager/Microsoft.SecurityInsights/SecurityInsights/stable/2025-09-01/openapi.json"
       },
       "status": "imported"
     }
@@ -33,11 +33,11 @@
         "blob_sha": "2d31fac387b9e61892e155ce06f3cbfed044b55a",
         "bytes": 584186,
         "path": "specification/securityinsights/resource-manager/Microsoft.SecurityInsights/SecurityInsights/stable/2025-09-01/openapi.json",
-        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/be93aca8c35ada896dd7fd6c7f65b1a9f766e84c/specification/securityinsights/resource-manager/Microsoft.SecurityInsights/SecurityInsights/stable/2025-09-01/openapi.json"
+        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/4183a9a4a505e05eff5d736176416ba76a2f672c/specification/securityinsights/resource-manager/Microsoft.SecurityInsights/SecurityInsights/stable/2025-09-01/openapi.json"
       }
     ],
-    "revision": "be93aca8c35ada896dd7fd6c7f65b1a9f766e84c",
+    "revision": "4183a9a4a505e05eff5d736176416ba76a2f672c",
     "source": "sentinel",
-    "tree_sha": "be93aca8c35ada896dd7fd6c7f65b1a9f766e84c"
+    "tree_sha": "4183a9a4a505e05eff5d736176416ba76a2f672c"
   }
 }
