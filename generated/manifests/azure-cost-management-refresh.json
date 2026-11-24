@@ -5,10 +5,10 @@
       "receipt": {
         "bytes": 3834,
         "path": "specification/common-types/resource-management/v5/managedidentity.json",
-        "revision": "4183a9a4a505e05eff5d736176416ba76a2f672c",
+        "revision": "1112474efdc9ffe891994f177b1cc4fcf171e17b",
         "sha256": "03d8098b5f3bf4ce54fc950c949baf41f80095887a5566c961baba514d080508",
         "source": "azure-cost-management",
-        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/4183a9a4a505e05eff5d736176416ba76a2f672c/specification/common-types/resource-management/v5/managedidentity.json"
+        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/1112474efdc9ffe891994f177b1cc4fcf171e17b/specification/common-types/resource-management/v5/managedidentity.json"
       },
       "status": "dependency"
     },
@@ -16,10 +16,10 @@
       "receipt": {
         "bytes": 23221,
         "path": "specification/common-types/resource-management/v5/types.json",
-        "revision": "4183a9a4a505e05eff5d736176416ba76a2f672c",
+        "revision": "1112474efdc9ffe891994f177b1cc4fcf171e17b",
         "sha256": "66767620b8edfbc04093c76b78d168cc59822cd9da1e726d35a9d45b73e642c1",
         "source": "azure-cost-management",
-        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/4183a9a4a505e05eff5d736176416ba76a2f672c/specification/common-types/resource-management/v5/types.json"
+        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/1112474efdc9ffe891994f177b1cc4fcf171e17b/specification/common-types/resource-management/v5/types.json"
       },
       "status": "dependency"
     }
@@ -29,10 +29,10 @@
       "receipt": {
         "bytes": 385239,
         "path": "specification/cost-management/resource-manager/Microsoft.CostManagement/CostManagement/stable/2026-06-01/openapi.json",
-        "revision": "4183a9a4a505e05eff5d736176416ba76a2f672c",
+        "revision": "1112474efdc9ffe891994f177b1cc4fcf171e17b",
         "sha256": "f107261693ebb74d17bbf67132a198f3c46e12c0f2ec79887fae3f44360449a3",
         "source": "azure-cost-management",
-        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/4183a9a4a505e05eff5d736176416ba76a2f672c/specification/cost-management/resource-manager/Microsoft.CostManagement/CostManagement/stable/2026-06-01/openapi.json"
+        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/1112474efdc9ffe891994f177b1cc4fcf171e17b/specification/cost-management/resource-manager/Microsoft.CostManagement/CostManagement/stable/2026-06-01/openapi.json"
       },
       "status": "imported"
     }
@@ -44,11 +44,11 @@
         "blob_sha": "cbd71fc61112ff9031374dd8cfd42242f30d79b1",
         "bytes": 385239,
         "path": "specification/cost-management/resource-manager/Microsoft.CostManagement/CostManagement/stable/2026-06-01/openapi.json",
-        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/4183a9a4a505e05eff5d736176416ba76a2f672c/specification/cost-management/resource-manager/Microsoft.CostManagement/CostManagement/stable/2026-06-01/openapi.json"
+        "upstream": "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/1112474efdc9ffe891994f177b1cc4fcf171e17b/specification/cost-management/resource-manager/Microsoft.CostManagement/CostManagement/stable/2026-06-01/openapi.json"
       }
     ],
-    "revision": "4183a9a4a505e05eff5d736176416ba76a2f672c",
+    "revision": "1112474efdc9ffe891994f177b1cc4fcf171e17b",
     "source": "azure-cost-management",
-    "tree_sha": "4183a9a4a505e05eff5d736176416ba76a2f672c"
+    "tree_sha": "1112474efdc9ffe891994f177b1cc4fcf171e17b"
   }
 }
