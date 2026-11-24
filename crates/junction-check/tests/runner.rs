@@ -274,41 +274,45 @@ async fn per_host_concurrency_limit_is_respected() {
     assert!(gateway.peak_concurrency() >= 2, "limit was not exercised");
 }
 
-#[tokio::test]
+#[tokio::test(start_paused = true)]
 async fn tenants_run_in_parallel_up_to_the_bound() {
-    let gateways: Vec<Arc<FixtureGateway>> = (0..4)
-        .map(|_| {
-            Arc::new(
-                users_ok(FixtureGateway::new(TENANT).with("graph.subscribed_skus.list", skus(&[])))
-                    .with_delay(Duration::from_millis(40)),
-            )
-        })
-        .collect();
-    let started = std::time::Instant::now();
-    run(
-        &registry(),
-        gateways
-            .iter()
-            .map(|g| TenantPlan {
-                tenant_id: TENANT.into(),
-                label: None,
-                gateway: Ok(g.clone() as Arc<dyn Gateway>),
-                attestations: BTreeMap::new(),
+    let tenant_count: usize = 5;
+    let delay = Duration::from_millis(40);
+    for parallel in [1, 2, 4] {
+        let plans = (0..tenant_count)
+            .map(|index| {
+                let tenant = format!("tenant-{index}");
+                let gateway = users_ok(
+                    FixtureGateway::new(&tenant).with("graph.subscribed_skus.list", skus(&[])),
+                )
+                .with_delay(delay);
+                plan(&tenant, gateway)
             })
-            .collect(),
-        &RunOptions {
-            parallel: 4,
+            .collect();
+        let mut opts = RunOptions {
+            parallel,
             ..options()
-        },
-    )
-    .await
-    .unwrap();
-    // Sequential would take at least 4 tenants x 2 rounds x 40ms.
-    assert!(
-        started.elapsed() < Duration::from_millis(320),
-        "{:?}",
-        started.elapsed()
-    );
+        };
+        // One check gives exactly two sequential calls per tenant: licences, then users.
+        opts.selection.checks = vec![U1.id.into()];
+        let started = tokio::time::Instant::now();
+        let report = run(&registry(), plans, &opts).await.unwrap();
+
+        // Paused time advances only through fixture sleeps, independent of host load.
+        // Exact batch duration rejects both serial execution and exceeding the bound.
+        let batches = tenant_count.div_ceil(parallel) as u32;
+        assert_eq!(
+            started.elapsed(),
+            delay * 2 * batches,
+            "parallel={parallel}"
+        );
+        assert_eq!(report.tenants.len(), tenant_count);
+        for tenant in &report.tenants {
+            assert_eq!(tenant.status, TenantStatus::Complete);
+            assert_eq!(tenant.results.len(), 1);
+            assert_eq!(tenant.results[0].status, Status::Pass);
+        }
+    }
 }
 
 #[tokio::test]
