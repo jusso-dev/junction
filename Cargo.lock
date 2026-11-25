@@ -1554,7 +1554,7 @@ dependencies = [
 
 [[package]]
 name = "junction"
-version = "0.1.54"
+version = "0.1.55"
 dependencies = [
  "anyhow",
  "clap",
@@ -1589,7 +1589,7 @@ dependencies = [
 
 [[package]]
 name = "junction-archive"
-version = "0.1.54"
+version = "0.1.55"
 dependencies = [
  "anyhow",
  "clap",
@@ -1618,7 +1618,7 @@ dependencies = [
 
 [[package]]
 name = "junction-auth"
-version = "0.1.54"
+version = "0.1.55"
 dependencies = [
  "anyhow",
  "base64 0.23.1",
@@ -1638,7 +1638,7 @@ dependencies = [
 
 [[package]]
 name = "junction-check"
-version = "0.1.54"
+version = "0.1.55"
 dependencies = [
  "anyhow",
  "clap",
@@ -1666,7 +1666,7 @@ dependencies = [
 
 [[package]]
 name = "junction-core"
-version = "0.1.54"
+version = "0.1.55"
 dependencies = [
  "anyhow",
  "serde",
@@ -1676,7 +1676,7 @@ dependencies = [
 
 [[package]]
 name = "junction-discovery"
-version = "0.1.54"
+version = "0.1.55"
 dependencies = [
  "anyhow",
  "junction-core",
@@ -1695,7 +1695,7 @@ dependencies = [
 
 [[package]]
 name = "junction-generator"
-version = "0.1.54"
+version = "0.1.55"
 dependencies = [
  "anyhow",
  "junction-schema",
@@ -1706,7 +1706,7 @@ dependencies = [
 
 [[package]]
 name = "junction-http"
-version = "0.1.54"
+version = "0.1.55"
 dependencies = [
  "anyhow",
  "base64 0.23.1",
@@ -1725,7 +1725,7 @@ dependencies = [
 
 [[package]]
 name = "junction-mcp"
-version = "0.1.54"
+version = "0.1.55"
 dependencies = [
  "anyhow",
  "junction-schema",
@@ -1735,7 +1735,7 @@ dependencies = [
 
 [[package]]
 name = "junction-policy"
-version = "0.1.54"
+version = "0.1.55"
 dependencies = [
  "anyhow",
  "junction-core",
@@ -1747,7 +1747,7 @@ dependencies = [
 
 [[package]]
 name = "junction-registry"
-version = "0.1.54"
+version = "0.1.55"
 dependencies = [
  "anyhow",
  "junction-core",
@@ -1760,7 +1760,7 @@ dependencies = [
 
 [[package]]
 name = "junction-runtime"
-version = "0.1.54"
+version = "0.1.55"
 dependencies = [
  "anyhow",
  "futures-util",
@@ -1781,7 +1781,7 @@ dependencies = [
 
 [[package]]
 name = "junction-schema"
-version = "0.1.54"
+version = "0.1.55"
 dependencies = [
  "anyhow",
  "jsonschema",
@@ -1791,7 +1791,7 @@ dependencies = [
 
 [[package]]
 name = "junction-server"
-version = "0.1.54"
+version = "0.1.55"
 dependencies = [
  "anyhow",
  "axum",
@@ -1810,7 +1810,7 @@ dependencies = [
 
 [[package]]
 name = "junction-tui"
-version = "0.1.54"
+version = "0.1.55"
 dependencies = [
  "anyhow",
  "crossterm",
@@ -1822,7 +1822,7 @@ dependencies = [
 
 [[package]]
 name = "junction-types"
-version = "0.1.54"
+version = "0.1.55"
 dependencies = [
  "serde",
  "serde_json",
@@ -1830,7 +1830,7 @@ dependencies = [
 
 [[package]]
 name = "junction-watch"
-version = "0.1.54"
+version = "0.1.55"
 dependencies = [
  "anyhow",
  "argon2",
