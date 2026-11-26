@@ -182,6 +182,26 @@
     },
     {
       "receipt": {
+        "bytes": 8594,
+        "path": "api/download-assessment-export-files",
+        "sha256": "53388edc0f040200c72cfdfd3fb940a7d5ee44433458f388d7fcd5510041d95a",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/download-assessment-export-files"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
+        "bytes": 26498,
+        "path": "api/export-assessment-server-side-filtering",
+        "sha256": "81dd6fdf6bfbf0c31acd5f5bc3dd91dfe32444c6e8165b9fbf8fcae2e28903b9",
+        "source": "defender-endpoint",
+        "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/export-assessment-server-side-filtering"
+      },
+      "status": "imported"
+    },
+    {
+      "receipt": {
         "bytes": 12312,
         "path": "api/export-certificate-inventory-assessment",
         "sha256": "d6434ece137e90e33492393448594166bced9eac5e0edf5bdf1fc6ec01cbe384",
@@ -462,9 +482,9 @@
     },
     {
       "receipt": {
-        "bytes": 23468,
+        "bytes": 24104,
         "path": "api/get-assessment-methods-properties",
-        "sha256": "c30ba6de476b3db38d573d351ec2855feb935ac0c25e11cd6727f15cbf3a223f",
+        "sha256": "38a85f97864911ee75f52647080756570b758dab0543e87c98b5f6a20e320ac7",
         "source": "defender-endpoint",
         "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/get-assessment-methods-properties"
       },
@@ -472,9 +492,9 @@
     },
     {
       "receipt": {
-        "bytes": 14356,
+        "bytes": 14515,
         "path": "api/get-assessment-non-cpe-software-inventory",
-        "sha256": "b6e63ea1799ca623c21964a0e1f6ffc492db7752c44eb89234ddc9bc5ffd03f9",
+        "sha256": "b7b162a48637308554ad7c38bffe803ad2f13ae612285fd33c92134580708ca2",
         "source": "defender-endpoint",
         "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/get-assessment-non-cpe-software-inventory"
       },
@@ -482,9 +502,9 @@
     },
     {
       "receipt": {
-        "bytes": 15528,
+        "bytes": 15687,
         "path": "api/get-assessment-secure-config",
-        "sha256": "2b672dbdaba340b91569cfd99f74af43770b739c4f40f359c52805c8eab8d16f",
+        "sha256": "ee6cc45fcc8c50dfe0c330652469e3cf1a3bfa372ad3d1ed656b909f327fca15",
         "source": "defender-endpoint",
         "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/get-assessment-secure-config"
       },
@@ -492,9 +512,9 @@
     },
     {
       "receipt": {
-        "bytes": 16154,
+        "bytes": 16313,
         "path": "api/get-assessment-software-inventory",
-        "sha256": "bee023f436c9f0f2391f797f14b967f123fbe96f93ff6053c0bb931ead824c46",
+        "sha256": "9cff88f122cad4b7600daf4e7ef822fb1d879d780797b66e9c0f105c1dd30444",
         "source": "defender-endpoint",
         "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/get-assessment-software-inventory"
       },
@@ -502,9 +522,9 @@
     },
     {
       "receipt": {
-        "bytes": 37695,
+        "bytes": 37854,
         "path": "api/get-assessment-software-vulnerabilities",
-        "sha256": "4083ea487a212914c69add731c211ba25adbd8c961a885451934170e59fa955f",
+        "sha256": "d79d76902337bd19f48ffd24086b63db75540c93098414b054554d040fa319e0",
         "source": "defender-endpoint",
         "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/get-assessment-software-vulnerabilities"
       },
@@ -1331,7 +1351,7 @@
       "status": "imported"
     }
   ],
-  "imported": 133,
+  "imported": 135,
   "kind": "documentation",
-  "revision": "ea284b66c880dd263461c36d22ad235155fb86bc1a21d404a381929d71016e26"
+  "revision": "f89f1faa3789a352b1ccf149b91d7aafd46669f92eb6667f9c33d8678246f6ae"
 }
