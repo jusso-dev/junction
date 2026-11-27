@@ -37,4 +37,4 @@ rpassword = "7"
 [target.'cfg(unix)'.dependencies]
 libc = "0.2"
 [dev-dependencies]
-jsonschema = { version = "0.58", default-features = false }
+jsonschema = { version = "0.63", default-features = false }

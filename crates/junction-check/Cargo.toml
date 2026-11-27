@@ -31,5 +31,5 @@ getrandom = "0.4"
 
 [dev-dependencies]
 tokio = { version = "1", features = ["test-util"] }
-jsonschema = { version = "0.58", default-features = false }
+jsonschema = { version = "0.63", default-features = false }
 tempfile = "3"

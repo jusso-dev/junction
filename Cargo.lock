@@ -906,9 +906,9 @@ checksum = "7360491ce676a36bf9bb3c56c1aa791658183a54d2744120f27285738d90465a"
 
 [[package]]
 name = "fancy-regex"
-version = "0.19.2"
+version = "0.20.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d301f5bf187b3c295fce6468d3875037a0bccc5f6b151c63cac2f85babf21912"
+checksum = "0a2e16b9a584b602f1e0e5e22c30ca0906786088c27500653e432d086def8b53"
 dependencies = [
  "bit-set",
  "regex-automata",
@@ -1501,9 +1501,9 @@ dependencies = [
 
 [[package]]
 name = "jsonschema"
-version = "0.58.3"
+version = "0.63.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "905edfa6eee835291d6efe33f733f7fcb40c2a24be93b78b74df95e56aef8611"
+checksum = "f048e101172edb2c5f0351d7e3bc3796ac89b7f150e64b0cbd20dd82215b2160"
 dependencies = [
  "ahash",
  "bytecount",
@@ -1529,23 +1529,24 @@ dependencies = [
 
 [[package]]
 name = "jsonschema-regex"
-version = "0.58.3"
+version = "0.63.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "023cf6b6c38655c1e9cedf72b9c534fd361bd35d20ac06e074f2c93b7dd0836c"
+checksum = "ba1527289dfcb1400df61b5c591218e8e30031376671f611faecb5b9a1ff4987"
 dependencies = [
  "regex-syntax",
 ]
 
 [[package]]
 name = "jsonschema-value"
-version = "0.58.3"
+version = "0.63.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "43519639b8e32075ef90a9b6b19136e516a3236b7943c3fe6b1622dafdced8ea"
+checksum = "a95285ab129d630f01cf2f1345c28662116340fac1a35eb0795e5dbbf0ef990d"
 dependencies = [
  "ahash",
  "bytecount",
  "fraction",
  "getrandom 0.3.4",
+ "memchr",
  "num-cmp",
  "num-traits",
  "serde_json",
@@ -2542,9 +2543,9 @@ dependencies = [
 
 [[package]]
 name = "referencing"
-version = "0.58.3"
+version = "0.63.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ead446bbb5527785ff232eb96625ac03daa627945470374c553db8f13090e30f"
+checksum = "858eb92e3a3c1d120695a04d5c6e8861915ee4394b8f77c90adbf686d6ddbf6e"
 dependencies = [
  "ahash",
  "fluent-uri",
