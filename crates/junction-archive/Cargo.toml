@@ -33,4 +33,4 @@ getrandom = "0.4"
 
 [dev-dependencies]
 tempfile = "3"
-jsonschema = { version = "0.58", default-features = false }
+jsonschema = { version = "0.63", default-features = false }
