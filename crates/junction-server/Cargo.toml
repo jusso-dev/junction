@@ -13,7 +13,7 @@ percent-encoding = "2"
 junction-registry = { path = "../junction-registry" }
 junction-auth = { path = "../junction-auth" }
 anyhow.workspace = true
-axum = { version = "0.7.9", default-features = false, features = ["http1", "tokio"] }
+axum = { version = "0.8.9", default-features = false, features = ["http1", "tokio"] }
 tokio = { version = "1", features = ["net", "time", "sync", "signal"] }
 subtle = "2"
 [dev-dependencies]
