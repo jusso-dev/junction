@@ -522,9 +522,9 @@
     },
     {
       "receipt": {
-        "bytes": 37854,
+        "bytes": 37878,
         "path": "api/get-assessment-software-vulnerabilities",
-        "sha256": "d79d76902337bd19f48ffd24086b63db75540c93098414b054554d040fa319e0",
+        "sha256": "709de61f0d1c2f0d25d3519b4940979c6f3e2c0386f58ecddec444aae35c714a",
         "source": "defender-endpoint",
         "upstream": "https://learn.microsoft.com/en-us/defender-endpoint/api/get-assessment-software-vulnerabilities"
       },
